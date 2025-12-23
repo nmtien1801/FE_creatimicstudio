@@ -9,15 +9,6 @@ import {
     MapPin,
     Mail,
     Globe,
-    Facebook,
-    Youtube,
-    Instagram,
-    // Thêm các icon cho Social/Chat
-    MessageCircle, // Dùng cho Zalo
-    Rss,           // Dùng cho TikTok
-    // Thêm các icon cho Payment (dùng phổ thông)
-    CreditCard,
-    Landmark,
 } from "lucide-react";
 import FormContact from "../components/contact/FormContact.jsx";
 
@@ -40,23 +31,6 @@ export default function Footer() {
         { name: "Zalo", src: "../../public/zalo.webp", href: "#" }
     ];
 
-    const IconCircle = ({ bg, children, size = 'w-10 h-10' }) => (
-        <div
-            className={`${size} rounded-full flex items-center justify-center shadow-md`}
-            style={{ backgroundColor: bg }}
-        >
-            {children}
-        </div>
-    );
-
-    const handleSubscribe = (e) => {
-        e.preventDefault();
-        if (email) {
-            alert(`Đã đăng ký nhận tin với email: ${email}`);
-            setEmail('');
-        }
-    };
-
     const ServiceCommitment = ({ icon: Icon, title, description }) => (
         <div className="group text-center p-6 bg-white rounded-2xl hover:shadow-xl transition-all duration-500 hover:-translate-y-2">
             <div className="w-16 h-16 mx-auto bg-gradient-to-br from-orange-500 to-pink-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-lg">
@@ -68,7 +42,7 @@ export default function Footer() {
     );
 
     return (
-        <footer className="bg-gradient-to-br from-gray-900 to-gray-800 text-white mt-16 font-sans">
+        <footer className="bg-[#ed792f] text-white mt-16 font-sans">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
                     <ServiceCommitment
@@ -102,7 +76,7 @@ export default function Footer() {
                                 alt="Nexergy Full Logo"
                                 className="h-28 w-28 rounded-full object-cover shadow-lg"
                             />
-                            <h2 className="text-xl font-extrabold text-indigo-400 mt-2">
+                            <h2 className="text-xl font-extrabold text-orange-800 mt-2">
                                 CREATIMIC STUDIO
                                 <p className="text-white">
                                     Âm thanh sáng tạo - kết nối cảm xúc
@@ -155,7 +129,7 @@ export default function Footer() {
 
                         {/* Payment Method Đã Thêm */}
                         <div className="pt-4">
-                            <h3 className="text-lg font-semibold text-indigo-400 mb-3 border-b border-gray-700 pb-1">
+                            <h3 className="text-lg font-semibold text-orange-800 mb-3 border-b border-gray-700 pb-1">
                                 Phương thức Thanh toán
                             </h3>
                             <div className="flex items-center space-x-4">
@@ -167,14 +141,14 @@ export default function Footer() {
                     </div>
 
                     {/* Cột 2: Form liên hệ */}
-                    <div className="lg:col-span-1 bg-gray-900 p-6 rounded-2xl shadow-lg">
+                    <div className="lg:col-span-1 bg-[#ed780f] p-6 rounded-2xl shadow-lg">
                         <FormContact />
                     </div>
 
                 </div>
             </div>
 
-            <div className="bg-gray-950 text-center py-4 text-sm text-gray-500">
+            <div className="bg-[#ed780f] text-center py-4 text-sm text-white">
                 © 2025 CREATIMICSTUDIO. All rights reserved. Designed with ❤️
             </div>
         </footer>

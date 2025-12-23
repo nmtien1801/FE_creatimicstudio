@@ -22,11 +22,11 @@ const articlesData = [
 
 const CategorySection = ({ title, products, bannerText, buttonLink, countText, isLoudspeaker = false }) => {
     return (
-        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white to-gray-50">
-            <div className="max-w-7xl mx-auto">
+        <section className="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+            <div className="max-w-0xl mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
                     <div>
-                        <h2 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                        <h2 className="text-3xl lg:text-4xl font-black text-[#ed792f] mb-2 uppercase">
                             {title}
                         </h2>
                         <p className="text-sm text-gray-600">sản phẩm thuộc danh mục {countText}</p>
@@ -36,12 +36,8 @@ const CategorySection = ({ title, products, bannerText, buttonLink, countText, i
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
                     {/* Banner Dọc */}
                     <div className="md:col-span-3">
-                        <div className="h-[400px] md:h-full min-h-[500px] bg-gradient-to-br from-orange-500 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center p-6 shadow-2xl relative overflow-hidden group cursor-pointer">
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
-                            <div className="absolute inset-0 opacity-20">
-                                <div className="absolute top-0 left-0 w-32 h-32 bg-white rounded-full filter blur-3xl"></div>
-                                <div className="absolute bottom-0 right-0 w-32 h-32 bg-white rounded-full filter blur-3xl"></div>
-                            </div>
+                        <div className="h-[400px] md:h-full min-h-[500px] bg-[#ed792f] rounded-2xl flex items-center justify-center p-6 shadow-xl relative overflow-hidden group cursor-pointer">
+                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-all"></div>
                             <div className="relative text-center text-white">
                                 <div className="text-2xl font-black mb-4 leading-tight">{bannerText}</div>
                                 <div className="text-sm opacity-90 mb-6">Khuyến mãi đặc biệt</div>
@@ -64,7 +60,7 @@ const CategorySection = ({ title, products, bannerText, buttonLink, countText, i
 
                 {/* Nút Xem thêm */}
                 <div className="mt-12 text-center">
-                    <a href={buttonLink} className="inline-flex items-center justify-center px-10 py-4 bg-gradient-to-r from-orange-500 to-pink-500 text-white text-lg font-bold rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all duration-300">
+                    <a href={buttonLink} className="inline-flex items-center justify-center px-10 py-4 bg-[#ed792f] text-white text-lg font-bold rounded-full shadow-lg hover:brightness-110 hover:scale-105 transition-all duration-300">
                         Xem thêm sản phẩm
                     </a>
                 </div>
@@ -75,7 +71,7 @@ const CategorySection = ({ title, products, bannerText, buttonLink, countText, i
 
 const ArticleCard = ({ article }) => {
     return (
-        <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer hover:-translate-y-2">
+        <div className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-500 overflow-hidden group cursor-pointer hover:-translate-y-2">
             <div className="h-48 w-full overflow-hidden">
                 <img
                     src={article.img}
@@ -85,10 +81,10 @@ const ArticleCard = ({ article }) => {
             </div>
 
             <div className="p-6">
-                <h3 className="text-lg font-bold text-gray-900 mb-4 line-clamp-2 min-h-[56px] group-hover:text-orange-600 transition-colors">
+                <h3 className="text-lg font-bold text-gray-900 mb-4 line-clamp-2 min-h-[56px] group-hover:text-[#ed792f] transition-colors">
                     {article.title}
                 </h3>
-                <a href="#" className="inline-flex items-center text-orange-600 hover:text-orange-700 font-semibold text-sm group/link">
+                <a href="#" className="inline-flex items-center text-[#ed792f] hover:brightness-90 font-semibold text-sm group/link">
                     Đọc thêm
                     <svg className="ml-2 w-4 h-4 group-hover/link:translate-x-2 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
@@ -104,9 +100,9 @@ export default function TrangChu() {
     const [currentSlide, setCurrentSlide] = useState(0);
 
     const slides = [
-        { text: 'Flash Sale 50%', gradient: 'from-purple-600 to-blue-600' },
-        { text: 'Freeship toàn quốc', gradient: 'from-orange-600 to-pink-600' },
-        { text: 'Mua 1 tặng 1', gradient: 'from-green-600 to-emerald-600' },
+        { text: 'Flash Sale 50%', color: 'bg-[#ed792f]' },
+        { text: 'Freeship toàn quốc', color: 'bg-[#ed792f]' },
+        { text: 'Mua 1 tặng 1', color: 'bg-[#ed792f]' },
     ];
 
     const nextSlide = useCallback(() => {
@@ -123,21 +119,18 @@ export default function TrangChu() {
     const loaProducts = productsData.slice(4, 10).sort(() => 0.5 - Math.random());
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white">
+        <div className="min-h-screen bg-white">
             <main className="pb-20 md:pb-8">
                 {/* Banner Slider */}
-                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-8">
-                    <div className="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl">
+                <section className="w-full mb-12 my-8 px-4 sm:px-6 lg:px-8 max-w-0xl mx-auto">
+                    <div className="relative h-64 md:h-96 rounded-3xl overflow-hidden shadow-xl">
                         <div
                             className="flex h-full transition-transform duration-700 ease-in-out"
                             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                         >
                             {slides.map((slide, index) => (
-                                <div key={index} className={`flex-shrink-0 w-full h-full bg-gradient-to-r ${slide.gradient} flex items-center justify-center relative overflow-hidden`}>
-                                    <div className="absolute inset-0 opacity-20">
-                                        <div className="absolute top-0 left-0 w-96 h-96 bg-white rounded-full filter blur-3xl"></div>
-                                        <div className="absolute bottom-0 right-0 w-96 h-96 bg-white rounded-full filter blur-3xl"></div>
-                                    </div>
+                                <div key={index} className={`flex-shrink-0 w-full h-full ${slide.color} flex items-center justify-center relative`}>
+                                    <div className="absolute inset-0 bg-black/5"></div>
                                     <div className="relative text-center text-white px-6">
                                         <div className="text-5xl md:text-7xl font-black mb-4">{slide.text}</div>
                                         <div className="text-xl md:text-2xl opacity-90">Khuyến mãi đặc biệt trong tháng</div>
@@ -161,10 +154,10 @@ export default function TrangChu() {
                 </section>
 
                 {/* TOP SELLER */}
-                <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-orange-50 to-pink-50">
-                    <div className="max-w-7xl mx-auto">
+                <section className="py-16 px-4 sm:px-6 lg:px-8 bg-orange-50/50">
+                    <div className="max-w-0xl mx-auto">
                         <div className="text-center mb-12">
-                            <h2 className="text-4xl lg:text-5xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                            <h2 className="text-4xl lg:text-5xl font-black text-[#ed792f] mb-3">
                                 TOP SELLER
                             </h2>
                             <p className="text-gray-600">Sản phẩm bán chạy nhất trong tháng</p>
@@ -188,10 +181,10 @@ export default function TrangChu() {
 
                 {/* PHỤ KIỆN THU ÂM */}
                 <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-0xl mx-auto">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
                             <div>
-                                <h2 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-2">
+                                <h2 className="text-3xl lg:text-4xl font-black text-[#ed792f] mb-2 uppercase">
                                     PHỤ KIỆN THU ÂM
                                 </h2>
                                 <p className="text-sm text-gray-600">sản phẩm thuộc danh mục Phụ kiện thu âm</p>
@@ -206,20 +199,17 @@ export default function TrangChu() {
                 </section>
 
                 {/* 4 Banner Ngang */}
-                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
+                <section className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
                         {[
-                            { text: 'Miễn phí vận chuyển', gradient: 'from-blue-500 to-cyan-500', icon: '🚚' },
-                            { text: 'Bảo hành 12 tháng', gradient: 'from-purple-500 to-pink-500', icon: '🛡️' },
-                            { text: 'Hỗ trợ 24/7', gradient: 'from-orange-500 to-red-500', icon: '💬' },
-                            { text: 'Thanh toán linh hoạt', gradient: 'from-green-500 to-emerald-500', icon: '💳' }
+                            { text: 'Miễn phí vận chuyển', icon: '🚚' },
+                            { text: 'Bảo hành 12 tháng', icon: '🛡️' },
+                            { text: 'Hỗ trợ 24/7', icon: '💬' },
+                            { text: 'Thanh toán linh hoạt', icon: '💳' }
                         ].map((banner, i) => (
-                            <div key={i} className={`group h-32 sm:h-40 bg-gradient-to-br ${banner.gradient} rounded-2xl flex flex-col items-center justify-center p-4 shadow-xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 cursor-pointer relative overflow-hidden`}>
-                                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition-all"></div>
-                                <div className="relative text-center text-white">
-                                    <div className="text-4xl mb-2">{banner.icon}</div>
-                                    <span className="text-sm sm:text-base font-bold">{banner.text}</span>
-                                </div>
+                            <div key={i} className="group h-32 sm:h-40 bg-white border border-gray-100 rounded-2xl flex flex-col items-center justify-center p-4 shadow-md hover:shadow-lg transition-all duration-500 hover:-translate-y-2 cursor-pointer">
+                                <div className="text-4xl mb-2">{banner.icon}</div>
+                                <span className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-[#ed792f] transition-colors">{banner.text}</span>
                             </div>
                         ))}
                     </div>
@@ -236,10 +226,10 @@ export default function TrangChu() {
                 />
 
                 {/* BÀI VIẾT HỮU ÍCH */}
-                <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-gray-50 to-white">
-                    <div className="max-w-7xl mx-auto">
+                <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50">
+                    <div className="max-w-0xl mx-auto">
                         <div className="text-center mb-12">
-                            <h2 className="text-3xl lg:text-4xl font-black bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent mb-3">
+                            <h2 className="text-3xl lg:text-4xl font-black text-[#ed792f] mb-3 uppercase">
                                 BÀI VIẾT HỮU ÍCH
                             </h2>
                             <p className="text-gray-600">Kiến thức và hướng dẫn về thiết bị thu âm</p>
