@@ -9,7 +9,7 @@ const MegaMenu = ({ categories }) => {
 
             {/* BUTTON DANH MỤC */}
             <button
-                className="flex items-center justify-between w-full px-5 py-3 bg-gradient-to-r from-orange-600 to-pink-600 text-white font-bold rounded-l-xl hover:from-orange-700 hover:to-pink-700 transition-all shadow-lg"
+                className="flex items-center justify-between w-full px-5 py-3 bg-[#ed792f] text-white font-bold rounded-l-xl hover:from-orange-700 hover:to-pink-700 transition-all shadow-lg"
             >
                 <span>DANH MỤC</span>
                 <ChevronDown className="w-5 h-5 ml-2 transition-transform group-hover:rotate-180" />
@@ -36,6 +36,7 @@ const MegaMenu = ({ categories }) => {
                             {/* SUB MENU */}
                             {cat.subs?.length > 0 && openCategory === cat.name && (
                                 <div className="absolute top-0 left-full ml-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl p-2 z-[2002]">
+                                    <div className="absolute -left-2 top-0 bottom-0 w-2 bg-transparent" />
                                     {cat.subs.map((sub, i) => (
                                         <div
                                             key={i}
@@ -44,6 +45,7 @@ const MegaMenu = ({ categories }) => {
                                             {sub}
                                         </div>
                                     ))}
+
                                 </div>
                             )}
                         </li>
