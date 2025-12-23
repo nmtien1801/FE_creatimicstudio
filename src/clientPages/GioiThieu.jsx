@@ -36,7 +36,7 @@ const About = () => {
 
     return (
         <div className="min-h-screen bg-white">
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
+            <main className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24">
                 {/* --- 1. CÂU CHUYỆN THƯƠNG HIỆU --- */}
                 <section className="mb-20 sm:mb-28">
                     <h2 className="text-4xl font-black text-gray-800 mb-10 text-center">

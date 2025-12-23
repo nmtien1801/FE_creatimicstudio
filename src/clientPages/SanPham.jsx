@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import {Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '../components/product/ProductCard.jsx';
 
 // Chuyển đổi chuỗi giá tiếng Việt sang số để dễ dàng lọc và so sánh
@@ -10,16 +10,16 @@ const priceToNumber = (priceString) => {
 
 // Dữ liệu sản phẩm mẫu
 const rawProductsData = [
-    { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", rating: 4.8, img: 'https://picsum.photos/id/1015/400/400', subCategory: 'Micro thu âm' },
-    { id: 2, name: "Soundcard XOX K10", price: "1.250.000₫", oldPrice: "1.590.000₫", rating: 4.9, img: 'https://picsum.photos/id/1016/400/400', subCategory: 'Soundcard XOX' },
-    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", rating: 4.8, img: 'https://picsum.photos/id/1018/400/400', subCategory: 'Tai nghe kiểm âm' },
-    { id: 4, name: "Combo Livestream Cao Cấp", price: "3.500.000₫", oldPrice: "4.200.000₫", rating: 5.0, img: 'https://picsum.photos/id/1020/400/400', subCategory: 'Combo Livestream' },
-    { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", rating: 4.8, img: 'https://picsum.photos/id/1024/400/400', subCategory: 'Loa kiểm âm' },
-    { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", rating: 4.9, img: 'https://picsum.photos/id/1027/400/400', subCategory: 'Chân đế Micro' },
-    { id: 7, name: "Micro cài áo không dây", price: "690.000₫", oldPrice: "890.000₫", rating: 4.9, img: 'https://picsum.photos/id/1031/400/400', subCategory: 'Micro cài áo' },
-    { id: 8, name: "Mixer Yamaha MG10XU", price: "5.500.000₫", oldPrice: "6.200.000₫", rating: 4.9, img: 'https://picsum.photos/id/1033/400/400', subCategory: 'Mixer Yamaha' },
-    { id: 9, name: "Hộp Livestream Mini", price: "450.000₫", oldPrice: "590.000₫", rating: 4.8, img: 'https://picsum.photos/id/1035/400/400', subCategory: 'Hộp Livestream' },
-    { id: 10, name: "Sản phẩm khác", price: "Liên hệ", oldPrice: "", rating: 5.0, img: 'https://picsum.photos/id/1037/400/400', subCategory: 'Khác' },
+    { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1015/400/400', subCategory: 'Micro thu âm' },
+    { id: 2, name: "Soundcard XOX K10", price: "1.250.000₫", oldPrice: "1.590.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1016/400/400', subCategory: 'Soundcard XOX' },
+    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1018/400/400', subCategory: 'Tai nghe kiểm âm' },
+    { id: 4, name: "Combo Livestream Cao Cấp", price: "3.500.000₫", oldPrice: "4.200.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1020/400/400', subCategory: 'Combo Livestream' },
+    { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", phone: 4.8, img: 'https://picsum.photos/id/1024/400/400', subCategory: 'Loa kiểm âm' },
+    { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1027/400/400', subCategory: 'Chân đế Micro' },
+    { id: 7, name: "Micro cài áo không dây", price: "690.000₫", oldPrice: "890.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1031/400/400', subCategory: 'Micro cài áo' },
+    { id: 8, name: "Mixer Yamaha MG10XU", price: "5.500.000₫", oldPrice: "6.200.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1033/400/400', subCategory: 'Mixer Yamaha' },
+    { id: 9, name: "Hộp Livestream Mini", price: "450.000₫", oldPrice: "590.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1035/400/400', subCategory: 'Hộp Livestream' },
+    { id: 10, name: "Sản phẩm khác", price: "Liên hệ", oldPrice: "", phone: "037.2672.396", img: 'https://picsum.photos/id/1037/400/400', subCategory: 'Khác' },
 ];
 
 // Thêm trường priceNum
@@ -240,7 +240,7 @@ export default function SanPham() {
                 setFilters(prev => ({ ...prev, subCategory: 'all' })); // reset subCategory
             }} />
 
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
+            <div className="max-w-0xl mx-auto flex flex-col md:flex-row gap-8">
                 {/* Sidebar */}
                 <FilterSidebar selectedCategory={selectedCategory} filters={filters} onFilterChange={handleFilterChange} />
 

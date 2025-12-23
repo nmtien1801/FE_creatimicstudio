@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import {  Star, Heart } from 'lucide-react';
-import { NavLink } from "react-router-dom";
+import { Star, Heart } from 'lucide-react';
 
 export default function ProductCard({ product, isTopSeller = false }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
+console.log('sssss ', product);
 
     return (
         <div className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 ${isTopSeller
@@ -20,9 +20,13 @@ export default function ProductCard({ product, isTopSeller = false }) {
 
                 {/* Badge */}
                 {isTopSeller && (
-                    <div className="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
-                        <Star className="w-3 h-3 fill-white" />
-                        TOP SELLER
+                    <div className="absolute top-0 left-0 bg-black text-white px-4 py-2 text-xs font-bold shadow-lg transform -rotate-12 origin-top-left" style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}>
+                        <div className="transform rotate-12">
+                            <div className="text-center leading-tight">
+                                <div className="text-[10px]">TOP</div>
+                                <div className="text-sm font-black">SELLER</div>
+                            </div>
+                        </div>
                     </div>
                 )}
 
@@ -35,7 +39,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
                 {/* Wishlist Button */}
                 <button
                     onClick={() => setIsWishlisted(!isWishlisted)}
-                    className="absolute top-3 left-3 w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
+                    className="absolute bottom-3 right-3 w-9 h-9 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg"
                 >
                     <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
                 </button>
@@ -46,32 +50,38 @@ export default function ProductCard({ product, isTopSeller = false }) {
                     {product.name}
                 </h3>
 
-                {/* Rating */}
-                <div className="flex items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                            <Star key={i} className={`w-3 h-3 ${i < Math.floor(product.rating) ? 'fill-yellow-400 text-yellow-400' : 'fill-gray-200 text-gray-200'}`} />
-                        ))}
+                <div className="flex items-baseline gap-2 mb-4 justify-between">
+                    <div className="flex flex-col gap-3 mb-4">
+                        <div className="flex items-center gap-2">
+                            <span className={`font-bold text-lg sm:text-xl ${isTopSeller
+                                    ? 'text-[#ed792f]'
+                                    : 'text-gray-900'
+                                }`}>
+                                {product.price}
+                            </span>
+
+                            {product.oldPrice && (
+                                <span className="text-xs text-gray-400 line-through mt-0.5">
+                                    {product.oldPrice}
+                                </span>
+                            )}
+                        </div>
                     </div>
-                    <span className="text-sm font-semibold text-gray-700">{product.rating}</span>
+
+                    <div className="bg-green-50 border border-green-100 px-3 py-1.5 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100">
+                        <span className="text-[10px] uppercase tracking-wider text-green-600 font-bold mr-2">LH:</span>
+                        <span className="text-sm font-bold text-green-700 tracking-wider">{product.phone}</span>
+                    </div>
                 </div>
 
-                <div className="flex items-baseline gap-2 mb-4">
-                    <span className={`font-black text-xl sm:text-2xl ${isTopSeller ? 'bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent' : 'text-orange-600'
-                        }`}>
-                        {product.price}
-                    </span>
-                    {product.oldPrice && (
-                        <span className="text-sm text-gray-400 line-through">{product.oldPrice}</span>
-                    )}
-                </div>
 
-                <button className={`w-full py-2.5 sm:py-3 font-bold rounded-xl transition-all duration-300 ${isTopSeller
-                    ? 'bg-gradient-to-r from-orange-500 to-pink-500 text-white hover:shadow-xl hover:scale-105'
+
+                {/* <button className={`w-full py-2.5 sm:py-3 font-bold rounded-xl transition-all duration-300 cursor-pointer ${isTopSeller
+                    ? 'bg-[#ed792f] text-white hover:shadow-xl hover:scale-105'
                     : 'bg-orange-500 text-white hover:bg-orange-600 hover:shadow-lg'
                     }`}>
                     Mua ngay
-                </button>
+                </button> */}
             </div>
         </div>
     );
