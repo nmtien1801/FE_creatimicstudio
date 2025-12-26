@@ -58,7 +58,15 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
               <Phone className="w-4 h-4" /> 037.2672.396
             </a>
             <a href="tel:0347577034" className="flex items-center justify-end gap-2 text-white/90 transition-colors font-medium text-xs">
-              <Phone className="w-3 h-3" /> Hợp tác truyền thông
+              Hotline đặt hàng
+            </a>
+          </div>
+          <div className="hidden lg:flex flex-col space-y-1 flex-shrink-0 text-right">
+            <a href="tel:0372672396" className="flex items-center justify-end gap-2 text-white transition-colors font-bold text-sm">
+              <Phone className="w-4 h-4" /> 034.7577.034
+            </a>
+            <a href="tel:0347577034" className="flex items-center justify-end gap-2 text-white/90 transition-colors font-medium text-xs">
+              Hợp tác truyền thông
             </a>
           </div>
 
