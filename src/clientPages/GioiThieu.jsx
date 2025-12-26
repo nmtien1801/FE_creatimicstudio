@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mic, Radio, Volume2, Users, DollarSign, CheckCircle, Headphones, HeartHandshake, BookOpen } from 'lucide-react';
+import { Mic, Radio, Volume2, Users, DollarSign, Zap, ShieldCheck, TrendingDown, CheckCircle, Headphones, HeartHandshake, BookOpen } from 'lucide-react';
 
 export default function CMICStudio() {
     return (
@@ -28,7 +28,10 @@ export default function CMICStudio() {
 
                     <div className="space-y-6">
                         <p className="text-gray-700 leading-relaxed">
-                            Trong suốt thời gian làm nội dung, thu âm giọng nói hay hát live tại nhà, hầu hết khách hàng đều gặp chung một vấn đề: Họ không biết mình cần mua gì. Không phải vì họ thiếu đam mê, không phải vì họ lười tìm hiểu, mà vì thị trường quá nhiều thông tin:
+                            Trong suốt thời gian làm nội dung, thu âm giọng nói hay hát live tại
+                            nhà, hầu hết khách hàng đều gặp chung một vấn đề: Họ không biết
+                            mình cần mua gì. Không phải vì họ thiếu đam mê, không phải vì họ lười
+                            tìm hiểu, mà vì thị trường quá nhiều thông tin:
                         </p>
 
                         <ul className="space-y-3 text-gray-700">
@@ -50,6 +53,19 @@ export default function CMICStudio() {
                             </li>
                         </ul>
 
+                        <p className="text-gray-700 leading-relaxed">
+                            Người mới chỉ cần một thứ: sự rõ ràng và một người có thể đồng hành.
+                            Nhưng thị trường lại chưa ai làm điều đó đúng nghĩa.
+                        </p>
+
+                        <p className="text-gray-700 leading-relaxed">
+                            Và đó là lúc hai con người - hai năng lực - gặp nhau. Một người am
+                            hiểu sản phẩm, kỹ thuật nhưng chưa từng nghĩ đến việc xây dựng một
+                            thương hiệu bài bản, có hệ thống hay có định hướng dài hạn. Người
+                            còn lại, xuất phát điểm là một khách hàng, nhìn thấy được tiềm năng
+                            và sẵn sàng bổ sung cho những điều còn thiếu sót:
+                        </p>
+
                         <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
                             <p className="text-gray-700 italic">
                                 "Nếu những kiến thức kỹ thuật kia được hệ thống lại, nếu có một thương hiệu thực sự quan tâm tới việc giúp khách hàng chọn đúng thiết bị ngay từ đầu, thì đấy không còn là việc bán lẻ, mà là một dịch vụ có giá trị thực sự."
@@ -58,6 +74,11 @@ export default function CMICStudio() {
 
                         <p className="text-gray-800 font-semibold">
                             Từ một cái bật tay, thương hiệu CMIC Studio từ đó ra đời.
+                        </p>
+
+                        <p className="text-gray-700 leading-relaxed">
+                            Tất cả hành trình thương hiệu từ ngày đầu đến hiện tại đều xoay
+                            quanh một nguyên tắc:
                         </p>
 
                         <div className="text-center py-4">
@@ -73,18 +94,18 @@ export default function CMICStudio() {
             </section>
 
             {/* Section 2: TẦM NHÌN (Nền đen bọc trong nền trắng) */}
-            <section className="bg-white py-16 px-4">
+            <section className="bg-white px-4">
                 <div className="max-w-7xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-bold text-orange-500 text-center mb-10 tracking-wider">TẦM NHÌN</h2>
-                    
+
                     <div className="relative bg-black text-white rounded-[2rem] overflow-hidden py-20 px-6 md:px-12 shadow-2xl">
                         {/* Overlay ảnh nền tối */}
                         <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=2000')] bg-cover bg-center"></div>
-                        
+
                         <div className="relative z-10">
                             <div className="text-center mb-16 max-w-4xl mx-auto space-y-4">
                                 <p className="text-lg md:text-xl font-semibold leading-relaxed">
-                                    Trở thành hệ sinh thái audio toàn diện dành cho nhà sáng tạo nội dung âm thanh tại Việt Nam - 
+                                    Trở thành hệ sinh thái audio toàn diện dành cho nhà sáng tạo nội dung âm thanh tại Việt Nam -
                                     nơi khách hàng được đồng hành từ thiết bị, kỹ thuật, đến kiến thức tối ưu âm thanh.
                                 </p>
                                 <p className="text-orange-400 italic text-sm md:text-base">
@@ -95,32 +116,36 @@ export default function CMICStudio() {
                             <div className="grid md:grid-cols-3 gap-12 text-center">
                                 <div className="flex flex-col items-center">
                                     <Headphones className="w-16 h-16 text-orange-500 mb-6" />
-                                    <h3 className="font-bold text-lg mb-2 text-white">Xây dựng thương hiệu chuẩn mực</h3>
-                                    <p className="text-gray-300 text-sm leading-relaxed">
-                                        Tư vấn âm thanh cho người mới, uy tín nhất tại Việt Nam.
-                                    </p>
+                                    <h3 className="font-bold text-lg mb-2 text-white">Xây dựng thương hiệu chuẩn mực
+                                        tư vấn âm thanh cho người mới,
+                                        uy tín nhất tại Việt Nam.</h3>
                                 </div>
 
                                 <div className="flex flex-col items-center">
                                     <Radio className="w-16 h-16 text-orange-500 mb-6" />
-                                    <h3 className="font-bold text-lg mb-2 text-white">Phát triển hệ thống dịch vụ</h3>
-                                    <p className="text-gray-300 text-sm leading-relaxed">
-                                        setup livestream - nâng cao chất lượng âm thanh và hình ảnh - lựa chọn thiết bị phù hợp và chuyên nghiệp
-                                    </p>
+                                    <h3 className="font-bold text-lg mb-2 text-white">Phát triển hệ thống dịch vụ
+                                        setup livestream -
+                                        nâng cao chất lượng âm
+                                        thanh và hình ảnh -
+                                        lựa chọn thiết bị phù hợp và
+                                        chuyên nghiệp</h3>
                                 </div>
 
                                 <div className="flex flex-col items-center">
                                     <Volume2 className="w-16 h-16 text-orange-500 mb-6" />
-                                    <h3 className="font-bold text-lg mb-2 text-white">Tạo ra một hệ sinh thái nội dung</h3>
-                                    <p className="text-gray-300 text-sm leading-relaxed">
-                                        khóa học và tài nguyên chất lượng để bất kỳ ai cũng có thể bắt đầu hành trình trở thành nhà sáng tạo nội dung âm thanh không rào cản
-                                    </p>
+                                    <h3 className="font-bold text-lg mb-2 text-white">Tạo ra một hệ sinh thái nội
+                                        dung, khóa học và tài
+                                        nguyên chất lượng để bất
+                                        kỳ ai cũng có thể bắt đầu
+                                        hành trình trở thành nhà
+                                        sáng tạo nội dung âm
+                                        thanh không rào cản</h3>
                                 </div>
                             </div>
 
                             <div className="mt-20 text-center max-w-4xl mx-auto border-t border-white/10 pt-8">
-                                <p className="italic text-gray-400 mb-2">Tầm nhìn của chúng tôi dựa trên một niềm tin đơn giản:</p>
-                                <p className="text-lg md:text-xl font-medium">
+                                <p className="text-lg md:text-xl font-medium">Tầm nhìn của chúng tôi dựa trên một niềm tin đơn giản:</p>
+                                <p className="italic text-gray-400 mb-2  ">
                                     Âm thanh chất lượng không nên là đặc quyền của những người chuyên về kỹ thuật, mà là quyền của mọi nhà sáng tạo nội dung.
                                 </p>
                             </div>
@@ -133,7 +158,7 @@ export default function CMICStudio() {
             <section className="bg-white py-16 px-4">
                 <div className="max-w-7xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-bold text-orange-500 text-center mb-10 tracking-wider">SỨ MỆNH</h2>
-                    
+
                     <div className="relative bg-[#0a0a0a] text-white rounded-[2rem] overflow-hidden py-20 px-6 md:px-12 shadow-2xl">
                         <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2000')] bg-cover bg-center"></div>
 
@@ -187,16 +212,16 @@ export default function CMICStudio() {
             </section>
 
             {/* Section 4: Lĩnh vực hoạt động */}
-            <section className="bg-gradient-to-br from-orange-50 to-yellow-50 py-16">
+            <section className="bg-white py-16">
                 <div className="max-w-7xl mx-auto px-4">
                     <div className="grid md:grid-cols-2 gap-12 items-center">
                         <div>
                             <h2 className="text-4xl font-bold text-orange-500 mb-6">
                                 LĨNH VỰC HOẠT ĐỘNG
                             </h2>
-                            <p className="text-gray-700 leading-relaxed">
+                            <h1 className=" font-medium mb-6 text-gray-700 leading-relaxed">
                                 Chúng tôi cung cấp thiết bị thu âm chính hãng, đồng thời hỗ trợ các dịch vụ đi kèm như set up live stream, cài cubase, cho thuê linh động các thiết bị tùy theo nhu cầu của khách hàng.
-                            </p>
+                            </h1>
                         </div>
 
                         <div className="bg-white rounded-2xl shadow-xl p-8">
@@ -211,74 +236,100 @@ export default function CMICStudio() {
                         </div>
                     </div>
 
-                    {/* Giá trị cốt lõi */}
-                    <div className="mt-20">
-                        <h2 className="text-4xl font-bold text-orange-500 text-center mb-12">
+
+                </div>
+            </section>
+
+            {/* Giá trị cốt lõi */}
+            <section className="bg-white py-4 px-4">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-16">
+                        <h2 className="text-4xl font-bold text-orange-500 inline-block relative pb-4">
                             GIÁ TRỊ CỐT LÕI
+                            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-black"></span>
                         </h2>
+                    </div>
 
-                        <div className="grid md:grid-cols-3 gap-8 text-center">
-                            <div className="bg-white rounded-2xl p-8 shadow-md space-y-4">
-                                <div className="inline-block bg-orange-100 rounded-full p-4">
-                                    <Users className="w-10 h-10 text-orange-500" />
-                                </div>
-                                <h3 className="font-bold text-lg">NHIỆT TÌNH - TẬN TÂM - CHUYÊN NGHIỆP</h3>
-                                <p className="text-gray-600 text-sm">Mỗi khách hàng đều được hỗ trợ nghiêm túc</p>
+                    <div className="grid md:grid-cols-3 gap-y-12 gap-x-8">
+                        {/* 1. Nhiệt tình - Tận tâm */}
+                        <div className="flex flex-col items-center text-center group">
+                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <Zap className="w-10 h-10 text-orange-500 group-hover:text-white" />
                             </div>
+                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                                NHIỆT TÌNH - TẬN TÂM - CHUYÊN NGHIỆP
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                                Mỗi khách hàng đều được hỗ trợ nghiêm túc
+                            </p>
+                        </div>
 
-                            <div className="bg-white rounded-2xl p-8 shadow-md space-y-4">
-                                <div className="inline-block bg-orange-100 rounded-full p-4">
-                                    <DollarSign className="w-10 h-10 text-orange-500" />
-                                </div>
-                                <h3 className="font-bold text-lg">MINH BẠCH GIÁ</h3>
-                                <p className="text-gray-600 text-sm">Không đội giá, không "seller nói sao thì mua vậy"</p>
+                        {/* 2. Minh bạch giá */}
+                        <div className="flex flex-col items-center text-center group">
+                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <ShieldCheck className="w-10 h-10 text-orange-500 group-hover:text-white" />
                             </div>
+                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                                MINH BẠCH GIÁ
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                                Không đội giá, không "seller nói sao thì mua vậy".
+                            </p>
+                        </div>
 
-                            <div className="bg-white rounded-2xl p-8 shadow-md space-y-4">
-                                <div className="inline-block bg-orange-100 rounded-full p-4">
-                                    <CheckCircle className="w-10 h-10 text-orange-500" />
-                                </div>
-                                <h3 className="font-bold text-lg">KHÔNG UPSELL</h3>
-                                <p className="text-gray-600 text-sm">
-                                    Nếu thiết bị rẻ hơn mà đúng vẫn tốt - chúng tôi chọn phương án đó
-                                </p>
+                        {/* 3. Không Upsell */}
+                        <div className="flex flex-col items-center text-center group">
+                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <CheckCircle className="w-10 h-10 text-orange-500 group-hover:text-white" />
                             </div>
+                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                                KHÔNG UPSELL
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                                Nếu thiết bị rẻ hơn mà dùng vẫn tốt - chúng tôi chọn phương án đó
+                            </p>
+                        </div>
 
-                            <div className="bg-white rounded-lg p-6 text-center space-y-4 shadow-lg">
-                                <div className="flex justify-center">
-                                    <div className="bg-orange-100 rounded-full p-4">
-                                        <Headphones className="w-12 h-12 text-orange-500" />
-                                    </div>
-                                </div>
-                                <h3 className="font-bold text-lg">TƯ VẤN ĐÚNG NHU CẦU</h3>
-                                <p className="text-gray-600 text-sm">
-                                    Không phải ai cũng cần soundcard 3-4 triệu; đôi khi chỉ cần micro 900k
-                                </p>
-                            </div>
+                        {/* Phân cách giữa 2 hàng (Tùy chọn: Có thể dùng border-t hoặc khoảng cách grid) */}
+                        <div className="hidden md:block col-span-3 h-px bg-gray-100 my-4"></div>
 
-                            <div className="bg-white rounded-lg p-6 text-center space-y-4 shadow-lg">
-                                <div className="flex justify-center">
-                                    <div className="bg-orange-100 rounded-full p-4">
-                                        <HeartHandshake className="w-12 h-12 text-orange-500" />
-                                    </div>
-                                </div>
-                                <h3 className="font-bold text-lg">ĐỒNG HÀNH SAU BÁN</h3>
-                                <p className="text-gray-600 text-sm">
-                                    Setup 1:1, hỗ trợ chính và khắc phục vấn đề về âm thanh
-                                </p>
+                        {/* 4. Tư vấn đúng nhu cầu */}
+                        <div className="flex flex-col items-center text-center group">
+                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <Headphones className="w-10 h-10 text-orange-500 group-hover:text-white" />
                             </div>
+                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                                TƯ VẤN ĐÚNG NHU CẦU
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                                Không phải ai cũng cần soundcard 3-4 triệu; đôi khi chỉ cần micro 900k.
+                            </p>
+                        </div>
 
-                            <div className="bg-white rounded-lg p-6 text-center space-y-4 shadow-lg">
-                                <div className="flex justify-center">
-                                    <div className="bg-orange-100 rounded-full p-4">
-                                        <DollarSign className="w-12 h-12 text-orange-500" />
-                                    </div>
-                                </div>
-                                <h3 className="font-bold text-lg">TỐI ƯU CHI PHÍ</h3>
-                                <p className="text-gray-600 text-sm">
-                                    Giúp khách tránh mua sai, tránh lãng phí
-                                </p>
+                        {/* 5. Đồng hành sau bán */}
+                        <div className="flex flex-col items-center text-center group">
+                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <HeartHandshake className="w-10 h-10 text-orange-500 group-hover:text-white" />
                             </div>
+                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                                ĐỒNG HÀNH SAU BÁN
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                                Setup 1:1, hỗ trợ chỉnh và khắc phục vấn đề về âm thanh
+                            </p>
+                        </div>
+
+                        {/* 6. Tối ưu chi phí */}
+                        <div className="flex flex-col items-center text-center group">
+                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <TrendingDown className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            </div>
+                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                                TỐI ƯU CHI PHÍ
+                            </h3>
+                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                                Giúp khách tránh mua sai, tránh lãng phí
+                            </p>
                         </div>
                     </div>
                 </div>
