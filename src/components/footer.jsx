@@ -10,7 +10,6 @@ import {
     Mail,
     Globe,
 } from "lucide-react";
-import FormContact from "../components/contact/FormContact.jsx";
 
 export default function Footer() {
     const [email, setEmail] = useState('');
@@ -18,17 +17,17 @@ export default function Footer() {
     const PLACEHOLDER_LOGO_URL = "https://placehold.co/200x200/4F46E5/ffffff?text=NEXERGY+LOGO";
 
     // Placeholder URLs cho Payment Methods
-    const ZALOPAY_IMG = "../../public/zalopay.png";
-    const MOMO_IMG = "../../public/MoMo.png";
-    const BANK_TRANSFER_IMG = "../../public/Bank.png";
+    const ZALOPAY_IMG = "/zalopay.png";
+    const MOMO_IMG = "/MoMo.png";
+    const BANK_TRANSFER_IMG = "/Bank.png";
 
 
     // DANH SÁCH SOCIAL ĐÃ CẬP NHẬT
     const socialImages = [
-        { name: "Facebook", src: "../../public/facebook.png", href: "https://www.facebook.com/creatimicstudio" },
-        { name: "YouTube", src: "../../public/youtube.png", href: "#" },
-        { name: "TikTok", src: "../../public/tiktok.png", href: "#" },
-        { name: "Zalo", src: "../../public/zalo.webp", href: "#" }
+        { name: "Facebook", src: "/facebook.png", href: "https://www.facebook.com/creatimicstudio" },
+        { name: "YouTube", src: "/YouTube.png", href: "#" },
+        { name: "TikTok", src: "/tiktok.png", href: "#" },
+        { name: "Zalo", src: "/zalo.webp", href: "#" }
     ];
 
     const ServiceCommitment = ({ icon: Icon, title, description }) => (
@@ -111,6 +110,40 @@ export default function Footer() {
                             </div>
                         </div>
 
+
+
+
+                    </div>
+
+                    {/* Cột 2: Form liên hệ */}
+                    <div className="flex flex-col items-center lg:items-start text-center lg:text-left space-y-4">
+                        <h2 className="text-white text-1xl md:text-2xl font-bold tracking-wide uppercase">
+                            NHẬP EMAIL NHẬN THÔNG BÁO
+                        </h2>
+                        <p className="text-white text-lg italic opacity-90">
+                            Đăng ký nhận tin mới nhất từ chúng tôi
+                        </p>
+
+                        <form
+                            onSubmit={(e) => e.preventDefault()}
+                            className="flex w-full max-w-md h-14 bg-black rounded-xl overflow-hidden p-[2px] shadow-2xl"
+                        >
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                className="flex-grow bg-white px-4 outline-none text-black text-lg rounded-l-lg"
+                                placeholder="Email của bạn..."
+                                required
+                            />
+                            <button
+                                type="submit"
+                                className="bg-black text-white px-8 text-lg font-bold uppercase hover:bg-zinc-800 transition-colors"
+                            >
+                                GỬI
+                            </button>
+                        </form>
+
                         {/* Social Icons Đã Cập Nhật */}
                         <div>
                             <div className="flex space-x-3 pt-2">
@@ -139,12 +172,6 @@ export default function Footer() {
                             </div>
                         </div>
                     </div>
-
-                    {/* Cột 2: Form liên hệ */}
-                    <div className="lg:col-span-1 bg-[#ed780f] p-6 rounded-2xl shadow-lg">
-                        <FormContact />
-                    </div>
-
                 </div>
             </div>
 

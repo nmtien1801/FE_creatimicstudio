@@ -198,7 +198,7 @@ const TinTuc = () => {
                         </div>
 
                         {/* Banner Dọc (Giữ nguyên) */}
-                        <div className="md:h-[700px] lg:min-h-[500px] bg-gradient-to-br from-orange-500 via-pink-500 to-purple-600 rounded-2xl flex items-center justify-center p-6 shadow-xl relative overflow-hidden group cursor-pointer">
+                        <div className="md:h-[700px] lg:min-h-[500px] bg-[#ed792f] rounded-2xl flex items-center justify-center p-6 shadow-xl relative overflow-hidden group cursor-pointer">
                             <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
                             <div className="relative text-center text-white">
                                 <div className="text-2xl font-black mb-4 leading-tight">Combo Livestream Chất Lượng Cao</div>
