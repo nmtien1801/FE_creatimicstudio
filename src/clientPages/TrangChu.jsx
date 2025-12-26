@@ -1,6 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ProductCard from '../components/product/ProductCard.jsx';
 
+const comboBanners = [
+    {
+        title: "COMBO KẾT NỐI LIVESTREAM",
+        subtitle: "CHUYÊN NGHIỆP",
+        img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&q=80', // Thay bằng link ảnh thật
+        bgColor: "bg-[#ed792f]"
+    },
+    {
+        title: "COMBO PHỤ KIỆN CƠ BẢN",
+        subtitle: "TỐI ƯU HIỆU SUẤT",
+        img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80',
+        bgColor: "bg-[#ed792f]"
+    },
+    {
+        title: "BỘ 3 PHỤ KIỆN",
+        subtitle: "CHO MIC KHÔNG DÂY",
+        img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=500&q=80',
+        bgColor: "bg-[#ed792f]"
+    },
+    {
+        title: "COMBO CHẶN ÂM",
+        subtitle: "DÀNH CHO PODCASTER",
+        img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=500&q=80',
+        bgColor: "bg-[#ed792f]"
+    },
+];
+
 const productsData = [
     { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop' },
     { id: 2, name: "Soundcard XOX K10", price: "1.250.000₫", oldPrice: "1.590.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
@@ -61,7 +88,7 @@ const CategorySection = ({ title, products, bannerText, buttonLink, countText, i
                 {/* Nút Xem thêm */}
                 <div className="mt-12 text-center">
                     <a href={buttonLink} className="inline-flex items-center justify-center px-10 py-4 bg-[#ed792f] text-white text-lg font-bold rounded-full shadow-lg hover:brightness-110 hover:scale-105 transition-all duration-300">
-                        Xem thêm sản phẩm
+                        Xem thêm
                     </a>
                 </div>
             </div>
@@ -195,21 +222,34 @@ export default function TrangChu() {
                                 <ProductCard key={product.id} product={product} />
                             ))}
                         </div>
+                        {/* Nút Xem thêm */}
+                        <div className="mt-12 text-center">
+                            <a href="#" className="inline-flex items-center justify-center px-10 py-4 bg-[#ed792f] text-white text-lg font-bold rounded-full shadow-lg hover:brightness-110 hover:scale-105 transition-all duration-300">
+                                Xem thêm
+                            </a>
+                        </div>
                     </div>
                 </section>
 
                 {/* 4 Banner Ngang */}
-                <section className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8 my-12">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                        {[
-                            { text: 'Miễn phí vận chuyển', icon: '🚚' },
-                            { text: 'Bảo hành 12 tháng', icon: '🛡️' },
-                            { text: 'Hỗ trợ 24/7', icon: '💬' },
-                            { text: 'Thanh toán linh hoạt', icon: '💳' }
-                        ].map((banner, i) => (
-                            <div key={i} className="group h-32 sm:h-40 bg-white border border-gray-100 rounded-2xl flex flex-col items-center justify-center p-4 shadow-md hover:shadow-lg transition-all duration-500 hover:-translate-y-2 cursor-pointer">
-                                <div className="text-4xl mb-2">{banner.icon}</div>
-                                <span className="text-sm sm:text-base font-bold text-gray-800 group-hover:text-[#ed792f] transition-colors">{banner.text}</span>
+                <section className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {comboBanners.map((banner, i) => (
+                            <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-2xl shadow-xl cursor-pointer">
+                                {/* Hình nền sản phẩm */}
+                                <img 
+                                    src={banner.img} 
+                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
+                                    alt={banner.title}
+                                />
+                                {/* Overlay màu cam theo thiết kế */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-[#ed792f]/90 via-[#ed792f]/40 to-transparent flex flex-col justify-end p-6 text-white">
+                                    <h4 className="text-xs font-medium tracking-widest mb-1 opacity-90">{banner.subtitle}</h4>
+                                    <h3 className="text-lg font-black leading-tight group-hover:text-yellow-300 transition-colors uppercase">
+                                        {banner.title}
+                                    </h3>
+                                    <div className="mt-4 w-10 h-1 bg-white group-hover:w-20 transition-all duration-500"></div>
+                                </div>
                             </div>
                         ))}
                     </div>

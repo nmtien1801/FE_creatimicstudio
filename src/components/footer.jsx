@@ -63,7 +63,7 @@ export default function Footer() {
                     <ServiceCommitment
                         icon={RefreshCw}
                         title="ĐỔI TRẢ TRONG 7 NGÀY"
-                        description="Hỗ trợ đổi trả miễn phí trong 7 ngày nếu sản phẩm lỗi."
+                        description="Hỗ trợ đổi trả miễn phí trong 7 ngày nếu sản phẩm lỗi từ nhà sản xuất"
                     />
                 </div>
 

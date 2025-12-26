@@ -70,7 +70,7 @@ console.log('sssss ', product);
 
                     <div className="bg-green-50 border border-green-100 px-3 py-1.5 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100">
                         <span className="text-[10px] uppercase tracking-wider text-green-600 font-bold mr-2">LH:</span>
-                        <span className="text-sm font-bold text-green-700 tracking-wider">{product.phone}</span>
+                        <span className="text-[12px] font-bold text-green-700 tracking-wider">{product.phone}</span>
                     </div>
                 </div>
 
