@@ -115,31 +115,25 @@ function RouterRoot() {
           {/* route system */}
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
-          <Route path="change-pass-student" element={<ChangePassStudent />} />
-          <Route path="change-pass-tc" element={<ChangePassTC />} />
-          <Route path="account" element={<Account />} />
+          <Route path="profile/info" element={<Account />} />
+          <Route path="profile/change-password" element={<ChangePassStudent />} />
+          <Route path="profile/change-password-staff" element={<ChangePassTC />} />
 
-          {/* route schedule */}
-          <Route path="scheduleMonth" element={<ScheduleMonth />} />
-          <Route path="lookup" element={<Lookup />} />
-          <Route path="schedule-exam-month" element={<ScheduleExamMonth />} />
-          <Route path="timetable-class" element={<TimetableClass />} />
-          <Route path="timetable" element={<Timetable />} />
-          <Route path="lesson" element={<Lesson />} />
-          <Route path="schedule-day" element={<ScheduleDay />} />
+          {/* route products */}
+          <Route path="products/categories" element={<Lesson />} />        {/* Danh mục chung */}
+          <Route path="products/sub-categories" element={<Timetable />} />  {/* Danh mục con */}
+          <Route path="products/list" element={<TimetableClass />} />      {/* Danh sách sản phẩm */}
 
-          {/* route grades */}
-          <Route path="final-exam" element={<FinalExam />} />
-          <Route path="graduation-exam" element={<GraduationExam />} />
-          <Route path="look-up-final-exam" element={<LookUpFinalExam />} />
-          <Route path="look-up-graduation-exam" element={<LookUpGraduationExam />} />
-          <Route path="print-transcript" element={<PrintTranscript />} />
+          {/* route news */}
+          <Route path="news/manager" element={<LookUpFinalExam />} />   {/* Đăng tin */}
+          <Route path="news/list" element={<FinalExam />} />           {/* Danh sách tin (ví dụ) */}
 
-          {/* route result */}
-          <Route path="learning-results" element={<LearningResults />} />
+          {/* route recruitment */}
+          <Route path="recruitment/manager" element={<LearningResults />} />
 
-          {/* Notification */}
-          <Route path="notification" element={<Notification />} />
+          {/* route hr */}
+          <Route path="hr/employees" element={<Notification />} />   {/* Nhân viên */}
+          <Route path="hr/roles" element={<GraduationExam />} />      {/* Phân quyền (ví dụ) */}
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

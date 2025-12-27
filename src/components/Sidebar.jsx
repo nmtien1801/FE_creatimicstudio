@@ -1,6 +1,21 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, FileEdit, BarChart3, TrendingUp, Calendar, ChevronDown, User,  } from 'lucide-react';
+import {
+  Home,
+  Settings,
+  Package,
+  Newspaper,
+  Briefcase,
+  Users,
+  ChevronDown,
+  User,
+  KeyRound,
+  LayoutDashboard,
+  ShieldCheck,
+  ListTree,
+  Tags,
+  PlusCircle
+} from 'lucide-react';
 
 export default function SlideBar({ isSidebarOpen }) {
   const [expandedMenu, setExpandedMenu] = useState('system');
@@ -9,27 +24,32 @@ export default function SlideBar({ isSidebarOpen }) {
     setExpandedMenu(prev => prev === menu ? null : menu);
   };
 
+  // 1. Hệ thống - Tập trung vào quản trị tài khoản
   const systemItems = [
-    { label: 'Trang chủ', path: '/home' },
-    { label: 'Dashboard', path: '/dashboard' },
-    { label: 'Đổi mật khẩu', path: '/change-pass-student' },
-    { label: 'Làm mới mật khẩu nhân viên', path: '/dashboard' },
-    { label: 'Thông tin tài khoản', path: '/account' },
+    { label: 'Trang chủ', path: '/home', icon: Home },
+    { label: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+    { label: 'Đổi mật khẩu', path: '/profile/change-password', icon: KeyRound },
+    { label: 'Làm mới mật khẩu nhân viên', path: '/profile/change-password-staff', icon: ShieldCheck },
+    { label: 'Thông tin tài khoản', path: '/profile/info', icon: User },
   ];
 
-  const scheduleItems = [
-    { label: 'Danh mục chung', path: '/lesson' },
-    { label: 'Danh mục con', path: '/lesson' },
-    { label: 'Danh sách sản phẩm', path: '/lesson' },
+  // 2. Quản lý sản phẩm - Tập trung vào kho hàng/phân loại
+  const productItems = [
+    { label: 'Danh mục chung', path: '/products/categories' },
+    { label: 'Danh mục con', path: '/products/sub-categories' },
+    { label: 'Danh sách sản phẩm', path: '/products/list' },
   ];
 
-  const gradesItems = [
-    { label: 'Đăng tin', path: '/look-up-final-exam' },
+  // 3. Tin tức
+  const newsItems = [
+    { label: 'Đăng tin mới', path: '/news/manager' },
+    { label: 'Quản lý bài viết', path: '/news/list' },
   ];
 
-  const notificationItems = [
-    { label: 'Nhân viên', path: '/notification' },
-    { label: 'Phân quyền', path: '/notification' },
+  // 4. Quản lý nhân sự
+  const hrItems = [
+    { label: 'Danh sách nhân viên', path: '/hr/employees' },
+    { label: 'Phân quyền hệ thống', path: '/hr/roles' },
   ];
 
   return (
@@ -43,7 +63,7 @@ export default function SlideBar({ isSidebarOpen }) {
             <div className="bg-[#026aa8] p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <img src="/logo.png" alt="logo" className="w-8 h-8 object-contain" />
-                <span className="font-semibold text-lg whitespace-nowrap">
+                <span className="font-semibold text-lg whitespace-nowrap text-white uppercase tracking-wider">
                   CREATIMICSTUDIO
                 </span>
               </div>
@@ -57,24 +77,24 @@ export default function SlideBar({ isSidebarOpen }) {
                 </div>
               </div>
               <div>
-                <div className="text-sm">Welcome,</div>
+                <div className="text-xs opacity-80">Xin chào,</div>
                 <div className="font-semibold italic">d.ttha</div>
               </div>
             </div>
 
             {/* Navigation Menu */}
             <nav className="flex-1 py-4 font-normal text-[13px]">
-              {/* Hệ thống */}
-              <div className="mb-2">
+
+              {/* Menu: Hệ thống */}
+              <div className="mb-1">
                 <button
                   onClick={() => toggleMenu('system')}
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'system' ? 'bg-[#026aa8]' : ''}`}
                 >
-                  <Home className="w-5 h-5 flex-shrink-0" />
+                  <Settings className="w-5 h-5 flex-shrink-0" />
                   <span className="flex-1 text-left">Hệ thống</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'system' ? 'rotate-180' : ''}`} />
                 </button>
-
                 {expandedMenu === 'system' && (
                   <div className="bg-[#026aa8]">
                     {systemItems.map((item, index) => (
@@ -94,29 +114,21 @@ export default function SlideBar({ isSidebarOpen }) {
                 )}
               </div>
 
-              {/* Lịch học */}
-              <div className="mb-2">
+              {/* Menu: Quản lý sản phẩm */}
+              <div className="mb-1">
                 <button
-                  onClick={() => toggleMenu('schedule')}
-                  className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'schedule' ? 'bg-[#026aa8]' : ''}`}
+                  onClick={() => toggleMenu('products')}
+                  className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'products' ? 'bg-[#026aa8]' : ''}`}
                 >
-                  <FileEdit className="w-5 h-5 flex-shrink-0" />
+                  <Package className="w-5 h-5 flex-shrink-0" />
                   <span className="flex-1 text-left">Quản lý sản phẩm</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'schedule' ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'products' ? 'rotate-180' : ''}`} />
                 </button>
-
-                {expandedMenu === 'schedule' && (
+                {expandedMenu === 'products' && (
                   <div className="bg-[#026aa8]">
-                    {scheduleItems.map((item, index) => (
-                      <NavLink
-                        key={index}
-                        to={item.path}
-                        className={({ isActive }) =>
-                          `w-full px-4 py-2.5 pl-12 flex items-center gap-3 hover:bg-[#025a8a] transition-colors text-left text-sm no-underline text-white ${isActive ? 'bg-[#025a8a] font-semibold' : ''
-                          }`
-                        }
-                      >
-                        <div className="w-2 h-2 bg-white rounded-full flex-shrink-0"></div>
+                    {productItems.map((item, index) => (
+                      <NavLink key={index} to={item.path} className={({ isActive }) => `w-full px-4 py-2.5 pl-12 flex items-center gap-3 hover:bg-[#025a8a] transition-colors text-white no-underline ${isActive ? 'bg-[#025a8a] font-bold' : ''}`}>
+                        <div className="w-1.5 h-1.5 bg-white/60 rounded-full"></div>
                         <span>{item.label}</span>
                       </NavLink>
                     ))}
@@ -124,29 +136,21 @@ export default function SlideBar({ isSidebarOpen }) {
                 )}
               </div>
 
-              {/* Tra cứu điểm */}
-              <div className="mb-2">
+              {/* Menu: Tin tức */}
+              <div className="mb-1">
                 <button
-                  onClick={() => toggleMenu('grades')}
+                  onClick={() => toggleMenu('news')}
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'grades' ? 'bg-[#026aa8]' : ''}`}
                 >
-                  <BarChart3 className="w-5 h-5 flex-shrink-0" />
+                  <Newspaper className="w-5 h-5 flex-shrink-0" />
                   <span className="flex-1 text-left">Tin tức</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'grades' ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'news' ? 'rotate-180' : ''}`} />
                 </button>
-
-                {expandedMenu === 'grades' && (
+                {expandedMenu === 'news' && (
                   <div className="bg-[#026aa8]">
-                    {gradesItems.map((item, index) => (
-                      <NavLink
-                        key={index}
-                        to={item.path}
-                        className={({ isActive }) =>
-                          `w-full px-4 py-2.5 pl-12 flex items-center gap-3 hover:bg-[#025a8a] transition-colors text-left text-sm no-underline text-white ${isActive ? 'bg-[#025a8a] font-semibold' : ''
-                          }`
-                        }
-                      >
-                        <div className="w-2 h-2 bg-white rounded-full flex-shrink-0"></div>
+                    {newsItems.map((item, index) => (
+                      <NavLink key={index} to={item.path} className={({ isActive }) => `w-full px-4 py-2.5 pl-12 flex items-center gap-3 hover:bg-[#025a8a] transition-colors text-white no-underline ${isActive ? 'bg-[#025a8a] font-bold' : ''}`}>
+                        <div className="w-1.5 h-1.5 bg-white/60 rounded-full"></div>
                         <span>{item.label}</span>
                       </NavLink>
                     ))}
@@ -154,43 +158,34 @@ export default function SlideBar({ isSidebarOpen }) {
                 )}
               </div>
 
-              {/* Kết quả học tập */}
-              <div className="mb-2">
+              {/* Link lẻ: Đăng tuyển dụng */}
+              <div className="mb-1">
                 <NavLink
-                  to="/learning-results"
+                  to="/recruitment/manager"
                   className={({ isActive }) =>
-                    `w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors no-underline text-white ${isActive ? 'bg-[#026aa8]' : ''
-                    }`
+                    `w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors no-underline text-white ${isActive ? 'bg-[#026aa8]' : ''}`
                   }
                 >
-                  <TrendingUp className="w-5 h-5 flex-shrink-0" />
+                  <Briefcase className="w-5 h-5 flex-shrink-0" />
                   <span className="flex-1 text-left">Đăng tuyển dụng</span>
                 </NavLink>
               </div>
 
-              {/* Thông báo */}
-              <div className="mb-2">
+              {/* Menu: Quản lý nhân sự */}
+              <div className="mb-1">
                 <button
-                  onClick={() => toggleMenu('notifications')}
+                  onClick={() => toggleMenu('hr')}
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'notifications' ? 'bg-[#026aa8]' : ''}`}
                 >
-                  <Calendar className="w-5 h-5 flex-shrink-0" />
+                  <Users className="w-5 h-5 flex-shrink-0" />
                   <span className="flex-1 text-left">Quản lý nhân sự</span>
-                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'notifications' ? 'rotate-180' : ''}`} />
+                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'hr' ? 'rotate-180' : ''}`} />
                 </button>
-
-                {expandedMenu === 'notifications' && (
+                {expandedMenu === 'hr' && (
                   <div className="bg-[#026aa8]">
-                    {notificationItems.map((item, index) => (
-                      <NavLink
-                        key={index}
-                        to={item.path}
-                        className={({ isActive }) =>
-                          `w-full px-4 py-2.5 pl-12 flex items-center gap-3 hover:bg-[#025a8a] transition-colors text-left text-sm no-underline text-white ${isActive ? 'bg-[#025a8a] font-semibold' : ''
-                          }`
-                        }
-                      >
-                        <div className="w-2 h-2 bg-white rounded-full flex-shrink-0"></div>
+                    {hrItems.map((item, index) => (
+                      <NavLink key={index} to={item.path} className={({ isActive }) => `w-full px-4 py-2.5 pl-12 flex items-center gap-3 hover:bg-[#025a8a] transition-colors text-white no-underline ${isActive ? 'bg-[#025a8a] font-bold' : ''}`}>
+                        <div className="w-1.5 h-1.5 bg-white/60 rounded-full"></div>
                         <span>{item.label}</span>
                       </NavLink>
                     ))}
@@ -200,8 +195,15 @@ export default function SlideBar({ isSidebarOpen }) {
             </nav>
           </div>
         ) : (
-          <div className="p-4 flex items-center justify-center h-16">
+          <div className="p-4 flex flex-col items-center gap-6 pt-6">
             <img src="/logo.png" alt="logo" className="w-8 h-8 object-contain" />
+            <div className="flex flex-col gap-4">
+              <Settings className="w-6 h-6 opacity-80" />
+              <Package className="w-6 h-6 opacity-80" />
+              <Newspaper className="w-6 h-6 opacity-80" />
+              <Briefcase className="w-6 h-6 opacity-80" />
+              <Users className="w-6 h-6 opacity-80" />
+            </div>
           </div>
         )}
       </div>
