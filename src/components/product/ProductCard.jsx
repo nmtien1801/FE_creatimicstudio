@@ -3,7 +3,6 @@ import { Star, Heart } from 'lucide-react';
 
 export default function ProductCard({ product, isTopSeller = false }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
-console.log('sssss ', product);
 
     return (
         <div className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 ${isTopSeller

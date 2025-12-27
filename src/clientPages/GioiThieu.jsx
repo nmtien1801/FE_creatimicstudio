@@ -343,16 +343,24 @@ export default function CMICStudio() {
 
                 <div className="grid md:grid-cols-2 gap-12">
                     <div className="bg-white border border-gray-100 rounded-[2rem] p-10 shadow-xl text-center">
-                        <div className="w-48 h-48 mx-auto mb-8 bg-gray-200 rounded-full overflow-hidden border-4 border-orange-50">
-                            <Users className="w-full h-full text-gray-400 p-12" />
+                        <div className="w-48 h-48 mx-auto mb-8 rounded-full overflow-hidden border-4 border-orange-50 bg-gray-100">
+                            <img
+                                src="/thao.jpg"
+                                alt="NGUYỄN THANH THẢO"
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                         <h3 className="text-2xl font-bold mb-2">NGUYỄN THANH THẢO</h3>
                         <p className="text-orange-600 font-bold text-lg tracking-widest">FOUNDER</p>
                     </div>
 
                     <div className="bg-white border border-gray-100 rounded-[2rem] p-10 shadow-xl text-center">
-                        <div className="w-48 h-48 mx-auto mb-8 bg-gray-200 rounded-full overflow-hidden border-4 border-gray-50">
-                            <Users className="w-full h-full text-gray-400 p-12" />
+                        <div className="w-48 h-48 mx-auto mb-8 rounded-full overflow-hidden border-4 border-gray-50 bg-gray-100">
+                            <img
+                                src="/quynh.jpg"
+                                alt="LÊ XUÂN QUỲNH"
+                                className="w-full h-full object-cover"
+                            />
                         </div>
                         <h3 className="text-2xl font-bold mb-2">LÊ XUÂN QUỲNH</h3>
                         <p className="text-gray-500 font-bold text-lg tracking-widest">CO-FOUNDER</p>

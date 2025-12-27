@@ -10,32 +10,26 @@ export default function SlideBar({ isSidebarOpen }) {
   };
 
   const systemItems = [
-    { label: 'Trang chủ', path: '/change-pass-tc' },
+    { label: 'Trang chủ', path: '/home' },
     { label: 'Dashboard', path: '/dashboard' },
     { label: 'Đổi mật khẩu', path: '/change-pass-student' },
+    { label: 'Làm mới mật khẩu nhân viên', path: '/dashboard' },
     { label: 'Thông tin tài khoản', path: '/account' },
   ];
 
   const scheduleItems = [
-    { label: 'Lịch dạy tháng', path: '/scheduleMonth' },
-    { label: 'Tra cứu lịch học - môn học', path: '/lookup' },
-    { label: 'Lịch thi tháng', path: '/schedule-exam-month' },
-    { label: 'Thời khóa biểu lớp', path: '/timetable-class' },
-    { label: 'Thời khóa biểu của tôi', path: '/timetable' },
-    { label: 'Bài giảng của môn', path: '/lesson' },
-    { label: 'Lịch Học trong ngày', path: '/schedule-day' }
+    { label: 'Danh mục chung', path: '/lesson' },
+    { label: 'Danh mục con', path: '/lesson' },
+    { label: 'Danh sách sản phẩm', path: '/lesson' },
   ];
 
   const gradesItems = [
-    { label: 'Danh sách dự thi cuối môn', path: '/final-exam' },
-    { label: 'Danh sách dự thi tốt nghiệp', path: '/graduation-exam' },
-    { label: 'Tra cứu điểm thi cuối môn', path: '/look-up-final-exam' },
-    { label: 'Tra cứu điểm thi tốt nghiệp', path: '/look-up-graduation-exam' },
-    { label: 'In bảng điểm tổng', path: '/print-transcript' },
+    { label: 'Đăng tin', path: '/look-up-final-exam' },
   ];
 
   const notificationItems = [
-    { label: 'Danh sách thông báo', path: '/notification' },
+    { label: 'Nhân viên', path: '/notification' },
+    { label: 'Phân quyền', path: '/notification' },
   ];
 
   return (
@@ -137,7 +131,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   className={`w-full px-4 py-3 flex items-center gap-3 hover:bg-[#026aa8] transition-colors ${expandedMenu === 'grades' ? 'bg-[#026aa8]' : ''}`}
                 >
                   <BarChart3 className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Quản lý tin tức</span>
+                  <span className="flex-1 text-left">Tin tức</span>
                   <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === 'grades' ? 'rotate-180' : ''}`} />
                 </button>
 
@@ -170,7 +164,7 @@ export default function SlideBar({ isSidebarOpen }) {
                   }
                 >
                   <TrendingUp className="w-5 h-5 flex-shrink-0" />
-                  <span className="flex-1 text-left">Quản lý tuyển dụng</span>
+                  <span className="flex-1 text-left">Đăng tuyển dụng</span>
                 </NavLink>
               </div>
 
