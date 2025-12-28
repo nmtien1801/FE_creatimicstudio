@@ -15,10 +15,11 @@ import Lesson from "../adminPages/schedule/Lesson.jsx";
 import FinalExam from "../adminPages/grades/FinalExam.jsx";
 import GraduationExam from "../adminPages/grades/GraduationExam.jsx";
 import LookUpFinalExam from "../adminPages/grades/LookupFinalExam.jsx";
-import LearningResults from "../adminPages/result/LearningResults.jsx";
+import RecruitmentManager from "../adminPages/recruitment/RecruitmentManager.jsx";
 import Notification from "../adminPages/notification/Notification.jsx";
 import ChangePassWord from "../adminPages/system/ChangePassWord.jsx";
 import ResetPassNV from "../adminPages/system/ResetPassNV.jsx";
+import RecruitmentDetail from "../adminPages/recruitment/RecruitmentDetail.jsx";
 import Account from "../adminPages/system/Account.jsx";
 import Login from "../adminPages/auth/Login.jsx";
 import Register from "../adminPages/auth/Register.jsx";
@@ -123,7 +124,8 @@ function RouterRoot() {
           <Route path="news/list" element={<FinalExam />} />           {/* Danh sách tin (ví dụ) */}
 
           {/* route recruitment */}
-          <Route path="recruitment/manager" element={<LearningResults />} />
+          <Route path="recruitment/manager" element={<RecruitmentManager />} />
+          <Route path="recruitment/detail" element={<RecruitmentDetail />} />
 
           {/* route hr */}
           <Route path="hr/employees" element={<Notification />} />   {/* Nhân viên */}

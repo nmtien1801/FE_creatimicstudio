@@ -146,7 +146,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
 
               {/* Link lẻ */}
               <NavLink
-                to="/recruitment/post-job"
+                to="/recruitment/manager"
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm text-white no-underline ${isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'}`
                 }
