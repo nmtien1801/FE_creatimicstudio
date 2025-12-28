@@ -146,7 +146,7 @@ export default function RecruitmentDetail() {
       <div className="max-w-[1600px] mx-auto">
         {/* Header */}
         <h1 className="text-xl md:text-2xl text-gray-600">
-          {isEditMode ? 'Chỉnh sửa thông báo' : 'Thêm thông báo mới'}
+          {isEditMode ? 'Chỉnh sửa bài tuyển dụng' : 'Thêm bài tuyển dụng mới'}
         </h1>
 
         {/* Main Content */}

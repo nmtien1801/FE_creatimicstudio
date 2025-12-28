@@ -51,8 +51,8 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       label: 'Tin tức',
       icon: Newspaper,
       items: [
-        { label: 'Đăng tin mới', path: '/news/manager' },
-        { label: 'Quản lý bài viết', path: '/news/list' },
+        { label: 'Đăng tin mới', path: '/news/detail' },
+        { label: 'Danh sách bài viết', path: '/news/manager' },
       ]
     },
     {

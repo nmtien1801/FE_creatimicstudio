@@ -9,12 +9,11 @@ import { useSelector, useDispatch } from "react-redux";
 import AdminLayout from "../components/layout/AdminLayout.jsx";
 import ClientLayout from "../components/layout/ClientLayout.jsx";
 import Dashboard from "../adminPages/system/Dashboard";
-import TimetableClass from "../adminPages/schedule/Timetable_class.jsx";
 import Timetable from "../adminPages/schedule/Timetable.jsx";
 import Lesson from "../adminPages/schedule/Lesson.jsx";
-import FinalExam from "../adminPages/grades/FinalExam.jsx";
-import GraduationExam from "../adminPages/grades/GraduationExam.jsx";
-import LookUpFinalExam from "../adminPages/grades/LookupFinalExam.jsx";
+import NewsManager from "../adminPages/news/NewsManager.jsx";
+import GraduationExam from "../adminPages/news/GraduationExam.jsx";
+import NewsDetail from "../adminPages/news/NewsDetail.jsx";
 import RecruitmentManager from "../adminPages/recruitment/RecruitmentManager.jsx";
 import Notification from "../adminPages/notification/Notification.jsx";
 import ChangePassWord from "../adminPages/system/ChangePassWord.jsx";
@@ -117,11 +116,11 @@ function RouterRoot() {
           {/* route products */}
           <Route path="products/categories" element={<Lesson />} />        {/* Danh mục chung */}
           <Route path="products/sub-categories" element={<Timetable />} />  {/* Danh mục con */}
-          <Route path="products/list" element={<TimetableClass />} />      {/* Danh sách sản phẩm */}
+          <Route path="products/list" element={<Timetable />} />      {/* Danh sách sản phẩm */}
 
           {/* route news */}
-          <Route path="news/manager" element={<LookUpFinalExam />} />   {/* Đăng tin */}
-          <Route path="news/list" element={<FinalExam />} />           {/* Danh sách tin (ví dụ) */}
+          <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}
+          <Route path="news/manager" element={<NewsManager />} />           {/* Danh sách tin (ví dụ) */}
 
           {/* route recruitment */}
           <Route path="recruitment/manager" element={<RecruitmentManager />} />
