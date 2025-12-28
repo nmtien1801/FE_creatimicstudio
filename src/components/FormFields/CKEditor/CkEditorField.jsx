@@ -6,7 +6,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useController } from 'react-hook-form'
 import './CKEditor.css'
 import { editorConfig } from './editorConfig'
-import ApiDashboard from '../../../apis/ApiDashboard'
+import ApiUpload from '../../../apis/ApiUpload'
 
 const getImageLink = (path) => {
   if (!path) return ''
@@ -50,7 +50,7 @@ export default function CKEditorField({
 
               formData.append('myFiles', file)
 
-              ApiDashboard.uploadApi
+              ApiUpload.uploadApi
                 .uploadFile(formData)
                 .then((res) => {
                   if (res) {

@@ -3,7 +3,7 @@ import { Box, FormControl, FormHelperText, Stack, CircularProgress, Typography }
 import ApiUpload from '../../apis/ApiUpload';
 import { useController } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import ImageLoader from "../../components/ImageLoader.jsx"; // Giữ nguyên import này
+import ImageLoader from "./ImageLoader.jsx"; // Giữ nguyên import này
 
 // Kích thước tệp tối đa (200KB)
 const MAX_FILE_SIZE = 200 * 1024; 

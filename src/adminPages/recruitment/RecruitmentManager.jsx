@@ -30,7 +30,7 @@ export default function RecruitmentManager() {
             <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
               <h2 className="text-lg font-bold text-gray-700 uppercase tracking-tight">Quản lý tuyển dụng</h2>
               <button className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-md active:scale-95 cursor-pointer"
-                onClick={() => { navigate('recruitment/detail') }}
+                onClick={() => { navigate('/recruitment/detail') }}
               >
                 <Plus size={18} />
                 Thêm mới

@@ -130,6 +130,12 @@ export const ApiManager = {
     const res = await api.patch(url, data);
     return res;
   },
+  getImageBinary: async (urlPath) => {
+    const response = await api.get(urlPath, {
+      responseType: "arraybuffer",
+    });
+    return response;
+  },
 };
 
 export default ApiManager;
