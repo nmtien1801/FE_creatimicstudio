@@ -1,23 +1,15 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  Home,
   Settings,
   Package,
   Newspaper,
   Briefcase,
-  Users,
   ChevronDown,
   User,
-  KeyRound,
-  LayoutDashboard,
-  ShieldCheck,
+
   Calendar,
   X,
-  ClipboardList,
-  FileEdit,
-  BarChart3,
-  TrendingUp
 } from 'lucide-react';
 import { useSelector } from "react-redux";
 
@@ -81,7 +73,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         bg-gradient-to-b from-[#0081cd] to-[#026aa8]`}
     >
       <div className={`h-full flex flex-col overflow-hidden ${!isSidebarOpen && 'lg:flex hidden'}`}>
-        
+
         {/* Header */}
         <div className="flex-shrink-0">
           {isSidebarOpen ? (
@@ -105,7 +97,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
                 <div className="overflow-hidden">
                   <div className="text-xs text-white/80">Xin chào,</div>
                   <div className="font-semibold text-sm truncate">
-                    {userInfo?.Code || userInfo?.StudentName || 'Người dùng'}
+                    {userInfo?.userName || 'Người dùng'}
                   </div>
                 </div>
               </div>

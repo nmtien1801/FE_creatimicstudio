@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ApiAuth from "../apis/ApiAuth.js";
+import Cookies from "js-cookie";
 
 const initialState = {
   userInfo: {},
@@ -7,13 +8,10 @@ const initialState = {
   hasCheckedAuth: false,
 };
 
-export const Login = createAsyncThunk(
-  "auth/Login",
-  async (data, thunkAPI) => {
-    const response = await ApiAuth.LoginApi(data);
-    return response;
-  }
-);
+export const Login = createAsyncThunk("auth/Login", async (data, thunkAPI) => {
+  const response = await ApiAuth.LoginApi(data);
+  return response;
+});
 
 export const Register = createAsyncThunk(
   "auth/Register",
@@ -28,6 +26,18 @@ export const GetAccount = createAsyncThunk(
   async (data, thunkAPI) => {
     const response = await ApiAuth.GetAccountApi(data);
     return response;
+  }
+);
+
+export const logout = createAsyncThunk(
+  "auth/Logout",
+  async (_, { dispatch }) => {
+    Cookies.remove("fr");
+    Cookies.remove("refreshToken");
+    localStorage.removeItem("userInfo");
+    // dispatch(resetLearningClass());
+
+    return null;
   }
 );
 
@@ -47,6 +57,7 @@ const authSlice = createSlice({
         state.isLoading = false;
         if (action.payload.EC === 0) {
           state.userInfo = action.payload.DT || {};
+          localStorage.setItem("userInfo", JSON.stringify(action.payload.DT));
         }
       })
       .addCase(Login.rejected, (state, action) => {
@@ -55,9 +66,9 @@ const authSlice = createSlice({
 
     // Register
     builder
-      .addCase(Register.pending, (state) => { })
-      .addCase(Register.fulfilled, (state, action) => { })
-      .addCase(Register.rejected, (state, action) => { });
+      .addCase(Register.pending, (state) => {})
+      .addCase(Register.fulfilled, (state, action) => {})
+      .addCase(Register.rejected, (state, action) => {});
 
     // GetAccount
     builder
@@ -67,6 +78,7 @@ const authSlice = createSlice({
       .addCase(GetAccount.fulfilled, (state, action) => {
         if (action.payload.EC === 0) {
           state.userInfo = action.payload.DT || {};
+          localStorage.setItem("userInfo", JSON.stringify(action.payload.DT));
         }
         state.isLoading = false;
         state.hasCheckedAuth = true;
@@ -75,11 +87,18 @@ const authSlice = createSlice({
         state.isLoading = false;
         state.hasCheckedAuth = true;
       });
+
+    // logout
+    builder.addCase(logout.fulfilled, (state) => {
+      state.userInfo = {};
+      state.isLoading = false;
+      state.hasCheckedAuth = true;
+    });
   },
 });
 
 // Export actions
-export const { } = authSlice.actions;
+export const {} = authSlice.actions;
 
 // Export reducer
 export default authSlice.reducer;

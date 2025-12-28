@@ -331,7 +331,7 @@ export default function ExamScheduleTable() {
 
         {/* Footer */}
         <div className="mt-8 text-right text-xs text-gray-500">
-          Copyright © 2023 by G&BSoft
+          Copyright © 2025 by CREATIMICSTUDIO
         </div>
       </div>
     </div>

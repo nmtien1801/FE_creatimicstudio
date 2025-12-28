@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
-export default function ChangePassStudent() {
+export default function ChangePassWord() {
   const [formData, setFormData] = useState({
     maHocVien: 'Mã học viên',
     matKhauCu: '',
@@ -37,7 +37,7 @@ export default function ChangePassStudent() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-7xl mx-auto">
         {/* Header */}
         <h1 className="text-2xl text-gray-600 mb-8">Đổi mật khẩu</h1>
 
@@ -146,7 +146,7 @@ export default function ChangePassStudent() {
 
         {/* Footer */}
         <div className="mt-8 text-right text-xs text-gray-500">
-          Copyright © 2023 by G&BSoft
+          Copyright © 2025 by CREATIMICSTUDIO
         </div>
       </div>
     </div>
