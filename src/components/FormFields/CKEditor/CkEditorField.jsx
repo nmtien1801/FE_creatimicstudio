@@ -94,6 +94,7 @@ export default function CKEditorField({
               <div ref={editorRef}>
                 {isLayoutReady && (
                   <CKEditor
+
                     disabled={disabled}
                     onReady={(editor) => {
                       editorToolbarRef.current?.appendChild(editor.ui.view.toolbar.element)
@@ -110,6 +111,7 @@ export default function CKEditorField({
                     editor={DecoupledEditor}
                     config={{
                       ...editorConfig,
+                      licenseKey: 'GPL',
                       extraPlugins: [uploadAdapterPlugin],
                     }}
                     data={value}
