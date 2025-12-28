@@ -35,7 +35,7 @@ api.interceptors.request.use((config) => {
   if (token && headerValue) {
     config.headers["Authorization"] = `Bearer ${token}`;
     config.headers["UserID"] = headerValue.id;
-    config.headers["UserName"] = headerValue.userName;
+    config.headers["UserName"] = encodeURIComponent(headerValue.userName);
   }
   return config;
 });
@@ -61,6 +61,7 @@ api.interceptors.response.use(
 
         if (!isAccountRequest) {
           Cookies.remove("fr");
+          localStorage.removeItem("userInfo");
           window.location.href = "/login";
         }
         return Promise.reject(error);

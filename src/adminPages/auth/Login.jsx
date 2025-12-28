@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Login } from '../../redux/authSlice';
+import { toast } from 'react-toastify';
 
 const LoginForm = () => {
     const navigate = useNavigate();
@@ -18,11 +19,14 @@ const LoginForm = () => {
         };
         if (username && password) {
             let res = await dispatch(Login(body));
+            
             if (res && res.payload && res.payload.EC === 0) {
                 navigate('/dashboard');
+            }else{
+                toast.error(res.payload.EM);
             }
         } else {
-            alert('Vui lòng nhập đầy đủ Username và Password.');
+            toast.error('Vui lòng điền đầy đủ thông tin đăng nhập');
         }
     };
 

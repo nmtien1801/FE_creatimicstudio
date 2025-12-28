@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import DropdownSearch from '../../components/FormFields/DropdownSearch';
 import { useSelector, useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { getListStaff } from '../../redux/staffSlice';
 
 export default function ResetPassNV() {
+  const dispatch = useDispatch();
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const { ClassLearn } = useSelector((state) => state.staff);
+  const { listStaff } = useSelector((state) => state.staff);
 
   const handleSubmit = () => {
     console.log('Xử lý đổi mật khẩu cho nhân viên:', selectedStaff);
@@ -13,41 +15,16 @@ export default function ResetPassNV() {
 
   useEffect(() => {
     const fetchStaffList = async () => {
-      setIsLoadingClassLearn(true);
-      try {
-        let res = await dispatch(getClassLearnByUserID());
-        if (!res.payload || !res.payload.data) {
-          toast.error(res.payload?.message);
-        }
-
-        // Tự động chọn lớp nếu là Học viên và chỉ có 1 lớp
-        if (IS_STUDENT && Array.isArray(res.payload.data) && res.payload.data.length === 1) {
-          const singleClass = res.payload.data[0];
-          const classID = Number(singleClass.ClassID);
-
-          setSelectedClass(classID);
-
-        } else if (!IS_STUDENT) {
-          setSelectedClass(0);
-        }
-      } catch (err) {
-        toast.error('Đã có lỗi xảy ra khi tải danh sách môn học');
-      } finally {
-        setIsLoadingClassLearn(false);
+      let res = await dispatch(getListStaff());
+      if (!res.payload || !res.payload.DT) {
+        toast.error(res.payload?.EM);
       }
     };
 
-    if (ClassLearn.length === 0) {
+    if (listStaff.length === 0) {
       fetchStaffList();
     }
   }, [dispatch]);
-
-  const StaffList = [
-    { id: 'C001', userName: 'Lớp A' },
-    { id: 'C002', userName: 'Lớp B' },
-    { id: 'C003', userName: 'Lớp C' },
-    // Thêm các lớp khác nếu cần
-  ];
 
   return (
     <div className="min-h-screen bg-gray-50 p-8 flex justify-center items-start">
@@ -59,7 +36,7 @@ export default function ResetPassNV() {
           <div className="flex items-center gap-3 flex-1 min-w-[200px] md:min-w-0">
             <label className="text-gray-600 text-sm whitespace-nowrap">Lớp</label>
             <DropdownSearch
-              options={StaffList}
+              options={listStaff}
               placeholder="------ chọn Nhân viên ------"
               labelKey="userName"
               valueKey="id"
@@ -79,9 +56,6 @@ export default function ResetPassNV() {
           </div>
         </div>
 
-        <div className="mt-8 text-right text-[10px] text-gray-400">
-          Copyright © 2025 by CREATIMICSTUDIO
-        </div>
       </div>
     </div>
   );

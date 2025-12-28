@@ -1,7 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ApiStaff from "../apis/ApiStaff.js";
 
-const initialState = {};
+const initialState = {
+  listStaff: [],
+};
+
+export const getListStaff = createAsyncThunk(
+  "staff/getListStaff",
+  async (thunkAPI) => {
+    const response = await ApiStaff.getListStaffApi();
+    return response;
+  }
+);
 
 const staffSlice = createSlice({
   name: "staff",
@@ -13,7 +23,16 @@ const staffSlice = createSlice({
     },
   },
 
-  extraReducers: (builder) => {},
+  extraReducers: (builder) => {
+    // getListStaff
+    builder
+      .addCase(getListStaff.pending, (state) => {})
+      .addCase(getListStaff.fulfilled, (state, action) => {
+        state.listStaff = action.payload.DT;
+        
+      })
+      .addCase(getListStaff.rejected, (state, action) => {});
+  },
 });
 
 // Export actions
