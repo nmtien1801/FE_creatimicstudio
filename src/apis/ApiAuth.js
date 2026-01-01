@@ -6,6 +6,7 @@ const ApiAuth = {
     GetAccountApi: () => ApiManager.get(`/auth/account`),
 
     ChangePasswordApi: (data) => ApiManager.post(`/auth/change-password`, data),
+    UpdateProfileApi: (data) => ApiManager.put(`/auth/update-profile`, data),
 }
 
 export default ApiAuth;

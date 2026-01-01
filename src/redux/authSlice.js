@@ -21,6 +21,14 @@ export const Register = createAsyncThunk(
   }
 );
 
+export const UpdateProfile = createAsyncThunk(
+  "auth/UpdateProfile",
+  async (data, thunkAPI) => {
+    const response = await ApiAuth.UpdateProfileApi(data);
+    return response;
+  }
+);
+
 export const GetAccount = createAsyncThunk(
   "auth/GetAccount",
   async (data, thunkAPI) => {
@@ -94,6 +102,22 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.hasCheckedAuth = true;
     });
+
+    // UpdateProfile
+    builder
+      .addCase(UpdateProfile.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(UpdateProfile.fulfilled, (state, action) => {
+        if (action.payload.EC === 0) {
+          state.userInfo = action.payload.DT || {};
+          localStorage.setItem("userInfo", JSON.stringify(action.payload.DT));
+        }
+        state.isLoading = false;
+      })
+      .addCase(UpdateProfile.rejected, (state, action) => {
+        state.isLoading = false;
+      });
   },
 });
 

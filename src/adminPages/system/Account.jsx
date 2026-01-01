@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { UpdateProfile } from '../../redux/authSlice';
+import { toast } from 'react-toastify';
 
 export default function UserInfoForm() {
   const { userInfo } = useSelector((state) => state.auth);
@@ -9,9 +11,10 @@ export default function UserInfoForm() {
 
   const [formData, setFormData] = useState({
     email: userInfo.email || '',
-    hoVaTen: userInfo.userName || '',
+    userName: userInfo.userName || '',
     role: userInfo.role || '',
     phone: userInfo.phone || '',
+    address: userInfo.address || ''
   });
 
   const handleInputChange = (e) => {
@@ -22,9 +25,14 @@ export default function UserInfoForm() {
     }));
   };
 
-  const handleSave = () => {
-    console.log('Lưu dữ liệu:', formData);
-    // Xử lý lưu dữ liệu
+  const handleSave = async () => {
+    let res = await dispatch(UpdateProfile(formData))
+    if (res && res.payload && res.payload.EC === 0) {
+      toast.success(res.payload.EM);
+    }
+    else {
+      toast.error(res.payload.EM);
+    }
   };
 
   const handleCancel = () => {
@@ -48,8 +56,8 @@ export default function UserInfoForm() {
               </label>
               <input
                 type="text"
-                name="hoVaTen"
-                value={formData.hoVaTen}
+                name="userName"
+                value={formData.userName}
                 onChange={handleInputChange}
                 className="flex-1 border border-gray-300 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -78,6 +86,20 @@ export default function UserInfoForm() {
                 type="text"
                 name="phone"
                 value={formData.phone}
+                onChange={handleInputChange}
+                className="flex-1 border border-gray-300 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* Địa chỉ */}
+            <div className="mb-6 flex items-center">
+              <label className="text-gray-600 text-sm w-48 text-right pr-6">
+                Địa chỉ
+              </label>
+              <input
+                type="text"
+                name="address"
+                value={formData.address}
                 onChange={handleInputChange}
                 className="flex-1 border border-gray-300 rounded px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
