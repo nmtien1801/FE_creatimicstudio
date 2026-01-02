@@ -2,8 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Search, FileDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, AlertCircle, Plus, Edit, Trash2 } from 'lucide-react';
 import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
+import FormProduct from './FormProduct';
 
 export default function ProductManager() {
+  const [isShowProduct, setIsShowProduct] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
   // States
   const [products, setProducts] = useState([]);
   const [total, setTotal] = useState(0);
@@ -45,6 +49,33 @@ export default function ProductManager() {
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Hàm mở form thêm mới
+  const handleAddNewProduct = () => {
+    setSelectedProduct(null); // Reset về null để hiểu là thêm mới
+    setIsShowProduct(true);
+  };
+
+  // Hàm mở form chỉnh sửa
+  const handleEditProduct = (product) => {
+    setSelectedProduct(product); // Truyền dữ liệu sản phẩm vào
+    setIsShowProduct(true);
+  };
+
+  // Hàm xử lý khi FormProduct gửi dữ liệu về
+  const handleSubmitForm = (formData) => {
+    if (selectedProduct) {
+      // Logic Update
+      setProducts(products.map(p => p.id === selectedProduct.id ? { ...p, ...formData } : p));
+      toast.success("Cập nhật sản phẩm thành công!");
+    } else {
+      // Logic Create (giả lập ID)
+      const newProduct = { ...formData, id: Date.now(), image: "https://via.placeholder.com/50" };
+      setProducts([newProduct, ...products]);
+      toast.success("Thêm sản phẩm thành công!");
+    }
+    setIsShowProduct(false);
+  };
+
   const handleExportExcel = () => {
     const dataExport = products.map((p, index) => ({
       "STT": index + 1,
@@ -73,7 +104,9 @@ export default function ProductManager() {
             <button onClick={handleExportExcel} className="flex items-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
               <FileDown size={18} /> Xuất file
             </button>
-            <button className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors">
+            <button className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors"
+              onClick={() => handleAddNewProduct()}
+            >
               <Plus size={18} /> Thêm mới
             </button>
           </div>
@@ -130,7 +163,10 @@ export default function ProductManager() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right flex justify-end gap-2">
-                    <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><Edit size={18} /></button>
+                    <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"
+                      onClick={() => handleEditProduct(item)}>
+                      <Edit size={18} />
+                    </button>
                     <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={18} /></button>
                   </td>
                 </tr>
@@ -161,6 +197,14 @@ export default function ProductManager() {
             ><ChevronRight size={16} /></button>
           </div>
         </div>
+
+        {/* Form Product */}
+        {isShowProduct &&
+          <FormProduct
+            initialData={selectedProduct}
+            onClose={() => setIsShowProduct(false)}
+            onSubmit={handleSubmitForm} />
+        }
       </div>
     </div>
   );
