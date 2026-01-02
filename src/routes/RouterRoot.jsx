@@ -9,8 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import AdminLayout from "../components/layout/AdminLayout.jsx";
 import ClientLayout from "../components/layout/ClientLayout.jsx";
 import Dashboard from "../adminPages/system/Dashboard";
-import Timetable from "../adminPages/schedule/Timetable.jsx";
-import Lesson from "../adminPages/schedule/Lesson.jsx";
+import ProductManager from "../adminPages/product/ProductManager.jsx";
+import Category from "../adminPages/product/Category.jsx";
 import NewsManager from "../adminPages/news/NewsManager.jsx";
 import GraduationExam from "../adminPages/news/GraduationExam.jsx";
 import NewsDetail from "../adminPages/news/NewsDetail.jsx";
@@ -114,9 +114,8 @@ function RouterRoot() {
           <Route path="profile/change-password-staff" element={<ResetPassNV />} />
 
           {/* route products */}
-          <Route path="products/categories" element={<Lesson />} />        {/* Danh mục chung */}
-          <Route path="products/sub-categories" element={<Timetable />} />  {/* Danh mục con */}
-          <Route path="products/list" element={<Timetable />} />      {/* Danh sách sản phẩm */}
+          <Route path="products/categories" element={<Category />} />        {/* Danh mục chung */}
+          <Route path="products/list" element={<ProductManager />} />      {/* Danh sách sản phẩm */}
 
           {/* route news */}
           <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}

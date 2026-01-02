@@ -10,7 +10,7 @@ export default function ClassScheduleUI() {
     <div className="min-h-screen bg-gray-50 p-8">
       <div className="max-w-[1600px] mx-auto">
         {/* Header */}
-        <h1 className="text-2xl text-gray-600 mb-6">Thời khóa biểu của tôi</h1>
+        <h1 className="text-2xl text-gray-600 mb-6">Danh sách sản phẩm</h1>
 
         {/* Filter Section */}
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">

@@ -42,7 +42,6 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       icon: Package,
       items: [
         { label: 'Danh mục chung', path: '/products/categories' },
-        { label: 'Danh mục con', path: '/products/sub-categories' },
         { label: 'Danh sách sản phẩm', path: '/products/list' },
       ]
     },
