@@ -122,7 +122,7 @@ export default function CategoryManager() {
         visible={showProductModal}
         onClose={() => {
           setShowProductModal(false);
-          fetchList();
+          // fetchList();
         }}
         form={[]}
       />

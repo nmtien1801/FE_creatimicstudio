@@ -55,7 +55,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
     }, [visible, controlData.initialStatus, controlData.initialEvaluationName]);
 
 
-    // ---------------------------------------------- 2. STATES GỐC (MÔN HỌC)
+    // ---------------------------------------------- 2. STATES GỐC (SẢN PHẨM)
     const [query, setQuery] = useState('');
     const [selectedSubjects, setSelectedSubjects] = useState([]);
     const [loadingData, setLoadingData] = useState(false);
@@ -63,12 +63,12 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
 
     // ---------------------------------------------- 3. FETCH DATA GỐC
     // useEffect(() => {
-    //     // lấy ds môn học khả dụng
+    //     // lấy ds sản phẩm khả dụng
     //     const fetchSubjectLearnAll = async () => {
     //         let res = await dispatch(getSubjectLearnAll());
 
     //         if (!res.payload || !res.payload.data) {
-    //             toast.error(res.payload?.message || 'Không thể tải danh sách môn học');
+    //             toast.error(res.payload?.message || 'Không thể tải danh sách sản phẩm ');
     //         }
     //     };
 
@@ -86,15 +86,15 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
     //             const TemplateSurveyID = controlData.TemplateSurveyID;
 
     //             if (TemplateSurveyID) {
-    //                 // --- LẤY MÔN ĐÃ CHỌN ---
+    //                 // --- LẤY SẢN PHẨM ĐÃ CHỌN ---
     //                 const res = await ApiTemplateSurveys.getSurveySubjectByTemlateSurveyIDApi(TemplateSurveyID);
 
     //                 setSelectedSubjects(Array.isArray(res.data) ? res.data : []);
     //             } else {
-    //                 setSelectedSubjects([]); // Nếu chưa có TemplateSurveyID thì không có môn nào được chọn
+    //                 setSelectedSubjects([]); // Nếu chưa có TemplateSurveyID thì không có sản phẩm nào được chọn
     //             }
     //         } catch (error) {
-    //             toast.error('Lấy dữ liệu môn đã chọn thất bại');
+    //             toast.error('Lấy dữ liệu sản phẩm đã chọn thất bại');
     //         } finally {
     //             setLoadingData(false);
     //         }
@@ -165,11 +165,11 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
         }
     };
 
-    // -------------------------------------------- Handler Thêm/Xóa MÔN HỌC GỐC
+    // -------------------------------------------- Handler Thêm/Xóa SẢN PHẨM  GỐC
     // const handleAddSubject = async (subject) => {
     //     const TemplateSurveyID = controlData.TemplateSurveyID;
     //     if (!TemplateSurveyID) {
-    //         toast.warning("Vui lòng lưu thông tin đánh giá (Thêm mới/Cập nhật) trước khi thêm môn học.");
+    //         toast.warning("Vui lòng lưu thông tin đánh giá (Thêm mới/Cập nhật) trước khi thêm sản phẩm .");
     //         return;
     //     }
     //     setProcessingId(`add-${subject.SubjectID}`);
@@ -182,7 +182,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
     //             setSelectedSubjects(prev => [...prev, { ...subject, SurveySubjectID: res.SurveySubjectID }]);
     //             toast.success(`Đã thêm: ${subject.SubjectName}`);
     //         }
-    //     } catch (error) { toast.error('Lỗi thêm môn'); }
+    //     } catch (error) { toast.error('Lỗi thêm sản phẩm'); }
     //     finally { setProcessingId(null); }
     // };
 
@@ -201,7 +201,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
     //             setSelectedSubjects(prev => prev.filter(s => s.SubjectID !== subject.SubjectID));
     //             toast.success(`Đã xóa: ${subject.SubjectName}`);
     //         }
-    //     } catch (error) { toast.error('Lỗi xóa môn'); }
+    //     } catch (error) { toast.error('Lỗi xóa sản phẩm'); }
     //     finally { setProcessingId(null); }
     // };
 
@@ -263,28 +263,28 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                     </div>
                 </div>
 
-                {/* BODY CONTAINER (LƯỚI DỮ LIỆU MÔN HỌC GỐC) */}
+                {/* BODY CONTAINER (LƯỚI DỮ LIỆU SẢN PHẨM  GỐC) */}
                 <div className="flex-1 p-4 bg-gray-50 min-h-0">
                     <h4 className="text-base font-bold text-gray-700 mb-3 flex items-center gap-2">
-                        {/* <BookOpen size={18} className="text-teal-500" /> Quản lý Môn học Khảo sát */}
+                        {/* <BookOpen size={18} className="text-teal-500" /> Quản lý Sản phẩm  Khảo sát */}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
 
-                        {/* --- CỘT TRÁI (Môn học khả dụng) --- */}
+                        {/* --- CỘT TRÁI (Sản phẩm  khả dụng) --- */}
                         <div className="bg-white rounded border border-gray-200 shadow-sm flex flex-col h-full overflow-hidden">
                             <div className="flex-none p-3 border-b bg-white">
                                 <div className="relative">
                                     <input
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
-                                        placeholder="Tìm kiếm môn học..."
+                                        placeholder="Tìm kiếm sản phẩm ..."
                                         className="w-full pl-9 pr-3 py-2 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-teal-500 outline-none"
                                     />
                                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4" />
                                 </div>
                             </div>
 
-                            {/* LIST MÔN HỌC KHẢ DỤ */}
+                            {/* LIST SẢN PHẨM  KHẢ DỤ */}
                             <div className={`flex-1 ${scrollbarClass} p-2 space-y-2`}>
                                 {filteredAvailable.length === 0 ? (
                                     <div className="text-center text-gray-500 py-10 text-sm">
@@ -303,7 +303,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                                 onClick={() => handleAddSubject(sub)}
                                                 disabled={!!processingId || !controlData.TemplateSurveyID}
                                                 className="flex-none px-3 py-1.5 bg-white border border-teal-200 text-teal-600 rounded-full hover:bg-teal-500 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                                title={!controlData.TemplateSurveyID ? "Lưu đánh giá trước" : "Thêm môn học"}
+                                                title={!controlData.TemplateSurveyID ? "Lưu đánh giá trước" : "Thêm sản phẩm "}
                                             >
                                                 {processingId === `add-${sub.SubjectID}` ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
                                             </button>
@@ -313,7 +313,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                             </div>
                         </div>
 
-                        {/* --- CỘT PHẢI (Môn học đã lưu) --- */}
+                        {/* --- CỘT PHẢI (Sản phẩm đã lưu) --- */}
                         <div className="bg-white rounded border border-teal-200 shadow-sm flex flex-col h-full overflow-hidden">
                             <div className="flex-none p-3 border-b border-teal-100 bg-teal-50 flex justify-between items-center">
                                 <span className="text-sm font-bold text-teal-800 flex items-center gap-2">
@@ -328,7 +328,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                 {loadingData ? (
                                     <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-teal-500" /></div>
                                 ) : selectedSubjects.length === 0 ? (
-                                    <div className="text-center text-gray-400 py-10 text-sm">Chưa có môn nào được chọn</div>
+                                    <div className="text-center text-gray-400 py-10 text-sm">Chưa có sản phẩm nào được chọn</div>
                                 ) : (
                                     selectedSubjects.map(sub => (
                                         <div key={sub.SubjectID} className="flex items-center justify-between p-3 bg-white border-l-4 border-l-teal-500 border border-gray-100 rounded-r shadow-sm mb-1">
