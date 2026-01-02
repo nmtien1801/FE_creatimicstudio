@@ -1,495 +1,165 @@
 import React, { useState, useEffect } from 'react';
-import { Search, FileDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, AlertCircle } from 'lucide-react';
-// import { getSubjectLearnAll } from '../../redux/scheduleSlice.js';
-// import { getListGraduateExamination } from '../../redux/pointSlice.js';
-// import { getClassLearnByUserID } from '../../redux/learningClassSlice.js';
+import { Search, FileDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Loader2, AlertCircle, Plus, Edit, Trash2 } from 'lucide-react';
 import { toast } from "react-toastify";
-import { useSelector, useDispatch } from "react-redux";
-import { TypeUserIDCons } from "../../utils/constants.js";
-import DropdownSearch from '../../components/FormFields/DropdownSearch.jsx';
-import { formatDate } from '../../utils/constants.js';
 import * as XLSX from 'xlsx';
 
-export default function GraduationExam1() {
-  const dispatch = useDispatch();
-  const { userInfo } = useSelector((state) => state.auth);
-  // const { GraduateList, GraduateTotal } = useSelector((state) => state.point);
-  // const { ClassLearn } = useSelector((state) => state.learningClass);
-  // const { subjectLearnAll } = useSelector((state) => state.schedule);
-  
-  const GraduateList = [];
-  const GraduateTotal = 0;
-  const ClassLearn = [];
-  const subjectLearnAll = [];
-
-  const [selectedClass, setSelectedClass] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState(0);
+export default function ProductManager() {
+  // States
+  const [products, setProducts] = useState([]);
+  const [total, setTotal] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(20);
+  const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
-  const [isLoadingClassLearn, setIsLoadingClassLearn] = useState(false);
-  const [isLoadingSubjects, setIsLoadingSubjects] = useState(false);
-  const [error, setError] = useState(null);
-  const [isExporting, setIsExporting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    const fetchClassLearn = async () => {
-      setIsLoadingClassLearn(true);
-      try {
-        // let res = await dispatch(getClassLearnByUserID());
-        // if (!res.payload || !res.payload.data) {
-        //   toast.error(res.payload?.message);
-        // }
-
-        // Tự động chọn lớp nếu là Học viên và chỉ có 1 lớp
-        // if (IS_STUDENT && Array.isArray(res.payload.data) && res.payload.data.length === 1) {
-        //   const singleClass = res.payload.data[0];
-        //   const classID = Number(singleClass.ClassID);
-
-        //   setSelectedClass(classID);
-
-        // } else if (!IS_STUDENT) {
-        //   setSelectedClass(0);
-        // }
-      } catch (err) {
-        toast.error('Đã có lỗi xảy ra khi tải danh sách Sản phẩm');
-      } finally {
-        setIsLoadingClassLearn(false);
-      }
-    };
-
-    const fetchSubjectLearnAll = async () => {
-      setIsLoadingSubjects(true);
-      try {
-        // let res = await dispatch(getSubjectLearnAll());
-        // if (!res.payload || !res.payload.data) {
-        //   toast.error(res.payload?.message || 'Không thể tải danh sách Sản phẩm');
-        // }
-      } catch (err) {
-        toast.error('Đã có lỗi xảy ra khi tải danh sách Sản phẩm');
-      } finally {
-        setIsLoadingSubjects(false);
-      }
-    };
-
-    if (subjectLearnAll.length === 0) {
-      fetchSubjectLearnAll();
-    }
-    if (ClassLearn.length === 0) {
-      fetchClassLearn();
-    }
-  }, [dispatch]);
-
-
-  useEffect(() => {
-    if (selectedClass) {
-      fetchListExamination();
-    }
-  }, [currentPage, pageSize]);
-
-  const fetchListExamination = async (customPage = currentPage, customLimit = pageSize) => {
-    if (!selectedClass) {
-      return;
-    }
-
+  // Fetch Data (Mock API call)
+  const fetchProducts = async () => {
     setIsLoading(true);
-    setError(null);
     try {
-      // let res = await dispatch(getListGraduateExamination({ classID: selectedClass, subjectID: selectedSubject, page: customPage, limit: customLimit }));
+      // Thay bằng link API thật của bạn:
+      // const res = await axios.get(`/api/products?page=${currentPage}&limit=${pageSize}`);
+      // setProducts(res.data.data);
+      // setTotal(res.data.total);
 
-      // if (!res.payload || !res.payload.data) {
-      //   const errorMsg = res.payload?.message || 'Không thể tải dữ liệu';
-      //   setError(errorMsg);
-      //   toast.error(errorMsg);
-      //   return null;
-      // } else {
-      //   return res.payload.data;
-      // }
-    } catch (err) {
-      const errorMsg = 'Đã có lỗi xảy ra khi tải dữ liệu';
-      setError(errorMsg);
-      toast.error(errorMsg);
-      return null;
+      // Giả lập dữ liệu
+      setProducts([
+        { id: 1, name: "iPhone 15 Pro", description: "Chip A17 Pro", image: "https://via.placeholder.com/50", price: 28000000, status: true },
+        { id: 2, name: "Samsung S24 Ultra", description: "AI Phone", image: "https://via.placeholder.com/50", price: 25000000, status: false },
+      ]);
+      setTotal(2);
+    } catch (error) {
+      toast.error("Không thể tải danh sách sản phẩm");
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleSearch = async () => {
-    if (!selectedClass) {
-      toast.warning('Vui lòng chọn Sản phẩm');
-      return;
-    }
-    setCurrentPage(1);
-    fetchListExamination(1, pageSize);
-  };
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage, pageSize]);
 
-  const handleExportExcel = async () => {
-    if (!GraduateTotal || GraduateTotal === 0) {
-      toast.warning("Không có dữ liệu để xuất");
-      return;
-    }
+  // Export Excel
 
-    setIsExporting(true);
+  // 1. Lọc danh sách sản phẩm dựa trên searchTerm
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
-    try {
-      // Fetch toàn bộ dữ liệu
-      const fullData = await fetchListExamination(1, GraduateTotal);
-
-      if (!fullData || fullData.length === 0) {
-        toast.warning("Không thể lấy dữ liệu đầy đủ");
-        setIsExporting(false);
-        return;
-      }
-
-      // Tạo dữ liệu cho Excel
-      const excelData = fullData.map((row, index) => ({
-        "STT": row.STT,
-        "Mã học viên": row.StudentCode,
-        "Họ và Tên": row.StudentName,
-        "Ngày sinh": formatDate(row.Birthday),
-        "Lần thi": row.NumberExam,
-        "SBD": row.PHACH,
-        "Phòng thi": row.RoomName,
-        "Ngày thi": row.TimeStart,
-        "Ghi chú": row.StatusName
-      }));
-
-      // Tạo worksheet
-      const worksheet = XLSX.utils.json_to_sheet(excelData);
-
-      // Set độ rộng cột
-      worksheet['!cols'] = [
-        { wch: 6 },   // STT
-        { wch: 15 },  // Mã học viên
-        { wch: 25 },  // Họ và Tên
-        { wch: 15 },  // Ngày sinh
-        { wch: 10 },  // Lần thi
-        { wch: 10 },  // SBD
-        { wch: 15 },  // Phòng thi
-        { wch: 15 },  // Ngày thi
-        { wch: 20 }   // Ghi chú
-      ];
-
-      // Tạo workbook và xuất file
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "danh sách thi tốt nghiệp lần 1");
-      XLSX.writeFile(workbook, `Danh_sach_thi_tot_nghiep_lan_1_${new Date().getTime()}.xlsx`);
-
-      toast.success(`Đã xuất ${fullData.length} dòng dữ liệu thành công`);
-    } catch (error) {
-      console.error("Export error:", error);
-      toast.error('Lỗi khi xuất file Excel');
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const totalPages = Math.ceil(GraduateTotal / pageSize);
-
-  // Smart pagination - only show a range of pages
-  const getPageNumbers = () => {
-    const delta = 2;
-    const range = [];
-    const rangeWithDots = [];
-
-    for (
-      let i = Math.max(2, currentPage - delta);
-      i <= Math.min(totalPages - 1, currentPage + delta);
-      i++
-    ) {
-      range.push(i);
-    }
-
-    if (currentPage - delta > 2) {
-      rangeWithDots.push(1, '...');
-    } else if (totalPages > 0) {
-      rangeWithDots.push(1);
-    }
-
-    rangeWithDots.push(...range);
-
-    if (currentPage + delta < totalPages - 1) {
-      rangeWithDots.push('...', totalPages);
-    } else if (totalPages > 1 && currentPage + delta >= totalPages - 1 && range.indexOf(totalPages) === -1) {
-      rangeWithDots.push(totalPages);
-    } else if (totalPages === 1 && rangeWithDots.indexOf(1) === -1) {
-      rangeWithDots.push(1);
-    }
-
-    // Loại bỏ các trường hợp lặp 1...totalPages
-    if (totalPages <= 1) return [1];
-
-    // Loại bỏ số trang trùng lặp (nếu có 1...2...totalPages)
-    const uniqueRange = [];
-    rangeWithDots.forEach((item) => {
-      if (uniqueRange.length === 0 || item !== uniqueRange[uniqueRange.length - 1] || item === '...') {
-        uniqueRange.push(item);
-      } else if (typeof item === 'number' && uniqueRange[uniqueRange.length - 1] === '...') {
-        uniqueRange.push(item);
-      }
-    });
-
-    return uniqueRange.filter((value, index, self) =>
-      self.indexOf(value) === index || value === '...'
-    );
-  };
-
-  const renderTableBody = () => {
-    // Loading State
-    if (isLoading) {
-      return (
-        <tr>
-          <td colSpan="12" className="px-4 py-12 text-center">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <Loader2 size={32} className="animate-spin text-teal-500" />
-              <p className="text-gray-500">Đang tải dữ liệu...</p>
-            </div>
-          </td>
-        </tr>
-      );
-    }
-
-    // Error State
-    if (!isLoading && error) {
-      return (
-        <tr>
-          <td colSpan="12" className="px-4 py-12 text-center">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <AlertCircle size={32} className="text-red-500" />
-              <p className="text-gray-500 text-sm">{error}</p>
-              <button
-                onClick={fetchListExamination}
-                className="mt-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded text-sm"
-              >
-                Thử lại
-              </button>
-            </div>
-          </td>
-        </tr>
-      );
-    }
-
-    // Empty State - No Subject Selected
-    if (!selectedClass && !selectedSubject) {
-      return (
-        <tr>
-          <td colSpan="12" className="px-4 py-12 text-center">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                <Search size={32} className="text-gray-400" />
-              </div>
-              <p className="text-gray-700 font-medium">Vui lòng chọn sản phẩm</p>
-              <p className="text-gray-500 text-sm">Chọn sản phẩm và nhấn "Tìm kiếm" để xem Thời khóa biểu</p>
-            </div>
-          </td>
-        </tr>
-      );
-    }
-
-    // Empty State - No Data Found (selectedClass is true here)
-    if (!GraduateList || GraduateList.length === 0) {
-      return (
-        <tr>
-          <td colSpan="12" className="px-4 py-12 text-center">
-            <div className="flex flex-col items-center justify-center gap-3">
-              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-                <Search size={32} className="text-gray-400" />
-              </div>
-              <p className="text-gray-700 font-medium">Không tìm thấy dữ liệu</p>
-              <p className="text-gray-500 text-sm">Không có lịch học nào trong khoảng thời gian đã chọn</p>
-            </div>
-          </td>
-        </tr>
-      );
-    }
-
-    // Data Rows
-    return GraduateList.map((row, index) => (
-      <tr key={index} className="border-b border-gray-200 hover:bg-gray-50">
-        <td className="px-4 py-3 border-r border-gray-200 text-center">{row.STT}</td>
-        <td className="px-4 py-3 border-r border-gray-200 text-center">{row.StudentCode}</td>
-        <td className="px-4 py-3 border-r border-gray-200">{row.StudentName}</td>
-        <td className="px-4 py-3 border-r border-gray-200 text-center">{row.NumberExam}</td>
-        <td className="px-4 py-3 border-r border-gray-200 text-center">{row.SBD}</td>
-        <td className="px-4 py-3 border-r border-gray-200 text-center">{row.RoomCode}</td>
-        <td className="px-4 py-3 border-r border-gray-200 text-center">{row.TimeStart}</td>
-        <td className="px-4 py-3 text-center">{row.StatusName}</td>
-      </tr>
-    ));
+  const handleExportExcel = () => {
+    const dataExport = products.map((p, index) => ({
+      "STT": index + 1,
+      "Tên sản phẩm": p.name,
+      "Mô tả": p.description,
+      "Giá": p.price,
+      "Trạng thái": p.status ? "Kinh doanh" : "Ngừng bán"
+    }));
+    const ws = XLSX.utils.json_to_sheet(dataExport);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sản phẩm");
+    XLSX.writeFile(wb, "Danh_sach_san_pham.xlsx");
   };
 
   return (
-    // Responsive: p-4 cho mobile, md:p-8 cho desktop
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-[1600px] mx-auto">
-        {/* Header */}
-        <h1 className="text-xl md:text-2xl text-gray-600 mb-6">Danh sách sản phẩm</h1>
+    <div className="p-6 bg-gray-50 min-h-screen">
+      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200">
 
-        {/* Filter Section */}
-        <div className="bg-white rounded-lg shadow-sm p-4 md:p-6 mb-6">
-          {/* Responsive: flex-col/flex-wrap trên mobile, md:flex-row trên desktop */}
-          <div className="flex flex-col md:flex-row flex-wrap items-stretch md:items-center gap-4 md:gap-6">
-            <div className="flex items-center gap-3 flex-1 min-w-[200px] md:min-w-0">
-              <label className="text-gray-600 text-sm whitespace-nowrap">Lớp</label>
-              <DropdownSearch
-                options={ClassLearn}
-                placeholder="------ chọn sản phẩm ------"
-                labelKey="ClassName"
-                valueKey="ClassID"
-                onChange={(e) => setSelectedClass(e.ClassID)}
-              />
-            </div>
-
-            <div className="flex items-center gap-3 flex-1 min-w-[200px] md:min-w-0">
-              <label className="text-gray-600 text-sm whitespace-nowrap">Sản phẩm</label>
-              <DropdownSearch
-                options={subjectLearnAll}
-                placeholder="------ chọn Sản phẩm ------"
-                labelKey="SubjectName"
-                valueKey="SubjectID"
-                onChange={(e) => setSelectedSubject(e.SubjectID)}
-              />
-            </div>
-
-            <div className='flex gap-4'>
-              <button
-                // Responsive: w-full trên mobile, md:w-auto trên desktop
-                className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed flex-1"
-                onClick={handleSearch}
-                disabled={isLoading || !selectedClass}
-              >
-                {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Search size={16} />}
-                Tìm kiếm
-              </button>
-
-              <button
-                // Responsive: w-full trên mobile, md:w-auto trên desktop
-                className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded flex items-center justify-center gap-2 text-sm disabled:opacity-50 disabled:cursor-not-allowed flex-1"
-                onClick={handleExportExcel}
-                disabled={isLoading || !GraduateList || GraduateList.length === 0}
-              >
-                <FileDown size={16} />
-                <span className='whitespace-nowrap'>Export Excel</span>
-              </button>
-            </div>
+        {/* Header & Actions */}
+        <div className="p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-800">Quản lý kho hàng</h1>
+            <p className="text-sm text-gray-500">Xem và quản lý thông tin các sản phẩm trong hệ thống</p>
+          </div>
+          <div className="flex gap-2">
+            <button onClick={handleExportExcel} className="flex items-center gap-2 bg-white border border-gray-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors">
+              <FileDown size={18} /> Xuất file
+            </button>
+            <button className="flex items-center gap-2 bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-teal-700 transition-colors">
+              <Plus size={18} /> Thêm mới
+            </button>
           </div>
         </div>
 
-        {/* Table Section */}
-        <div className="bg-white rounded-lg shadow-sm">
-          {/* Bảng - Dùng overflow-x-auto để cuộn ngang trên mobile */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b-2 border-gray-300">
-                <tr>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap w-16">STT</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Mã học viên</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Họ và Tên</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">SBD</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Lần thi</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Phòng thi</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Ngày thi</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold whitespace-nowrap">Ghi chú</th>
+        {/* Filter Bar */}
+        <div className="p-4 bg-gray-50/50 border-b border-gray-200 flex items-center gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Tìm kiếm tên sản phẩm..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 outline-none"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div>
+        </div>
+
+        {/* Table */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider font-semibold">
+                <th className="px-6 py-4 text-center w-16">STT</th>
+                <th className="px-6 py-4">Sản phẩm</th>
+                <th className="px-6 py-4">Mô tả</th>
+                <th className="px-6 py-4">Giá bán</th>
+                <th className="px-6 py-4 text-center">Trạng thái</th>
+                <th className="px-6 py-4 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 text-sm">
+              {isLoading ? (
+                <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-teal-600" size={40} /></td></tr>
+              ) : filteredProducts.map((item, idx) => (
+                <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 text-center text-gray-500 font-medium">
+                    {(currentPage - 1) * pageSize + idx + 1}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center gap-3">
+                      <img src={item.image} alt="" className="w-10 h-10 rounded-md border object-cover" />
+                      <span className="font-semibold text-gray-900">{item.name}</span>
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 text-gray-500 italic max-w-xs truncate">{item.description}</td>
+                  <td className="px-6 py-4 font-bold text-teal-700">
+                    {item.price.toLocaleString('vi-VN')} đ
+                  </td>
+                  <td className="px-6 py-4 text-center">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${item.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {item.status ? 'Đang bán' : 'Tạm ngưng'}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right flex justify-end gap-2">
+                    <button className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg"><Edit size={18} /></button>
+                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={18} /></button>
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {/* Gọi hàm renderTableBody để xử lý tất cả các trạng thái */}
-                {renderTableBody()}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Pagination */}
-          {!isLoading && !error && GraduateList && GraduateList.length > 0 && (
-            // Responsive: flex-col trên mobile, md:flex-row trên desktop
-            <div className="p-4 md:px-6 md:py-4 border-t border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
-
-              {/* Pagination Controls */}
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => setCurrentPage(1)}
-                  disabled={currentPage === 1}
-                  className="p-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Trang đầu"
-                >
-                  <ChevronsLeft size={16} />
-                </button>
-                <button
-                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1}
-                  className="p-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Trang trước"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-
-                <div className="flex items-center gap-2 mx-2">
-                  {getPageNumbers().map((pageNum, i) => (
-                    pageNum === '...' ? (
-                      <span key={`dots-${i}`} className="px-2 text-gray-400">...</span>
-                    ) : (
-                      <button
-                        key={pageNum}
-                        onClick={() => setCurrentPage(pageNum)}
-                        className={`px-3 py-1 border rounded text-sm ${currentPage === pageNum
-                          ? 'bg-blue-500 text-white border-blue-500'
-                          : 'border-gray-300 hover:bg-gray-100'
-                          }`}
-                      >
-                        {pageNum}
-                      </button>
-                    )
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages}
-                  className="p-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Trang sau"
-                >
-                  <ChevronRight size={16} />
-                </button>
-                <button
-                  onClick={() => setCurrentPage(totalPages)}
-                  disabled={currentPage === totalPages}
-                  className="p-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-                  title="Trang cuối"
-                >
-                  <ChevronsRight size={16} />
-                </button>
-              </div>
-
-              <div className="flex flex-wrap items-center justify-center md:justify-end gap-4">
-                <span className="text-sm text-gray-600 whitespace-nowrap">
-                  Hiển thị {((currentPage - 1) * pageSize) + 1} - {Math.min(currentPage * pageSize, GraduateTotal)} / {GraduateTotal} kết quả
-                </span>
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-gray-600 whitespace-nowrap">Số dòng:</span>
-                  <select
-                    value={pageSize}
-                    onChange={(e) => {
-                      setPageSize(Number(e.target.value));
-                      setCurrentPage(1);
-                    }}
-                    className="border border-gray-300 rounded px-2 py-1 text-sm"
-                  >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={20}>20</option>
-                    <option value={50}>50</option>
-                    <option value={100}>100</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-          )}
+              ))}
+            </tbody>
+          </table>
         </div>
 
-        {/* Footer */}
-        <div className="mt-8 text-right text-xs text-gray-500">
-          Copyright © 2025 by G&BSoft
+        {/* Pagination */}
+        <div className="p-4 border-t border-gray-200 flex items-center justify-between">
+          <span className="text-sm text-gray-500">Hiển thị {products.length}/{total} sản phẩm</span>
+          <div className="flex items-center gap-2">
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(1)}
+              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
+            ><ChevronsLeft size={16} /></button>
+            <button
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(v => v - 1)}
+              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
+            ><ChevronLeft size={16} /></button>
+            <span className="text-sm font-medium px-4">Trang {currentPage}</span>
+            <button
+              disabled={currentPage * pageSize >= total}
+              onClick={() => setCurrentPage(v => v + 1)}
+              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
+            ><ChevronRight size={16} /></button>
+          </div>
         </div>
       </div>
     </div>
