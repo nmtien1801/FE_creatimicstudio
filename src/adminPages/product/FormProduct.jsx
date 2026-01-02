@@ -5,7 +5,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
     // Khởi tạo state cho form
     const [formData, setFormData] = useState({
         name: '',
-        price: '',
+        price: 0,
         description: '',
         detail: '',
         status: true
@@ -16,7 +16,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         if (initialData) {
             setFormData({
                 name: initialData.name || '',
-                price: initialData.price || '',
+                price: initialData.price || 0,
                 description: initialData.description || '',
                 detail: initialData.detail || '',
                 status: initialData.status ?? true
