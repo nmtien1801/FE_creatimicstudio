@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Menu, Search, Phone, ChevronDown } from "lucide-react";
+import { Menu, Search, Phone, ChevronDown, Mic } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import MegaMenu from "../DanhMuc.jsx";
 
 export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOpen }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMegaOpen, setIsMegaOpen] = useState(false);
-  
+
   const menuItems = [
     { label: "TRANG CHỦ", path: "/home" },
     { label: "GIỚI THIỆU", path: "/about" },
@@ -25,8 +25,8 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
 
@@ -38,19 +38,17 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
         <div className="py-4 flex items-center justify-between gap-4">
 
           {/* LOGO */}
-          <div className="flex items-center gap-4 flex-shrink-0">
-            <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-lg">
-              <span className="text-[#ed792f] font-black text-xl">CS</span>
+          <div className="flex flex-col items-center justify-center flex-shrink-0">
+              {/* Icon Mic cách điệu giống ảnh */}
+              <div className="relative">
+                <Mic className="w-10 h-10 text-black stroke-[1.5]" />
+                {/* Đường gạch ngang chân mic nếu cần */}
+                <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-black"></div>
+              </div>
+              <span className="text-black font-extrabold text-[13px] tracking-wide mt-1">
+                CMIC STUDIO
+              </span>
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-2xl font-black text-white">
-                CREATIMICSTUDIO
-              </h1>
-              <p className="text-[10px] text-white/80 font-medium uppercase tracking-wider">
-                Thiết bị thu âm chuyên nghiệp
-              </p>
-            </div>
-          </div>
 
           {/* SEARCH + MEGA MENU */}
           <div className="flex-1 w-full max-w-2xl h-[45px] bg-white flex items-center border border-black/10 shadow-sm">
