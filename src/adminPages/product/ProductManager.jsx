@@ -3,34 +3,27 @@ import { Search, FileDown, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRigh
 import { toast } from "react-toastify";
 import * as XLSX from 'xlsx';
 import FormProduct from './FormProduct';
+import { useDispatch, useSelector } from 'react-redux';
+import { getListProduct } from '../../redux/productSlice';
+import ApiProduct from '../../apis/ApiProduct';
 
 export default function ProductManager() {
+  const dispatch = useDispatch();
   const [isShowProduct, setIsShowProduct] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
-  // States
-  const [products, setProducts] = useState([]);
-  const [total, setTotal] = useState(0);
+  // ============================================ States ============================================
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Fetch Data (Mock API call)
-  const fetchProducts = async () => {
+  const { ProductList, ProductTotal } = useSelector((state) => state.product);
+
+  const fetchList = async () => {
     setIsLoading(true);
     try {
-      // Thay bằng link API thật của bạn:
-      // const res = await axios.get(`/api/products?page=${currentPage}&limit=${pageSize}`);
-      // setProducts(res.data.data);
-      // setTotal(res.data.total);
-
-      // Giả lập dữ liệu
-      setProducts([
-        { id: 1, name: "iPhone 15 Pro", description: "Chip A17 Pro", image: "https://via.placeholder.com/50", price: 28000000, status: true },
-        { id: 2, name: "Samsung S24 Ultra", description: "AI Phone", image: "https://via.placeholder.com/50", price: 25000000, status: false },
-      ]);
-      setTotal(2);
+      const res = await dispatch(getListProduct({ page: currentPage, limit: pageSize })).unwrap();
     } catch (error) {
       toast.error("Không thể tải danh sách sản phẩm");
     } finally {
@@ -39,16 +32,10 @@ export default function ProductManager() {
   };
 
   useEffect(() => {
-    fetchProducts();
+    fetchList();
   }, [currentPage, pageSize]);
 
-  // Export Excel
-
-  // 1. Lọc danh sách sản phẩm dựa trên searchTerm
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
+  // =========================================== CRUD Operations ===========================================
   // Hàm mở form thêm mới
   const handleAddNewProduct = () => {
     setSelectedProduct(null); // Reset về null để hiểu là thêm mới
@@ -61,23 +48,45 @@ export default function ProductManager() {
     setIsShowProduct(true);
   };
 
+  // Hàm xử lý xóa sản phẩm
+  const handleDeleteProduct = async (product) => {
+    if (window.confirm(`Bạn có chắc chắn muốn xóa sản phẩm "${product.name}" không?`)) {
+      let res = await ApiProduct.deleteProductApi(product.id);
+      if (res && res.EC === 0) {
+        fetchList()
+        toast.success("Xóa sản phẩm thành công!");
+      } else {
+        toast.error(res.EM);
+      }
+    }
+  };
+
   // Hàm xử lý khi FormProduct gửi dữ liệu về
-  const handleSubmitForm = (formData) => {
+  const handleSubmitForm = async (formData) => {
     if (selectedProduct) {
       // Logic Update
-      setProducts(products.map(p => p.id === selectedProduct.id ? { ...p, ...formData } : p));
-      toast.success("Cập nhật sản phẩm thành công!");
+      let res = await ApiProduct.updateProductApi(selectedProduct.id, formData);
+      if (res && res.EC === 0) {
+        fetchList()
+        toast.success("Cập nhật sản phẩm thành công!");
+      } else {
+        toast.error(res.EM);
+      }
     } else {
-      // Logic Create (giả lập ID)
-      const newProduct = { ...formData, id: Date.now(), image: "https://via.placeholder.com/50" };
-      setProducts([newProduct, ...products]);
-      toast.success("Thêm sản phẩm thành công!");
+      // Logic Create
+      let res = await ApiProduct.createProductApi(formData);
+      if (res && res.EC === 0) {
+        fetchList()
+        toast.success("Thêm sản phẩm thành công!");
+      } else {
+        toast.error(res.EM);
+      }
     }
     setIsShowProduct(false);
   };
 
   const handleExportExcel = () => {
-    const dataExport = products.map((p, index) => ({
+    const dataExport = ProductList.map((p, index) => ({
       "STT": index + 1,
       "Tên sản phẩm": p.name,
       "Mô tả": p.description,
@@ -142,14 +151,14 @@ export default function ProductManager() {
             <tbody className="divide-y divide-gray-200 text-sm">
               {isLoading ? (
                 <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-teal-600" size={40} /></td></tr>
-              ) : filteredProducts.map((item, idx) => (
+              ) : ProductList.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-center text-gray-500 font-medium">
                     {(currentPage - 1) * pageSize + idx + 1}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img src={item.image} alt="" className="w-10 h-10 rounded-md border object-cover" />
+                      <img src={item.image ? item.image : "https://via.placeholder.com/50"} alt="" className="w-10 h-10 rounded-md border object-cover" />
                       <span className="font-semibold text-gray-900">{item.name}</span>
                     </div>
                   </td>
@@ -167,7 +176,11 @@ export default function ProductManager() {
                       onClick={() => handleEditProduct(item)}>
                       <Edit size={18} />
                     </button>
-                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg"><Trash2 size={18} /></button>
+                    <button className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
+                      onClick={() => handleDeleteProduct(item)}
+                    >
+                      <Trash2 size={18} />
+                    </button>
                   </td>
                 </tr>
               ))}
@@ -177,7 +190,7 @@ export default function ProductManager() {
 
         {/* Pagination */}
         <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-          <span className="text-sm text-gray-500">Hiển thị {products.length}/{total} sản phẩm</span>
+          <span className="text-sm text-gray-500">Hiển thị {ProductList.length}/{ProductTotal} sản phẩm</span>
           <div className="flex items-center gap-2">
             <button
               disabled={currentPage === 1}
@@ -191,7 +204,7 @@ export default function ProductManager() {
             ><ChevronLeft size={16} /></button>
             <span className="text-sm font-medium px-4">Trang {currentPage}</span>
             <button
-              disabled={currentPage * pageSize >= total}
+              disabled={currentPage * pageSize >= ProductTotal}
               onClick={() => setCurrentPage(v => v + 1)}
               className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
             ><ChevronRight size={16} /></button>
