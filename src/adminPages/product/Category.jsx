@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import {
-  ChevronRight, ChevronDown, Folder, Plus, Edit2,
-  Trash2, LayoutGrid, PackagePlus, X, Tag
+  ChevronsRight, ChevronDown, Folder, Plus, Edit2,
+  Trash2, LayoutGrid, ChevronRight, PackagePlus, ChevronLeft, ChevronsLeft, Tag
 } from 'lucide-react';
 import ModelSelectProduct from './ModelSelectProduct.jsx'
 import ApiCategory from '../../apis/ApiCategory.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getListCategory } from '../../redux/categorySlice.js';
+import ModalAddCategory from './ModalAddCategory';
 
 // Dữ liệu mẫu (Gộp thêm số lượng sản phẩm)
 const initialData = [
@@ -97,6 +98,9 @@ export default function CategoryManager() {
   const [isLoading, setIsLoading] = useState(false);
   const totalPages = Math.ceil(CategoryTotal / pageSize);
 
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ================================================ STATE DATA ===========================================
   const fetchList = async () => {
     setIsLoading(true);
@@ -114,6 +118,28 @@ export default function CategoryManager() {
   }, [currentPage, pageSize]);
 
   // ================================================ CRUD ================================================
+  // --- HÀM XỬ LÝ THÊM DANH MỤC GỐC ---
+  const handleCreateRootCategory = async (formData) => {
+    setIsSubmitting(true);
+    try {
+      // Gọi API create thông qua Redux (hoặc gọi trực tiếp ApiCategory)
+      // Ví dụ: await dispatch(createCategory(formData)).unwrap();
+
+      // Giả lập gọi API thành công:
+      console.log("Dữ liệu gửi đi:", formData);
+      // await ApiCategory.create(formData);
+
+      toast.success("Thêm danh mục gốc thành công!");
+      setShowAddModal(false); // Đóng modal
+      fetchList(); // Tải lại danh sách
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi thêm mới!");
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // THÊM SẢN PHẨM VÀO DANH MỤC
   const handleOpenAddProduct = (category) => {
     setSelectedCategory(category);
@@ -129,7 +155,8 @@ export default function CategoryManager() {
           </h1>
           <p className="text-gray-500 text-sm">Cấu trúc đa tầng & Quản lý sản phẩm</p>
         </div>
-        <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-lg shadow-indigo-200">
+        <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-lg shadow-indigo-200"
+          onClick={() => setShowAddModal(true)}>
           <Plus size={18} /> Thêm danh mục gốc
         </button>
       </div>
@@ -146,6 +173,79 @@ export default function CategoryManager() {
         </div>
       </div>
 
+      {/* Pagination */}
+      <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <span className="text-sm text-gray-500">
+            Hiển thị <strong>{CategoryList.length}</strong> trên <strong>{CategoryTotal}</strong> danh mục
+          </span>
+
+          {/* Cho phép chọn số lượng hiển thị trên mỗi trang */}
+          <select
+            value={pageSize}
+            onChange={(e) => {
+              setPageSize(Number(e.target.value));
+              setCurrentPage(1); // Reset về trang 1 khi đổi số lượng hiển thị
+            }}
+            className="text-sm border border-gray-300 rounded px-2 py-1 outline-none focus:ring-2 focus:ring-teal-500"
+          >
+            {[5, 10, 20, 50].map(size => (
+              <option key={size} value={size}>Hiện {size} dòng</option>
+            ))}
+          </select>
+        </div>
+
+        <div className="flex items-center gap-2">
+          {/* Trang đầu tiên */}
+          <button
+            disabled={currentPage === 1 || isLoading}
+            onClick={() => setCurrentPage(1)}
+            className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Trang đầu"
+          >
+            <ChevronsLeft size={16} />
+          </button>
+
+          {/* Trang trước */}
+          <button
+            disabled={currentPage === 1 || isLoading}
+            onClick={() => setCurrentPage(prev => prev - 1)}
+            className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Trang trước"
+          >
+            <ChevronLeft size={16} />
+          </button>
+
+          {/* Thông tin trang hiện tại */}
+          <div className="flex items-center px-4 h-9 border rounded bg-teal-50 border-teal-200">
+            <span className="text-sm font-semibold text-teal-700">
+              Trang {currentPage} / {totalPages || 1}
+            </span>
+          </div>
+
+          {/* Trang sau */}
+          <button
+            disabled={currentPage >= totalPages || isLoading}
+            onClick={() => setCurrentPage(prev => prev + 1)}
+            className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Trang sau"
+          >
+            <ChevronRight size={16} />
+          </button>
+
+          {/* Trang cuối cùng */}
+          <button
+            disabled={currentPage >= totalPages || isLoading}
+            onClick={() => setCurrentPage(totalPages)}
+            className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            title="Trang cuối"
+          >
+            <ChevronsRight size={16} />
+          </button>
+        </div>
+      </div>
+
+      {/* Model thêm sản phẩm */}
       <ModelSelectProduct
         visible={showProductModal}
         onClose={() => {
@@ -153,6 +253,14 @@ export default function CategoryManager() {
           // fetchList();
         }}
         form={[]}
+      />
+
+      {/* --- Model thêm danh mục --- */}
+      <ModalAddCategory
+        visible={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        onConfirm={handleCreateRootCategory}
+        isLoading={isSubmitting}
       />
     </div>
   );

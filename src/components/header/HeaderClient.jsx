@@ -1,11 +1,12 @@
-import React, { useState } from "react";
-import { Menu, Search, Phone } from "lucide-react";
+import React, { useState, useRef, useEffect } from "react";
+import { Menu, Search, Phone, ChevronDown } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import MegaMenu from "../DanhMuc.jsx";
 
 export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOpen }) {
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [isMegaOpen, setIsMegaOpen] = useState(false);
+  
   const menuItems = [
     { label: "TRANG CHỦ", path: "/home" },
     { label: "GIỚI THIỆU", path: "/about" },
@@ -14,6 +15,20 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
     { label: "TUYỂN DỤNG", path: "/careers" },
     { label: "LIÊN HỆ", path: "/contact" },
   ];
+
+  const megaRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (megaRef.current && !megaRef.current.contains(e.target)) {
+        setIsMegaOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
 
   return (
     <header className="bg-[#ed792f] shadow-md sticky top-0 z-50">
@@ -38,17 +53,42 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
           </div>
 
           {/* SEARCH + MEGA MENU */}
-          <div className="flex-1 max-w-2xl mx-4 hidden md:flex items-stretch rounded-2xl shadow-lg bg-white relative">
+          <div className="flex-1 w-full max-w-2xl h-[45px] bg-white flex items-center border border-black/10 shadow-sm">
+            {/* Input */}
             <input
               type="text"
-              placeholder="Nhập sản phẩm tìm kiếm..."
-              className="flex-1 px-6 py-3 text-gray-700 focus:outline-none bg-transparent rounded-l-2xl"
+              placeholder="" // Trong ảnh input trống
+              className="flex-1 h-full px-4 text-gray-700 outline-none text-base"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <MegaMenu categories={categories || []} />
-            <button className="px-6 bg-[#ed792f] text-white hover:brightness-110 transition-all flex items-center justify-center rounded-r-[14px]">
-              <Search className="w-5 h-5" />
+
+            {/* Phần chọn Danh Mục (Có đường kẻ dọc ngăn cách) */}
+            <div ref={megaRef} className="relative h-full border-l border-r border-gray-300">
+              {/* Nút bấm */}
+              <div
+                onClick={() => setIsMegaOpen(!isMegaOpen)}
+                className="h-full flex items-center px-4 cursor-pointer hover:bg-gray-50 transition-colors whitespace-nowrap select-none"
+              >
+                <span className="text-black font-bold text-sm mr-2">DANH MỤC</span>
+                <ChevronDown
+                  className={`w-4 h-4 text-black transition-transform duration-200 ${isMegaOpen ? "rotate-180" : ""
+                    }`}
+                />
+              </div>
+
+              {/* Mega Menu */}
+              {isMegaOpen && (
+                <div className="absolute top-full left-0 w-[800px] z-50">
+                  <MegaMenu categories={categories || []} />
+                </div>
+              )}
+            </div>
+
+
+            {/* Nút Search Icon */}
+            <button className="h-full px-5 flex items-center justify-center hover:bg-gray-100 transition-colors">
+              <Search className="w-6 h-6 text-black" />
             </button>
           </div>
 
