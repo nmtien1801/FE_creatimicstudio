@@ -101,6 +101,8 @@ export default function CategoryManager() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // console.log('sssss ', CategoryList);
+  
   // ================================================ STATE DATA ===========================================
   const fetchList = async () => {
     setIsLoading(true);
@@ -261,6 +263,7 @@ export default function CategoryManager() {
         onClose={() => setShowAddModal(false)}
         onConfirm={handleCreateRootCategory}
         isLoading={isSubmitting}
+        categories={CategoryList}
       />
     </div>
   );
