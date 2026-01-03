@@ -71,7 +71,7 @@ export default function Footer() {
                 />
             </div>
 
-            <div className="bg-[#ed792f] text-white flex flex-col lg:flex-row justify-center items-start gap-10 lg:gap-20 px-4 sm:px-6 lg:px-12 py-10">
+            <div className="bg-[#ed792f] text-white flex flex-col lg:flex-row justify-between items-center lg:items-start gap-10 px-4 sm:px-6 lg:px-20 py-10">
 
                 {/* Cột 1: Thông tin liên hệ */}
                 <div className="w-full lg:w-auto max-w-md space-y-6">
@@ -162,6 +162,7 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
+
             <div className="bg-[#ed780f] text-center py-2 text-xs text-white/90">
                 © 2025 CREATIMICSTUDIO. All rights reserved. Designed with ❤️
             </div>
