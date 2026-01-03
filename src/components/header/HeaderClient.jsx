@@ -51,7 +51,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
             </div>
 
           {/* SEARCH + MEGA MENU */}
-          <div className="flex-1 w-full max-w-2xl h-[45px] bg-white flex items-center border border-black/10 shadow-sm">
+          <div className="hidden md:flex flex-1 w-full max-w-2xl h-[45px] bg-white items-center border border-black/10 shadow-sm">
             {/* Input */}
             <input
               type="text"
@@ -162,7 +162,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
               <button onClick={() => setIsMobileMenuOpen(false)} className="p-2 rounded hover:bg-gray-100 transition-colors">✕</button>
             </div>
 
-            {/* MOBILE MENU ITEMS */}
+            {/* ============================== MOBILE MENU ITEMS =========================*/}
             <nav>
               <ul className="space-y-2">
                 {menuItems.map((item) => (
