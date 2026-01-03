@@ -35,7 +35,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
 
       {/* 1. MAIN HEADER CONTAINER */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-4 flex items-center justify-between gap-4">
+        <div className="py-4 flex items-center justify-between gap-3">
 
           {/* LOGO */}
           <div className="flex flex-col items-center justify-center flex-shrink-0">
@@ -121,7 +121,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
       {/* 2. DESKTOP NAVIGATION CONTAINER */}
       <nav className="bg-white hidden md:block border-t border-gray-100">
         <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex space-x-2">
+          <div className="flex justify-center space-x-8">
             {menuItems.map((item) => (
               <NavLink
                 key={item.label}
