@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ChevronRight, ChevronDown, Folder, Plus, Edit2,
   Trash2, LayoutGrid, PackagePlus, X, Tag
 } from 'lucide-react';
 import ModelSelectProduct from './ModelSelectProduct.jsx'
+import ApiCategory from '../../apis/ApiCategory.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getListCategory } from '../../redux/categorySlice.js';
 
 // Dữ liệu mẫu (Gộp thêm số lượng sản phẩm)
 const initialData = [
@@ -84,9 +88,33 @@ const CategoryItem = ({ item, depth = 0, onAddProduct }) => {
 };
 
 export default function CategoryManager() {
+  const dispatch = useDispatch();
+  const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [showProductModal, setShowProductModal] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
+  const totalPages = Math.ceil(CategoryTotal / pageSize);
 
+  // ================================================ STATE DATA ===========================================
+  const fetchList = async () => {
+    setIsLoading(true);
+    try {
+      const res = await dispatch(getListCategory({ page: currentPage, limit: pageSize })).unwrap();
+    } catch (error) {
+      toast.error("Không thể tải danh sách danh mục");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchList();
+  }, [currentPage, pageSize]);
+
+  // ================================================ CRUD ================================================
+  // THÊM SẢN PHẨM VÀO DANH MỤC
   const handleOpenAddProduct = (category) => {
     setSelectedCategory(category);
     setShowProductModal(true);
