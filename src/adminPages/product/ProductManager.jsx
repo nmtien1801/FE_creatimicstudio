@@ -17,8 +17,9 @@ export default function ProductManager() {
   const [pageSize, setPageSize] = useState(10);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-
   const { ProductList, ProductTotal } = useSelector((state) => state.product);
+  const totalPages = Math.ceil(ProductTotal / pageSize);
+
 
   const fetchList = async () => {
     setIsLoading(true);
@@ -189,25 +190,74 @@ export default function ProductManager() {
         </div>
 
         {/* Pagination */}
-        <div className="p-4 border-t border-gray-200 flex items-center justify-between">
-          <span className="text-sm text-gray-500">Hiển thị {ProductList.length}/{ProductTotal} sản phẩm</span>
+        <div className="p-4 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-500">
+              Hiển thị <strong>{ProductList.length}</strong> trên <strong>{ProductTotal}</strong> sản phẩm
+            </span>
+
+            {/* Cho phép chọn số lượng hiển thị trên mỗi trang */}
+            <select
+              value={pageSize}
+              onChange={(e) => {
+                setPageSize(Number(e.target.value));
+                setCurrentPage(1); // Reset về trang 1 khi đổi số lượng hiển thị
+              }}
+              className="text-sm border border-gray-300 rounded px-2 py-1 outline-none focus:ring-2 focus:ring-teal-500"
+            >
+              {[5, 10, 20, 50].map(size => (
+                <option key={size} value={size}>Hiện {size} dòng</option>
+              ))}
+            </select>
+          </div>
+
           <div className="flex items-center gap-2">
+            {/* Trang đầu tiên */}
             <button
-              disabled={currentPage === 1}
+              disabled={currentPage === 1 || isLoading}
               onClick={() => setCurrentPage(1)}
-              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
-            ><ChevronsLeft size={16} /></button>
+              className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Trang đầu"
+            >
+              <ChevronsLeft size={16} />
+            </button>
+
+            {/* Trang trước */}
             <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage(v => v - 1)}
-              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
-            ><ChevronLeft size={16} /></button>
-            <span className="text-sm font-medium px-4">Trang {currentPage}</span>
+              disabled={currentPage === 1 || isLoading}
+              onClick={() => setCurrentPage(prev => prev - 1)}
+              className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Trang trước"
+            >
+              <ChevronLeft size={16} />
+            </button>
+
+            {/* Thông tin trang hiện tại */}
+            <div className="flex items-center px-4 h-9 border rounded bg-teal-50 border-teal-200">
+              <span className="text-sm font-semibold text-teal-700">
+                Trang {currentPage} / {totalPages || 1}
+              </span>
+            </div>
+
+            {/* Trang sau */}
             <button
-              disabled={currentPage * pageSize >= ProductTotal}
-              onClick={() => setCurrentPage(v => v + 1)}
-              className="p-2 border rounded hover:bg-gray-50 disabled:opacity-50"
-            ><ChevronRight size={16} /></button>
+              disabled={currentPage >= totalPages || isLoading}
+              onClick={() => setCurrentPage(prev => prev + 1)}
+              className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Trang sau"
+            >
+              <ChevronRight size={16} />
+            </button>
+
+            {/* Trang cuối cùng */}
+            <button
+              disabled={currentPage >= totalPages || isLoading}
+              onClick={() => setCurrentPage(totalPages)}
+              className="p-2 border rounded bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              title="Trang cuối"
+            >
+              <ChevronsRight size={16} />
+            </button>
           </div>
         </div>
 
