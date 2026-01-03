@@ -22,7 +22,7 @@ const initialData = [
   { id: 5, name: "Thời trang", status: true, productCount: 0, children: [] }
 ];
 
-const CategoryItem = ({ item, depth = 0, onAddProduct }) => {
+const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDeleteCategory }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
@@ -65,13 +65,13 @@ const CategoryItem = ({ item, depth = 0, onAddProduct }) => {
           >
             <PackagePlus size={14} /> <span className="hidden sm:inline">Thêm SP</span>
           </button>
-          <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-blue-100" title="Thêm con">
+          <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-blue-100" title="Thêm con" onClick={() => setShowAddModal(true)}>
             <Plus size={14} />
           </button>
-          <button className="p-1.5 text-amber-600 hover:bg-amber-50 rounded border border-amber-100" title="Sửa">
+          <button className="p-1.5 text-amber-600 hover:bg-amber-50 rounded border border-amber-100" title="Sửa" onClick={() => setShowAddModal(true)}>
             <Edit2 size={14} />
           </button>
-          <button className="p-1.5 text-red-600 hover:bg-red-50 rounded border border-red-100" title="Xóa">
+          <button className="p-1.5 text-red-600 hover:bg-red-50 rounded border border-red-100" title="Xóa" onClick={() => handleDeleteCategory(item)}>
             <Trash2 size={14} />
           </button>
         </div>
@@ -80,7 +80,7 @@ const CategoryItem = ({ item, depth = 0, onAddProduct }) => {
       {isOpen && hasChildren && (
         <div className="bg-gray-50/30">
           {item.children.map(child => (
-            <CategoryItem key={child.id} item={child} depth={depth + 1} onAddProduct={onAddProduct} />
+            <CategoryItem key={child.id} item={child} depth={depth + 1} onAddProduct={onAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} />
           ))}
         </div>
       )}
@@ -101,8 +101,6 @@ export default function CategoryManager() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // console.log('sssss ', CategoryList);
-  
   // ================================================ STATE DATA ===========================================
   const fetchList = async () => {
     setIsLoading(true);
@@ -122,18 +120,18 @@ export default function CategoryManager() {
   // ================================================ CRUD ================================================
   // --- HÀM XỬ LÝ THÊM DANH MỤC GỐC ---
   const handleCreateRootCategory = async (formData) => {
+
     setIsSubmitting(true);
     try {
-      // Gọi API create thông qua Redux (hoặc gọi trực tiếp ApiCategory)
-      // Ví dụ: await dispatch(createCategory(formData)).unwrap();
+      let res = await ApiCategory.createCategoryApi(formData);
 
-      // Giả lập gọi API thành công:
-      console.log("Dữ liệu gửi đi:", formData);
-      // await ApiCategory.create(formData);
-
-      toast.success("Thêm danh mục gốc thành công!");
-      setShowAddModal(false); // Đóng modal
-      fetchList(); // Tải lại danh sách
+      if (res && res.EC === 0) {
+        toast.success("Thêm danh mục gốc thành công!");
+        setShowAddModal(false); // Đóng modal
+        fetchList(); // Tải lại danh sách
+      } else {
+        toast.error(res.EM);
+      }
     } catch (error) {
       toast.error("Có lỗi xảy ra khi thêm mới!");
       console.error(error);
@@ -146,6 +144,23 @@ export default function CategoryManager() {
   const handleOpenAddProduct = (category) => {
     setSelectedCategory(category);
     setShowProductModal(true);
+  };
+
+  // XÓA DANH MỤC
+  const handleDeleteCategory = async (category) => {
+    if (!window.confirm(`Bạn có chắc muốn xóa danh mục "${category.name}" không?`)) return;
+    try {
+      // let res = await ApiCategory.deleteCategoryApi(category.id);
+      // if (res && res.EC === 0) {
+      //   toast.success("Xóa danh mục thành công!");
+      //   fetchList(); // Tải lại danh sách
+      // } else {
+      //   toast.error(res.EM);
+      // }
+    } catch (error) {
+      toast.error("Có lỗi xảy ra khi xóa danh mục!");
+      console.error(error);
+    }
   };
 
   return (
@@ -169,8 +184,8 @@ export default function CategoryManager() {
         </div>
 
         <div className="divide-y divide-gray-100">
-          {initialData.map(cat => (
-            <CategoryItem key={cat.id} item={cat} onAddProduct={handleOpenAddProduct} />
+          {CategoryList.map(cat => (
+            <CategoryItem key={cat.id} item={cat} onAddProduct={handleOpenAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} />
           ))}
         </div>
       </div>

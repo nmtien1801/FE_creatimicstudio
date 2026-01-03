@@ -7,6 +7,7 @@ const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories =
     const [icon, setIcon] = useState("");
     const [status, setStatus] = useState(true);
     const [parentId, setParentId] = useState(""); // State lưu ID danh mục cha
+console.log('aaaa ', categories);
 
     // Reset form khi mở modal
     useEffect(() => {
