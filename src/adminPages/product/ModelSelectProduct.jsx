@@ -1,58 +1,42 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from "react-redux";
-// import { getSubjectLearnAll } from '../../redux/scheduleSlice.js';
+import { getListProductDropdown } from '../../redux/productSlice.js';
 import { toast } from 'react-toastify';
 import { X, Search, BookOpen, Loader2, ArrowRight, Trash2, Database, Gauge, Edit, Save, Plus, RefreshCw } from 'lucide-react';
 // import ApiTemplateSurveys from '../../apis/ApiTemplateSurveys.js';
 
-const Input = ({ value, readOnly = false, className = "", ...props }) => (
-    <input
-        type="text"
-        value={value}
-        readOnly={readOnly}
-        className={`w-full p-2 border border-gray-300 rounded bg-white text-sm ${readOnly ? 'bg-gray-100' : 'focus:ring-teal-500 focus:border-teal-500'} ${className}`}
-        {...props}
-    />
-);
-const Label = ({ children, className = "" }) => (
-    <label className={`block text-xs font-medium text-gray-700 mb-1 ${className}`}>
-        {children}
-    </label>
-);
-// ----------------------------------------------------
-
-
 export default function ModelSelectProduct({ visible, onClose, form }) {
     const dispatch = useDispatch();
-    // const { subjectLearnAll } = useSelector((state) => state.schedule);
-    const subjectLearnAll = []
+    const { ProductDropdown } = useSelector((state) => state.product);
+
+    console.log('sssssss ', form);
+    
     // ---------------------------------------------- 1. STATES MỚI (CONTROL BOARD)
     const [statusValue, setStatusValue] = useState(false);
     const [evaluationName, setEvaluationName] = useState('');
 
     // Lấy ID từ form prop
-    const initialTemplateSurveyID = form?.TemplateSurveyID || form?.id || null;
-    const isEditing = !!initialTemplateSurveyID;
+    const initialCategoryID = form?.id || null;
+    const isEditing = !!initialCategoryID;
 
     // Dữ liệu Control Board từ prop `form`
     const controlData = useMemo(() => ({
-        EvaluationID: form?.EvaluationID || 'N/A', // Giả sử ID này là read-only
-        TemplateSurveyID: initialTemplateSurveyID,
-        initialEvaluationName: form?.EvaluationName || '',
-        initialStatus: form?.StatusID
-    }), [form, initialTemplateSurveyID]);
+        id: initialCategoryID,
+        name: form?.name || '',
+        status: form?.status
+    }), [form, initialCategoryID]);
 
     // Khởi tạo giá trị cho Control Board
     useEffect(() => {
         if (visible) {
-            if (typeof controlData.initialStatus === 'boolean') {
-                setStatusValue(controlData.initialStatus);
+            if (typeof controlData.status === 'boolean') {
+                setStatusValue(controlData.status);
             } else {
                 setStatusValue(false); // Default cho chế độ Thêm mới
             }
-            setEvaluationName(controlData.initialEvaluationName);
+            setEvaluationName(controlData.name);
         }
-    }, [visible, controlData.initialStatus, controlData.initialEvaluationName]);
+    }, [visible, controlData.status, controlData.name]);
 
 
     // ---------------------------------------------- 2. STATES GỐC (SẢN PHẨM)
@@ -62,20 +46,18 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
     const [processingId, setProcessingId] = useState(null);
 
     // ---------------------------------------------- 3. FETCH DATA GỐC
-    // useEffect(() => {
-    //     // lấy ds sản phẩm khả dụng
-    //     const fetchSubjectLearnAll = async () => {
-    //         let res = await dispatch(getSubjectLearnAll());
+    useEffect(() => {
+        // lấy ds sản phẩm khả dụng
+        const fetchProductDropdown = async () => {
+            let res = await dispatch(getListProductDropdown());
 
-    //         if (!res.payload || !res.payload.data) {
-    //             toast.error(res.payload?.message || 'Không thể tải danh sách sản phẩm ');
-    //         }
-    //     };
+            if (res.payload?.EC !== 0) {
+                toast.error(res.payload?.EM);
+            }
+        };
 
-    //     if (!Array.isArray(subjectLearnAll) || subjectLearnAll.length === 0) {
-    //         fetchSubjectLearnAll();
-    //     }
-    // }, [dispatch, subjectLearnAll]);
+        fetchProductDropdown();
+    }, [dispatch]);
 
     // useEffect(() => {
     //     const fetchSelectedSubjects = async () => {
@@ -108,20 +90,20 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
 
     // 4. FILTER (Sử dụng useMemo để tối ưu)
     const filteredAvailable = useMemo(() => {
-        const sourceData = Array.isArray(subjectLearnAll) ? subjectLearnAll : [];
+        const sourceData = Array.isArray(ProductDropdown) ? ProductDropdown : [];
 
         return sourceData.filter(item => {
-            const name = item.SubjectName || "";
-            const code = item.SubjectCode || "";
+            const name = item.name || "";
+            const code = item.id || "";
 
             const matchQuery = name.toLowerCase().includes(query.toLowerCase()) ||
                 code.toLowerCase().includes(query.toLowerCase());
 
-            const notSelected = !(selectedSubjects || []).some(sel => sel.SubjectID === item.SubjectID);
+            const notSelected = !(selectedSubjects || []).some(sel => sel.id === item.id);
 
             return matchQuery && notSelected;
         });
-    }, [subjectLearnAll, query, selectedSubjects]);
+    }, [ProductDropdown, query, selectedSubjects]);
 
     // -------------------------------------------- 5. HANDLERS
 
@@ -226,52 +208,14 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                     </button>
                 </div>
 
-                {/* CONTROL BOARD (FORM CẤU HÌNH) */}
-                <div className="flex-none p-4 border-b border-blue-200 bg-blue-50 hidden">
-                    <h4 className="text-base font-bold text-blue-700 mb-3 flex items-center gap-2">
-                        <Gauge size={18} className="text-blue-500" /> Bảng điều khiển Khảo sát
-                    </h4>
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div>
-                            <Label>Evaluation ID</Label>
-                            <Input value={controlData.EvaluationID} readOnly />
-                        </div>
-                        <div>
-                            <Label>Template Survey ID</Label>
-                            <Input value={controlData.TemplateSurveyID || 'N/A'} readOnly />
-                        </div>
-                        <div className="md:col-span-1">
-                            <Label htmlFor="evaluation-name">Tên Đánh giá (Evaluation Name)</Label>
-                            <Input
-                                id="evaluation-name"
-                                value={evaluationName}
-                                onChange={(e) => setEvaluationName(e.target.value)}
-                            />
-                        </div>
-                        <div>
-                            <Label htmlFor="status-select">Trạng thái (Status ID)</Label>
-                            <select
-                                id="status-select"
-                                value={statusValue}
-                                onChange={handleStatusChange}
-                                className={`w-full p-2 border border-gray-300 rounded text-sm outline-none ${statusValue ? 'bg-green-100 border-green-400' : 'bg-red-100 border-red-400'} focus:ring-2 focus:ring-teal-500 cursor-pointer`}
-                            >
-                                <option value={true} className="text-green-800">Đang hoạt động</option>
-                                <option value={false} className="text-red-800">Tạm dừng</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
                 {/* BODY CONTAINER (LƯỚI DỮ LIỆU SẢN PHẨM  GỐC) */}
                 <div className="flex-1 p-4 bg-gray-50 min-h-0">
                     <h4 className="text-base font-bold text-gray-700 mb-3 flex items-center gap-2">
-                        {/* <BookOpen size={18} className="text-teal-500" /> Quản lý Sản phẩm  Khảo sát */}
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
 
                         {/* --- CỘT TRÁI (Sản phẩm  khả dụng) --- */}
-                        <div className="bg-white rounded border border-gray-200 shadow-sm flex flex-col h-full overflow-hidden">
+                        <div className="bg-white rounded border border-gray-200 shadow-sm flex flex-col h-full overflow-">
                             <div className="flex-none p-3 border-b bg-white">
                                 <div className="relative">
                                     <input
@@ -288,7 +232,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                             <div className={`flex-1 ${scrollbarClass} p-2 space-y-2`}>
                                 {filteredAvailable.length === 0 ? (
                                     <div className="text-center text-gray-500 py-10 text-sm">
-                                        {Array.isArray(subjectLearnAll) && subjectLearnAll.length === 0 ? "Đang tải dữ liệu..." : "Không tìm thấy kết quả"}
+                                        {Array.isArray(ProductDropdown) && ProductDropdown.length === 0 ? "Đang tải dữ liệu..." : "Không tìm thấy kết quả"}
                                     </div>
                                 ) : (
                                     filteredAvailable.map(sub => (
@@ -314,7 +258,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                         </div>
 
                         {/* --- CỘT PHẢI (Sản phẩm đã lưu) --- */}
-                        <div className="bg-white rounded border border-teal-200 shadow-sm flex flex-col h-full overflow-hidden">
+                        <div className="bg-white rounded border border-teal-200 shadow-sm flex flex-col h-full overflow-">
                             <div className="flex-none p-3 border-b border-teal-100 bg-teal-50 flex justify-between items-center">
                                 <span className="text-sm font-bold text-teal-800 flex items-center gap-2">
                                     <Database size={14} /> Sản phẩm đã lưu
@@ -354,21 +298,8 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
 
                 {/* FOOTER: Nút CRUD cho Control Board */}
                 <div className="flex-none p-4 border-t flex justify-between bg-white">
-                    {/* Cột trái: Nút Đóng và Xóa trắng */}
-                    <div className='flex gap-2 hidden'>
-                        <button onClick={onClose} className="px-5 py-2 bg-gray-100 text-gray-700 rounded hover:bg-gray-200 font-medium">
-                            Đóng cửa sổ
-                        </button>
-                        <button
-                            onClick={() => handleControlAction('clear')}
-                            className="px-4 py-2 bg-yellow-50 text-yellow-700 rounded hover:bg-yellow-100 font-medium flex items-center gap-1 transition"
-                        >
-                            <RefreshCw size={16} /> Xóa trắng (Form)
-                        </button>
-                    </div>
-
                     {/* Cột phải: Thêm/Sửa và Xóa */}
-                    <div className='flex gap-2 hidden'>
+                    <div className='flex gap-2 '>
                         {isEditing && (
                             <button
                                 onClick={() => handleControlAction('delete')}

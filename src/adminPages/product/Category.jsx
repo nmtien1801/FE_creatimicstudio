@@ -156,7 +156,7 @@ export default function CategoryManager() {
   };
 
   // THÊM SẢN PHẨM VÀO DANH MỤC
-  const handleOpenAddProduct = (category) => {
+  const onAddProduct = (category) => {
     setSelectedCategory(category);
     setShowProductModal(true);
   };
@@ -206,7 +206,7 @@ export default function CategoryManager() {
             <CategoryItem
               key={cat.id}
               item={cat}
-              onAddProduct={handleOpenAddProduct}
+              onAddProduct={onAddProduct}
               setShowAddModal={setShowAddModal}
               handleDeleteCategory={handleDeleteCategory}
               setParentIdToAdd={setParentIdToAdd}
@@ -293,9 +293,9 @@ export default function CategoryManager() {
         visible={showProductModal}
         onClose={() => {
           setShowProductModal(false);
-          // fetchList();
+          fetchList();
         }}
-        form={[]}
+        form={selectedCategory}
       />
 
       {/* --- Model thêm danh mục --- */}
