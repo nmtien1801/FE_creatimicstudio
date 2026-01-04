@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { X, Save, Layers, Activity, FolderInput } from "lucide-react"; // Thêm icon FolderInput
 
-// Thêm prop categories vào để render list danh mục cha
 const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories = [], parentIdToAdd = null }) => {
     const [name, setName] = useState("");
     const [icon, setIcon] = useState("");
     const [status, setStatus] = useState(true);
     const [parentId, setParentId] = useState(""); // State lưu ID danh mục cha
-    console.log('aaaa ', categories, 'parentIdToAdd:', parentIdToAdd);
 
     // --- HÀM ĐỆ QUY ĐỂ RENDER OPTIONS ---
     const renderCategoryOptions = (items, level = 0) => {
@@ -48,6 +46,7 @@ const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories =
 
     if (!visible) return null;
 
+    // ============================================ CRUD ============================================
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!name.trim()) {

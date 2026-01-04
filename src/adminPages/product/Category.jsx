@@ -10,18 +10,6 @@ import { toast } from 'react-toastify';
 import { getListCategory } from '../../redux/categorySlice.js';
 import ModalAddCategory from './ModalAddCategory';
 
-// Dữ liệu mẫu (Gộp thêm số lượng sản phẩm)
-const initialData = [
-  {
-    id: 1, name: "Điện tử", status: true, productCount: 5,
-    children: [
-      { id: 2, name: "Điện thoại", status: true, productCount: 12, children: [{ id: 4, name: "iPhone", status: true, productCount: 8 }] },
-      { id: 3, name: "Laptop", status: true, productCount: 3, children: [] },
-    ]
-  },
-  { id: 5, name: "Thời trang", status: true, productCount: 0, children: [] }
-];
-
 const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDeleteCategory, setParentIdToAdd }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
@@ -66,7 +54,10 @@ const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDe
             <PackagePlus size={14} /> <span className="hidden sm:inline">Thêm SP</span>
           </button>
           <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-blue-100" title="Thêm con" onClick={() => {
-            setParentIdToAdd(item.id);
+            // Nếu item là gốc (parentId = null) → thêm con cho item này
+            // Nếu item là con của ai đó → thêm danh mục cùng cấp (với parent của item)
+            const parentId = item.parentId === null || item.parentId === undefined ? item.id : item.parentId;
+            setParentIdToAdd(parentId);
             setShowAddModal(true);
           }}>
             <Plus size={14} />
