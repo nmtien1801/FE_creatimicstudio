@@ -2,12 +2,34 @@ import React, { useState, useEffect } from "react";
 import { X, Save, Layers, Activity, FolderInput } from "lucide-react"; // Thêm icon FolderInput
 
 // Thêm prop categories vào để render list danh mục cha
-const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories = [] }) => {
+const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories = [], parentIdToAdd = null }) => {
     const [name, setName] = useState("");
     const [icon, setIcon] = useState("");
     const [status, setStatus] = useState(true);
     const [parentId, setParentId] = useState(""); // State lưu ID danh mục cha
-console.log('aaaa ', categories);
+    console.log('aaaa ', categories, 'parentIdToAdd:', parentIdToAdd);
+
+    // --- HÀM ĐỆ QUY ĐỂ RENDER OPTIONS ---
+    const renderCategoryOptions = (items, level = 0) => {
+        return items.reduce((acc, cat) => {
+            // Tạo khoảng thụt đầu dòng dựa trên cấp độ
+            const prefix = level > 0 ? "— ".repeat(level) : "";
+
+            // Thêm danh mục hiện tại vào list options
+            acc.push(
+                <option key={cat.id} value={cat.id}>
+                    {prefix}{cat.name}
+                </option>
+            );
+
+            // Nếu có children, tiếp tục đệ quy vào trong
+            if (cat.children && cat.children.length > 0) {
+                acc.push(...renderCategoryOptions(cat.children, level + 1));
+            }
+
+            return acc;
+        }, []);
+    };
 
     // Reset form khi mở modal
     useEffect(() => {
@@ -15,9 +37,14 @@ console.log('aaaa ', categories);
             setName("");
             setIcon("");
             setStatus(true);
-            setParentId(""); // Reset về rỗng (tức là danh mục gốc)
+            // Nếu có parentIdToAdd (thêm con), tự động chọn nó
+            if (parentIdToAdd) {
+                setParentId(String(parentIdToAdd));
+            } else {
+                setParentId(""); // Reset về rỗng (tức là danh mục gốc)
+            }
         }
-    }, [visible]);
+    }, [visible, parentIdToAdd]);
 
     if (!visible) return null;
 
@@ -90,19 +117,17 @@ console.log('aaaa ', categories);
                         <label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
                             <FolderInput size={16} className="text-gray-500" />
                             Danh mục cha (Tùy chọn)
+                            {parentIdToAdd && <span className="text-xs text-orange-600 font-semibold">(Đã chọn)</span>}
                         </label>
                         <div className="relative">
                             <select
                                 value={parentId}
                                 onChange={(e) => setParentId(e.target.value)}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm appearance-none bg-white"
+                                disabled={!!parentIdToAdd} // Disable nếu có parentIdToAdd
+                                className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm appearance-none bg-white ${parentIdToAdd ? 'bg-gray-100 cursor-not-allowed opacity-75' : ''}`}
                             >
                                 <option value="">-- Là danh mục gốc (Root) --</option>
-                                {categories && categories.map((cat) => (
-                                    <option key={cat.id} value={cat.id}>
-                                        {cat.name}
-                                    </option>
-                                ))}
+                                {renderCategoryOptions(categories)}
                             </select>
                             {/* Icon mũi tên custom cho select */}
                             <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
@@ -112,7 +137,7 @@ console.log('aaaa ', categories);
                             </div>
                         </div>
                         <p className="text-xs text-gray-500">
-                            Để trống nếu đây là danh mục cao nhất.
+                            {parentIdToAdd ? "Danh mục cha đã được tự động chọn." : "Để trống nếu đây là danh mục cao nhất."}
                         </p>
                     </div>
 

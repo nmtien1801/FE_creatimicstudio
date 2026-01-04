@@ -22,7 +22,7 @@ const initialData = [
   { id: 5, name: "Thời trang", status: true, productCount: 0, children: [] }
 ];
 
-const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDeleteCategory }) => {
+const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDeleteCategory, setParentIdToAdd }) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
@@ -65,7 +65,10 @@ const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDe
           >
             <PackagePlus size={14} /> <span className="hidden sm:inline">Thêm SP</span>
           </button>
-          <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-blue-100" title="Thêm con" onClick={() => setShowAddModal(true)}>
+          <button className="p-1.5 text-blue-600 hover:bg-blue-50 rounded border border-blue-100" title="Thêm con" onClick={() => {
+            setParentIdToAdd(item.id);
+            setShowAddModal(true);
+          }}>
             <Plus size={14} />
           </button>
           <button className="p-1.5 text-amber-600 hover:bg-amber-50 rounded border border-amber-100" title="Sửa" onClick={() => setShowAddModal(true)}>
@@ -80,7 +83,7 @@ const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDe
       {isOpen && hasChildren && (
         <div className="bg-gray-50/30">
           {item.children.map(child => (
-            <CategoryItem key={child.id} item={child} depth={depth + 1} onAddProduct={onAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} />
+            <CategoryItem key={child.id} item={child} depth={depth + 1} onAddProduct={onAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} setParentIdToAdd={setParentIdToAdd} />
           ))}
         </div>
       )}
@@ -100,6 +103,7 @@ export default function CategoryManager() {
 
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [parentIdToAdd, setParentIdToAdd] = useState(null); // Lưu ID danh mục cha khi thêm con
 
   // ================================================ STATE DATA ===========================================
   const fetchList = async () => {
@@ -173,7 +177,10 @@ export default function CategoryManager() {
           <p className="text-gray-500 text-sm">Cấu trúc đa tầng & Quản lý sản phẩm</p>
         </div>
         <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-semibold transition-all shadow-lg shadow-indigo-200"
-          onClick={() => setShowAddModal(true)}>
+          onClick={() => {
+            setParentIdToAdd(null); // Reset khi thêm gốc
+            setShowAddModal(true);
+          }}>
           <Plus size={18} /> Thêm danh mục gốc
         </button>
       </div>
@@ -185,7 +192,7 @@ export default function CategoryManager() {
 
         <div className="divide-y divide-gray-100">
           {CategoryList.map(cat => (
-            <CategoryItem key={cat.id} item={cat} onAddProduct={handleOpenAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} />
+            <CategoryItem key={cat.id} item={cat} onAddProduct={handleOpenAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} setParentIdToAdd={setParentIdToAdd} />
           ))}
         </div>
       </div>
@@ -275,10 +282,14 @@ export default function CategoryManager() {
       {/* --- Model thêm danh mục --- */}
       <ModalAddCategory
         visible={showAddModal}
-        onClose={() => setShowAddModal(false)}
+        onClose={() => {
+          setShowAddModal(false);
+          setParentIdToAdd(null); // Reset khi đóng modal
+        }}
         onConfirm={handleCreateRootCategory}
         isLoading={isSubmitting}
         categories={CategoryList}
+        parentIdToAdd={parentIdToAdd}
       />
     </div>
   );
