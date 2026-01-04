@@ -41,11 +41,11 @@ const articlesData = [
 ];
 
 const CategorySection = ({ title, products, bannerText, buttonLink, countText}) => (
-    <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-[1400px] mx-auto">
+    <section className="py-5 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
                 <div>
-                    <h2 className="text-3xl lg:text-4xl font-black text-[#ed792f] mb-2 uppercase italic tracking-tighter">
+                    <h2 className="text-2xl lg:text-3xl font-black text-[#ed792f] mb-2 uppercase italic tracking-tighter">
                         {title}
                     </h2>
                     <p className="text-sm text-gray-500 font-medium">Danh mục: {countText}</p>
@@ -127,7 +127,7 @@ export default function TrangChu() {
 
                 {/* 1. HERO SLIDER */}
                 <section className="w-full mt-6 mb-12 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-[1400px] mx-auto">
+                    <div className="max-w-7xl mx-auto">
                         <div className="relative h-[300px] md:h-[550px] rounded-[3rem] overflow-hidden shadow-2xl">
                             <div
                                 className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
@@ -158,10 +158,10 @@ export default function TrangChu() {
                 </section>
 
                 {/* 2. TOP SELLER SECTION */}
-                <section className="py-20 px-4 sm:px-6 lg:px-8 bg-[#ed792f]">
-                    <div className="max-w-[1400px] mx-auto">
+                <section className="py-10 px-4 sm:px-6 lg:px-8 bg-[#ed792f]">
+                    <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col items-center mb-16">
-                            <h2 className="text-4xl lg:text-7xl font-black text-white italic tracking-tighter uppercase">TOP SELLER</h2>
+                            <h2 className="text-3xl lg:text-4xl font-black text-white italic tracking-tighter uppercase">TOP SELLER</h2>
                             <div className="w-24 h-1.5 bg-white mt-4"></div>
                             <p className="text-white/80 mt-6 font-bold uppercase tracking-[0.4em] text-xs text-center">Sản phẩm khách hàng tin dùng nhất</p>
                         </div>
@@ -183,12 +183,12 @@ export default function TrangChu() {
                 />
 
                 {/* 4. PHỤ KIỆN THU ÂM - CHIA THÀNH 2 HÀNG */}
-                <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white">
-                    <div className="max-w-[1400px] mx-auto">
+                <section className="py-10 px-4 sm:px-6 lg:px-8 bg-white">
+                    <div className="max-w-7xl mx-auto">
 
                         {/* Tiêu đề */}
                         <div className="flex justify-between items-center mb-12">
-                            <h2 className="text-3xl lg:text-4xl font-black text-[#ed792f] uppercase italic tracking-tighter">
+                            <h2 className="text-2xl lg:text-3xl font-black text-[#ed792f] uppercase italic tracking-tighter">
                                 PHỤ KIỆN THU ÂM
                             </h2>
                             <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
@@ -215,7 +215,7 @@ export default function TrangChu() {
 
                 {/* 5. 4 BANNER COMBO PHỤ KIỆN (YÊU CẦU TỪ ẢNH) */}
                 <section className="px-4 sm:px-6 lg:px-8 my-20">
-                    <div className="max-w-[1400px] mx-auto">
+                    <div className="max-w-7xl mx-auto">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {comboBanners.map((banner, i) => (
                                 <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-[2.5rem] shadow-xl cursor-pointer bg-gray-100">
@@ -245,7 +245,7 @@ export default function TrangChu() {
                 />
 
                 {/* 7. DỊCH VỤ HẬU MÃI (Banner chân trang) */}
-                <section className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 my-16">
+                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
                         {[
                             { text: 'Giao hàng hỏa tốc', icon: <Truck className="w-8 h-8" /> },
@@ -263,7 +263,7 @@ export default function TrangChu() {
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
                 <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
-                    <div className="max-w-[1400px] mx-auto">
+                    <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-4xl lg:text-5xl font-black text-[#ed792f] italic uppercase tracking-tighter">BÀI VIẾT HỮU ÍCH</h2>
                             <p className="text-gray-400 font-medium uppercase tracking-[0.3em] text-[10px] mt-2">Chia sẻ kinh nghiệm & Kỹ thuật âm thanh</p>
