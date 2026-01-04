@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 import { getListCategory } from '../../redux/categorySlice.js';
 import ModalAddCategory from './ModalAddCategory';
 
-const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDeleteCategory, setParentIdToAdd }) => {
+const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDeleteCategory, setParentIdToAdd , handleOpenEdit}) => {
   const [isOpen, setIsOpen] = useState(false);
   const hasChildren = item.children && item.children.length > 0;
 
@@ -62,7 +62,7 @@ const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDe
           }}>
             <Plus size={14} />
           </button>
-          <button className="p-1.5 text-amber-600 hover:bg-amber-50 rounded border border-amber-100" title="Sửa" onClick={() => setShowAddModal(true)}>
+          <button className="p-1.5 text-amber-600 hover:bg-amber-50 rounded border border-amber-100" title="Sửa" onClick={() => handleOpenEdit(item)}>
             <Edit2 size={14} />
           </button>
           <button className="p-1.5 text-red-600 hover:bg-red-50 rounded border border-red-100" title="Xóa" onClick={() => handleDeleteCategory(item)}>
@@ -74,7 +74,7 @@ const CategoryItem = ({ item, depth = 0, onAddProduct, setShowAddModal, handleDe
       {isOpen && hasChildren && (
         <div className="bg-gray-50/30">
           {item.children.map(child => (
-            <CategoryItem key={child.id} item={child} depth={depth + 1} onAddProduct={onAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} setParentIdToAdd={setParentIdToAdd} />
+            <CategoryItem key={child.id} item={child} depth={depth + 1} onAddProduct={onAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} setParentIdToAdd={setParentIdToAdd} handleOpenEdit={handleOpenEdit} />
           ))}
         </div>
       )}
@@ -95,6 +95,7 @@ export default function CategoryManager() {
   const [showAddModal, setShowAddModal] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [parentIdToAdd, setParentIdToAdd] = useState(null); // Lưu ID danh mục cha khi thêm con
+  const [editData, setEditData] = useState(null);
 
   // ================================================ STATE DATA ===========================================
   const fetchList = async () => {
@@ -114,25 +115,44 @@ export default function CategoryManager() {
 
   // ================================================ CRUD ================================================
   // --- HÀM XỬ LÝ THÊM DANH MỤC GỐC ---
-  const handleCreateRootCategory = async (formData) => {
-
+  const handleSaveCategory = async (formData) => {
     setIsSubmitting(true);
     try {
-      let res = await ApiCategory.createCategoryApi(formData);
+      let res;
+      if (editData) {
+        // GỌI API CẬP NHẬT
+        res = await ApiCategory.updateCategoryApi(editData.id, formData);
+      } else {
+        // GỌI API TẠO MỚI
+        res = await ApiCategory.createCategoryApi(formData);
+      }
 
       if (res && res.EC === 0) {
-        toast.success("Thêm danh mục gốc thành công!");
-        setShowAddModal(false); // Đóng modal
-        fetchList(); // Tải lại danh sách
+        toast.success(`${editData ? "Cập nhật" : "Thêm"} danh mục thành công!`);
+        handleCloseModal();
+        fetchList();
       } else {
         toast.error(res.EM);
       }
     } catch (error) {
-      toast.error("Có lỗi xảy ra khi thêm mới!");
+      toast.error("Có lỗi xảy ra");
       console.error(error);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // CHỈ MỞ KHI BẤM EDIT 
+  const handleOpenEdit = (category) => {
+    setEditData(category);
+    setParentIdToAdd(category.parentId); // Giữ nguyên cha của nó
+    setShowAddModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowAddModal(false);
+    setEditData(null);
+    setParentIdToAdd(null);
   };
 
   // THÊM SẢN PHẨM VÀO DANH MỤC
@@ -145,13 +165,13 @@ export default function CategoryManager() {
   const handleDeleteCategory = async (category) => {
     if (!window.confirm(`Bạn có chắc muốn xóa danh mục "${category.name}" không?`)) return;
     try {
-      // let res = await ApiCategory.deleteCategoryApi(category.id);
-      // if (res && res.EC === 0) {
-      //   toast.success("Xóa danh mục thành công!");
-      //   fetchList(); // Tải lại danh sách
-      // } else {
-      //   toast.error(res.EM);
-      // }
+      let res = await ApiCategory.deleteCategoryApi(category.id);
+      if (res && res.EC === 0) {
+        toast.success("Xóa danh mục thành công!");
+        fetchList(); // Tải lại danh sách
+      } else {
+        toast.error(res.EM);
+      }
     } catch (error) {
       toast.error("Có lỗi xảy ra khi xóa danh mục!");
       console.error(error);
@@ -183,7 +203,15 @@ export default function CategoryManager() {
 
         <div className="divide-y divide-gray-100">
           {CategoryList.map(cat => (
-            <CategoryItem key={cat.id} item={cat} onAddProduct={handleOpenAddProduct} setShowAddModal={setShowAddModal} handleDeleteCategory={handleDeleteCategory} setParentIdToAdd={setParentIdToAdd} />
+            <CategoryItem
+              key={cat.id}
+              item={cat}
+              onAddProduct={handleOpenAddProduct}
+              setShowAddModal={setShowAddModal}
+              handleDeleteCategory={handleDeleteCategory}
+              setParentIdToAdd={setParentIdToAdd}
+              handleOpenEdit={handleOpenEdit}
+            />
           ))}
         </div>
       </div>
@@ -273,14 +301,12 @@ export default function CategoryManager() {
       {/* --- Model thêm danh mục --- */}
       <ModalAddCategory
         visible={showAddModal}
-        onClose={() => {
-          setShowAddModal(false);
-          setParentIdToAdd(null); // Reset khi đóng modal
-        }}
-        onConfirm={handleCreateRootCategory}
+        onClose={handleCloseModal}
+        onConfirm={handleSaveCategory}
         isLoading={isSubmitting}
         categories={CategoryList}
         parentIdToAdd={parentIdToAdd}
+        editData={editData}
       />
     </div>
   );

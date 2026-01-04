@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { X, Save, Layers, Activity, FolderInput } from "lucide-react"; // Thêm icon FolderInput
 
-const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories = [], parentIdToAdd = null }) => {
+const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories = [], parentIdToAdd = null, editData = null }) => {
     const [name, setName] = useState("");
     const [icon, setIcon] = useState("");
     const [status, setStatus] = useState(true);
@@ -32,17 +32,21 @@ const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories =
     // Reset form khi mở modal
     useEffect(() => {
         if (visible) {
-            setName("");
-            setIcon("");
-            setStatus(true);
-            // Nếu có parentIdToAdd (thêm con), tự động chọn nó
-            if (parentIdToAdd) {
-                setParentId(String(parentIdToAdd));
+            if (editData) {
+                // Nếu là chế độ SỬA
+                setName(editData.name || "");
+                setIcon(editData.icon || "");
+                setStatus(editData.status ?? true);
+                setParentId(editData.parentId ? String(editData.parentId) : "");
             } else {
-                setParentId(""); // Reset về rỗng (tức là danh mục gốc)
+                // Nếu là chế độ THÊM MỚI
+                setName("");
+                setIcon("");
+                setStatus(true);
+                setParentId(parentIdToAdd ? String(parentIdToAdd) : "");
             }
         }
-    }, [visible, parentIdToAdd]);
+    }, [visible, editData, parentIdToAdd]);
 
     if (!visible) return null;
 
@@ -74,7 +78,7 @@ const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories =
                 <div className="flex items-center justify-between p-4 border-b border-gray-100 bg-gray-50">
                     <h3 className="font-bold text-gray-800 flex items-center gap-2">
                         <Layers className="text-indigo-600" size={20} />
-                        Thêm danh mục mới
+                        {editData ? "Cập nhật danh mục" : "Thêm danh mục mới"}
                     </h3>
                     <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded-full transition-colors text-gray-500">
                         <X size={20} />
