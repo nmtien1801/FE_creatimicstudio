@@ -66,9 +66,18 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                 if (id) {
                     // --- LẤY SẢN PHẨM ĐÃ CHỌN ---
                     const res = await ApiProductCategory.getProductsByCategory(id);
-                    console.log('ssssss ', res);
 
-                    setSelectedProduct(Array.isArray(res.DT) ? res.DT : []);
+                    const rawList = Array.isArray(res?.DT) ? res.DT : [];
+
+                    // Chuẩn hoá các trường để component sử dụng thống nhất: { id, name, code, raw }
+                    const normalized = rawList.map(i => ({
+                        id: i.id ?? i.SubjectID ?? i.ProductID,
+                        name: i.name ?? i.SubjectName ?? i.ProductName,
+                        code: i.code ?? i.SubjectCode ?? i.ProductCode,
+                        raw: i
+                    }));
+
+                    setSelectedProduct(normalized);
                 } else {
                     setSelectedProduct([]); // Nếu chưa có id thì không có sản phẩm nào được chọn
                 }
@@ -135,17 +144,27 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
     const handleAddProduct = async (product) => {
         const id = controlData.id;
         if (!id) {
-            toast.warning("Vui lòng lưu thông tin đánh giá (Thêm mới/Cập nhật) trước khi thêm sản phẩm .");
+            toast.warning("Vui lòng lưu thông tin danh mục trước khi thêm sản phẩm.");
             return;
         }
         setProcessingId(`add-${product.id}`);
         try {
-            const payload = { id: id,  StatusID: true };
+            const payload = { categoryId: id, productId: product.id };
             let res = await ApiProductCategory.addProductCategory(payload);
-            if (res.payload?.EC !== 0) {
-                toast.error(res.payload?.EM);
+
+            if (res?.EC !== 0) {
+                toast.error(res?.EM || 'Thêm sản phẩm thất bại');
             } else {
-                setSelectedProduct(prev => [...prev, { ...product, id: res.id }]);
+                // Nếu API trả về object mới ở res.DT thì dùng nó, nếu không thì dùng product client-side
+                const addedRaw = res?.DT ?? product;
+                const newItem = {
+                    id: addedRaw.id ?? addedRaw.SubjectID ?? product.id,
+                    name: addedRaw.name ?? addedRaw.SubjectName ?? product.name,
+                    code: addedRaw.code ?? addedRaw.SubjectCode ?? product.detail,
+                    raw: addedRaw
+                };
+
+                setSelectedProduct(prev => [...prev, newItem]);
                 toast.success(`Đã thêm: ${product.name}`);
             }
         } catch (error) { toast.error('Lỗi thêm sản phẩm'); }
@@ -156,16 +175,16 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
         const id = controlData.id;
 
         if (!id) return;
-        setProcessingId(`remove-${product.SubjectID}`);
+        setProcessingId(`remove-${product.id}`);
         try {
-            const payload = { id: id, SubjectID: product.SubjectID, SurveySubjectID: product.SurveySubjectID };
-            let res = await ApiProductCategory.DeleteSurveySubjectApi(payload);
+            const payload = { categoryId: id, productId: product.id };
+            let res = await ApiProductCategory.removeProductCategory(payload);
 
-            if (res.message) {
-                toast.error(res.message);
+            if (res?.EC !== 0) {
+                toast.error(res?.EM || 'Xóa sản phẩm thất bại');
             } else {
-                setSelectedProduct(prev => prev.filter(s => s.SubjectID !== product.SubjectID));
-                toast.success(`Đã xóa: ${product.SubjectName}`);
+                setSelectedProduct(prev => prev.filter(s => s.id !== product.id));
+                toast.success(`Đã xóa: ${product.name}`);
             }
         } catch (error) { toast.error('Lỗi xóa sản phẩm'); }
         finally { setProcessingId(null); }
@@ -258,17 +277,17 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                     <div className="text-center text-gray-400 py-10 text-sm">Chưa có sản phẩm nào được chọn</div>
                                 ) : (
                                     selectedProduct.map(sub => (
-                                        <div key={sub.SubjectID} className="flex items-center justify-between p-3 bg-white border-l-4 border-l-teal-500 border border-gray-100 rounded-r shadow-sm mb-1">
+                                        <div key={sub.id} className="flex items-center justify-between p-3 bg-white border-l-4 border-l-teal-500 border border-gray-100 rounded-r shadow-sm mb-1">
                                             <div className="flex-1 pr-2 min-w-0">
-                                                <div className="text-sm font-medium text-gray-800 truncate" title={sub.SubjectName}>{sub.SubjectName}</div>
-                                                <div className="text-xs text-gray-500 mt-0.5">{sub.SubjectCode}</div>
+                                                <div className="text-sm font-medium text-gray-800 truncate" title={sub.name}>{sub.name}</div>
+                                                <div className="text-xs text-gray-500 mt-0.5">{sub.code}</div>
                                             </div>
                                             <button
                                                 onClick={() => handleRemoveProduct(sub)}
                                                 disabled={!!processingId}
                                                 className="flex-none p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded transition disabled:opacity-50"
                                             >
-                                                {processingId === `remove-${sub.SubjectID}` ? <Loader2 size={16} className="animate-spin text-red-500" /> : <Trash2 size={16} />}
+                                                {processingId === `remove-${sub.id}` ? <Loader2 size={16} className="animate-spin text-red-500" /> : <Trash2 size={16} />}
                                             </button>
                                         </div>
                                     ))
