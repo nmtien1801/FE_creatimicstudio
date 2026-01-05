@@ -161,9 +161,8 @@ export default function TrangChu() {
                 <section className="py-10 px-4 sm:px-6 lg:px-8 bg-[#ed792f]">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col items-center mb-16">
-                            <h2 className="text-3xl lg:text-4xl font-black text-white italic tracking-tighter uppercase">TOP SELLER</h2>
-                            <div className="w-24 h-1.5 bg-white mt-4"></div>
-                            <p className="text-white/80 mt-6 font-bold uppercase tracking-[0.4em] text-xs text-center">Sản phẩm khách hàng tin dùng nhất</p>
+                            <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">TOP SELLER</h2>
+                            <p className="text-black/80 font-bold uppercase mt-6 text-sm text-center">Sản phẩm khách hàng tin dùng nhất</p>
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                             {productsData.slice(0, 3).map(p => (

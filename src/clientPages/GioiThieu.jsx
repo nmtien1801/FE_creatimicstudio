@@ -83,7 +83,7 @@ export default function CMICStudio() {
 
                         <div className="text-center py-4">
                             <p className="text-xl font-bold text-gray-800 mb-2">
-                                BÁN ĐÚNG - TƯ VẤN ĐÚNG - ĐỒNG HÀNH ĐÚNG
+                                TƯ VẤN THỨ BẠN MUỐN - BÁN ĐÚNG THỨ BẠN CẦN
                             </p>
                             <p className="text-gray-600">
                                 Chúng tôi không chạy theo việc bán nhiều nhất. Chúng tôi theo đuổi việc bán đúng nhất.
@@ -363,7 +363,7 @@ export default function CMICStudio() {
                             />
                         </div>
                         <h3 className="text-2xl font-bold mb-2">LÊ XUÂN QUỲNH</h3>
-                        <p className="text-gray-500 font-bold text-lg tracking-widest">CO-FOUNDER</p>
+                        <p className="text-orange-600 font-bold text-lg tracking-widest">CO-FOUNDER</p>
                     </div>
                 </div>
             </section>
