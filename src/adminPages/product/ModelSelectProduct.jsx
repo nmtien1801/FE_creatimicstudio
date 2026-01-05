@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { getListProductDropdown } from '../../redux/productSlice.js';
 import { toast } from 'react-toastify';
-import { X, Search, BookOpen, Loader2, ArrowRight, Trash2, Database, Gauge, Edit, Save, Plus, RefreshCw } from 'lucide-react';
+import { X, Search, Loader2, ArrowRight, Trash2, Database, Edit } from 'lucide-react';
 import ApiProductCategory from '../../apis/ApiProductCategory.js';
 
 export default function ModelSelectProduct({ visible, onClose, form }) {
@@ -111,36 +111,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
         });
     }, [ProductDropdown, query, selectedProduct]);
 
-    // -------------------------------------------- CRUD --------------------------------------------
-    // Handler CRUD cho CONTROL BOARD (Evaluation)
-    const handleControlAction = (actionType) => {
-
-        const payload = {
-            id: controlData.id,
-            StatusID: statusValue
-        };
-
-        switch (actionType) {
-            case 'add_edit':
-                // --- GỌI API THÊM/SỬA Ở ĐÂY ---
-                // Sau khi API trả về ID mới (nếu là Thêm mới), cần cập nhật form prop hoặc state cha.
-                break;
-            case 'delete':
-                // --- GỌI API XÓA Ở ĐÂY ---
-                toast.error(`Đang XÓA bản ghi ID: ${payload.id}...`);
-                // Sau khi xóa thành công, cần đóng modal và refresh lưới.
-                break;
-            case 'clear':
-                // Xóa trắng Control Board Form
-                setStatusValue(false);
-                toast.info('Form đã được xóa trắng. Sẵn sàng cho thêm mới.');
-                break;
-            default:
-                break;
-        }
-    };
-
-    // -------------------------------------------- Handler Thêm/Xóa SẢN PHẨM  GỐC
+    // -------------------------------------------- CRUD Thêm/Xóa SẢN PHẨM ------------------------------
     const handleAddProduct = async (product) => {
         const id = controlData.id;
         if (!id) {
@@ -167,8 +138,12 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                 setSelectedProduct(prev => [...prev, newItem]);
                 toast.success(`Đã thêm: ${product.name}`);
             }
-        } catch (error) { toast.error('Lỗi thêm sản phẩm'); }
-        finally { setProcessingId(null); }
+        } catch (error) {
+            toast.error('Lỗi thêm sản phẩm');
+        }
+        finally {
+            setProcessingId(null);
+        }
     };
 
     const handleRemoveProduct = async (product) => {
@@ -186,8 +161,17 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                 setSelectedProduct(prev => prev.filter(s => s.id !== product.id));
                 toast.success(`Đã xóa: ${product.name}`);
             }
-        } catch (error) { toast.error('Lỗi xóa sản phẩm'); }
-        finally { setProcessingId(null); }
+        } catch (error) {
+            toast.error('Lỗi xóa sản phẩm');
+        }
+        finally {
+            setProcessingId(null);
+        }
+    };
+
+    // ==================== ĐÓNG MODAL VÀ REFRESH DATA ====================
+    const handleClose = () => {
+        onClose(); // Gọi callback từ parent để refresh danh sách category
     };
 
     if (!visible) return null;
@@ -203,20 +187,18 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                 <div className="flex-none flex items-center justify-between p-4 border-b">
                     <h3 className="text-lg font-semibold flex items-center gap-2 text-gray-800">
                         <Edit className="w-5 h-5 text-teal-600" />
-                        Chọn sản phẩm
+                        Chọn sản phẩm cho: <span className="text-teal-600">{controlData.name}</span>
                     </h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-red-500">
+                    <button onClick={handleClose} className="text-gray-400 hover:text-red-500">
                         <X size={24} />
                     </button>
                 </div>
 
-                {/* BODY CONTAINER (LƯỚI DỮ LIỆU SẢN PHẨM  GỐC) */}
+                {/* BODY CONTAINER (LƯỚI DỮ LIỆU SẢN PHẨM GỐC) */}
                 <div className="flex-1 p-4 bg-gray-50 min-h-0">
-                    <h4 className="text-base font-bold text-gray-700 mb-3 flex items-center gap-2">
-                    </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 h-full">
 
-                        {/* --- CỘT TRÁI (Sản phẩm  khả dụng) --- */}
+                        {/* --- CỘT TRÁI (Sản phẩm khả dụng) --- */}
                         <div className="bg-white rounded border border-gray-200 shadow-sm flex flex-col h-full overflow-">
                             <div className="flex-none p-3 border-b bg-white">
                                 <div className="relative">
@@ -230,7 +212,7 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                 </div>
                             </div>
 
-                            {/* LIST SẢN PHẨM  KHẢ DỤ */}
+                            {/* LIST SẢN PHẨM KHẢ DỤ */}
                             <div className={`flex-1 ${scrollbarClass} p-2 space-y-2`}>
                                 {filteredAvailable.length === 0 ? (
                                     <div className="text-center text-gray-500 py-10 text-sm">
@@ -247,9 +229,9 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                             </div>
                                             <button
                                                 onClick={() => handleAddProduct(sub)}
-                                                // disabled={!!processingId || !controlData.id}
+                                                disabled={!!processingId}
                                                 className="flex-none px-3 py-1.5 bg-white border border-teal-200 text-teal-600 rounded-full hover:bg-teal-500 hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
-                                                title={!controlData.id ? "Lưu đánh giá trước" : "Thêm sản phẩm "}
+                                                title="Thêm sản phẩm"
                                             >
                                                 {processingId === `add-${sub.id}` ? <Loader2 size={16} className="animate-spin" /> : <ArrowRight size={16} />}
                                             </button>
@@ -298,26 +280,17 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                     </div>
                 </div>
 
-                {/* FOOTER: Nút CRUD cho Control Board */}
-                <div className="flex-none p-4 border-t flex justify-between bg-white">
-                    {/* Cột phải: Thêm/Sửa và Xóa */}
-                    <div className='flex gap-2 '>
-                        {isEditing && (
-                            <button
-                                onClick={() => handleControlAction('delete')}
-                                className="px-5 py-2 bg-red-500 text-white rounded hover:bg-red-600 font-medium flex items-center gap-1 transition"
-                            >
-                                <Trash2 size={16} /> Xóa
-                            </button>
-                        )}
-
-                        <button
-                            onClick={() => handleControlAction('add_edit')}
-                            className="px-5 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 font-medium flex items-center gap-1 transition"
-                        >
-                            {isEditing ? (<> <Save size={16} /> Sửa (Cập nhật)</>) : (<> <Plus size={16} /> Thêm mới</>)}
-                        </button>
+                {/* FOOTER - Hiển thị số lượng */}
+                <div className="flex-none p-4 border-t bg-gray-50 flex justify-between items-center">
+                    <div className="text-sm text-gray-600">
+                        Tổng số sản phẩm trong danh mục: <span className="font-bold text-teal-600">{selectedProduct.length}</span>
                     </div>
+                    <button
+                        onClick={handleClose}
+                        className="px-4 py-2 bg-teal-600 text-white rounded hover:bg-teal-700 transition"
+                    >
+                        Đóng
+                    </button>
                 </div>
             </div>
         </div>
