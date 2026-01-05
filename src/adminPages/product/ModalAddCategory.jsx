@@ -115,8 +115,8 @@ const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories =
                         />
                     </div>
 
-                    {/* --- PHẦN MỚI THÊM: Chọn Danh mục cha --- */}
-                    <div className="space-y-1.5">
+                    {/* --- Chọn Danh mục cha --- */}
+                    <div className="space-y-1.5 disabled:opacity-75 disabled:cursor-not-allowed">
                         <label className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
                             <FolderInput size={16} className="text-gray-500" />
                             Danh mục cha (Tùy chọn)
@@ -126,7 +126,7 @@ const ModalAddCategory = ({ visible, onClose, onConfirm, isLoading, categories =
                             <select
                                 value={parentId}
                                 onChange={(e) => setParentId(e.target.value)}
-                                disabled={!!parentIdToAdd} // Disable nếu có parentIdToAdd
+                                disabled={true} // Disable nếu có parentIdToAdd
                                 className={`w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-sm appearance-none bg-white ${parentIdToAdd ? 'bg-gray-100 cursor-not-allowed opacity-75' : ''}`}
                             >
                                 <option value="">-- Là danh mục gốc (Root) --</option>

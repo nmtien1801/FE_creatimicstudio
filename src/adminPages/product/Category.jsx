@@ -102,7 +102,6 @@ export default function CategoryManager() {
     setIsLoading(true);
     try {
       const res = await dispatch(getListCategory({ page: currentPage, limit: pageSize })).unwrap();
-console.log('sssss ', res);
       
     } catch (error) {
       toast.error("Không thể tải danh sách danh mục");
