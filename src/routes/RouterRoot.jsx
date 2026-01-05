@@ -12,10 +12,10 @@ import Dashboard from "../adminPages/system/Dashboard";
 import ProductManager from "../adminPages/product/ProductManager.jsx";
 import Category from "../adminPages/product/Category.jsx";
 import NewsManager from "../adminPages/news/NewsManager.jsx";
-import GraduationExam from "../adminPages/news/GraduationExam.jsx";
+import EmployeeRole from "../adminPages/employee/employees_roles.jsx";
 import NewsDetail from "../adminPages/news/NewsDetail.jsx";
 import RecruitmentManager from "../adminPages/recruitment/RecruitmentManager.jsx";
-import Notification from "../adminPages/notification/Notification.jsx";
+import Employee from "../adminPages/employee/employees.jsx";
 import ChangePassWord from "../adminPages/system/ChangePassWord.jsx";
 import ResetPassNV from "../adminPages/system/ResetPassNV.jsx";
 import RecruitmentDetail from "../adminPages/recruitment/RecruitmentDetail.jsx";
@@ -126,8 +126,8 @@ function RouterRoot() {
           <Route path="recruitment/detail" element={<RecruitmentDetail />} />
 
           {/* route hr */}
-          <Route path="hr/employees" element={<Notification />} />   {/* Nhân viên */}
-          <Route path="hr/roles" element={<GraduationExam />} />      {/* Phân quyền (ví dụ) */}
+          <Route path="hr/employees" element={<Employee />} />   {/* Nhân viên */}
+          <Route path="hr/roles" element={<EmployeeRole />} />      {/* Phân quyền (ví dụ) */}
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
