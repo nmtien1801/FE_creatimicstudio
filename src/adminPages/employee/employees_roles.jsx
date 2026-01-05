@@ -1,126 +1,147 @@
-import React, { useState } from 'react';
-import { Search, FileDown } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ShieldCheck, User, Save, CheckCircle2 } from 'lucide-react';
+import DropdownSearch from '../../components/FormFields/DropdownSearch';
+import { useSelector, useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getListStaff } from '../../redux/staffSlice';
 
-export default function GraduationExam() {
-  const [selectedClass, setSelectedClass] = useState('');
-  const [selectedSubject, setSelectedSubject] = useState('');
-  const [isRetake, setIsRetake] = useState(false);
+const PermissionPage = () => {
+  const dispatch = useDispatch();
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const { listStaff } = useSelector((state) => state.staff);
 
-  const examData = [];
+  useEffect(() => {
+    const fetchStaffList = async () => {
+      try {
+        let res = await dispatch(getListStaff());
+        if (res.payload?.EC !== 0) {
+          toast.error(res.payload?.EM || "Không thể tải danh sách nhân viên");
+        }
+      } catch (error) {
+        toast.error("Lỗi kết nối hệ thống");
+      }
+    };
+
+    if (listStaff.length === 0) {
+      fetchStaffList();
+    }
+  }, [dispatch, listStaff.length]);
+
+  // Dữ liệu giả lập
+  const users = [
+    { id: 1, name: 'Nguyễn Văn A', role: 'Nhân viên bán hàng' },
+    { id: 2, name: 'Trần Thị B', role: 'Quản lý kho' },
+    { id: 3, name: 'Lê Văn C', role: 'Chăm sóc khách hàng' },
+  ];
+
+  const permissionGroups = [
+    {
+      group: 'Quản lý Sản phẩm',
+      permissions: ['Xem sản phẩm', 'Thêm mới', 'Chỉnh sửa', 'Xóa']
+    },
+    {
+      group: 'Quản lý Đơn hàng',
+      permissions: ['Xem đơn hàng', 'Cập nhật trạng thái', 'Hủy đơn']
+    },
+    {
+      group: 'Hệ thống',
+      permissions: ['Cấu hình chung', 'Xem báo cáo', 'Quản lý nhân sự']
+    }
+  ];
+
+  const [selectedUser, setSelectedUser] = useState('');
+  const [selectedPermissions, setSelectedPermissions] = useState([]);
+
+  // Xử lý khi chọn checkbox
+  const togglePermission = (perm) => {
+    if (selectedPermissions.includes(perm)) {
+      setSelectedPermissions(selectedPermissions.filter(p => p !== perm));
+    } else {
+      setSelectedPermissions([...selectedPermissions, perm]);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-[1600px] mx-auto">
-        {/* Header */}
-        <h1 className="text-2xl text-gray-600 mb-6">Danh sách dự thi tốt nghiệp</h1>
+    <div className="min-h-screen bg-gray-50 p-8 font-sans text-gray-800">
+      <div className="max-w-0xl mx-auto">
+        {/* Header Section */}
+        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              Phân quyền Nhân viên
+            </h1>
+            <p className="text-gray-500">Chọn nhân viên để thiết lập quyền truy cập hệ thống</p>
+          </div>
 
-        {/* Filter Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex items-center gap-6 flex-wrap">
-            <div className="flex items-center gap-3">
-              <label className="text-gray-600 text-sm whitespace-nowrap">Lớp</label>
-              <select
-                value={selectedClass}
-                onChange={(e) => setSelectedClass(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 text-sm w-80 text-gray-500"
-              >
-                <option value="">------ chọn lớp ------</option>
-                <option value="TC240">TC.240 (CS1)</option>
-                <option value="H946">H.946 (NB)</option>
-                <option value="H949">H.949 (Q1)</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-3">
-              <label className="text-gray-600 text-sm whitespace-nowrap">Môn học</label>
-              <select
-                value={selectedSubject}
-                onChange={(e) => setSelectedSubject(e.target.value)}
-                className="border border-gray-300 rounded px-3 py-2 text-sm w-80 text-gray-500"
-              >
-                <option value="">------ chọn Môn ------</option>
-                <option value="237">Thực tiễn và kinh nghiệm xây dựng, phát triển địa phương</option>
-                <option value="196">Kỹ năng lãnh đạo, quản lý</option>
-                <option value="300">Nghiên cứu thực tế</option>
-              </select>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <input
-                type="checkbox"
-                id="thiLan2"
-                checked={isRetake}
-                onChange={(e) => setIsRetake(e.target.checked)}
-                className="w-4 h-4 text-teal-500 border-gray-300 rounded focus:ring-teal-500"
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 space-y-2">
+              <DropdownSearch
+                options={listStaff}
+                placeholder="--- Chọn nhân viên ---"
+                labelKey="userName"
+                valueKey="id"
+                onChange={(e) => setSelectedStaff(e.id)}
               />
-              <label htmlFor="thiLan2" className="text-gray-600 text-sm whitespace-nowrap">
-                Thi lần 2
-              </label>
+            </div>
+          </div>
+        </div>
+
+        {selectedUser ? (
+          <div className="space-y-6 animate-in fade-in duration-500">
+            {/* Permissions Matrix */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+              {permissionGroups.map((group, idx) => (
+                <div key={idx} className="border-b last:border-b-0 border-gray-100 p-6">
+                  <h3 className="font-semibold text-gray-700 mb-4">{group.group}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {group.permissions.map((perm) => (
+                      <label
+                        key={perm}
+                        className={`flex items-center p-3 rounded-lg border cursor-pointer transition-all ${selectedPermissions.includes(perm)
+                          ? 'bg-indigo-50 border-indigo-200 text-indigo-700'
+                          : 'bg-gray-50 border-gray-100 hover:border-gray-300'
+                          }`}
+                      >
+                        <input
+                          type="checkbox"
+                          className="hidden"
+                          checked={selectedPermissions.includes(perm)}
+                          onChange={() => togglePermission(perm)}
+                        />
+                        <div className={`w-5 h-5 rounded border mr-3 flex items-center justify-center ${selectedPermissions.includes(perm) ? 'bg-indigo-600 border-indigo-600' : 'bg-white border-gray-300'
+                          }`}>
+                          {selectedPermissions.includes(perm) && <CheckCircle2 size={14} className="text-white" />}
+                        </div>
+                        <span className="text-sm font-medium">{perm}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
 
-            <button className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded flex items-center gap-2 text-sm">
-              <Search size={16} />
-              Tìm kiếm
-            </button>
-
-            <button className="bg-teal-500 hover:bg-teal-600 text-white px-6 py-2 rounded flex items-center gap-2 text-sm">
-              <FileDown size={16} />
-              Export Excel
-            </button>
+            {/* Action Bar */}
+            <div className="flex justify-end gap-3 pt-4">
+              <button className="px-6 py-2 bg-white border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition">
+                Hủy bỏ
+              </button>
+              <button className="flex items-center gap-2 px-6 py-2 bg-indigo-600 text-white rounded-lg font-medium hover:bg-indigo-700 shadow-md transition">
+                <Save size={18} />
+                Lưu quyền hạn
+              </button>
+            </div>
           </div>
-        </div>
-
-        {/* Table Section */}
-        <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg text-red-700 font-semibold text-center">Danh sách dự thi tốt nghiệp</h2>
+        ) : (
+          <div className="bg-white rounded-xl border-2 border-dashed border-gray-200 p-20 text-center">
+            <div className="bg-gray-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <User size={32} className="text-gray-400" />
+            </div>
+            <p className="text-gray-500 font-medium">Vui lòng chọn một nhân viên từ danh sách để bắt đầu thiết lập</p>
           </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead className="bg-gray-100 border-b-2 border-gray-300">
-                <tr>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap w-16">STT</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Mã học viên</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Họ và Tên</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">SBD</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Lần thi</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Phòng thi</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold border-r border-gray-300 whitespace-nowrap">Ngày thi</th>
-                  <th className="px-4 py-3 text-center text-gray-700 font-semibold whitespace-nowrap">Ghi chú</th>
-                </tr>
-              </thead>
-              <tbody>
-                {examData.length === 0 ? (
-                  <tr>
-                    <td colSpan="9" className="px-4 py-8 text-left text-gray-500 border-b border-gray-200">
-                      No records to display.
-                    </td>
-                  </tr>
-                ) : (
-                  examData.map((row, index) => (
-                    <tr key={index} className={`border-b border-gray-200 hover:bg-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}`}>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{row.stt}</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{row.maHocVien}</td>
-                      <td className="px-4 py-3 border-r border-gray-200">{row.hoTen}</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{row.lanThi}</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{row.sbd}</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{row.phongThi}</td>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{row.ngayThi}</td>
-                      <td className="px-4 py-3 text-center">{row.ghiChu}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <div className="mt-8 text-right text-xs text-gray-500">
-          Copyright © 2025 by CREATIMICSTUDIO
-        </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default PermissionPage;
