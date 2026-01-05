@@ -36,6 +36,10 @@ export default function ProductManager() {
     fetchList();
   }, [currentPage, pageSize]);
 
+  const filteredProducts = ProductList.filter(item =>
+    item.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   // =========================================== CRUD Operations ===========================================
   // Hàm mở form thêm mới
   const handleAddNewProduct = () => {
@@ -152,14 +156,14 @@ export default function ProductManager() {
             <tbody className="divide-y divide-gray-200 text-sm">
               {isLoading ? (
                 <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-teal-600" size={40} /></td></tr>
-              ) : ProductList.map((item, idx) => (
+              ) : filteredProducts.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-center text-gray-500 font-medium">
                     {(currentPage - 1) * pageSize + idx + 1}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img src={item.image ? item.image : "https://via.placeholder.com/50"} alt="" className="w-10 h-10 rounded-md border object-cover" />
+                      <img src={item.image ? item.image : "https://picsum.photos/50"} alt="" className="w-10 h-10 rounded-md border object-cover" />
                       <span className="font-semibold text-gray-900">{item.name}</span>
                     </div>
                   </td>
