@@ -12,7 +12,6 @@ export default function EmployeeModal({
     handleInputChange
 }) {
     if (!showModal) return null;
-    console.log('ssssss ', formData);
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -101,11 +100,11 @@ export default function EmployeeModal({
                         </label>
                         <div className="flex-1 space-y-2">
                             <DropdownSearch
-                                key={formData.role}
                                 options={roleOptions}
                                 placeholder="--- Tìm theo vai trò ---"
                                 labelKey="value"
                                 valueKey="key"
+                                value={formData.role}
                                 onChange={(item) => setFormData({ ...formData, role: item.key })}
                             />
                         </div>

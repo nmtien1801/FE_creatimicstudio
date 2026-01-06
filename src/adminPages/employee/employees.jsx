@@ -113,12 +113,16 @@ export default function Employees() {
   const handleDeleteClick = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
       try {
-        await ApiAuth.delete(id);
-        fetchList();
-        alert('Xóa nhân viên thành công');
+        let res = await ApiAuth.deleteUserApi(id);
+        if (res && res.EC === 0) {
+          toast.success(EM);
+          fetchList();
+        }else{
+          toast.error(EM);
+        }
       } catch (error) {
         console.error('Error deleting employee:', error);
-        alert('Không thể xóa nhân viên');
+        toast.error('Không thể xóa nhân viên');
       }
     }
   };
@@ -135,17 +139,24 @@ export default function Employees() {
     try {
       if (editingEmployee) {
         // Update 
-        // let res = await ApiAuth.UpdateProfileApi(editingEmployee.id, formData);
+        let res = await ApiAuth.updateUserApi(editingEmployee.id, formData);
+        if (res && res.EC === 0) {
+          toast.success('Cập nhật nhân viên thành công');
+          fetchList();
+        }
 
       } else {
         // Add new employee
-        const response = await ApiAuth.create(formData);
-        alert('Thêm nhân viên thành công');
+        let res = await ApiAuth.createUserApi(formData);
+        if (res && res.EC === 0) {
+          toast.success('Thêm mới nhân viên thành công');
+          fetchList();
+        }
       }
       setShowModal(false);
     } catch (error) {
       console.error('Error saving employee:', error);
-      alert('Không thể lưu thông tin nhân viên');
+      toast.error('Không thể lưu thông tin nhân viên');
     }
   };
 

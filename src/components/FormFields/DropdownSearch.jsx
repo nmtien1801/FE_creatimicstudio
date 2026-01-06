@@ -1,9 +1,21 @@
 import React, { useState, useEffect } from 'react';
 
-export default function DropdownSearch({ options = [], placeholder = "Select option", labelKey = "label", valueKey = "value", onChange }) {
+export default function DropdownSearch({ options = [], placeholder = "Select option", labelKey = "label", valueKey = "value", onChange, value }) {
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState(null);
+
+  // Set initial selected value when value prop changes
+  useEffect(() => {
+    if (value) {
+      const foundItem = options.find(item => item[valueKey] === value);
+      if (foundItem) {
+        setSelected(foundItem);
+      }
+    } else {
+      setSelected(null);
+    }
+  }, [value, options, valueKey]);
 
   const filtered = options.filter((item) =>
     item[labelKey]?.toLowerCase().includes(query.toLowerCase())
