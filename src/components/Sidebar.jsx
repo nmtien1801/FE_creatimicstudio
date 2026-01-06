@@ -32,7 +32,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         { label: 'Trang chủ', path: '/home' },
         { label: 'Dashboard', path: '/dashboard' },
         { label: 'Đổi mật khẩu', path: '/profile/change-password' },
-        { label: 'Làm mới mật khẩu NV', path: '/profile/change-password-staff' },
+        userInfo.role === 'admin' && { label: 'Làm mới mật khẩu NV', path: '/profile/change-password-staff' },
         { label: 'Thông tin tài khoản', path: '/profile/info' },
       ]
     },
@@ -54,13 +54,13 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         { label: 'Danh sách bài viết', path: '/news/manager' },
       ]
     },
-    {
+    userInfo.role === 'admin' && {
       id: 'hr',
       label: 'Quản lý nhân sự',
       icon: Calendar,
       items: [
         { label: 'Danh sách nhân viên', path: '/hr/employees' },
-        { label: 'Phân quyền hệ thống', path: '/hr/roles' },
+        // { label: 'Phân quyền hệ thống', path: '/hr/roles' },
       ]
     }
   ];

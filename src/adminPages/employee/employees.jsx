@@ -26,10 +26,13 @@ export default function Employees() {
     role: ''
   });
 
-  const roleOptions = Object.entries(TypeUserIDCons).map(([key, value]) => ({
-    key: value,    // 'client', 'staff', 'admin'
-    value: key     // 'Client', 'Staff', 'Administrator'
-  }));
+  const roleOptions = [
+    { key: '', value: 'Tất cả vai trò' }, // Thêm dòng này
+    ...Object.entries(TypeUserIDCons).map(([key, value]) => ({
+      key: value,
+      value: key
+    }))
+  ];
 
   // ========================================= FETCH INIT ============================
   useEffect(() => {
@@ -44,7 +47,7 @@ export default function Employees() {
   const fetchList = async () => {
     try {
       setIsLoading(true);
-      const res = await dispatch(getListUser({ page: 1, limit: 10 }));
+      const res = await dispatch(getListUser({ page: 1, limit: 10, role: roleFilter?.key || '' }));
 
     } catch (error) {
       console.error('Error fetching UserList:', error);
@@ -57,20 +60,25 @@ export default function Employees() {
   // ================================== CRUD ===========================
 
   const filterEmployees = () => {
-    let filtered = UserList;
+    let filtered = [...UserList];
 
-    // Filter by search term
+    // 1. Lọc theo Search Term
     if (searchTerm) {
+      const search = searchTerm.toLowerCase();
       filtered = filtered.filter(emp =>
-        emp.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        emp.phone?.includes(searchTerm)
+        emp.userName?.toLowerCase().includes(search) ||
+        emp.email?.toLowerCase().includes(search) ||
+        emp.phone?.includes(search)
       );
     }
 
-    // Filter by role
-    if (roleFilter) {
-      filtered = filtered.filter(emp => emp.role === roleFilter);
+    // 2. Lọc theo Role (Sửa ở đây)
+    if (roleFilter && roleFilter.key) { // Kiểm tra nếu roleFilter tồn tại và có thuộc tính key
+      filtered = filtered.filter(emp => {
+        // emp.role thường là chuỗi 'admin', 'staff'...
+        // roleFilter.key cũng là chuỗi 'admin', 'staff'...
+        return String(emp.role).toLowerCase() === String(roleFilter.key).toLowerCase();
+      });
     }
 
     setFilteredEmployees(filtered);
@@ -198,7 +206,7 @@ export default function Employees() {
                   placeholder="--- Tìm theo vai trò ---"
                   labelKey="value"
                   valueKey="key"
-                  onChange={(e) => setRoleFilter(e)}
+                  onChange={(item) => setRoleFilter(item)}
                 />
               </div>
             </div>
@@ -295,7 +303,7 @@ export default function Employees() {
       </div>
 
       {/* Modal */}
-      {showModal && (
+      {/* {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
             <h2 className="text-xl font-semibold mb-4">
@@ -386,7 +394,7 @@ export default function Employees() {
                     placeholder="--- Tìm theo vai trò ---"
                     labelKey="value"
                     valueKey="key"
-                    onChange={(e) => setRoleFilter(e)}
+                    onChange={(item) => setFormData({ ...formData, role: item.key })}
                   />
                 </div>
               </div>
@@ -409,7 +417,7 @@ export default function Employees() {
             </form>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }
