@@ -2,9 +2,9 @@ import moment from "moment";
 import ApiUpload from "../apis/ApiUpload.js";
 
 const TypeUserIDCons = {
-  Client: 'client',
-  Staff: 'staff',
-  Administrator: 'admin',
+  client: 'client',
+  staff: 'staff',
+  admin: 'admin',
 };
 
 const formatDate = (isoDate) => {

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Search, FileDown, Edit2, Trash2, Plus } from 'lucide-react';
+import { Search, FileDown, Edit2, Trash2, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import ApiAuth from '../../apis/ApiAuth';
 import { getListUser } from '../../redux/authSlice';
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from 'react-redux';
 import DropdownSearch from '../../components/FormFields/DropdownSearch';
 import { TypeUserIDCons } from '../../utils/constants'
+import EmployeeModal from './EmployeeModal';
 
 export default function Employees() {
   const dispatch = useDispatch();
@@ -16,6 +17,8 @@ export default function Employees() {
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage] = useState(10);
 
   const [formData, setFormData] = useState({
     userName: '',
@@ -42,6 +45,7 @@ export default function Employees() {
   // Filter UserList when search or role filter changes
   useEffect(() => {
     filterEmployees();
+    setCurrentPage(1); // Reset to first page when filters change
   }, [searchTerm, roleFilter, UserList]);
 
   const fetchList = async () => {
@@ -84,7 +88,7 @@ export default function Employees() {
     setFilteredEmployees(filtered);
   };
 
-  // THÊM
+  // MỞ MODAL THÊM
   const handleAddClick = () => {
     setEditingEmployee(null);
     setFormData({
@@ -98,7 +102,7 @@ export default function Employees() {
     setShowModal(true);
   };
 
-  // SỬA
+  // MỞ MODAL SỬA
   const handleEditClick = (employee) => {
     setEditingEmployee(employee);
     setFormData(employee);
@@ -122,18 +126,17 @@ export default function Employees() {
   // SAVE
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // Validation
-    if (!formData.name || !formData.email || !formData.phone || !formData.role) {
-      alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+    if (!formData.userName || !formData.email || !formData.phone || !formData.role) {
+      toast.info('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
 
     try {
       if (editingEmployee) {
-        // Update employee
-        await ApiAuth.update(editingEmployee.id, formData);
-        alert('Cập nhật nhân viên thành công');
+        // Update 
+        // let res = await ApiAuth.UpdateProfileApi(editingEmployee.id, formData);
+
       } else {
         // Add new employee
         const response = await ApiAuth.create(formData);
@@ -177,6 +180,20 @@ export default function Employees() {
     a.href = url;
     a.download = 'UserList.csv';
     a.click();
+  };
+
+  // ================================== Pagination logic ====================================
+  const totalPages = Math.ceil(filteredEmployees.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const currentEmployees = filteredEmployees.slice(startIndex, endIndex);
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   return (
@@ -258,9 +275,9 @@ export default function Employees() {
                     </td>
                   </tr>
                 ) : (
-                  filteredEmployees.map((employee, index) => (
+                  currentEmployees.map((employee, index) => (
                     <tr key={employee.id} className={`border-b border-gray-200 hover:bg-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}`}>
-                      <td className="px-4 py-3 border-r border-gray-200 text-center">{index + 1}</td>
+                      <td className="px-4 py-3 border-r border-gray-200 text-center">{startIndex + index + 1}</td>
                       <td className="px-4 py-3 border-r border-gray-200">{employee.userName}</td>
                       <td className="px-4 py-3 border-r border-gray-200">{employee.email}</td>
                       <td className="px-4 py-3 border-r border-gray-200 text-center">{employee.phone}</td>
@@ -296,6 +313,47 @@ export default function Employees() {
           </div>
         </div>
 
+        {/* Pagination */}
+        <div className="mt-6 flex items-center justify-between">
+          <div className="text-sm text-gray-600">
+            Hiển thị {filteredEmployees.length === 0 ? 0 : startIndex + 1} đến {Math.min(endIndex, filteredEmployees.length)} của {filteredEmployees.length} nhân viên
+          </div>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-3 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <ChevronLeft size={16} />
+              Trước
+            </button>
+
+            <div className="flex items-center gap-1">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`w-8 h-8 rounded ${currentPage === page
+                    ? 'bg-teal-500 text-white font-semibold'
+                    : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                    }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 px-3 py-2 rounded border border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Tiếp
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </div>
+
         {/* Footer */}
         <div className="mt-8 text-right text-xs text-gray-500">
           Copyright © 2025 by CREATIMICSTUDIO
@@ -303,121 +361,16 @@ export default function Employees() {
       </div>
 
       {/* Modal */}
-      {/* {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-semibold mb-4">
-              {editingEmployee ? 'Chỉnh sửa nhân viên' : 'Thêm nhân viên mới'}
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Tên người dùng *
-                </label>
-                <input
-                  type="text"
-                  name="userName"
-                  value={formData.userName}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Nhập tên người dùng"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Email *
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Nhập email"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Số điện thoại *
-                </label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Nhập số điện thoại"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Địa chỉ
-                </label>
-                <input
-                  type="text"
-                  name="address"
-                  value={formData.address}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Nhập địa chỉ"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Ảnh đại diện
-                </label>
-                <input
-                  type="text"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="URL ảnh hoặc đường dẫn"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Vai trò *
-                </label>
-                <div className="flex-1 space-y-2">
-                  <DropdownSearch
-                    options={roleOptions}
-                    placeholder="--- Tìm theo vai trò ---"
-                    labelKey="value"
-                    valueKey="key"
-                    onChange={(item) => setFormData({ ...formData, role: item.key })}
-                  />
-                </div>
-              </div>
-
-              <div className="flex gap-3 mt-6">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded text-sm font-semibold"
-                >
-                  Hủy
-                </button>
-                <button
-                  type="submit"
-                  className="flex-1 bg-teal-500 hover:bg-teal-600 text-white px-4 py-2 rounded text-sm font-semibold"
-                >
-                  {editingEmployee ? 'Cập nhật' : 'Thêm mới'}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )} */}
+      <EmployeeModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+        editingEmployee={editingEmployee}
+        formData={formData}
+        setFormData={setFormData}
+        handleSubmit={handleSubmit}
+        roleOptions={roleOptions}
+        handleInputChange={handleInputChange}
+      />
     </div>
   );
 }
