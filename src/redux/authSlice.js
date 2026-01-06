@@ -6,6 +6,8 @@ const initialState = {
   userInfo: {},
   isLoading: false,
   hasCheckedAuth: false,
+  UserList: [],
+  UserTotal: 0,
 };
 
 export const Login = createAsyncThunk("auth/Login", async (data, thunkAPI) => {
@@ -33,6 +35,14 @@ export const GetAccount = createAsyncThunk(
   "auth/GetAccount",
   async (data, thunkAPI) => {
     const response = await ApiAuth.GetAccountApi(data);
+    return response;
+  }
+);
+
+export const getListUser = createAsyncThunk(
+  "auth/getListUser",
+  async ({ page, limit }, thunkAPI) => {
+    const response = await ApiAuth.getListUserApi(page, limit);
     return response;
   }
 );
@@ -118,6 +128,15 @@ const authSlice = createSlice({
       .addCase(UpdateProfile.rejected, (state, action) => {
         state.isLoading = false;
       });
+
+    // getListUser
+    builder
+      .addCase(getListUser.pending, (state) => {})
+      .addCase(getListUser.fulfilled, (state, action) => {
+        state.UserList = action.payload.DT.user;
+        state.UserTotal = action.payload.DT.total;
+      })
+      .addCase(getListUser.rejected, (state, action) => {});
   },
 });
 

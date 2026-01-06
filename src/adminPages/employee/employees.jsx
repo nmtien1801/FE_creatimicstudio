@@ -1,66 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { Search, FileDown, Edit2, Trash2, Plus } from 'lucide-react';
-import ApiStaff from '../../apis/ApiStaff';
+import ApiAuth from '../../apis/ApiAuth';
+import { getListUser } from '../../redux/authSlice';
+import { toast } from 'react-toastify';
+import { useSelector, useDispatch } from 'react-redux';
+import DropdownSearch from '../../components/FormFields/DropdownSearch';
+import { TypeUserIDCons } from '../../utils/constants'
 
 export default function Employees() {
-  const [employees, setEmployees] = useState([]);
+  const dispatch = useDispatch();
+  const { UserList, UserTotal } = useSelector((state) => state.auth);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [roleFilter, setRoleFilter] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState(null);
-  const [roles, setRoles] = useState([]);
 
   const [formData, setFormData] = useState({
     userName: '',
     email: '',
-    password: '',
     image: '',
     phone: '',
     address: '',
     role: ''
   });
 
-  // Fetch employees and roles on mount
+  const roleOptions = Object.entries(TypeUserIDCons).map(([key, value]) => ({
+    key: value,    // 'client', 'staff', 'admin'
+    value: key     // 'Client', 'Staff', 'Administrator'
+  }));
+
+  // ========================================= FETCH INIT ============================
   useEffect(() => {
-    fetchEmployees();
-    fetchRoles();
+    fetchList();
   }, []);
 
-  // Filter employees when search or role filter changes
+  // Filter UserList when search or role filter changes
   useEffect(() => {
     filterEmployees();
-  }, [searchTerm, roleFilter, employees]);
+  }, [searchTerm, roleFilter, UserList]);
 
-  const fetchEmployees = async () => {
-    // try {
-    //   setIsLoading(true);
-    //   const response = await ApiStaff.getAll();
-    //   setEmployees(response.data || []);
-    // } catch (error) {
-    //   console.error('Error fetching employees:', error);
-    //   alert('Không thể tải danh sách nhân viên');
-    // } finally {
-    //   setIsLoading(false);
-    // }
-  };
-
-  const fetchRoles = async () => {
+  const fetchList = async () => {
     try {
-      const response = await ApiStaff.getAllRoles();
-      setRoles(response.data || []);
+      setIsLoading(true);
+      const res = await dispatch(getListUser({ page: 1, limit: 10 }));
+
     } catch (error) {
-      console.error('Error fetching roles:', error);
+      console.error('Error fetching UserList:', error);
+      toast.error('Không thể tải danh sách nhân viên');
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  // ================================== CRUD ===========================
+
   const filterEmployees = () => {
-    let filtered = employees;
+    let filtered = UserList;
 
     // Filter by search term
     if (searchTerm) {
-      filtered = filtered.filter(emp => 
+      filtered = filtered.filter(emp =>
         emp.userName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         emp.phone?.includes(searchTerm)
@@ -75,12 +76,12 @@ export default function Employees() {
     setFilteredEmployees(filtered);
   };
 
+  // THÊM
   const handleAddClick = () => {
     setEditingEmployee(null);
     setFormData({
       userName: '',
       email: '',
-      password: '',
       image: '',
       phone: '',
       address: '',
@@ -89,17 +90,19 @@ export default function Employees() {
     setShowModal(true);
   };
 
+  // SỬA
   const handleEditClick = (employee) => {
     setEditingEmployee(employee);
     setFormData(employee);
     setShowModal(true);
   };
 
+  // XÓA
   const handleDeleteClick = async (id) => {
     if (window.confirm('Bạn có chắc chắn muốn xóa nhân viên này?')) {
       try {
-        await ApiStaff.delete(id);
-        setEmployees(employees.filter(emp => emp.id !== id));
+        await ApiAuth.delete(id);
+        fetchList();
         alert('Xóa nhân viên thành công');
       } catch (error) {
         console.error('Error deleting employee:', error);
@@ -108,11 +111,12 @@ export default function Employees() {
     }
   };
 
+  // SAVE
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validation
-    if (!formData.userName || !formData.email || !formData.phone || !formData.role) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.role) {
       alert('Vui lòng điền đầy đủ thông tin bắt buộc');
       return;
     }
@@ -120,13 +124,11 @@ export default function Employees() {
     try {
       if (editingEmployee) {
         // Update employee
-        await ApiStaff.update(editingEmployee.id, formData);
-        setEmployees(employees.map(emp => emp.id === editingEmployee.id ? { ...emp, ...formData } : emp));
+        await ApiAuth.update(editingEmployee.id, formData);
         alert('Cập nhật nhân viên thành công');
       } else {
         // Add new employee
-        const response = await ApiStaff.create(formData);
-        setEmployees([...employees, response.data]);
+        const response = await ApiAuth.create(formData);
         alert('Thêm nhân viên thành công');
       }
       setShowModal(false);
@@ -155,7 +157,7 @@ export default function Employees() {
       emp.address,
       emp.role
     ]);
-    
+
     const csvContent = [
       headers.join(','),
       ...rows.map(row => row.map(cell => `"${cell}"`).join(','))
@@ -165,7 +167,7 @@ export default function Employees() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'employees.csv';
+    a.download = 'UserList.csv';
     a.click();
   };
 
@@ -189,16 +191,17 @@ export default function Employees() {
               />
             </div>
 
-            <select
-              value={roleFilter}
-              onChange={(e) => setRoleFilter(e.target.value)}
-              className="border border-gray-300 rounded px-3 py-2 text-sm text-gray-500 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            >
-              <option value="">Tất cả vai trò</option>
-              {roles.map(role => (
-                <option key={role.id} value={role.name}>{role.name}</option>
-              ))}
-            </select>
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 space-y-2">
+                <DropdownSearch
+                  options={roleOptions}
+                  placeholder="--- Tìm theo vai trò ---"
+                  labelKey="value"
+                  valueKey="key"
+                  onChange={(e) => setRoleFilter(e)}
+                />
+              </div>
+            </div>
 
             <button
               onClick={handleAddClick}
@@ -220,10 +223,6 @@ export default function Employees() {
 
         {/* Table Section */}
         <div className="bg-white rounded-lg shadow-sm">
-          <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg text-gray-700 font-semibold">Danh sách nhân viên ({filteredEmployees.length})</h2>
-          </div>
-
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead className="bg-gray-100 border-b-2 border-gray-300">
@@ -336,21 +335,6 @@ export default function Employees() {
 
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
-                  Mật khẩu {!editingEmployee && '*'}
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  placeholder="Nhập mật khẩu"
-                  required={!editingEmployee}
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Số điện thoại *
                 </label>
                 <input
@@ -396,18 +380,15 @@ export default function Employees() {
                 <label className="block text-sm font-semibold text-gray-700 mb-1">
                   Vai trò *
                 </label>
-                <select
-                  name="role"
-                  value={formData.role}
-                  onChange={handleInputChange}
-                  className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                  required
-                >
-                  <option value="">Chọn vai trò</option>
-                  {roles.map(role => (
-                    <option key={role.id} value={role.name}>{role.name}</option>
-                  ))}
-                </select>
+                <div className="flex-1 space-y-2">
+                  <DropdownSearch
+                    options={roleOptions}
+                    placeholder="--- Tìm theo vai trò ---"
+                    labelKey="value"
+                    valueKey="key"
+                    onChange={(e) => setRoleFilter(e)}
+                  />
+                </div>
               </div>
 
               <div className="flex gap-3 mt-6">
