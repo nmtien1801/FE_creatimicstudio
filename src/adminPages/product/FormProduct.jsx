@@ -17,7 +17,29 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         imagePreview: '' // Store preview URL separately
     });
 
+    // ====================================== INIT ================================
     useEffect(() => {
+        const loadInitialImage = async (imagePath) => {
+            try {
+                setIsLoading(true);
+                // Gọi API lấy buffer của ảnh dựa trên path lưu trong DB
+                const imageRes = await ApiUpload.GetFileApi(imagePath);
+
+                // Tạo blob từ arraybuffer nhận được
+                const blob = new Blob([imageRes]); // Trình duyệt tự hiểu định dạng
+                const previewUrl = URL.createObjectURL(blob);
+
+                setFormData(prev => ({
+                    ...prev,
+                    imagePreview: previewUrl
+                }));
+            } catch (error) {
+                console.error('Failed to load initial image:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
         if (initialData) {
             setFormData({
                 name: initialData.name || '',
@@ -29,16 +51,14 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 imagePreview: initialData.image || '' // Show existing image as preview
             });
         }
+
+        // Nếu sản phẩm đã có ảnh, gọi API để lấy nội dung ảnh hiển thị
+        if (initialData.image) {
+            loadInitialImage(initialData.image);
+        }
     }, [initialData]);
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
-
+    // =========================================== CRUD ================================================
     // Hàm xử lý upload ảnh từ logic bạn cung cấp
     const handleFileChange = async (e) => {
         const file = e.target.files?.[0];
@@ -62,19 +82,19 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
             const uploadData = new FormData();
             uploadData.append('myFiles', file);
             const uploadRes = await ApiUpload.UploadFileApi(uploadData);
-            
+
             if (uploadRes && uploadRes.DT) {
                 const filePath = uploadRes.DT; // Lấy path từ response
-                
+
                 // Đọc ảnh từ path đó
                 const imageRes = await ApiUpload.GetFileApi(filePath);
-                
+
                 // Chuyển arraybuffer thành blob URL để preview
                 const blob = new Blob([imageRes], { type: 'image/jpeg' });
                 const previewUrl = URL.createObjectURL(blob);
-                
-                setFormData(prev => ({ 
-                    ...prev, 
+
+                setFormData(prev => ({
+                    ...prev,
                     image: filePath, // Lưu path từ backend
                     imagePreview: previewUrl
                 }));
@@ -91,11 +111,19 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         }
     };
 
+    const handleChange = (e) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
     const handleLocalSubmit = (e) => {
         e.preventDefault();
-        
+
         // Gửi image path (string), không gửi file object
-        onSubmit({ 
+        onSubmit({
             name: formData.name,
             price: Number(formData.price),
             description: formData.description,

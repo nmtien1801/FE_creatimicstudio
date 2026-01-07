@@ -67,9 +67,6 @@ const loadImage = async (url) => {
   try {
     if (!url) return null;
 
-    if (url.startsWith("~/")) url = url.substring(2);
-    else if (url.startsWith("~")) url = url.substring(1);
-
     const arrayBuffer = await ApiUpload.GetFileApi(url);
 
     if (arrayBuffer && arrayBuffer instanceof ArrayBuffer) {
