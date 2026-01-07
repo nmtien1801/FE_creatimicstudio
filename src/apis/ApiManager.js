@@ -115,10 +115,26 @@ export const ApiManager = {
     return res;
   },
   post: async (url, body, query) => {
+    if (body instanceof FormData) {
+      const config = { params: query };
+      config.headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      const res = await api.post(url, body, config);
+      return res;
+    }
     const res = await api.post(url, body, { params: query });
     return res;
   },
-  put: async (url, data) => {
+  put: async (url, data, query) => {
+    if (data instanceof FormData) {
+      const config = { params: query };
+      config.headers = {
+        "Content-Type": "multipart/form-data",
+      };
+      const res = await api.put(url, data, config);
+      return res;
+    }
     const res = await api.put(url, data);
     return res;
   },
