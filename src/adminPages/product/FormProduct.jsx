@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PackagePlus, X, Edit3, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ApiUpload from '../../apis/ApiUpload';
+import {loadImage} from '../../utils/constants';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // Ví dụ: 2MB
 
@@ -22,12 +23,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         const loadInitialImage = async (imagePath) => {
             try {
                 setIsLoading(true);
-                // Gọi API lấy buffer của ảnh dựa trên path lưu trong DB
-                const imageRes = await ApiUpload.GetFileApi(imagePath);
-
-                // Tạo blob từ arraybuffer nhận được
-                const blob = new Blob([imageRes]); // Trình duyệt tự hiểu định dạng
-                const previewUrl = URL.createObjectURL(blob);
+                const previewUrl = await loadImage(imagePath)
 
                 setFormData(prev => ({
                     ...prev,

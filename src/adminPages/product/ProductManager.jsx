@@ -6,6 +6,7 @@ import FormProduct from './FormProduct';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListProduct } from '../../redux/productSlice';
 import ApiProduct from '../../apis/ApiProduct';
+import ImageLoader from '../../components/FormFields/ImageLoader';
 
 export default function ProductManager() {
   const dispatch = useDispatch();
@@ -163,7 +164,7 @@ export default function ProductManager() {
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-3">
-                      <img src={item.image ? item.image : "https://picsum.photos/50"} alt="" className="w-10 h-10 rounded-md border object-cover" />
+                      <ImageLoader imagePath={item.image} className="w-10 h-10 rounded-md border object-cover" />
                       <span className="font-semibold text-gray-900">{item.name}</span>
                     </div>
                   </td>

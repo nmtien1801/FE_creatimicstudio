@@ -2,9 +2,9 @@ import moment from "moment";
 import ApiUpload from "../apis/ApiUpload.js";
 
 const TypeUserIDCons = {
-  client: 'client',
-  staff: 'staff',
-  admin: 'admin',
+  client: "client",
+  staff: "staff",
+  admin: "admin",
 };
 
 const formatDate = (isoDate) => {
@@ -67,17 +67,14 @@ const loadImage = async (url) => {
   try {
     if (!url) return null;
 
-    const arrayBuffer = await ApiUpload.GetFileApi(url);
+    // Gọi API lấy buffer của ảnh dựa trên path lưu trong DB
+    const imageRes = await ApiUpload.GetFileApi(url);
 
-    if (arrayBuffer && arrayBuffer instanceof ArrayBuffer) {
-      // Chuyển ArrayBuffer thành Blob URL
-      const imageUrl = createImageUrl(arrayBuffer, "image/png");
+    // Tạo blob từ arraybuffer nhận được
+    const blob = new Blob([imageRes]); // Trình duyệt tự hiểu định dạng
+    const previewUrl = URL.createObjectURL(blob);
 
-      return imageUrl;
-    } else {
-      console.warn("Response không phải ArrayBuffer:", arrayBuffer);
-      return null;
-    }
+    return previewUrl;
   } catch (error) {
     console.error("Lỗi khi tải ảnh:", error);
     return null;
