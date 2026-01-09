@@ -3,15 +3,17 @@ import { useForm, Controller } from 'react-hook-form';
 import { Loader2, Save, Trash2, RotateCcw } from 'lucide-react';
 import CKEditorField from '../../components/FormFields/CKEditor/CkEditorField';
 import UploadField from '../../components/FormFields/UploadField';
-// import ApiNews from '../../apis/ApiNews'
+import ApiPost from '../../apis/ApiPost'
 import { toast } from 'react-toastify'
 import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const tailwindInputClasses =
     "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm";
 
-export default function RecruitmentDetail() {
+export default function NewsDetail() {
     const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
     const idUpdate = searchParams.get('id');
 
     // 1. Xác định chế độ chỉnh sửa dựa trên ID
@@ -20,12 +22,12 @@ export default function RecruitmentDetail() {
 
     const { control, handleSubmit, reset, setValue, getValues } = useForm({
         defaultValues: {
-            Title: '',
+            title: '',
             status: true,
-            ShortDescription: '',
-            Description: '',
-            ImagesPath: '',
-            NewsID: notificationId || null,
+            description: '',
+            detail: '',
+            image: '',
+            id: notificationId || null,
         },
     });
 
@@ -38,44 +40,44 @@ export default function RecruitmentDetail() {
         }
     }, [notificationId, isEditMode]);
 
-    // const fetchNotificationDetails = async (id) => {
-    //   setIsLoading(true);
-    //   try {
-    //     const res = await ApiNews.getNewsByIDApi(id);
-    //     if (res && res.data) {
-    //       const data = res.data;
-    //       setValue('Title', data.Title || '');
-    //       setValue('status', data.StatusID === 1);
-    //       setValue('ShortDescription', data.ShortDescription || '');
-    //       setValue('Description', data.Description || '');
-    //       setValue('ImagesPath', data.ImagesPath || '');
-    //       setValue('NewsID', data.NewsID);
-    //     } else {
-    //       toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
-    //     }
-    //   } catch (error) {
-    //     toast.error("Lỗi khi tải chi tiết thông báo.");
-    //   } finally {
-    //     setIsLoading(false);
-    //   }
-    // };
+    const fetchNotificationDetails = async (id) => {
+        //   setIsLoading(true);
+        //   try {
+        //     const res = await ApiPost.getNewsByIDApi(id);
+        //     if (res && res.data) {
+        //       const data = res.data;
+        //       setValue('title', data.title || '');
+        //       setValue('status', data.StatusID === 1);
+        //       setValue('description', data.description || '');
+        //       setValue('detail', data.detail || '');
+        //       setValue('image', data.image || '');
+        //       setValue('NewsID', data.NewsID);
+        //     } else {
+        //       toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
+        //     }
+        //   } catch (error) {
+        //     toast.error("Lỗi khi tải chi tiết thông báo.");
+        //   } finally {
+        //     setIsLoading(false);
+        //   }
+    };
 
     // 3. Xử lý Form: Thêm mới hoặc Cập nhật
     const handleFormSubmit = handleSubmit(async (formValues) => {
         setIsLoading(true);
         try {
             // Kiểm tra validate cơ bản
-            if (!formValues.Title.trim()) {
+            if (!formValues.title.trim()) {
                 toast.error('Vui lòng nhập tiêu đề');
                 setIsLoading(false);
                 return;
             }
-            if (!formValues.ShortDescription.trim()) {
+            if (!formValues.description.trim()) {
                 toast.error('Vui lòng nhập mô tả ngắn');
                 setIsLoading(false);
                 return;
             }
-            const content = formValues.Description.replace(/<[^>]*>/g, '').trim();
+            const content = formValues.detail.replace(/<[^>]*>/g, '').trim();
             if (!content) {
                 toast.error('Vui lòng nhập nội dung');
                 setIsLoading(false);
@@ -91,7 +93,7 @@ export default function RecruitmentDetail() {
             let res;
             if (isEditMode) {
                 // HÀM CẬP NHẬT
-                // res = await ApiNews.UpdateNewsApi(apiPayload);
+                // res = await ApiPost.UpdateNewsApi(apiPayload);
 
                 // if (res && !res.message) {
                 //   toast.success(`Cập nhật thông báo thành công!`);
@@ -100,14 +102,15 @@ export default function RecruitmentDetail() {
                 // }
             } else {
                 // HÀM THÊM MỚI
-                // res = await ApiNews.CreateNewsApi(apiPayload);
+                res = await ApiPost.createPostApi(apiPayload);
 
-                // if (res && !res.message) {
-                //   toast.success(`Thêm mới thông báo thành công!`);
-                //   reset();
-                // } else {
-                //   toast.error(res.message);
-                // }
+                if (res && res.EC === 0) {
+                    toast.success(`Thêm mới thông báo thành công!`);
+                    navigate('/news/manager')
+                    reset();
+                } else {
+                    toast.error(res.EM);
+                }
             }
 
         } catch (error) {
@@ -116,30 +119,6 @@ export default function RecruitmentDetail() {
             setIsLoading(false);
         }
     });
-
-    // 4. Xử lý Xóa 
-    // const handleDelete = async () => {
-    //   if (!isEditMode || !notificationId) return;
-
-    //   if (window.confirm('Bạn có chắc chắn muốn xóa thông báo này?')) {
-    //     setIsLoading(true);
-    //     try {
-    //       const res = await ApiNews.DeleteNewsApi(getValues());
-
-    //       if (res && !res.message) {
-    //         toast.success(`Xóa thông báo thành công!`);
-    //         window.history.back(); // Quay về danh sách
-    //       } else {
-    //         toast.error(res.message);
-    //       }
-
-    //     } catch (error) {
-    //       toast.error('Lỗi khi xóa thông báo.');
-    //     } finally {
-    //       setIsLoading(false);
-    //     }
-    //   }
-    // }
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -161,7 +140,7 @@ export default function RecruitmentDetail() {
                                 </label>
                                 <div className="col-span-12 md:col-span-10">
                                     <Controller
-                                        name="Title"
+                                        name="title"
                                         control={control}
                                         render={({ field }) => (
                                             <input
@@ -209,7 +188,7 @@ export default function RecruitmentDetail() {
                                 </label>
                                 <div className="col-span-12 md:col-span-3">
                                     <UploadField
-                                        name="ImagesPath"
+                                        name="image"
                                         control={control}
                                         label="Chọn hình ảnh"
                                     />
@@ -223,7 +202,7 @@ export default function RecruitmentDetail() {
                                 </label>
                                 <div className="col-span-12 md:col-span-10">
                                     <Controller
-                                        name="ShortDescription"
+                                        name="description"
                                         control={control}
                                         render={({ field }) => (
                                             <textarea
@@ -244,7 +223,7 @@ export default function RecruitmentDetail() {
                                 </label>
                                 <div className="col-span-12 md:col-span-10">
                                     <CKEditorField
-                                        name="Description"
+                                        name="detail"
                                         control={control}
                                         label=""
                                     />
@@ -259,7 +238,7 @@ export default function RecruitmentDetail() {
                                     type="button"
                                     onClick={handleFormSubmit}
                                     disabled={isLoading}
-                                    className="px-3 sm:px-4 py-2 bg-[#337ab7] hover:bg-[#2e6da4] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
+                                    className="px-3 sm:px-4 py-2 bg-[#337ab7] hover:bg-[#2e6da4] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap cursor-pointer"
                                 >
                                     {isLoading ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -267,28 +246,6 @@ export default function RecruitmentDetail() {
                                         <Save className="w-4 h-4" />
                                     )}
                                     <span>{isEditMode ? 'Lưu lại' : 'Thêm mới'}</span>
-                                </button>
-
-                                {isEditMode && (
-                                    <button
-                                        type="button"
-                                        onClick={handleDelete}
-                                        disabled={isLoading}
-                                        className="px-3 sm:px-4 py-2 bg-[#d9534f] hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
-                                    >
-                                        <Trash2 className="w-4 h-4" />
-                                        <span>Xóa</span>
-                                    </button>
-                                )}
-
-                                <button
-                                    type="button"
-                                    onClick={() => window.history.back()}
-                                    disabled={isLoading}
-                                    className="px-3 sm:px-4 py-2 bg-[#f0ad4e] hover:bg-[#e69c3b] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
-                                >
-                                    <RotateCcw className="w-4 h-4" />
-                                    <span>Trở về danh sách</span>
                                 </button>
                             </div>
                         </div>

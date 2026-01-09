@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
-export default function RecruitmentManager() {
+export default function NewsManager() {
   const navigate = useNavigate();
   const recruitments = [
     {
@@ -58,6 +58,7 @@ export default function RecruitmentManager() {
                       <div className="flex items-center gap-2 ml-4">
                         <button
                           className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-all cursor-pointer"
+                          onClick={() => navigate('/news/detail?id=' + item.id)}
                           title="Chỉnh sửa"
                         >
                           <Pencil size={16} />

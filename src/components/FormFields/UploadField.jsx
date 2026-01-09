@@ -59,9 +59,9 @@ export default function UploadField({
     try {
       const res = await ApiUpload.UploadFileApi(formData);
 
-      if (res && res.data) {
-        onChange(res.data);
-        onUploadChange?.(res.data);
+      if (res && res.DT) {
+        onChange(res.DT);
+        onUploadChange?.(res.DT);
         toast.success('Tải tệp lên thành công!');
       } else {
         toast.error('Tải tệp lên thất bại, không nhận được đường dẫn tệp.');
