@@ -4,6 +4,7 @@ import staffReducer from "./staffSlice";
 import productReducer from "./productSlice";
 import categoryReducer from "./categorySlice";
 import postReducer from "./postSlice";
+import recruitmentReducer from "./recruitmentSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     product: productReducer,
     category: categoryReducer,
     post: postReducer,
+    recruitment: recruitmentReducer,
   },
 });

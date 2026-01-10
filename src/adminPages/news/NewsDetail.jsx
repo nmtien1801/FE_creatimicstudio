@@ -53,7 +53,7 @@ export default function NewsDetail() {
                 setValue('description', data.description || '');
                 setValue('detail', data.detail || '');
                 setValue('image', data.image || '');
-                setValue('NewsID', data.NewsID);
+                setValue('id', data.id);
             } else {
                 toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
             }
@@ -89,7 +89,7 @@ export default function NewsDetail() {
 
             const apiPayload = {
                 ...formValues,
-                ...(isEditMode && { NewsID: id }),
+                ...(isEditMode && { id: id }),
             };
 
             let res;
@@ -119,6 +119,7 @@ export default function NewsDetail() {
 
         } catch (error) {
             toast.error(`Lỗi hệ thống khi ${isEditMode ? 'cập nhật' : 'tạo'} thông báo`);
+            
         } finally {
             setIsLoading(false);
         }

@@ -3,303 +3,274 @@ import { useForm, Controller } from 'react-hook-form';
 import { Loader2, Save, Trash2, RotateCcw } from 'lucide-react';
 import CKEditorField from '../../components/FormFields/CKEditor/CkEditorField';
 import UploadField from '../../components/FormFields/UploadField';
-// import ApiNews from '../../apis/ApiNews'
+import ApiRecruitment from '../../apis/ApiRecruitment'
 import { toast } from 'react-toastify'
 import { useSearchParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const tailwindInputClasses =
-  "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm";
+    "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm";
 
 export default function RecruitmentDetail() {
-  const [searchParams] = useSearchParams();
-  const idUpdate = searchParams.get('id');
+    const [searchParams] = useSearchParams();
+    const navigate = useNavigate();
+    const idUpdate = searchParams.get('id');
 
-  // 1. Xác định chế độ chỉnh sửa dựa trên ID
-  const isEditMode = !!idUpdate;
-  const [notificationId] = useState(idUpdate);
+    // 1. Xác định chế độ chỉnh sửa dựa trên ID
+    const isEditMode = !!idUpdate;
+    const [id] = useState(idUpdate);
 
-  const { control, handleSubmit, reset, setValue, getValues } = useForm({
-    defaultValues: {
-      Title: '',
-      status: true,
-      ShortDescription: '',
-      Description: '',
-      ImagesPath: '',
-      NewsID: notificationId || null,
-    },
-  });
+    const { control, handleSubmit, reset, setValue, getValues } = useForm({
+        defaultValues: {
+            title: '',
+            status: true,
+            description: '',
+            detail: '',
+            image: '',
+            id: id || null,
+        },
+    });
 
-  const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
-  // 2. Tải dữ liệu cũ nếu là chế độ chỉnh sửa
-  useEffect(() => {
-    if (isEditMode && notificationId) {
-      fetchNotificationDetails(notificationId);
-    }
-  }, [notificationId, isEditMode]);
+    // ============================================= INIT ========================================
+    // 2. Tải dữ liệu cũ nếu là chế độ chỉnh sửa
+    useEffect(() => {
+        if (isEditMode && id) {
+            fetchDetail(id);
+        }
+    }, [id, isEditMode]);
 
-  // const fetchNotificationDetails = async (id) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const res = await ApiNews.getNewsByIDApi(id);
-  //     if (res && res.data) {
-  //       const data = res.data;
-  //       setValue('Title', data.Title || '');
-  //       setValue('status', data.StatusID === 1);
-  //       setValue('ShortDescription', data.ShortDescription || '');
-  //       setValue('Description', data.Description || '');
-  //       setValue('ImagesPath', data.ImagesPath || '');
-  //       setValue('NewsID', data.NewsID);
-  //     } else {
-  //       toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
-  //     }
-  //   } catch (error) {
-  //     toast.error("Lỗi khi tải chi tiết thông báo.");
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+    const fetchDetail = async (id) => {
+        setIsLoading(true);
+        try {
+            const res = await ApiRecruitment.getRecruitmentByIdApi(id);
 
-  // 3. Xử lý Form: Thêm mới hoặc Cập nhật
-  const handleFormSubmit = handleSubmit(async (formValues) => {
-    setIsLoading(true);
-    try {
-      // Kiểm tra validate cơ bản
-      if (!formValues.Title.trim()) {
-        toast.error('Vui lòng nhập tiêu đề');
-        setIsLoading(false);
-        return;
-      }
-      if (!formValues.ShortDescription.trim()) {
-        toast.error('Vui lòng nhập mô tả ngắn');
-        setIsLoading(false);
-        return;
-      }
-      const content = formValues.Description.replace(/<[^>]*>/g, '').trim();
-      if (!content) {
-        toast.error('Vui lòng nhập nội dung');
-        setIsLoading(false);
-        return;
-      }
+            if (res && res.DT) {
+                const data = res.DT;
+                setValue('title', data.title || '');
+                setValue('status', data.status);
+                setValue('description', data.description || '');
+                setValue('detail', data.detail || '');
+                setValue('image', data.image || '');
+                setValue('id', data.id);
+            } else {
+                toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
+            }
+        } catch (error) {
+            toast.error("Lỗi khi tải chi tiết thông báo.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
-      const apiPayload = {
-        ...formValues,
-        StatusID: formValues.status ? 1 : 0,
-        ...(isEditMode && { NewsID: notificationId }),
-      };
+    // ============================================= CRUD ================================================
+    // 3. Xử lý Form: Thêm mới hoặc Cập nhật
+    const handleFormSubmit = handleSubmit(async (formValues) => {
+        setIsLoading(true);
+        try {
+            // Kiểm tra validate cơ bản
+            if (!formValues.title.trim()) {
+                toast.error('Vui lòng nhập tiêu đề');
+                setIsLoading(false);
+                return;
+            }
+            if (!formValues.description.trim()) {
+                toast.error('Vui lòng nhập mô tả ngắn');
+                setIsLoading(false);
+                return;
+            }
+            const content = formValues.detail.replace(/<[^>]*>/g, '').trim();
+            if (!content) {
+                toast.error('Vui lòng nhập nội dung');
+                setIsLoading(false);
+                return;
+            }
 
-      let res;
-      if (isEditMode) {
-        // HÀM CẬP NHẬT
-        // res = await ApiNews.UpdateNewsApi(apiPayload);
+            const apiPayload = {
+                ...formValues,
+                ...(isEditMode && { id: id }),
+            };
 
-        // if (res && !res.message) {
-        //   toast.success(`Cập nhật thông báo thành công!`);
-        // } else {
-        //   toast.error(res.message);
-        // }
-      } else {
-        // HÀM THÊM MỚI
-        // res = await ApiNews.CreateNewsApi(apiPayload);
+            let res;
+            if (isEditMode) {
+                // HÀM CẬP NHẬT
+                res = await ApiRecruitment.updateRecruitmentApi(id, apiPayload);
 
-        // if (res && !res.message) {
-        //   toast.success(`Thêm mới thông báo thành công!`);
-        //   reset();
-        // } else {
-        //   toast.error(res.message);
-        // }
-      }
+                if (res && res.EC === 0) {
+                    toast.success(`Cập nhật thông báo thành công!`);
+                    navigate('/recruitment/manager')
+                    reset();
+                } else {
+                    toast.error(res.EM);
+                }
+            } else {
+                // HÀM THÊM MỚI
+                res = await ApiRecruitment.createRecruitmentApi(apiPayload);
 
-    } catch (error) {
-      toast.error(`Lỗi hệ thống khi ${isEditMode ? 'cập nhật' : 'tạo'} thông báo`);
-    } finally {
-      setIsLoading(false);
-    }
-  });
+                if (res && res.EC === 0) {
+                    toast.success(`Thêm mới thông báo thành công!`);
+                    navigate('/recruitment/manager')
+                    reset();
+                } else {
+                    toast.error(res.EM);
+                }
+            }
 
-  // 4. Xử lý Xóa 
-  // const handleDelete = async () => {
-  //   if (!isEditMode || !notificationId) return;
+        } catch (error) {
+            toast.error(`Lỗi hệ thống khi ${isEditMode ? 'cập nhật' : 'tạo'} thông báo`);
+        } finally {
+            setIsLoading(false);
+        }
+    });
 
-  //   if (window.confirm('Bạn có chắc chắn muốn xóa thông báo này?')) {
-  //     setIsLoading(true);
-  //     try {
-  //       const res = await ApiNews.DeleteNewsApi(getValues());
+    return (
+        <div className="min-h-screen bg-gray-50 p-4 md:p-8">
+            <div className="max-w-[1600px] mx-auto">
+                {/* Header */}
+                <h1 className="text-xl md:text-2xl text-gray-600">
+                    {isEditMode ? 'Chỉnh sửa bài viết' : 'Thêm bài mới'}
+                </h1>
 
-  //       if (res && !res.message) {
-  //         toast.success(`Xóa thông báo thành công!`);
-  //         window.history.back(); // Quay về danh sách
-  //       } else {
-  //         toast.error(res.message);
-  //       }
+                {/* Main Content */}
+                <div className="max-w-8xl mx-auto px-4 py-6">
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+                        <div className="p-6 space-y-6">
 
-  //     } catch (error) {
-  //       toast.error('Lỗi khi xóa thông báo.');
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // }
+                            {/* 1. Tiêu đề */}
+                            <div className="grid grid-cols-12 gap-6 items-start">
+                                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
+                                    Tiêu đề <span className="text-red-500">*</span>
+                                </label>
+                                <div className="col-span-12 md:col-span-10">
+                                    <Controller
+                                        name="title"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <input
+                                                {...field}
+                                                type="text"
+                                                className={tailwindInputClasses}
+                                                placeholder="Nhập tiêu đề thông báo"
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            </div>
 
-  return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-      <div className="max-w-[1600px] mx-auto">
-        {/* Header */}
-        <h1 className="text-xl md:text-2xl text-gray-600">
-          {isEditMode ? 'Chỉnh sửa bài tuyển dụng' : 'Thêm bài tuyển dụng mới'}
-        </h1>
+                            {/* 2. Trạng thái - Checkbox */}
+                            <div className="grid grid-cols-12 gap-6 items-start">
+                                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2">
+                                    Trạng thái
+                                </label>
+                                <div className="col-span-12 md:col-span-10">
+                                    <div className="flex items-center h-full pt-1">
+                                        <Controller
+                                            name="status"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <input
+                                                    type="checkbox"
+                                                    checked={field.value}
+                                                    onChange={field.onChange}
+                                                    id="status-checkbox"
+                                                    className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                                                />
+                                            )}
+                                        />
+                                        <label htmlFor="status-checkbox" className="ml-2 text-sm font-medium text-gray-700">
+                                            Hiển thị
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
 
-        {/* Main Content */}
-        <div className="max-w-8xl mx-auto px-4 py-6">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-            <div className="p-6 space-y-6">
+                            {/* 3. Hình ảnh */}
+                            <div className="grid grid-cols-12 gap-6 items-start">
+                                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
+                                    Hình ảnh
+                                </label>
+                                <div className="col-span-12 md:col-span-3">
+                                    <UploadField
+                                        name="image"
+                                        control={control}
+                                        label="Chọn hình ảnh"
+                                    />
+                                </div>
+                            </div>
 
-              {/* 1. Tiêu đề */}
-              <div className="grid grid-cols-12 gap-6 items-start">
-                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
-                  Tiêu đề <span className="text-red-500">*</span>
-                </label>
-                <div className="col-span-12 md:col-span-10">
-                  <Controller
-                    name="Title"
-                    control={control}
-                    render={({ field }) => (
-                      <input
-                        {...field}
-                        type="text"
-                        className={tailwindInputClasses}
-                        placeholder="Nhập tiêu đề thông báo"
-                      />
-                    )}
-                  />
+                            {/* 4. Mô tả ngắn */}
+                            <div className="grid grid-cols-12 gap-6 items-start">
+                                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
+                                    Mô tả ngắn <span className="text-red-500">*</span>
+                                </label>
+                                <div className="col-span-12 md:col-span-10">
+                                    <Controller
+                                        name="description"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <textarea
+                                                {...field}
+                                                rows={3}
+                                                className={tailwindInputClasses + " resize-none"}
+                                                placeholder="Nhập mô tả ngắn"
+                                            />
+                                        )}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* 5. Mô tả chi tiết */}
+                            <div className="grid grid-cols-12 gap-6 items-start">
+                                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
+                                    Mô tả <span className="text-red-500">*</span>
+                                </label>
+                                <div className="col-span-12 md:col-span-10">
+                                    <CKEditorField
+                                        name="detail"
+                                        control={control}
+                                        label=""
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Action Buttons*/}
+                        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
+                            <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleFormSubmit}
+                                    disabled={isLoading}
+                                    className="px-3 sm:px-4 py-2 bg-[#337ab7] hover:bg-[#2e6da4] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap cursor-pointer"
+                                >
+                                    {isLoading ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <Save className="w-4 h-4" />
+                                    )}
+                                    <span>{isEditMode ? 'Lưu lại' : 'Thêm mới'}</span>
+                                </button>
+
+                                <button
+                                    type="button"
+                                    onClick={() => navigate('/recruitment/manager')}
+                                    disabled={isLoading}
+                                    className="px-3 sm:px-4 py-2 bg-[#f0ad4e] hover:bg-[#e69c3b] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
+                                >
+                                    <RotateCcw className="w-4 h-4" />
+                                    <span>Trở về danh sách</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
 
-              {/* 2. Trạng thái - Checkbox */}
-              <div className="grid grid-cols-12 gap-6 items-start">
-                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2">
-                  Trạng thái
-                </label>
-                <div className="col-span-12 md:col-span-10">
-                  <div className="flex items-center h-full pt-1">
-                    <Controller
-                      name="status"
-                      control={control}
-                      render={({ field }) => (
-                        <input
-                          type="checkbox"
-                          checked={field.value}
-                          onChange={field.onChange}
-                          id="status-checkbox"
-                          className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-                        />
-                      )}
-                    />
-                    <label htmlFor="status-checkbox" className="ml-2 text-sm font-medium text-gray-700">
-                      Hiển thị
-                    </label>
-                  </div>
-                </div>
-              </div>
-
-              {/* 3. Hình ảnh */}
-              <div className="grid grid-cols-12 gap-6 items-start">
-                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
-                  Hình ảnh
-                </label>
-                <div className="col-span-12 md:col-span-3">
-                  <UploadField
-                    name="ImagesPath"
-                    control={control}
-                    label="Chọn hình ảnh"
-                  />
-                </div>
-              </div>
-
-              {/* 4. Mô tả ngắn */}
-              <div className="grid grid-cols-12 gap-6 items-start">
-                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
-                  Mô tả ngắn <span className="text-red-500">*</span>
-                </label>
-                <div className="col-span-12 md:col-span-10">
-                  <Controller
-                    name="ShortDescription"
-                    control={control}
-                    render={({ field }) => (
-                      <textarea
-                        {...field}
-                        rows={3}
-                        className={tailwindInputClasses + " resize-none"}
-                        placeholder="Nhập mô tả ngắn"
-                      />
-                    )}
-                  />
-                </div>
-              </div>
-
-              {/* 5. Mô tả chi tiết */}
-              <div className="grid grid-cols-12 gap-6 items-start">
-                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
-                  Mô tả <span className="text-red-500">*</span>
-                </label>
-                <div className="col-span-12 md:col-span-10">
-                  <CKEditorField
-                    name="Description"
-                    control={control}
-                    label=""
-                  />
-                </div>
-              </div>
+                {/* Footer */}
+                <footer className="mt-12 py-6 text-center text-sm text-gray-500 border-t border-gray-200">
+                    Copyright © 2025 by G&BSoft
+                </footer>
             </div>
-
-            {/* Action Buttons*/}
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 rounded-b-lg">
-              <div className="flex flex-wrap items-center justify-end gap-2 sm:gap-3">
-                <button
-                  type="button"
-                  onClick={handleFormSubmit}
-                  disabled={isLoading}
-                  className="px-3 sm:px-4 py-2 bg-[#337ab7] hover:bg-[#2e6da4] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
-                >
-                  {isLoading ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Save className="w-4 h-4" />
-                  )}
-                  <span>{isEditMode ? 'Lưu lại' : 'Thêm mới'}</span>
-                </button>
-
-                {isEditMode && (
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    disabled={isLoading}
-                    className="px-3 sm:px-4 py-2 bg-[#d9534f] hover:bg-red-700 text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                    <span>Xóa</span>
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={() => window.history.back()}
-                  disabled={isLoading}
-                  className="px-3 sm:px-4 py-2 bg-[#f0ad4e] hover:bg-[#e69c3b] text-white rounded-lg flex items-center justify-center gap-1 sm:gap-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-xs sm:text-sm font-medium whitespace-nowrap"
-                >
-                  <RotateCcw className="w-4 h-4" />
-                  <span>Trở về danh sách</span>
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
-
-        {/* Footer */}
-        <footer className="mt-12 py-6 text-center text-sm text-gray-500 border-t border-gray-200">
-          Copyright © 2025 by G&BSoft
-        </footer>
-      </div>
-    </div>
-  );
+    );
 }

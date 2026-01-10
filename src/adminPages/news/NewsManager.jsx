@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getListPost } from '../../redux/postSlice.js';
 import ImageLoader from '../../components/FormFields/ImageLoader';
+import ApiPost from "../../apis/ApiPost.js";
 
 export default function NewsManager() {
   const navigate = useNavigate();
@@ -36,6 +37,24 @@ export default function NewsManager() {
       window.scrollTo({ top: 0, behavior: 'smooth' }); // Cuộn lên đầu trang khi chuyển trang
     }
   };
+
+  const handleDeletePost = async (id) => {
+    if (window.confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
+      try {
+        let res = await ApiPost.deletePostApi(id);
+        
+        if (res && res.EC === 0) {
+          toast.success(res.EM);
+          fetchList();
+        } else {
+          toast.error(res.EM);
+        }
+      } catch (error) {
+        console.error('Error deleting post:', error);
+        toast.error('Không thể xóa bài viết');
+      }
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-8 px-4">
@@ -78,6 +97,7 @@ export default function NewsManager() {
                           </button>
                           <button
                             className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-full transition-all cursor-pointer"
+                            onClick={() => handleDeletePost(item.id)}
                             title="Xóa tin"
                           >
                             <Trash2 size={16} />
