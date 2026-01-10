@@ -30,7 +30,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       icon: Settings,
       items: [
         { label: 'Trang chủ', path: '/home' },
-        { label: 'Dashboard', path: '/dashboard' },
+        // { label: 'Dashboard', path: '/dashboard' },
         { label: 'Đổi mật khẩu', path: '/profile/change-password' },
         userInfo.role === 'admin' && { label: 'Làm mới mật khẩu NV', path: '/profile/change-password-staff' },
         { label: 'Thông tin tài khoản', path: '/profile/info' },

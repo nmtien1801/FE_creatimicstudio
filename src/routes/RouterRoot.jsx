@@ -28,6 +28,7 @@ import Cookies from "js-cookie";
 
 import Home from "../clientPages/TrangChu.jsx";
 import About from "../clientPages/GioiThieu.jsx";
+import Service from "../clientPages/DichVu.jsx";
 import Products from "../clientPages/SanPham.jsx";
 import News from "../clientPages/TinTuc.jsx";
 import Careers from "../clientPages/TuyenDung.jsx";
@@ -89,6 +90,7 @@ function RouterRoot() {
           <Route path="home" element={<Home />} />
           <Route path="about" element={<About />} />
           <Route path="products" element={<Products />} />
+          <Route path="service" element={<Service />} />
           <Route path="news" element={<News />} />
           <Route path="careers" element={<Careers />} />
           <Route path="/careers/:id" element={<JobDetail />} />

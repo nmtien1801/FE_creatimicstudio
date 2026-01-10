@@ -11,6 +11,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
     { label: "TRANG CHỦ", path: "/home" },
     { label: "GIỚI THIỆU", path: "/about" },
     { label: "SẢN PHẨM", path: "/products" },
+    { label: "DỊCH VỤ", path: "/service" },
     { label: "TIN TỨC", path: "/news" },
     { label: "TUYỂN DỤNG", path: "/careers" },
     { label: "LIÊN HỆ", path: "/contact" },
