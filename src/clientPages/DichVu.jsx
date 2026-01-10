@@ -155,9 +155,9 @@ const CMICLandingPage = () => {
                         { title: "Setup âm thanh - ánh sáng - góc quay", color: "border-yellow-400" },
                         { title: "Hướng dẫn sử dụng & hỗ trợ", color: "border-orange-400" }
                     ].map((step, index) => (
-                        <div key={index} className="z-10 bg-white border-2 border-gray-100 rounded-2xl p-4 w-full md:w-56 shadow-md text-center flex flex-col items-center">
-                            <div className={`w-10 h-10 rounded-full mb-4 ${step.color.replace('border', 'bg')}`}></div>
-                            <p className="text-sm font-semibold">{step.title}</p>
+                        <div key={index} className="z-10 bg-white border-2 border-gray-100 rounded-2xl p-2 w-full md:w-56 shadow-md text-center flex flex-col items-center">
+                            <div className={`w-20 h-20 rounded-full mb-4 -translate-y-[45px] ${step.color.replace('border', 'bg')}`}></div>
+                            <p className="text-base font-semibold">{step.title}</p>
                         </div>
                     ))}
                 </div>
