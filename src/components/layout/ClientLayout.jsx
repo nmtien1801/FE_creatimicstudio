@@ -59,7 +59,7 @@ function ClientLayout() {
                 />
 
                 {/* Main Content */}
-                <main ref={mainRef} className="flex-grow overflow-auto">
+                <main ref={mainRef} className="">
                     <Outlet />
                     <Footer />
                 </main>

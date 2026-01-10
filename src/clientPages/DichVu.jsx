@@ -1,48 +1,77 @@
 import React from 'react';
+import { Phone } from 'lucide-react';
+
+const hexagonStyle = {
+    clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)'
+};
 
 const CMICLandingPage = () => {
     return (
         <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-20">
             {/* SECTION 0: HERO BANNER */}
-            <section className="relative bg-gradient-to-br from-orange-600 to-orange-400 py-20 px-4 overflow-hidden">
-                {/* Decorative Circles */}
-                <div className="absolute top-[-10%] left-[-5%] w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-[-10%] right-[-5%] w-96 h-96 bg-orange-900/20 rounded-full blur-3xl"></div>
+            <section className="relative w-full bg-[#f9f4f0] pt-16 pb-32">
+                {/* Họa tiết chấm bi */}
+                <div className="absolute bottom-0 right-0 w-64 h-64 opacity-20"
+                    style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '20px 20px' }}>
+                </div>
 
-                <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center relative z-10">
-                    <div className="md:w-1/2 text-white text-center md:text-left">
-                        <h1 className="text-4xl md:text-6xl font-black uppercase leading-tight mb-4 drop-shadow-md">
-                            Nâng Tầm <span className="text-yellow-300">Buổi Livestream</span> Của Bạn
-                        </h1>
-                        <p className="text-lg md:text-xl opacity-90 mb-8 font-medium">
-                            Giải pháp setup âm thanh, ánh sáng và không gian chuyên nghiệp giúp bạn tự tin tỏa sáng trước ống kính.
-                        </p>
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                            <button
-                                onClick={() => window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })}
-                                className="bg-white text-orange-600 px-8 py-3 rounded-full font-bold text-lg hover:bg-orange-50 transition shadow-xl active:scale-95"
-                            >
-                                Nhận Tư Vấn Ngay
-                            </button>
-                            <button className="border-2 border-white/50 text-white px-8 py-3 rounded-full font-bold text-lg hover:bg-white/10 transition">
-                                Xem Dự Án
-                            </button>
-                        </div>
-                    </div>
+                {/* Dải màu cam chạy ngang phía sau */}
+                <div className="absolute bottom-24 right-0 w-[55%] h-20 bg-orange-500 -z-0 rounded-l-full hidden md:block"></div>
 
-                    <div className="md:w-1/2 mt-12 md:mt-0 flex justify-center">
-                        <div className="relative">
-                            {/* Placeholder cho ảnh sản phẩm/phòng live */}
-                            <div className="w-64 h-80 md:w-80 md:h-[450px] bg-white/20 backdrop-blur-md border-4 border-white/30 rounded-[2rem] overflow-hidden shadow-2xl rotate-3">
-                                <img
-                                    src="/api/placeholder/400/600"
-                                    alt="Livestream setup"
-                                    className="w-full h-full object-cover"
-                                />
+                <div className="max-w-7xl mx-auto px-6 relative z-10">
+                    <div className="grid md:grid-cols-2 items-center gap-4">
+
+                        {/* CỘT TRÁI: TEXT & CONTACT */}
+                        <div className="flex flex-col space-y-4">
+                            <div className="relative">
+                                <h2 className="text-[#e67e22] text-6xl md:text-8xl font-black leading-none mb-2 tracking-tighter">
+                                    Dịch vụ
+                                </h2>
+                                <h1 className="text-gray-900 text-4xl md:text-5xl font-black uppercase tracking-tight leading-tight">
+                                    SETUP PHÒNG HÁT <br />
+                                    LIVESTREAM
+                                </h1>
+                                <p className="text-gray-600 italic font-semibold text-lg mt-4">
+                                    Đảm bảo đúng yêu cầu, chuyên nghiệp
+                                </p>
                             </div>
-                            {/* Badge trang trí */}
-                            <div className="absolute -bottom-5 -left-10 bg-yellow-400 text-orange-900 px-6 py-3 rounded-2xl font-black shadow-lg -rotate-12 uppercase text-sm">
-                                #1 Setup Livestream
+
+                            <div className="pt-6">
+                                <div className="inline-flex items-center bg-white border-[3px] border-black rounded-2xl px-5 py-3 gap-4 shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all cursor-pointer">
+                                    <div className="bg-black p-2 rounded-full">
+                                        <Phone size={20} className="text-white fill-white" />
+                                    </div>
+                                    <span className="text-2xl font-black text-gray-900 tracking-wider">037.267.2396</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* CỘT PHẢI: HEXAGON LAYOUT */}
+                        <div className="relative h-[450px] mt-12 md:mt-0">
+
+                            {/* Decor Dấu + phía trên góc phải */}
+                            <div className="absolute top-0 left-20 grid grid-cols-5 gap-2 z-0">
+                                {[...Array(10)].map((_, i) => <div key={i} className="font-bold text-xl">+</div>)}
+                            </div>
+
+                            {/* Lục giác Vừa (Nằm sau, phía trên bên phải) */}
+                            <div className="absolute -right-6 -top-38  w-90 h-90 drop-shadow-xl z-10">
+                                <div className="w-full h-full bg-orange-500 p-1.5" style={hexagonStyle}>
+                                    <div className="w-full h-full bg-white overflow-hidden" style={hexagonStyle}>
+                                        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500"
+                                            className="w-full h-full object-cover" alt="setup 1" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Lục giác Lớn (Nằm trước, chính giữa bên trái) */}
+                            <div className="absolute left-6 top-[20%] translate-y-1 w-90 h-90 drop-shadow-2xl z-20">
+                                <div className="w-full h-full bg-orange-500 p-1.5" style={hexagonStyle}>
+                                    <div className="w-full h-full bg-white overflow-hidden" style={hexagonStyle}>
+                                        <img src="https://images.unsplash.com/photo-1478737270239-2fccd2c7862a?w=600"
+                                            className="w-full h-full object-cover" alt="setup 2" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -52,9 +81,10 @@ const CMICLandingPage = () => {
             {/* SECTION 1: GIỚI THIỆU DỊCH VỤ */}
             <section className="max-w-6xl mx-auto px-4 py-12">
                 <p className="text-center text-lg mb-12 max-w-4xl mx-auto leading-relaxed">
-                    Chất lượng livestream phụ thuộc trực tiếp vào âm thanh, ánh sáng và không gian.
-                    Những vấn đề như hình ảnh thiếu sáng, âm thanh không ổn định thường khiến buổi livestream kém hiệu quả.
-                    <span className="font-bold"> CMIC STUDIO</span> cung cấp dịch vụ setup góc livestream hát trọn gói.
+                    Chất lượng livestream phụ thuộc trực tiếp vào âm thanh, ánh sáng và không gian. Những vấn đề như
+                    hình ảnh thiếu sáng, âm thanh không ổn định hoặc không gian không phù hợp thường khiến buổi
+                    livestream kém hiệu quả và thiếu chuyên nghiệp. CMIC STUDIO cung cấp dịch vụ setup góc livestream
+                    hát trọn gói, giúp người dùng sẵn sàng lên sóng với chất lượng ổn định ngay từ đầu.
                 </p>
 
                 <div className="grid md:grid-cols-3 gap-8">
@@ -64,8 +94,14 @@ const CMICLandingPage = () => {
                             Giải pháp âm thanh
                         </div>
                         <p className="mt-6 text-sm leading-relaxed">
-                            Hệ thống âm thanh được thiết lập và cân chỉnh phù hợp cho livestream hát,
-                            đảm bảo giọng hát rõ ràng, ổn định và hạn chế tối đa các lỗi hú, rè.
+                            Hệ thống âm thanh được thiết lập
+                            và cân chỉnh phù hợp cho
+                            livestream hát, đảm bảo giọng hát
+                            rõ ràng, ổn định và hạn chế tối đa
+                            các lỗi thường gặp như hú, rè hoặc
+                            vỡ tiếng. Thiết bị được lựa chọn
+                            dựa trên nhu cầu sử dụng và ngân
+                            sách thực tế của khách hàng.
                         </p>
                     </div>
 
@@ -75,8 +111,13 @@ const CMICLandingPage = () => {
                             Hình ảnh và ánh sáng
                         </div>
                         <p className="mt-6 text-sm leading-relaxed">
-                            CMIC STUDIO thiết kế bố cục ánh sáng phù hợp với từng không gian,
-                            giúp hình ảnh lên sóng rõ nét, cân bằng sáng và nổi bật chủ thể.
+                            CMIC STUDIO thiết kế bố cục ánh
+                            sáng phù hợp với từng không gian
+                            và góc quay, giúp hình ảnh lên
+                            sóng rõ nét, cân bằng sáng và nổi
+                            bật chủ thể. Người dùng có thể
+                            livestream ngay mà không cần xử
+                            lý hình ảnh phức tạp.
                         </p>
                     </div>
 
@@ -86,8 +127,13 @@ const CMICLandingPage = () => {
                             Không gian livestream
                         </div>
                         <p className="mt-6 text-sm leading-relaxed">
-                            Không gian được bố trí riêng tư, gọn gàng. Cách sắp xếp tối ưu giúp tạo cảm giác
-                            chuyên nghiệp, nâng cao trải nghiệm cho cả người live và người xem.
+                            Không gian được bố trí riêng tư,
+                            gọn gàng và phù hợp cho hoạt
+                            động livestream hát. Cách sắp xếp
+                            tối ưu giúp tạo cảm giác chuyên
+                            nghiệp, đồng thời nâng cao trải
+                            nghiệm cho cả người livestream và
+                            người xem.
                         </p>
                     </div>
                 </div>
@@ -124,7 +170,7 @@ const CMICLandingPage = () => {
                     {[
                         "Phòng live mẫu thực tế tại TP.HCM – test live trước khi triển khai",
                         "Giải pháp live trọn gói: ánh sáng – âm thanh – thiết bị đầy đủ",
-                        "Đội ngũ kỹ thuật viên nhiều năm kinh nghiệm, từng setup cho idol và ca sĩ"
+                        "Đội ngũ kỹ thuật viên nhiều năm kinh nghiệm, từng setup cho idol live và ca sĩ tại nhiều tỉnh thành"
                     ].map((text, i) => (
                         <div key={i} className="flex items-center bg-white rounded-full shadow-md p-1 border border-orange-200">
                             <div className="bg-white border-2 border-orange-500 text-black font-bold w-12 h-12 rounded-full flex items-center justify-center mr-4 shadow-inner">
