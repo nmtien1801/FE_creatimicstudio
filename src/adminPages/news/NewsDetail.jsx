@@ -18,7 +18,7 @@ export default function NewsDetail() {
 
     // 1. Xác định chế độ chỉnh sửa dựa trên ID
     const isEditMode = !!idUpdate;
-    const [notificationId] = useState(idUpdate);
+    const [id] = useState(idUpdate);
 
     const { control, handleSubmit, reset, setValue, getValues } = useForm({
         defaultValues: {
@@ -27,41 +27,44 @@ export default function NewsDetail() {
             description: '',
             detail: '',
             image: '',
-            id: notificationId || null,
+            id: id || null,
         },
     });
 
     const [isLoading, setIsLoading] = useState(false);
 
+    // ============================================= INIT ========================================
     // 2. Tải dữ liệu cũ nếu là chế độ chỉnh sửa
     useEffect(() => {
-        if (isEditMode && notificationId) {
-            fetchNotificationDetails(notificationId);
+        if (isEditMode && id) {
+            fetchDetail(id);
         }
-    }, [notificationId, isEditMode]);
+    }, [id, isEditMode]);
 
-    const fetchNotificationDetails = async (id) => {
-        //   setIsLoading(true);
-        //   try {
-        //     const res = await ApiPost.getNewsByIDApi(id);
-        //     if (res && res.data) {
-        //       const data = res.data;
-        //       setValue('title', data.title || '');
-        //       setValue('status', data.StatusID === 1);
-        //       setValue('description', data.description || '');
-        //       setValue('detail', data.detail || '');
-        //       setValue('image', data.image || '');
-        //       setValue('NewsID', data.NewsID);
-        //     } else {
-        //       toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
-        //     }
-        //   } catch (error) {
-        //     toast.error("Lỗi khi tải chi tiết thông báo.");
-        //   } finally {
-        //     setIsLoading(false);
-        //   }
+    const fetchDetail = async (id) => {
+        setIsLoading(true);
+        try {
+            const res = await ApiPost.getPostByIdApi(id);
+
+            if (res && res.DT) {
+                const data = res.DT;
+                setValue('title', data.title || '');
+                setValue('status', data.status);
+                setValue('description', data.description || '');
+                setValue('detail', data.detail || '');
+                setValue('image', data.image || '');
+                setValue('NewsID', data.NewsID);
+            } else {
+                toast.error("Không tìm thấy thông báo hoặc lỗi tải dữ liệu.");
+            }
+        } catch (error) {
+            toast.error("Lỗi khi tải chi tiết thông báo.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
+    // ============================================= CRUD ================================================
     // 3. Xử lý Form: Thêm mới hoặc Cập nhật
     const handleFormSubmit = handleSubmit(async (formValues) => {
         setIsLoading(true);
@@ -86,20 +89,21 @@ export default function NewsDetail() {
 
             const apiPayload = {
                 ...formValues,
-                StatusID: formValues.status ? 1 : 0,
-                ...(isEditMode && { NewsID: notificationId }),
+                ...(isEditMode && { NewsID: id }),
             };
 
             let res;
             if (isEditMode) {
                 // HÀM CẬP NHẬT
-                // res = await ApiPost.UpdateNewsApi(apiPayload);
+                res = await ApiPost.updatePostApi(id, apiPayload);
 
-                // if (res && !res.message) {
-                //   toast.success(`Cập nhật thông báo thành công!`);
-                // } else {
-                //   toast.error(res.message);
-                // }
+                if (res && res.EC === 0) {
+                    toast.success(`Cập nhật thông báo thành công!`);
+                    navigate('/news/manager')
+                    reset();
+                } else {
+                    toast.error(res.EM);
+                }
             } else {
                 // HÀM THÊM MỚI
                 res = await ApiPost.createPostApi(apiPayload);
