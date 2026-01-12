@@ -45,7 +45,7 @@ const CategorySection = ({ title, products, bannerText, buttonLink, countText}) 
         <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
                 <div>
-                    <h2 className="text-2xl lg:text-3xl font-black text-[#ed792f] mb-2 uppercase italic tracking-tighter">
+                    <h2 className="text-2xl lg:text-3xl font-black text-black mb-2 uppercase tracking-tighter">
                         {title}
                     </h2>
                     <p className="text-sm text-gray-500 font-medium">Danh mục: {countText}</p>
@@ -187,7 +187,7 @@ export default function TrangChu() {
 
                         {/* Tiêu đề */}
                         <div className="flex justify-between items-center mb-12">
-                            <h2 className="text-2xl lg:text-3xl font-black text-[#ed792f] uppercase italic tracking-tighter">
+                            <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
                                 PHỤ KIỆN THU ÂM
                             </h2>
                             <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
@@ -264,7 +264,7 @@ export default function TrangChu() {
                 <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-16">
-                            <h2 className="text-4xl lg:text-5xl font-black text-[#ed792f] italic uppercase tracking-tighter">BÀI VIẾT HỮU ÍCH</h2>
+                            <h2 className="text-4xl lg:text-5xl font-black text-black uppercase tracking-tighter">BÀI VIẾT HỮU ÍCH</h2>
                             <p className="text-gray-400 font-medium uppercase tracking-[0.3em] text-[10px] mt-2">Chia sẻ kinh nghiệm & Kỹ thuật âm thanh</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">

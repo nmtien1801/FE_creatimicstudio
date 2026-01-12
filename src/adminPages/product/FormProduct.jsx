@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { PackagePlus, X, Edit3, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ApiUpload from '../../apis/ApiUpload';
-import {loadImage} from '../../utils/constants';
+import { loadImage } from '../../utils/constants';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // Ví dụ: 2MB
 
@@ -46,11 +46,11 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 image: null, // Keep file as null for existing products
                 imagePreview: initialData.image || '' // Show existing image as preview
             });
-        }
 
-        // Nếu sản phẩm đã có ảnh, gọi API để lấy nội dung ảnh hiển thị
-        if (initialData.image) {
-            loadInitialImage(initialData.image);
+            // Nếu sản phẩm đã có ảnh, gọi API để lấy nội dung ảnh hiển thị
+            if (initialData.image) {
+                loadInitialImage(initialData.image);
+            }
         }
     }, [initialData]);
 
