@@ -7,11 +7,8 @@ import { useController } from 'react-hook-form'
 import './CKEditor.css'
 import { editorConfig } from './editorConfig'
 import ApiUpload from '../../../apis/ApiUpload'
+import {getImageLink} from '../../../utils/constants'
 
-const getImageLink = (path) => {
-  if (!path) return ''
-  return process.env.REACT_APP_API_URL + '/api/file/' + path
-}
 export default function CKEditorField({
   name,
   control,
@@ -50,12 +47,11 @@ export default function CKEditorField({
 
               formData.append('myFiles', file)
 
-              ApiUpload.uploadApi
-                .uploadFile(formData)
+              ApiUpload.UploadFileApi(formData)
                 .then((res) => {
                   if (res) {
                     resolve({
-                      default: getImageLink(res.nameImages),
+                      default: getImageLink(res.DT),
                     })
                   }
                 })

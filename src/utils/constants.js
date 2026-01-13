@@ -55,12 +55,7 @@ const formatToInputDate = (isoDate) => {
 
 const getImageLink = (path) => {
   if (!path) return "";
-  return import.meta.env.VITE_BACKEND_URL + "/api/file/" + path;
-};
-
-const createImageUrl = (arrayBuffer, mimeType) => {
-  const blob = new Blob([arrayBuffer], { type: mimeType });
-  return URL.createObjectURL(blob);
+  return import.meta.env.VITE_BACKEND_URL + "/upload/" + path;
 };
 
 const loadImage = async (url) => {
