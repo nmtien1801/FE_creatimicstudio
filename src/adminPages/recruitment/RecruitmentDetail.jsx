@@ -5,8 +5,7 @@ import CKEditorField from '../../components/FormFields/CKEditor/CkEditorField';
 import UploadField from '../../components/FormFields/UploadField';
 import ApiRecruitment from '../../apis/ApiRecruitment'
 import { toast } from 'react-toastify'
-import { useSearchParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 
 const tailwindInputClasses =
     "w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm";
@@ -23,6 +22,8 @@ export default function RecruitmentDetail() {
     const { control, handleSubmit, reset, setValue, getValues } = useForm({
         defaultValues: {
             title: '',
+            type: '',
+            experience: '',
             status: true,
             description: '',
             detail: '',
@@ -45,10 +46,11 @@ export default function RecruitmentDetail() {
         setIsLoading(true);
         try {
             const res = await ApiRecruitment.getRecruitmentByIdApi(id);
-
             if (res && res.DT) {
                 const data = res.DT;
                 setValue('title', data.title || '');
+                setValue('type', data.type || '');
+                setValue('experience', data.experience || '');
                 setValue('status', data.status);
                 setValue('description', data.description || '');
                 setValue('detail', data.detail || '');
@@ -80,6 +82,17 @@ export default function RecruitmentDetail() {
                 setIsLoading(false);
                 return;
             }
+            if (!formValues.type) {
+                toast.error('Vui lòng chọn loại công việc');
+                setIsLoading(false);
+                return;
+            }
+            if (!formValues.experience) {
+                toast.error('Vui lòng chọn kinh nghiệm');
+                setIsLoading(false);
+                return;
+            }
+
             const content = formValues.detail.replace(/<[^>]*>/g, '').trim();
             if (!content) {
                 toast.error('Vui lòng nhập nội dung');
@@ -153,6 +166,44 @@ export default function RecruitmentDetail() {
                                                 className={tailwindInputClasses}
                                                 placeholder="Nhập tiêu đề thông báo"
                                             />
+                                        )}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* 1.1 Type & Experience */}
+                            <div className="grid grid-cols-12 gap-6 items-start">
+                                <label className="col-span-12 md:col-span-2 text-sm font-medium text-gray-700 md:pt-2.5">
+                                    Phân loại
+                                </label>
+
+                                <div className="col-span-12 md:col-span-10 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {/* Type */}
+                                    <Controller
+                                        name="type"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <select {...field} className={tailwindInputClasses}>
+                                                <option value="">-- Chọn loại --</option>
+                                                <option value="intern">Intern</option>
+                                                <option value="fulltime">Full-time</option>
+                                                <option value="freelance">Freelance</option>
+                                            </select>
+                                        )}
+                                    />
+
+                                    {/* Experience */}
+                                    <Controller
+                                        name="experience"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <select {...field} className={tailwindInputClasses}>
+                                                <option value="">-- Kinh nghiệm --</option>
+                                                <option value="0-1">0 – 1 năm</option>
+                                                <option value="1-3">1 – 3 năm</option>
+                                                <option value="3-5">3 – 5 năm</option>
+                                                <option value="5+">Trên 5 năm</option>
+                                            </select>
                                         )}
                                     />
                                 </div>
