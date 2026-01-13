@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react'; // Thêm useEffect
+import React, { useState, useEffect, useMemo } from 'react'; // Thêm useEffect
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { getListRecruitment } from '../redux/recruitmentSlice';
+import { getListPost } from '../redux/postSlice';
 import ImageLoader from '../components/FormFields/ImageLoader';
 
 const NewsCard = ({ news }) => (
-    <NavLink to={`/careers/${news.id}`} className="block">
+    <NavLink to={`/post/${news.id}`} className="block">
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
             {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
@@ -103,7 +103,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
     );
 };
 
-
 // Component Thanh Tìm Kiếm tách riêng để tái sử dụng
 const SearchBar = ({ search, setSearch, className = '' }) => (
     <div className={`bg-white p-4 rounded-xl shadow-md ${className}`}>
@@ -121,20 +120,19 @@ const SearchBar = ({ search, setSearch, className = '' }) => (
     </div>
 );
 
-
 const TinTuc = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { RecruitmentList, RecruitmentTotal } = useSelector((state) => state.recruitment);
+    const { PostList, PostTotal } = useSelector((state) => state.post);
 
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const limit = 20;
-    const totalPages = Math.ceil(RecruitmentTotal / limit);
+    const totalPages = Math.ceil(PostTotal / limit);
 
     // ========================================== INIT ========================================
     const fetchList = async () => {
-        let res = await dispatch(getListRecruitment({ page: currentPage, limit: limit })).unwrap();
+        let res = await dispatch(getListPost({ page: currentPage, limit: limit })).unwrap();
         if (res && res.EC !== 0) {
             toast.error(res.EM);
         }
@@ -144,18 +142,34 @@ const TinTuc = () => {
         fetchList();
     }, [currentPage]);
 
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [search]);
+
     // --- LOGIC TỰ ĐỘNG CHUYỂN HƯỚNG KHI CÓ 1 TIN---
     useEffect(() => {
         if (
-            RecruitmentTotal === 1 &&
-            RecruitmentList.length === 1 &&
+            PostTotal === 1 &&
+            PostList.length === 1 &&
             currentPage === 1
         ) {
-            navigate(`/careers/${RecruitmentList[0].id}`, {
+            navigate(`/post/${PostList[0].id}`, {
                 replace: true,
             });
         }
-    }, [RecruitmentTotal, RecruitmentList, currentPage, navigate]);
+    }, [PostTotal, PostList, currentPage, navigate]);
+
+    // Logic lọc tin tức (Giữ nguyên)
+    const filteredNews = useMemo(() => {
+        if (!search) return PostList;
+
+        const lower = search.toLowerCase();
+
+        return PostList.filter(news =>
+            news.title?.toLowerCase().includes(lower) ||
+            news.description?.toLowerCase().includes(lower)
+        );
+    }, [search, PostList]);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -171,7 +185,7 @@ const TinTuc = () => {
                     <div className="lg:col-span-3">
                         {/* Grid News - 4 cột trên màn hình lớn */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {RecruitmentList.map((news) => (
+                            {filteredNews.map((news) => (
                                 <NewsCard key={news.id} news={news} />
                             ))}
                         </div>
@@ -183,7 +197,7 @@ const TinTuc = () => {
                                 totalPages={totalPages}
                                 onPageChange={setCurrentPage}
                                 itemsPerPage={limit}
-                                totalItems={RecruitmentTotal}
+                                totalItems={PostTotal}
                             />
                         )}
                     </div>

@@ -46,7 +46,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       ]
     },
     {
-      id: 'news',
+      id: 'post',
       label: 'Bài viết',
       icon: Newspaper,
       items: [
