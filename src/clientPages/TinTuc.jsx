@@ -1,42 +1,33 @@
-import React, { useState, useMemo } from 'react';
-import { Link, ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import React, { useState, useEffect } from 'react'; // Thêm useEffect
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+import { getListRecruitment } from '../redux/recruitmentSlice';
+import ImageLoader from '../components/FormFields/ImageLoader';
 
-// Dữ liệu mẫu tin tức (Giữ nguyên)
-const longContent = "Đây là nội dung chi tiết của tin tức. Để kiểm tra tính năng giới hạn dòng, tôi sẽ thêm một đoạn văn bản khá dài vào đây. Nội dung này cần phải đủ dài để vượt qua giới hạn 3 dòng hiển thị trên NewsCard. Việc sử dụng line-clamp trong Tailwind CSS giúp chúng ta làm điều này một cách dễ dàng và hiệu quả mà không cần tính toán bằng JavaScript.";
-
-const newsData = Array.from({ length: 25 }, (_, i) => ({
-    id: i + 1,
-    title: `Tiêu đề tin tức ${i + 1} mới nhất 🌟`,
-    content: i % 3 === 0 ? longContent : `Nội dung tóm tắt tin tức ${i + 1}.`,
-    image: null,
-    url: `/news/${i + 1}`,
-}));
-
-// Component NewsCard (Giữ nguyên)
 const NewsCard = ({ news }) => (
-    <a href={news.url} className="block">
-        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+    <NavLink to={`/careers/${news.id}`} className="block">
+        <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
             {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
-                Hình
+                <ImageLoader imagePath={news.image} className="w-10 h-10 rounded-md border object-cover" />
             </div>
             {/* Title & Content */}
             <div className="p-4 flex flex-col flex-grow">
-                {/* Title: Giới hạn 2 dòng */}
                 <h3 className="text-base font-bold text-gray-800 line-clamp-2 hover:text-orange-700 transition mb-2">
                     {news.title}
                 </h3>
-                {/* Content: Giới hạn 3 dòng, tự động thêm ... */}
                 <p className="text-sm text-gray-600 line-clamp-3 flex-grow">
-                    {news.content}
+                    {news.description}
                 </p>
             </div>
         </div>
-    </a>
+    </NavLink>
 );
 
-// Component Pagination (Giữ nguyên)
-const Pagination = ({ currentPage, totalPages, onPageChange }) => {
+// Component Pagination
+const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, totalItems }) => {
     const maxPagesToShow = 5;
     let startPage, endPage;
 
@@ -59,46 +50,55 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const pages = Array.from({ length: (endPage - startPage) + 1 }, (_, i) => startPage + i);
 
     return (
-        <div className="flex items-center justify-center gap-2 mt-8">
-            {/* Nút Previous */}
-            <button
-                onClick={() => onPageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-                className="p-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 transition"
-            >
-                <ChevronLeft className="w-5 h-5" />
-            </button>
-
-            {/* Dấu ... ở đầu */}
-            {startPage > 1 && <span className="px-1 text-gray-500">...</span>}
-
-            {/* Các nút trang */}
-            {pages.map((page) => (
+        <div className="flex flex-col gap-6 mt-10">
+            {/* Phần phân trang */}
+            <div className="flex items-center justify-center gap-2 flex-wrap">
+                {/* Nút Previous */}
                 <button
-                    key={page}
-                    onClick={() => onPageChange(page)}
-                    className={`w-10 h-10 border rounded transition duration-200 text-sm font-medium
-                        ${currentPage === page
-                            ? 'bg-orange-600 text-white border-orange-600 shadow-md'
-                            : 'border-gray-300 text-gray-700 hover:bg-orange-50 hover:border-orange-400'
-                        }
-                    `}
+                    onClick={() => onPageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-2 border border-gray-300 rounded-lg hover:bg-orange-50 hover:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    title="Trang trước"
                 >
-                    {page}
+                    <ChevronLeft className="w-5 h-5 text-gray-700" />
                 </button>
-            ))}
 
-            {/* Dấu ... ở cuối */}
-            {endPage < totalPages && <span className="px-1 text-gray-500">...</span>}
+                {/* Dấu ... ở đầu */}
+                {startPage > 1 && (
+                    <span className="px-2 text-gray-400">...</span>
+                )}
 
-            {/* Nút Next */}
-            <button
-                onClick={() => onPageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-                className="p-2 border border-gray-300 rounded hover:bg-gray-100 disabled:opacity-50 transition"
-            >
-                <ChevronRight className="w-5 h-5" />
-            </button>
+                {/* Các nút trang */}
+                {pages.map((page) => (
+                    <button
+                        key={page}
+                        onClick={() => onPageChange(page)}
+                        className={`min-w-10 h-10 border rounded-lg transition-all duration-200 text-sm font-medium
+                            ${currentPage === page
+                                ? 'bg-orange-600 text-white border-orange-600 shadow-md'
+                                : 'border-gray-300 text-gray-700 hover:bg-orange-50 hover:border-orange-400'
+                            }
+                        `}
+                    >
+                        {page}
+                    </button>
+                ))}
+
+                {/* Dấu ... ở cuối */}
+                {endPage < totalPages && (
+                    <span className="px-2 text-gray-400">...</span>
+                )}
+
+                {/* Nút Next */}
+                <button
+                    onClick={() => onPageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="p-2 border border-gray-300 rounded-lg hover:bg-orange-50 hover:border-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                    title="Trang tiếp theo"
+                >
+                    <ChevronRight className="w-5 h-5 text-gray-700" />
+                </button>
+            </div>
         </div>
     );
 };
@@ -123,30 +123,39 @@ const SearchBar = ({ search, setSearch, className = '' }) => (
 
 
 const TinTuc = () => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const { RecruitmentList, RecruitmentTotal } = useSelector((state) => state.recruitment);
+
     const [search, setSearch] = useState('');
-    const itemsPerPage = 9;
+    const [currentPage, setCurrentPage] = useState(1);
+    const limit = 20;
+    const totalPages = Math.ceil(RecruitmentTotal / limit);
 
-    // Logic lọc tin tức (Giữ nguyên)
-    const filteredNews = useMemo(() => {
-        let result = newsData;
-
-        if (search) {
-            const lowercasedSearch = search.toLowerCase();
-            result = result.filter(news =>
-                news.title.toLowerCase().includes(lowercasedSearch) ||
-                news.content.toLowerCase().includes(lowercasedSearch)
-            );
+    // ========================================== INIT ========================================
+    const fetchList = async () => {
+        let res = await dispatch(getListRecruitment({ page: currentPage, limit: limit })).unwrap();
+        if (res && res.EC !== 0) {
+            toast.error(res.EM);
         }
+    };
 
-        setCurrentPage(1);
-        return result;
-    }, [search]);
+    useEffect(() => {
+        fetchList();
+    }, [currentPage]);
 
-    // Tính toán phân trang
-    const totalPages = Math.ceil(filteredNews.length / itemsPerPage);
-    const startIdx = (currentPage - 1) * itemsPerPage;
-    const displayedNews = filteredNews.slice(startIdx, startIdx + itemsPerPage);
+    // --- LOGIC TỰ ĐỘNG CHUYỂN HƯỚNG KHI CÓ 1 TIN---
+    useEffect(() => {
+        if (
+            RecruitmentTotal === 1 &&
+            RecruitmentList.length === 1 &&
+            currentPage === 1
+        ) {
+            navigate(`/careers/${RecruitmentList[0].id}`, {
+                replace: true,
+            });
+        }
+    }, [RecruitmentTotal, RecruitmentList, currentPage, navigate]);
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -156,39 +165,28 @@ const TinTuc = () => {
                     TIN TỨC
                 </h1>
 
-                {/* 1. Thanh tìm kiếm trên đầu (Hiển thị từ màn hình nhỏ đến lớn, ẩn đi ở màn hình lớn trở lên) */}
-                <div className="mb-8 lg:hidden">
-                    <SearchBar search={search} setSearch={setSearch} />
-                </div>
-                {/* --- */}
-
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
-                    {/* Main Content - 3/4 cột */}
+                    {/* Main Content - Giờ chiếm full width */}
                     <div className="lg:col-span-3">
-                        {/* Grid News - 3 cột */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {displayedNews.length > 0 ? (
-                                displayedNews.map((news) => (
-                                    <NewsCard key={news.id} news={news} />
-                                ))
-                            ) : (
-                                <p className="text-lg text-gray-500 lg:col-span-3">
-                                    Không tìm thấy tin tức nào phù hợp.
-                                </p>
-                            )}
+                        {/* Grid News - 4 cột trên màn hình lớn */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {RecruitmentList.map((news) => (
+                                <NewsCard key={news.id} news={news} />
+                            ))}
                         </div>
 
-                        {/* Pagination chỉ hiển thị khi có tin tức */}
+                        {/* Pagination chỉ hiển thị khi có nhiều trang */}
                         {totalPages > 1 && (
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
                                 onPageChange={setCurrentPage}
+                                itemsPerPage={limit}
+                                totalItems={RecruitmentTotal}
                             />
                         )}
                     </div>
-
                     {/* Sidebar - 1/4 cột */}
                     <div className="lg:col-span-1 space-y-8">
 

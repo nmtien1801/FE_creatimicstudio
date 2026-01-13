@@ -109,7 +109,7 @@ const TuyenDung = () => {
     const { RecruitmentList, RecruitmentTotal } = useSelector((state) => state.recruitment);
 
     const [currentPage, setCurrentPage] = useState(1);
-    const limit = 2;
+    const limit = 20;
     const totalPages = Math.ceil(RecruitmentTotal / limit);
 
     // ========================================== INIT ========================================
