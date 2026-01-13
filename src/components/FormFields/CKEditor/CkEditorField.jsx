@@ -7,7 +7,7 @@ import { useController } from 'react-hook-form'
 import './CKEditor.css'
 import { editorConfig } from './editorConfig'
 import ApiUpload from '../../../apis/ApiUpload'
-import {getImageLink} from '../../../utils/constants'
+import { loadImage } from '../../../utils/constants'
 
 export default function CKEditorField({
   name,
@@ -43,24 +43,27 @@ export default function CKEditorField({
         return new Promise((resolve, reject) => {
           loader.file
             .then((file) => {
-              const formData = new FormData()
-
-              formData.append('myFiles', file)
+              const formData = new FormData();
+              formData.append('myFiles', file);
 
               ApiUpload.UploadFileApi(formData)
-                .then((res) => {
-                  if (res) {
+                .then(async (res) => { // Thêm async ở đây
+                  if (res && res.DT) {
+                    // Đảm bảo hàm loadImage trả về URL chính xác (không bị lặp /api/api)
+                    const imageUrl = await loadImage(res.DT);
                     resolve({
-                      default: getImageLink(res.DT),
-                    })
+                      default: imageUrl,
+                    });
+                  } else {
+                    reject("Upload failed: No data received");
                   }
                 })
-                .catch(reject)
+                .catch(reject);
             })
-            .catch(reject)
-        })
+            .catch(reject);
+        });
       },
-    }
+    };
   }
 
   function uploadAdapterPlugin(editor) {

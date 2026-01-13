@@ -53,7 +53,7 @@ const formatToInputDate = (isoDate) => {
   return "";
 };
 
-const getImageLink = (path) => {
+const getImageLink = async (path) => {
   if (!path) return "";
   return import.meta.env.VITE_BACKEND_URL + "/upload/" + path;
 };
