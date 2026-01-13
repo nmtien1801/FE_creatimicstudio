@@ -139,14 +139,14 @@ export default function RecruitmentDetail() {
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 md:p-8">
-            <div className="max-w-[1600px] mx-auto">
+            <div className="max-w-full mx-auto">
                 {/* Header */}
                 <h1 className="text-xl md:text-2xl text-gray-600">
                     {isEditMode ? 'Chỉnh sửa bài viết' : 'Thêm bài mới'}
                 </h1>
 
                 {/* Main Content */}
-                <div className="max-w-8xl mx-auto px-4 py-6">
+                <div className="max-w-0xl mx-auto px-4 py-6">
                     <div className="bg-white rounded-lg shadow-sm border border-gray-200">
                         <div className="p-6 space-y-6">
 

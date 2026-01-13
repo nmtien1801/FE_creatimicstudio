@@ -53,11 +53,6 @@ const formatToInputDate = (isoDate) => {
   return "";
 };
 
-const getImageLink = async (path) => {
-  if (!path) return "";
-  return import.meta.env.VITE_BACKEND_URL + "/upload/" + path;
-};
-
 const loadImage = async (url) => {
   try {
     if (!url) return null;
@@ -88,7 +83,6 @@ export {
   getGenderDisplay,
   getFirstDayOfMonth,
   getLastDayOfMonth,
-  getImageLink,
   loadImage,
   arrayBufferToUrl,
   formatToInputDate,
