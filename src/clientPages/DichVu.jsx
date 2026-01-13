@@ -5,6 +5,13 @@ const hexagonStyle = {
     clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)'
 };
 
+const stepColorMap = {
+    cyan: 'bg-cyan-400',
+    slate: 'bg-slate-700',
+    yellow: 'bg-yellow-400',
+    orange: 'bg-orange-400',
+};
+
 const CMICLandingPage = () => {
     return (
         <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-20">
@@ -150,14 +157,14 @@ const CMICLandingPage = () => {
                     <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 border-t-2 border-dashed border-gray-300 -z-0"></div>
 
                     {[
-                        { title: "Tiếp nhận nhu cầu & ngân sách", color: "border-cyan-400" },
-                        { title: "Tư vấn giải pháp phù hợp", color: "border-slate-700" },
-                        { title: "Setup âm thanh - ánh sáng - góc quay", color: "border-yellow-400" },
-                        { title: "Hướng dẫn sử dụng & hỗ trợ", color: "border-orange-400" }
+                        { title: "Tiếp nhận nhu cầu & ngân sách", color: "cyan" },
+                        { title: "Tư vấn giải pháp phù hợp", color: "slate" },
+                        { title: "Setup âm thanh - ánh sáng - góc quay", color: "yellow" },
+                        { title: "Hướng dẫn sử dụng & hỗ trợ", color: "orange" }
                     ].map((step, index) => (
-                        <div key={index} className="z-10 bg-white border-2 border-gray-100 rounded-2xl p-2 w-full md:w-56 shadow-md text-center flex flex-col items-center">
-                            <div className={`w-20 h-20 rounded-full mb-4 -translate-y-[45px] ${step.color.replace('border', 'bg')}`}></div>
-                            <p className="text-base font-semibold">{step.title}</p>
+                        <div key={index} className="relative z-10 bg-white border-2 border-gray-100 rounded-2xl p-2 w-full md:w-56 shadow-md text-center flex flex-col items-center">
+                            <div className={`absolute -top-10 w-20 h-20 rounded-full ${stepColorMap[step.color]}`}></div>
+                            <p className="mt-12 text-base font-semibold">{step.title}</p>
                         </div>
                     ))}
                 </div>
