@@ -1,11 +1,17 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Star, Heart } from 'lucide-react';
 
 export default function ProductCard({ product }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
+    const navigate = useNavigate();
+
+    const handleProductClick = () => {
+        navigate(`/product/${product.id}`);
+    };
 
     return (
-        <div className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2`}>
+        <div onClick={handleProductClick} className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2`}>
             {/* Image Container - Giảm chiều cao đáng kể nếu là Compact */}
             <div className={`relative overflow-hidden h-48 sm:h-56`}>
                 <img
