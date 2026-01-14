@@ -1,6 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/product/ProductCard.jsx';
+import { useDispatch, useSelector } from 'react-redux';
+import { getListPost } from '../redux/postSlice';
+import { toast } from 'react-toastify';
+import ImageLoader from '../components/FormFields/ImageLoader';
 
 const comboBanners = [
     {
@@ -32,12 +36,6 @@ const productsData = [
     { id: 4, name: "Combo Livestream Cao Cấp", price: "3.500.000₫", oldPrice: "4.200.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=400&fit=crop' },
     { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop' },
     { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
-];
-
-const articlesData = [
-    { title: "Hướng dẫn chọn Micro phù hợp cho giọng hát", img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&h=400&fit=crop' },
-    { title: "5 mẹo để Livestream chuyên nghiệp hơn", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&h=400&fit=crop' },
-    { title: "Soundcard là gì? Chọn loại nào tốt?", img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=600&h=400&fit=crop' },
 ];
 
 const CategorySection = ({ title, products, bannerText, buttonLink, countText }) => (
@@ -90,7 +88,7 @@ const CategorySection = ({ title, products, bannerText, buttonLink, countText })
 const ArticleCard = ({ article }) => (
     <div className="bg-white rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer hover:-translate-y-2 border border-gray-100">
         <div className="h-56 w-full overflow-hidden">
-            <img src={article.img} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+            <ImageLoader imagePath={article.image} className="w-full h-50 object-cover group-hover:scale-110 transition-transform duration-700" />
         </div>
         <div className="p-8">
             <h3 className="text-lg font-bold text-gray-900 mb-4 line-clamp-2 min-h-[56px] group-hover:text-[#ed792f] transition-colors uppercase italic">
@@ -104,12 +102,14 @@ const ArticleCard = ({ article }) => (
 );
 
 export default function TrangChu() {
+    const dispatch = useDispatch();
     const [currentSlide, setCurrentSlide] = useState(0);
+    const { PostList } = useSelector((state) => state.post);
 
     const slides = [
-        { text: 'Flash Sale 50%', sub: 'Cơ hội duy nhất trong tháng', color: 'bg-[#ed792f]' },
-        { text: 'Freeship Toàn Quốc', sub: 'Áp dụng cho đơn hàng từ 500k', color: 'bg-gray-900' },
-        { text: 'Bảo Hành 2 Năm', sub: 'Yên tâm mua sắm, hỗ trợ 24/7', color: 'bg-[#ed792f]' },
+        { img: '/bannerhome1.png', },
+        { img: '/bannerhome2.png', },
+        { img: '/bannerhome3.png', },
     ];
 
     const nextSlide = useCallback(() => {
@@ -121,6 +121,18 @@ export default function TrangChu() {
         return () => clearInterval(interval);
     }, [nextSlide]);
 
+    // ========================================== INIT ========================================
+    const fetchList = async () => {
+        let res = await dispatch(getListPost({ page: 1, limit: 3 })).unwrap();
+        if (res && res.EC !== 0) {
+            toast.error(res.EM);
+        }
+    };
+
+    useEffect(() => {
+        fetchList();
+    }, []);
+
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-[#ed792f] selection:text-white">
             <main className="pb-20">
@@ -128,18 +140,22 @@ export default function TrangChu() {
                 {/* 1. HERO SLIDER */}
                 <section className="w-full mt-6 mb-12 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
-                        <div className="relative h-[300px] md:h-[550px] rounded-[3rem] overflow-hidden shadow-2xl">
+                        <div className="relative h-[450px] md:h-[800px] rounded-[3rem] overflow-hidden shadow-2xl">
                             <div
                                 className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
                                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                             >
                                 {slides.map((slide, index) => (
-                                    <div key={index} className={`flex-shrink-0 w-full h-full ${slide.color} flex items-center justify-center relative`}>
-                                        <div className="absolute inset-0 bg-black/10"></div>
-                                        <div className="relative text-center text-white px-6">
-                                            <h2 className="text-5xl md:text-8xl font-black mb-4 italic tracking-tighter uppercase">{slide.text}</h2>
-                                            <p className="text-lg md:text-2xl font-medium opacity-90 uppercase tracking-[0.2em]">{slide.sub}</p>
-                                        </div>
+                                    <div
+                                        key={index}
+                                        className="relative flex-shrink-0 w-full h-full"
+                                    >
+                                        {/* Background Image */}
+                                        <img
+                                            src={slide.img}
+                                            alt=""
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                        />
                                     </div>
                                 ))}
                             </div>
@@ -251,7 +267,7 @@ export default function TrangChu() {
                             <p className="text-gray-400 font-medium uppercase tracking-[0.3em] text-[10px] mt-2">Chia sẻ kinh nghiệm & Kỹ thuật âm thanh</p>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
-                            {articlesData.map((article, index) => (
+                            {PostList.map((article, index) => (
                                 <ArticleCard key={index} article={article} />
                             ))}
                         </div>
