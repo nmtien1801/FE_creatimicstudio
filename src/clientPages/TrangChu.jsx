@@ -60,9 +60,9 @@ const CategorySection = ({ products, bannerImage, buttonLink }) => (
 
                 {/* Lưới Sản phẩm */}
                 <div className="md:col-span-7">
-                    <div className={`grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6`}>
+                    <div className={`grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 cursor-pointer`}>
                         {products.map(product => (
-                            <ProductCard key={product.id} product={product} ProductCard={true}/>
+                            <ProductCard key={product.id} product={product} ProductCard={true} />
                         ))}
                     </div>
                 </div>
@@ -173,9 +173,24 @@ export default function TrangChu() {
                             <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">TOP SELLER</h2>
                             <p className="text-black/80 font-bold uppercase mt-6 text-sm text-center">Sản phẩm khách hàng tin dùng nhất</p>
                         </div>
+
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {productsData.slice(0, 3).map(p => (
-                                <ProductCard key={p.id} product={p} isTopSeller={true} />
+                            {productsData.slice(0, 3).map((p) => (
+                                <div key={p.id} className="relative">
+                                    {/* Thẻ sản phẩm */}
+                                    <ProductCard product={p} isTopSeller={true} />
+
+                                    {/* Nhãn Top Seller đè lên trên */}
+                                    <div
+                                        className="absolute -top-2 -left-2 bg-black text-white px-3 py-1 text-[10px] font-bold shadow-lg transform -rotate-12 origin-top-left z-10"
+                                        style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}
+                                    >
+                                        <div className="transform rotate-12 text-center leading-tight">
+                                            <div className="text-[8px]">TOP</div>
+                                            <div className="font-black">SELLER</div>
+                                        </div>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
