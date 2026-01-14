@@ -45,7 +45,7 @@ const CategorySection = ({ products, bannerImage, buttonLink }) => (
                 {/* Banner Dọc */}
                 <div className="md:col-span-5">
                     <div className="md:col-span-3">
-                        <div className="relative h-full min-h-[800px] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
+                        <div className="relative h-full min-h-[770px] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
                             {/* Background Image */}
                             <img
                                 src={bannerImage}
