@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { ArrowRight, Truck, ShieldCheck, Headphones, CreditCard } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/product/ProductCard.jsx';
 
 const comboBanners = [
@@ -40,7 +40,7 @@ const articlesData = [
     { title: "Soundcard là gì? Chọn loại nào tốt?", img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=600&h=400&fit=crop' },
 ];
 
-const CategorySection = ({ title, products, bannerText, buttonLink, countText}) => (
+const CategorySection = ({ title, products, bannerText, buttonLink, countText }) => (
     <section className="py-5 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
@@ -242,23 +242,6 @@ export default function TrangChu() {
                     buttonLink="#"
                     countText="Loa chuyên dụng"
                 />
-
-                {/* 7. DỊCH VỤ HẬU MÃI (Banner chân trang) */}
-                <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 my-16">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 text-center">
-                        {[
-                            { text: 'Giao hàng hỏa tốc', icon: <Truck className="w-8 h-8" /> },
-                            { text: 'Bảo hành chính hãng', icon: <ShieldCheck className="w-8 h-8" /> },
-                            { text: 'Dùng thử 7 ngày', icon: <Headphones className="w-8 h-8" /> },
-                            { text: 'Trả góp 0%', icon: <CreditCard className="w-8 h-8" /> }
-                        ].map((item, i) => (
-                            <div key={i} className="p-8 bg-gray-50 rounded-[2rem] flex flex-col items-center hover:bg-[#ed792f] hover:text-white transition-all group cursor-default">
-                                <div className="text-[#ed792f] group-hover:text-white mb-4 transition-colors">{item.icon}</div>
-                                <span className="font-black text-sm uppercase tracking-tighter">{item.text}</span>
-                            </div>
-                        ))}
-                    </div>
-                </section>
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
                 <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">

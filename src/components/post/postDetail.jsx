@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Briefcase, MapPin, DollarSign, Clock, Calendar, ArrowRight, UserCheck, Zap } from 'lucide-react';
 import ApiPost from '../../apis/ApiPost'
 import UploadField from '../FormFields/UploadField';
 import { toast } from 'react-toastify'
