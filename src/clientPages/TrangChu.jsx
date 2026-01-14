@@ -38,38 +38,31 @@ const productsData = [
     { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
 ];
 
-const CategorySection = ({ title, products, bannerText, buttonLink, countText }) => (
+const CategorySection = ({ products, bannerImage, buttonLink }) => (
     <section className="py-5 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 gap-4">
-                <div>
-                    <h2 className="text-2xl lg:text-3xl font-black text-black mb-2 uppercase tracking-tighter">
-                        {title}
-                    </h2>
-                    <p className="text-sm text-gray-500 font-medium">Danh mục: {countText}</p>
-                </div>
-            </div>
-
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                 {/* Banner Dọc */}
-                <div className="md:col-span-3">
-                    <div className="h-full min-h-[450px] bg-gradient-to-br from-[#ed792f] to-[#f4a261] rounded-[2.5rem] flex items-center justify-center p-8 shadow-2xl relative overflow-hidden group cursor-pointer">
-                        <div className="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-all duration-500"></div>
-                        <div className="relative text-center text-white z-10">
-                            <div className="text-3xl font-black mb-4 leading-tight uppercase drop-shadow-xl">{bannerText}</div>
-                            <div className="text-xs uppercase tracking-[0.2em] opacity-80 mb-8 font-bold">Giá tốt nhất thị trường</div>
-                            <div className="inline-flex items-center gap-2 text-sm font-black bg-white text-[#ed792f] px-6 py-3 rounded-full shadow-lg group-hover:bg-black group-hover:text-white transition-all">
-                                XEM CHI TIẾT
-                            </div>
+                <div className="md:col-span-5">
+                    <div className="md:col-span-3">
+                        <div className="relative h-full min-h-[800px] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
+                            {/* Background Image */}
+                            <img
+                                src={bannerImage}
+                                alt=""
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            />
+
                         </div>
                     </div>
+
                 </div>
 
                 {/* Lưới Sản phẩm */}
-                <div className="md:col-span-9">
+                <div className="md:col-span-7">
                     <div className={`grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6`}>
                         {products.map(product => (
-                            <ProductCard key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} ProductCard={true}/>
                         ))}
                     </div>
                 </div>
@@ -135,7 +128,7 @@ export default function TrangChu() {
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-[#ed792f] selection:text-white">
-            <main className="pb-20">
+            <main className="">
 
                 {/* 1. HERO SLIDER */}
                 <section className="w-full mt-6 mb-12 px-4 sm:px-6 lg:px-8">
@@ -190,11 +183,9 @@ export default function TrangChu() {
 
                 {/* 3. COMBO LIVESTREAM */}
                 <CategorySection
-                    title="COMBO LIVESTREAM"
                     products={productsData}
-                    bannerText="Combo Livestream Chất Lượng Cao"
+                    bannerImage="/BannerBộLivestream.png"
                     buttonLink="#"
-                    countText="Bộ livestream, thu âm"
                 />
 
                 {/* 4. PHỤ KIỆN THU ÂM - CHIA THÀNH 2 HÀNG */}
@@ -252,15 +243,13 @@ export default function TrangChu() {
 
                 {/* 6. LOA KIỂM ÂM */}
                 <CategorySection
-                    title="LOA KIỂM ÂM"
                     products={productsData}
-                    bannerText="Âm Thanh Chuẩn Studio"
+                    bannerImage="/BannerLoa.png"
                     buttonLink="#"
-                    countText="Loa chuyên dụng"
                 />
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
-                <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
+                <section className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
                     <div className="max-w-7xl mx-auto">
                         <div className="text-center mb-16">
                             <h2 className="text-4xl lg:text-5xl font-black text-black uppercase tracking-tighter">BÀI VIẾT HỮU ÍCH</h2>
