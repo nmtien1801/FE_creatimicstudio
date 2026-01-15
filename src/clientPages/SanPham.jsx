@@ -1,80 +1,9 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import ProductCard from '../components/product/ProductCard.jsx';
-
-const categoriesData = [
-    {
-        name: "Microphone",
-        products: [
-            { id: 7, name: "Micro cài áo không dây", price: 690.000, oldPrice: "890.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1031/400/400' },
-        ],
-        subs: [
-            {
-                name: "Micro thu âm",
-                products: [
-                    { id: 1, name: "Micro thu âm BM-800", price: 990.000, oldPrice: "1.290.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1015/400/400' }
-                ]
-            },
-        ]
-    },
-    {
-        name: "Soundcard - Mixer",
-        products: [
-            { id: 10, name: "Sản phẩm khác", price: "Liên hệ", oldPrice: "", phone: "037.2672.396", img: 'https://picsum.photos/id/1037/400/400' }
-        ],
-        subs: [
-            {
-                name: "Soundcard XOX",
-                products: [
-                    { id: 2, name: "Soundcard XOX K10", price: 1.250.000, oldPrice: "1.590.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1016/400/400' }
-                ]
-            },
-            {
-                name: "Mixer Yamaha",
-                products: [
-                    { id: 8, name: "Mixer Yamaha MG10XU", price: "5.500.000₫", oldPrice: "6.200.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1033/400/400' }
-                ]
-            }
-        ]
-    },
-    {
-        name: "Tai nghe kiểm âm",
-        products: [],
-        subs: [
-            {
-                name: "Tai nghe chuyên dụng",
-                products: [
-                    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1018/400/400' }
-                ]
-            }
-        ]
-    },
-    {
-        name: "Loa",
-        products: [
-            { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", phone: "037.2672.396", img: 'https://picsum.photos/id/1024/400/400' }
-        ],
-        subs: []
-    }
-];
-
-const productsData = categoriesData.flatMap(cat => [
-    ...cat.products.map(p => ({
-        ...p,
-        category: cat.name,
-        subCategory: 'all',
-        priceNum: p.price,
-    })),
-    ...cat.subs.flatMap(sub =>
-        sub.products.map(p => ({
-            ...p,
-            category: cat.name,
-            subCategory: sub.name,
-            priceNum: p.price,
-        }))
-    ),
-]);
-
+import { getListCategory } from '../redux/categorySlice.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 const priceRanges = [
     { value: 'all', label: 'Tất cả mức giá', min: 0, max: Infinity },
@@ -130,7 +59,7 @@ const FilterSidebar = ({ selectedCategory, filters, onFilterChange }) => {
 };
 
 // ================= CategoryTopMenu: BỘ LỌC CATEGORY =================
-const CategoryTopMenu = ({ selectedCategory, onSelectCategory, onSelectSub }) => {
+const CategoryTopMenu = ({ categoryList, selectedCategory, onSelectCategory, onSelectSub }) => {
     return (
         <div className="flex justify-center mb-10">
             <div className="flex flex-wrap justify-center gap-4">
@@ -145,7 +74,7 @@ const CategoryTopMenu = ({ selectedCategory, onSelectCategory, onSelectSub }) =>
                     Tất cả
                 </button>
 
-                {categoriesData.map(cat => (
+                {categoryList.map(cat => (
                     <div
                         key={cat.name}
                         className="relative group px-2 py-2" // 👈 tăng vùng hover
@@ -162,7 +91,7 @@ const CategoryTopMenu = ({ selectedCategory, onSelectCategory, onSelectSub }) =>
                         </button>
 
                         {/* Hover bridge (vùng đệm vô hình) */}
-                        {cat.subs.length > 0 && (
+                        {cat.children.length > 0 && (
                             <>
                                 <div className="absolute left-0 right-0 top-full h-4"></div>
 
@@ -172,7 +101,7 @@ const CategoryTopMenu = ({ selectedCategory, onSelectCategory, onSelectSub }) =>
                                         bg-white shadow-xl rounded-2xl
                                         min-w-[240px] z-50"
                                 >
-                                    {cat.subs.map(sub => (
+                                    {cat.children.map(sub => (
                                         <button
                                             key={sub.name}
                                             onClick={() => {
@@ -198,14 +127,14 @@ const CategoryTopMenu = ({ selectedCategory, onSelectCategory, onSelectSub }) =>
 };
 
 // ================= ProductsList: SHOW SẢN PHẨM TỬ CATEGORY VÀ GIÁ + PHÂN TRANG =================
-const ProductsList = ({ products, filters, selectedCategory }) => {
+const ProductsList = ({ product, filters, selectedCategory }) => {
     const productsPerPage = 8;
     const [currentPage, setCurrentPage] = useState(1);
 
     // ==================================== Action ProductsList =========================
-     // LỌC TỪ CATEGORY VÀ GIÁ
+    // LỌC TỪ CATEGORY VÀ GIÁ
     const filteredProducts = useMemo(() => {
-        return products.filter(product => {
+        return product.filter(product => {
             // Price
             const range = priceRanges.find(r => r.value === filters.priceRange);
             const priceMatch =
@@ -227,9 +156,9 @@ const ProductsList = ({ products, filters, selectedCategory }) => {
 
             return priceMatch && categoryMatch;
         });
-    }, [products, filters, selectedCategory]);
+    }, [product, filters, selectedCategory]);
 
-     // TÍNH TOÁN SP TRÊN TRANG
+    // TÍNH TOÁN SP TRÊN TRANG
     const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
     const paginatedProducts = useMemo(() => {
         const startIndex = (currentPage - 1) * productsPerPage;
@@ -247,6 +176,12 @@ const ProductsList = ({ products, filters, selectedCategory }) => {
     useEffect(() => {
         setCurrentPage(1);
     }, [filters, selectedCategory]);
+
+    useEffect(() => {
+        if (currentPage > totalPages) {
+            setCurrentPage(1);
+        }
+    }, [totalPages]);
 
     return (
         <div className="w-full md:w-3/4 md:pl-8">
@@ -279,12 +214,22 @@ const ProductsList = ({ products, filters, selectedCategory }) => {
                         className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         <ChevronLeft className="w-5 h-5 text-gray-700" />
                     </button>
-                    {[...Array(totalPages)].map((_, index) => (
-                        <button key={index} onClick={() => handlePageChange(index + 1)}
-                            className={`px-4 py-2 font-bold rounded-lg transition-all ${currentPage === index + 1 ? 'bg-orange-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'}`}>
-                            {index + 1}
-                        </button>
-                    ))}
+                    {Array.from({ length: totalPages }, (_, i) => {
+                        const page = i + 1;
+                        return (
+                            <button
+                                key={`page-${page}-total-${totalPages}`}
+                                onClick={() => handlePageChange(page)}
+                                className={`px-4 py-2 font-bold rounded-lg transition-all
+                                    ${currentPage === page
+                                        ? 'bg-orange-600 text-white shadow-md'
+                                        : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'
+                                    }`}
+                            >
+                                {page}
+                            </button>
+                        );
+                    })}
                     <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}
                         className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         <ChevronRight className="w-5 h-5 text-gray-700" />
@@ -297,11 +242,38 @@ const ProductsList = ({ products, filters, selectedCategory }) => {
 
 // ================= SanPham Component =================
 export default function SanPham() {
+    const dispatch = useDispatch();
+    const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
     const [selectedCategory, setSelectedCategory] = useState('all');
     const [filters, setFilters] = useState({
         priceRange: 'all',
         subCategory: 'all',
     });
+
+    // ================================================ INIT DATA ===========================================
+    const fetchList = async () => {
+        let res = await dispatch(getListCategory({ page: 1, limit: 20 })).unwrap();
+    };
+
+
+    useEffect(() => {
+        fetchList();
+    }, []);
+    // ============================================= ACTION ================================================
+    // MAP LIST SẢN PHẨM
+    const productsData = CategoryList.flatMap(cat =>
+        cat.children.flatMap(child =>
+            child.product.map(p => ({
+                ...p,
+                uid: `${cat.id}-${child.id}-${p.id}`, // 👈 DUY NHẤT 100%
+                category: cat.name,
+                subCategory: child.name,
+                priceNum: typeof p.price === "number"
+                    ? p.price
+                    : parseInt(p.price.toString().replace(/\D/g, "")),
+            }))
+        )
+    );
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
@@ -311,6 +283,7 @@ export default function SanPham() {
         <div className="min-h-screen bg-gray-50 p-4 sm:p-8 lg:p-12 font-sans">
             {/* Top category menu */}
             <CategoryTopMenu
+                categoryList={CategoryList}
                 selectedCategory={selectedCategory}
                 onSelectCategory={cat => {
                     setSelectedCategory(cat);
@@ -327,7 +300,7 @@ export default function SanPham() {
 
                 {/* Product list */}
                 <ProductsList
-                    products={productsData}
+                    product={productsData}
                     filters={filters}
                     selectedCategory={selectedCategory}
                 />
