@@ -1,10 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { ArrowRight } from 'lucide-react';
 import ProductCard from '../components/product/ProductCard.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListPost } from '../redux/postSlice';
 import { toast } from 'react-toastify';
 import ImageLoader from '../components/FormFields/ImageLoader';
+import { getListProductDropdown } from '../redux/productSlice';
+import { typeCategory_obligatory } from '../utils/constants.js'
+import ApiProductCategory from '../apis/ApiProductCategory'
 
 const comboBanners = [
     {
@@ -29,18 +32,16 @@ const comboBanners = [
     },
 ];
 
-const productsData = [
-    { id: 1, name: "Micro thu âm BM-800", price: "990.000₫", oldPrice: "1.290.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400&h=400&fit=crop' },
-    { id: 2, name: "Soundcard XOX K10", price: "1.250.000₫", oldPrice: "1.590.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
-    { id: 3, name: "Tai nghe kiểm âm OneOdio", price: "750.000₫", oldPrice: "950.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=400&h=400&fit=crop' },
-    { id: 4, name: "Combo Livestream Cao Cấp", price: "3.500.000₫", oldPrice: "4.200.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=400&h=400&fit=crop' },
-    { id: 5, name: "Loa kiểm âm Edifier R1280DB", price: "2.800.000₫", oldPrice: "3.200.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=400&h=400&fit=crop' },
-    { id: 6, name: "Phụ kiện chân đế Micro", price: "150.000₫", oldPrice: "190.000₫", phone: "037.2672.396", img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=400&h=400&fit=crop' },
-];
-
-const CategorySection = ({ products, bannerImage, buttonLink }) => (
+const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
     <section className="py-5 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
         <div className="max-w-7xl mx-auto">
+            <div className="flex justify-between items-center mb-12 mt-5">
+                <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
+                    {header}
+                </h2>
+                <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                 {/* Banner Dọc */}
                 <div className="md:col-span-5">
@@ -98,6 +99,10 @@ export default function TrangChu() {
     const dispatch = useDispatch();
     const [currentSlide, setCurrentSlide] = useState(0);
     const { PostList } = useSelector((state) => state.post);
+    const { ProductDropdown } = useSelector((state) => state.product);
+    const [comboLivestream, setComboLivestream] = useState([]);
+    const [phuKien, setPhuKien] = useState([]);
+    const [loa, setLoa] = useState([]);
 
     const slides = [
         { img: '/bannerhome1.png', },
@@ -116,15 +121,42 @@ export default function TrangChu() {
 
     // ========================================== INIT ========================================
     const fetchList = async () => {
-        let res = await dispatch(getListPost({ page: 1, limit: 3 })).unwrap();
-        if (res && res.EC !== 0) {
-            toast.error(res.EM);
+        let resPost = await dispatch(getListPost({ page: 1, limit: 3 })).unwrap();
+        if (resPost && resPost.EC !== 0) {
+            toast.error(resPost.EM);
+        }
+
+        let resProductTopSeller = await dispatch(getListProductDropdown()).unwrap();
+
+        // comboLivestream
+        let resCombo = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.comboLivestream);
+        if (resCombo && resCombo.DT) {
+            setComboLivestream(resCombo.DT)
+        }
+
+        // Phu Kien Thu Am
+        let resPhuKienThuAm = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.resPhuKienThuAm);
+        if (resPhuKienThuAm && resPhuKienThuAm.DT) {
+            setPhuKien(resPhuKienThuAm.DT)
+        }
+
+        // Loa
+        let resLoa = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.Loa);
+        if (resLoa && resLoa.DT) {
+            setLoa(resPhuKienThuAm.DT)
         }
     };
 
     useEffect(() => {
         fetchList();
     }, []);
+
+    // ========================================== ACTION ===========================================
+    const randomTopSellers = useMemo(() => {
+        return [...ProductDropdown]
+            .sort(() => Math.random() - 0.5)
+            .slice(0, 3);
+    }, [ProductDropdown]);
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-[#ed792f] selection:text-white">
@@ -175,7 +207,7 @@ export default function TrangChu() {
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-                            {productsData.slice(0, 3).map((p) => (
+                            {randomTopSellers.map((p) => (
                                 <div key={p.id} className="relative">
                                     {/* Thẻ sản phẩm */}
                                     <ProductCard product={p} isTopSeller={true} />
@@ -198,7 +230,8 @@ export default function TrangChu() {
 
                 {/* 3. COMBO LIVESTREAM */}
                 <CategorySection
-                    products={productsData}
+                    header="COMBO LIVESTREAM"
+                    products={comboLivestream}
                     bannerImage="/BannerBộLivestream.png"
                     buttonLink="#"
                 />
@@ -217,7 +250,7 @@ export default function TrangChu() {
 
                         {/* Lưới sản phẩm: 2 hàng trên Desktop (6 cột x 2 hàng = 12 sản phẩm) */}
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-4 gap-y-10">
-                            {productsData.slice(0, 12).map((p) => (
+                            {phuKien.slice(0, 12).map((p) => (
                                 <ProductCard key={p.id} product={p} />
                             ))}
                         </div>
@@ -258,7 +291,8 @@ export default function TrangChu() {
 
                 {/* 6. LOA KIỂM ÂM */}
                 <CategorySection
-                    products={productsData}
+                    header="LOA KIỂM ÂM"
+                    products={loa}
                     bannerImage="/BannerLoa.png"
                     buttonLink="#"
                 />

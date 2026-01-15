@@ -7,6 +7,12 @@ const TypeUserIDCons = {
   admin: "admin",
 };
 
+const typeCategory_obligatory = {
+  comboLivestream: 1,
+  resPhuKienThuAm: 2,
+  Loa: 3,
+};
+
 const formatDate = (isoDate) => {
   if (isoDate && isoDate !== "0001-01-01T00:00:00") {
     return moment(isoDate).format("DD/MM/YYYY");
@@ -78,6 +84,7 @@ const arrayBufferToUrl = (arrayBuffer) => {
 
 export {
   TypeUserIDCons,
+  typeCategory_obligatory,
   formatDate,
   formatToISODate,
   getGenderDisplay,

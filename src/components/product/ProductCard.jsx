@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Star, Heart } from 'lucide-react';
 
-export default function ProductCard({ product }) {
+export default function ProductCard({ product, isTopSeller = false }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
     const navigate = useNavigate();
 
@@ -15,17 +15,16 @@ export default function ProductCard({ product }) {
             {/* Image Container - Giảm chiều cao đáng kể nếu là Compact */}
             <div className={`relative overflow-hidden h-48 sm:h-56`}>
                 <img
-                    src={product.img}
+                    src={product.image}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                {product.oldPrice && (
-                    <div className={`absolute top-2 right-2 bg-red-500 text-white font-bold shadow-lg rounded-full px-3 py-1 text-xs`}>
-                        -25%
-                    </div>
-                )}
+                <div className={`absolute top-2 right-2 bg-red-500 text-white font-bold shadow-lg rounded-full px-3 py-1 text-xs`}>
+                    -25%
+                </div>
+
 
                 {/* Wishlist Button - Nhỏ hơn trong compact */}
                 <button
@@ -45,24 +44,35 @@ export default function ProductCard({ product }) {
                 {/* Price & Contact - Chuyển thành cột nếu quá hẹp trong compact */}
                 <div className={`flex flex-row items-baseline gap-2 mb-4 justify-between`}>
                     <div className="flex flex-col">
-                        <div className="flex items-center gap-1.5">
-                            <span className={`font-bold text-[10px] sm:text-[11px] text-gray-900`}>
-                                {product.price}
-                            </span>
-
-                            {product.oldPrice && (
-                                <span className={`text-gray-400 line-through text-[1px]`}>
-                                    {product.oldPrice}
+                        {isTopSeller ?
+                            (<div className="flex items-center gap-1.5">
+                                <span className={`font-bold text-[10px] sm:text-[11px] text-gray-900`}>
+                                    {(product.price).toLocaleString('vi-VN')} VNĐ
                                 </span>
-                            )}
-                        </div>
+
+                                <span className={`text-gray-400 line-through text-[11px]`}>
+                                    {(Number(product.price || 0) * 1.25).toLocaleString('vi-VN')} VNĐ
+                                </span>
+                            </div>) :
+                            (<div className="flex flex-col gap-0.5">
+                                {/* 1. GIÁ GIẢM (HIỂN THỊ Ở TRÊN - NỔI BẬT) */}
+                                <span className="font-bold text-[10px] sm:text-[11px] text-gray-900">
+                                    {Number(product.price).toLocaleString('vi-VN')} VNĐ
+                                </span>
+
+                                {/* 2. GIÁ GỐC (HIỂN THỊ Ở DƯỚI - GẠCH NGANG) */}
+                                <span className="text-gray-400 line-through text-[11px] sm:text-[12px] font-medium">
+                                    {(Number(product.price || 0) * 1.25).toLocaleString('vi-VN')} VNĐ
+                                </span>
+                            </div>)}
+
                     </div>
 
                     <div className={`bg-green-50 border border-green-100 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100 w-fit px-3 py-1.5
                         }`}>
                         <span className="text-[10px] uppercase tracking-wider text-green-600 font-bold mr-1.5">LH:</span>
                         <span className={`font-bold text-green-700 tracking-wider text-[12px]`}>
-                            {product.phone}
+                            037.2672.396
                         </span>
                     </div>
                 </div>
