@@ -6,6 +6,7 @@ const ApiCategory = {
   createCategoryApi: (data) => ApiManager.post(`/category/create`, data),
   updateCategoryApi: (id, data) => ApiManager.put(`/category/update/${id}`, data),
   deleteCategoryApi: (id) => ApiManager.delete(`/category/delete/${id}`),
+  filterCategoryApi: (page, limit, categoryId, priceProduct) => ApiManager.get(`/category/filter?page=${page}&limit=${limit}&categoryId=${categoryId}&priceProduct=${priceProduct}`),
 };
 
 export default ApiCategory;

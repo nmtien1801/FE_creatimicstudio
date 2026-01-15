@@ -4,6 +4,7 @@ import ProductCard from '../components/product/ProductCard.jsx';
 import { getListCategory } from '../redux/categorySlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import ApiProduct from '../apis/ApiProduct.js';
 
 const priceRanges = [
     { value: 'all', label: 'Tất cả mức giá', min: 0, max: Infinity },
@@ -127,77 +128,25 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onSelectCategory, onS
 };
 
 // ================= ProductsList: SHOW SẢN PHẨM TỬ CATEGORY VÀ GIÁ + PHÂN TRANG =================
-const ProductsList = ({ product, filters, selectedCategory }) => {
-    const productsPerPage = 8;
-    const [currentPage, setCurrentPage] = useState(1);
-
-    // ==================================== Action ProductsList =========================
-    // LỌC TỪ CATEGORY VÀ GIÁ
-    const filteredProducts = useMemo(() => {
-        return product.filter(product => {
-            // Price
-            const range = priceRanges.find(r => r.value === filters.priceRange);
-            const priceMatch =
-                filters.priceRange === 'all' ||
-                (product.priceNum >= range.min && product.priceNum <= range.max);
-
-            // Category / Sub
-            let categoryMatch = true;
-
-            if (selectedCategory !== 'all') {
-                categoryMatch = product.category === selectedCategory;
-
-                if (filters.subCategory !== 'all') {
-                    categoryMatch =
-                        product.category === selectedCategory &&
-                        product.subCategory === filters.subCategory;
-                }
-            }
-
-            return priceMatch && categoryMatch;
-        });
-    }, [product, filters, selectedCategory]);
-
-    // TÍNH TOÁN SP TRÊN TRANG
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-    const paginatedProducts = useMemo(() => {
-        const startIndex = (currentPage - 1) * productsPerPage;
-        return filteredProducts.slice(startIndex, startIndex + productsPerPage);
-    }, [filteredProducts, currentPage]);
-
-    // CHUYỂN TRANG
-    const handlePageChange = (page) => {
-        if (page > 0 && page <= totalPages) {
-            setCurrentPage(page);
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-    };
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [filters, selectedCategory]);
-
-    useEffect(() => {
-        if (currentPage > totalPages) {
-            setCurrentPage(1);
-        }
-    }, [totalPages]);
+const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading }) => {
 
     return (
         <div className="w-full md:w-3/4 md:pl-8">
             <div className="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
                 <h1 className="text-2xl font-black text-gray-900">
-                    Sản Phẩm{' '}
-                    <span className="text-orange-600">
-                        {getTitleByCategory(selectedCategory, filters.subCategory)}
-                    </span>
+                    Sản Phẩm
                 </h1>
-                <p className="text-gray-600 font-medium">{filteredProducts.length} kết quả</p>
+                <p className="text-gray-600 font-medium">{products.length} kết quả</p>
             </div>
 
-            {paginatedProducts.length > 0 ? (
+            {loading ? (
+                <div className="text-center p-12">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Đang tải sản phẩm...</p>
+                </div>
+            ) : products.length > 0 ? (
                 <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                    {paginatedProducts.map(product => (
+                    {products.map(product => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
@@ -210,7 +159,7 @@ const ProductsList = ({ product, filters, selectedCategory }) => {
 
             {totalPages > 1 && (
                 <div className="flex justify-center items-center space-x-2 mt-10">
-                    <button onClick={() => handlePageChange(currentPage - 1)} disabled={currentPage === 1}
+                    <button onClick={() => onPageChange(currentPage - 1)} disabled={currentPage === 1}
                         className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         <ChevronLeft className="w-5 h-5 text-gray-700" />
                     </button>
@@ -219,7 +168,7 @@ const ProductsList = ({ product, filters, selectedCategory }) => {
                         return (
                             <button
                                 key={`page-${page}-total-${totalPages}`}
-                                onClick={() => handlePageChange(page)}
+                                onClick={() => onPageChange(page)}
                                 className={`px-4 py-2 font-bold rounded-lg transition-all
                                     ${currentPage === page
                                         ? 'bg-orange-600 text-white shadow-md'
@@ -230,7 +179,7 @@ const ProductsList = ({ product, filters, selectedCategory }) => {
                             </button>
                         );
                     })}
-                    <button onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}
+                    <button onClick={() => onPageChange(currentPage + 1)} disabled={currentPage === totalPages}
                         className="p-3 bg-white border border-gray-300 rounded-lg hover:bg-orange-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                         <ChevronRight className="w-5 h-5 text-gray-700" />
                     </button>
@@ -249,31 +198,52 @@ export default function SanPham() {
         priceRange: 'all',
         subCategory: 'all',
     });
+    const [products, setProducts] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [loading, setLoading] = useState(false);
 
     // ================================================ INIT DATA ===========================================
-    const fetchList = async () => {
+    const fetchListCategory = async () => {
         let res = await dispatch(getListCategory({ page: 1, limit: 20 })).unwrap();
+    };
+
+    const fetchProducts = async (page = 1) => {
+        setLoading(true);
+        try {
+            let categoryId = 'all';
+            if (selectedCategory !== 'all') {
+                const category = CategoryList.find(cat => cat.name === selectedCategory);
+                if (category) categoryId = category.id;
+            }
+
+            const priceProduct = filters.priceRange;
+            const res = await ApiProduct.filterProductApi(page, 8, categoryId, priceProduct);
+
+            console.log('sssssssss:', res);
+
+            setProducts(res.DT.products || []);
+            setTotalPages(Math.ceil(res.DT.total / res.DT.limit));
+            setCurrentPage(res.DT.page);
+        } catch (error) {
+            console.error(error);
+            toast.error('Lỗi khi tải sản phẩm');
+        } finally {
+            setLoading(false);
+        }
     };
 
 
     useEffect(() => {
-        fetchList();
+        fetchListCategory();
     }, []);
+
+    useEffect(() => {
+        if (CategoryList.length > 0) {
+            fetchProducts(1);
+        }
+    }, [selectedCategory, filters.priceRange, CategoryList]);
     // ============================================= ACTION ================================================
-    // MAP LIST SẢN PHẨM
-    const productsData = CategoryList.flatMap(cat =>
-        cat.children.flatMap(child =>
-            child.product.map(p => ({
-                ...p,
-                uid: `${cat.id}-${child.id}-${p.id}`, // 👈 DUY NHẤT 100%
-                category: cat.name,
-                subCategory: child.name,
-                priceNum: typeof p.price === "number"
-                    ? p.price
-                    : parseInt(p.price.toString().replace(/\D/g, "")),
-            }))
-        )
-    );
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
@@ -300,9 +270,11 @@ export default function SanPham() {
 
                 {/* Product list */}
                 <ProductsList
-                    product={productsData}
-                    filters={filters}
-                    selectedCategory={selectedCategory}
+                    products={products}
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={fetchProducts}
+                    loading={loading}
                 />
             </div>
         </div>
