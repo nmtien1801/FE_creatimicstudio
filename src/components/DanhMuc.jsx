@@ -38,7 +38,7 @@ const MegaMenu = ({ categories }) => {
               <div className="flex items-center justify-between p-3 text-gray-800 hover:bg-gray-50 rounded-md cursor-pointer">
                 <span>{cat.name}</span>
 
-                {cat.subs?.length > 0 && (
+                {cat.children?.length > 0 && (
                   <ChevronDown
                     className={`w-4 h-4 transition-transform ${
                       openCategory === cat.name ? "rotate-[-90deg]" : ""
@@ -48,9 +48,9 @@ const MegaMenu = ({ categories }) => {
               </div>
 
               {/* SUB MENU */}
-              {cat.subs?.length > 0 && openCategory === cat.name && (
+              {cat.children?.length > 0 && openCategory === cat.name && (
                 <div className="absolute top-0 left-full ml-2 w-56 bg-white border border-gray-200 rounded-xl shadow-xl p-2 z-[2002]">
-                  {cat.subs.map((sub, i) => (
+                  {cat.children.map((sub, i) => (
                     <div
                       key={i}
                       className="p-2 rounded hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm"

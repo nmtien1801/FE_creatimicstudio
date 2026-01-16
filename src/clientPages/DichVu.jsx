@@ -16,7 +16,7 @@ const CMICLandingPage = () => {
     return (
         <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-20">
             {/* SECTION 0: HERO BANNER */}
-            <section className="relative w-full bg-[#f9f4f0] pt-16 pb-32">
+            <section className="relative w-full bg-[#f9f4f0] pt-16 pb-32 overflow-hidden">
                 {/* Họa tiết chấm bi */}
                 <div className="absolute bottom-0 right-0 w-64 h-64 opacity-20"
                     style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '20px 20px' }}>
@@ -54,7 +54,7 @@ const CMICLandingPage = () => {
                         </div>
 
                         {/* CỘT PHẢI: HEXAGON LAYOUT */}
-                        <div className="relative h-[450px] mt-12 md:mt-0">
+                        <div className="relative h-[450px] mt-12 md:mt-0 hidden md:block">
 
                             {/* Decor Dấu + phía trên góc phải */}
                             <div className="absolute top-0 left-20 grid grid-cols-5 gap-2 z-0">
@@ -152,8 +152,8 @@ const CMICLandingPage = () => {
                     Quy trình setup hát livestream
                 </h2>
 
-                <div className="relative flex flex-wrap justify-between gap-4">
-                    {/* Nối các bước bằng đường kẻ dash */}
+                <div className="relative flex flex-col md:flex-row justify-between gap-16 md:gap-4 mt-10">
+                    {/* Đường kẻ dash - Chỉ hiện trên Desktop */}
                     <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 border-t-2 border-dashed border-gray-300 -z-0"></div>
 
                     {[
@@ -162,9 +162,22 @@ const CMICLandingPage = () => {
                         { title: "Setup âm thanh - ánh sáng - góc quay", color: "yellow" },
                         { title: "Hướng dẫn sử dụng & hỗ trợ", color: "orange" }
                     ].map((step, index) => (
-                        <div key={index} className="relative z-10 bg-white border-2 border-gray-100 rounded-2xl p-2 w-full md:w-56 shadow-md text-center flex flex-col items-center">
-                            <div className={`absolute -top-10 w-20 h-20 rounded-full ${stepColorMap[step.color]}`}></div>
-                            <p className="mt-12 text-base font-semibold">{step.title}</p>
+                        <div
+                            key={index}
+                            className="relative z-10 bg-white border-2 border-gray-100 rounded-2xl p-6 w-full md:w-60 shadow-md text-center flex flex-col items-center"
+                        >
+                            {/* Hình tròn: Trên mobile sẽ đẩy card xuống, trên desktop sẽ bay lên trên */}
+                            <div className={`
+                                absolute -top-10 w-20 h-20 rounded-full 
+                                flex items-center justify-center text-white font-bold text-xl
+                                ${stepColorMap[step.color]}
+                            `}>
+                            </div>
+
+                            {/* Nội dung text: Cách top một khoảng để không bị hình tròn che */}
+                            <p className="mt-8 text-base font-semibold leading-relaxed">
+                                {step.title}
+                            </p>
                         </div>
                     ))}
                 </div>

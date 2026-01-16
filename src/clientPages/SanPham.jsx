@@ -220,8 +220,6 @@ export default function SanPham() {
             const priceProduct = filters.priceRange;
             const res = await ApiProduct.filterProductApi(page, 8, categoryId, priceProduct);
 
-            console.log('sssssssss:', res);
-
             setProducts(res.DT.products || []);
             setTotalPages(Math.ceil(res.DT.total / res.DT.limit));
             setCurrentPage(res.DT.page);

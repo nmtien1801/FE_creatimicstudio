@@ -1,7 +1,16 @@
 import { ApiManager } from "./ApiManager";
 
 const ApiCategory = {
-  getListCategoryApi: (page, limit) => ApiManager.get(`/category/list?page=${page}&limit=${limit}`),
+  getListCategoryApi: (page, limit) => {
+    const params = {};
+
+    if (page !== undefined && limit !== undefined) {
+      params.page = page;
+      params.limit = limit;
+    }
+
+    return ApiManager.get("/category/list", { params });
+  },
   getCategoryByIdApi: (id) => ApiManager.get(`/category/${id}`),
   createCategoryApi: (data) => ApiManager.post(`/category/create`, data),
   updateCategoryApi: (id, data) => ApiManager.put(`/category/update/${id}`, data),

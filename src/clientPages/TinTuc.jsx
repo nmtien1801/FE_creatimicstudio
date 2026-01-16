@@ -209,17 +209,34 @@ const TinTuc = () => {
                             <SearchBar search={search} setSearch={setSearch} />
                         </div>
 
-                        {/* Banner Dọc (Giữ nguyên) */}
-                        <div className="md:h-[700px] lg:min-h-[500px] bg-[#ed792f] rounded-2xl flex items-center justify-center p-6 shadow-xl relative overflow-hidden group cursor-pointer">
-                            <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-all"></div>
-                            <div className="relative text-center text-white">
-                                <div className="text-2xl font-black mb-4 leading-tight">Combo Livestream Chất Lượng Cao</div>
-                                <div className="text-sm opacity-90 mb-6">Khuyến mãi đặc biệt</div>
-                                <div className="inline-flex items-center gap-2 text-sm font-bold bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full group-hover:bg-white/30 transition-all">
-                                    Xem ngay →
+                        {/* Banner Dọc */}
+                        <div className="md:h-[700px] lg:min-h-[500px] rounded-2xl shadow-xl relative overflow-hidden group cursor-pointer">
+                            <img
+                                src="/BannerBộLivestream.png"
+                                alt="Combo livestream"
+                                className="absolute inset-0 w-full h-full object-cover"
+                                loading="lazy"
+                            />
+
+                            {/* Overlay */}
+                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+
+                            {/* Content */}
+                            <div className="relative z-10 flex items-center justify-center h-full text-center text-white p-6">
+                                <div>
+                                    <div className="text-2xl font-black mb-4 leading-tight">
+                                        Combo Livestream Chất Lượng Cao
+                                    </div>
+                                    <div className="text-sm opacity-90 mb-6">
+                                        Khuyến mãi đặc biệt
+                                    </div>
+                                    <div className="inline-flex items-center gap-2 text-sm font-bold bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full group-hover:bg-white/30 transition-all">
+                                        Xem ngay →
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </main>

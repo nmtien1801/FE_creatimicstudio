@@ -184,7 +184,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
             </nav>
 
             {/* DANH MỤC SẢN PHẨM */}
-            <div className="mt-8 pt-4 border-t">
+            {/* <div className="mt-8 pt-4 border-t">
               <h4 className="font-bold text-gray-800 mb-2">Danh mục sản phẩm</h4>
 
               <ul className="space-y-1">
@@ -198,9 +198,9 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
                       {cat.name}
                     </NavLink>
 
-                    {cat.subs?.length > 0 && (
+                    {cat.children?.length > 0 && (
                       <ul className="pl-4 mt-1 space-y-1">
-                        {cat.subs.map((sub, i) => (
+                        {cat.children.map((sub, i) => (
                           <li key={i}>
                             <NavLink
                               to={sub.path || "#"}
@@ -216,7 +216,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
 
           </div>
         </div>

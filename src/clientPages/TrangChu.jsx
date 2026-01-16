@@ -46,7 +46,7 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
                 {/* Banner Dọc */}
                 <div className="md:col-span-5">
                     <div className="md:col-span-3">
-                        <div className="relative h-full min-h-[770px] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
+                        <div className="hidden md:block relative h-full min-h-[770px] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
                             {/* Background Image */}
                             <img
                                 src={bannerImage}
@@ -56,7 +56,6 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
 
                         </div>
                     </div>
-
                 </div>
 
                 {/* Lưới Sản phẩm */}
@@ -80,16 +79,24 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
 );
 
 const ArticleCard = ({ article }) => (
-    <div className="bg-white rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer hover:-translate-y-2 border border-gray-100">
-        <div className="h-56 w-full overflow-hidden">
-            <ImageLoader imagePath={article.image} className="w-full h-50 object-cover group-hover:scale-110 transition-transform duration-700" />
+    <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer md:hover:-translate-y-2 border border-gray-100">
+        {/* Chiều cao ảnh: h-48 trên mobile, h-56 trên desktop */}
+        <div className="h-48 md:h-56 w-full overflow-hidden">
+            <ImageLoader
+                imagePath={article.image}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+            />
         </div>
-        <div className="p-8">
-            <h3 className="text-lg font-bold text-gray-900 mb-4 line-clamp-2 min-h-[56px] group-hover:text-[#ed792f] transition-colors uppercase italic">
+
+        {/* Padding: p-5 trên mobile, p-8 trên desktop */}
+        <div className="p-5 md:p-8">
+            {/* Font size & min-h: Nhỏ lại trên mobile để tiết kiệm không gian */}
+            <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4 line-clamp-2 min-h-[48px] md:min-h-[56px] group-hover:text-[#ed792f] transition-colors uppercase italic">
                 {article.title}
             </h3>
-            <span className="inline-flex items-center text-[#ed792f] font-black text-xs uppercase tracking-widest">
-                Đọc thêm <ArrowRight className="ml-2 w-4 h-4" />
+
+            <span className="inline-flex items-center text-[#ed792f] font-black text-[10px] md:text-xs uppercase tracking-widest">
+                Đọc thêm <ArrowRight className="ml-1 md:ml-2 w-3 h-3 md:w-4 md:h-4" />
             </span>
         </div>
     </div>
@@ -143,7 +150,7 @@ export default function TrangChu() {
         // Loa
         let resLoa = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.Loa);
         if (resLoa && resLoa.DT) {
-            setLoa(resPhuKienThuAm.DT)
+            setLoa(resLoa.DT)
         }
     };
 
@@ -199,16 +206,29 @@ export default function TrangChu() {
                 </section>
 
                 {/* 2. TOP SELLER SECTION */}
-                <section className="py-10 px-4 sm:px-6 lg:px-8 bg-[#ed792f]">
+                <section className="py-10 md:py-16 px-4 sm:px-6 lg:px-8 bg-[#ed792f] overflow-hidden">
                     <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-col items-center mb-16">
-                            <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">TOP SELLER</h2>
-                            <p className="text-black/80 font-bold uppercase mt-6 text-sm text-center">Sản phẩm khách hàng tin dùng nhất</p>
+                        {/* Tiêu đề */}
+                        <div className="flex flex-col items-center mb-10 md:mb-16">
+                            <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">
+                                TOP SELLER
+                            </h2>
+                            <p className="text-black/80 font-bold uppercase mt-4 md:mt-6 text-xs md:text-sm text-center">
+                                Sản phẩm khách hàng tin dùng nhất
+                            </p>
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+                        {/* Container Carousel: Flex trên mobile (< 640px), Grid trên sm trở lên */}
+                        <div className="
+            flex flex-nowrap overflow-x-auto gap-6 pb-10 scrollbar-hide
+            sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 sm:overflow-visible sm:pb-0
+            snap-x snap-mandatory
+        ">
                             {randomTopSellers.map((p) => (
-                                <div key={p.id} className="relative">
+                                <div
+                                    key={p.id}
+                                    className="relative min-w-[80%] sm:min-w-0 snap-center flex-shrink-0 sm:flex-shrink"
+                                >
                                     {/* Thẻ sản phẩm */}
                                     <ProductCard product={p} isTopSeller={true} />
 
@@ -236,30 +256,30 @@ export default function TrangChu() {
                     buttonLink="#"
                 />
 
-                {/* 4. PHỤ KIỆN THU ÂM - CHIA THÀNH 2 HÀNG */}
-                <section className="py-10 px-4 sm:px-6 lg:px-8 bg-white">
+                {/* 4. PHỤ KIỆN THU ÂM  */}
+                <section className="py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
                     <div className="max-w-7xl mx-auto">
 
-                        {/* Tiêu đề */}
-                        <div className="flex justify-between items-center mb-12">
-                            <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
+                        {/* Tiêu đề: Giảm mb trên mobile */}
+                        <div className="flex justify-between items-center mb-6 md:mb-6">
+                            <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
                                 PHỤ KIỆN THU ÂM
                             </h2>
                             <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
                         </div>
 
-                        {/* Lưới sản phẩm: 2 hàng trên Desktop (6 cột x 2 hàng = 12 sản phẩm) */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-4 gap-y-10">
+                        {/* Lưới sản phẩm: Giảm gap-y trên mobile */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-4 gap-y-6 md:gap-y-10">
                             {phuKien.slice(0, 12).map((p) => (
                                 <ProductCard key={p.id} product={p} />
                             ))}
                         </div>
 
-                        {/* Nút Xem thêm */}
-                        <div className="mt-16 text-center">
+                        {/* Nút Xem thêm: Giảm mt trên mobile */}
+                        <div className="mt-10 md:mt-16 text-center">
                             <a
                                 href="#"
-                                className="inline-flex items-center justify-center px-12 py-4 bg-[#ed792f] text-white text-sm font-black uppercase tracking-widest rounded-full shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
+                                className="inline-flex items-center justify-center px-8 md:px-12 py-3 md:py-4 bg-[#ed792f] text-white text-xs md:text-sm font-black uppercase tracking-widest rounded-full shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
                             >
                                 Xem thêm sản phẩm
                             </a>
@@ -267,21 +287,25 @@ export default function TrangChu() {
                     </div>
                 </section>
 
-                {/* 5. 4 BANNER COMBO PHỤ KIỆN (YÊU CẦU TỪ ẢNH) */}
-                <section className="px-4 sm:px-6 lg:px-8 my-20">
+                {/* 5. 4 BANNER COMBO - Thay my-20 thành responsive margin */}
+                <section className="px-4 sm:px-6 lg:px-8 my-8 md:my-12">
                     <div className="max-w-7xl mx-auto">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                        <div className="flex flex-nowrap overflow-x-auto pb-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
                             {comboBanners.map((banner, i) => (
-                                <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-[2.5rem] shadow-xl cursor-pointer bg-gray-100">
+                                <div
+                                    key={i}
+                                    className="group relative aspect-[4/3] min-w-[85%] sm:min-w-0 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl cursor-pointer bg-gray-100 flex-shrink-0 sm:flex-shrink"
+                                >
                                     <img src={banner.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt="" />
-                                    {/* Gradient Overlay Cam đặc trưng */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-[#ed792f] via-[#ed792f]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
-                                    <div className="absolute inset-0 p-8 flex flex-col justify-end text-white">
-                                        <span className="text-[10px] font-black tracking-[0.3em] mb-2 opacity-80 uppercase">{banner.subtitle}</span>
-                                        <h3 className="text-xl font-black leading-tight uppercase italic drop-shadow-md group-hover:text-yellow-300 transition-colors">
+
+                                    {/* Nội dung Banner: Giảm padding trên mobile */}
+                                    <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end text-white">
+                                        <span className="text-[10px] font-black tracking-[0.3em] mb-1 md:mb-2 opacity-80 uppercase">{banner.subtitle}</span>
+                                        <h3 className="text-lg md:text-xl font-black leading-tight uppercase italic drop-shadow-md group-hover:text-yellow-300 transition-colors">
                                             {banner.title}
                                         </h3>
-                                        <div className="mt-4 w-12 h-1 bg-white group-hover:w-24 transition-all duration-500"></div>
+                                        <div className="mt-2 md:mt-4 w-12 h-1 bg-white group-hover:w-24 transition-all duration-500"></div>
                                     </div>
                                 </div>
                             ))}
@@ -298,15 +322,31 @@ export default function TrangChu() {
                 />
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
-                <section className="py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
+                <section className="py-10 md:py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100 overflow-hidden">
                     <div className="max-w-7xl mx-auto">
-                        <div className="text-center mb-16">
-                            <h2 className="text-4xl lg:text-5xl font-black text-black uppercase tracking-tighter">BÀI VIẾT HỮU ÍCH</h2>
-                            <p className="text-gray-400 font-medium uppercase tracking-[0.3em] text-[10px] mt-2">Chia sẻ kinh nghiệm & Kỹ thuật âm thanh</p>
+                        {/* Tiêu đề: Giảm mb trên mobile */}
+                        <div className="text-center mb-10 md:mb-16">
+                            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-black uppercase tracking-tighter">
+                                BÀI VIẾT HỮU ÍCH
+                            </h2>
+                            <p className="text-gray-400 font-medium uppercase tracking-[0.3em] text-[9px] md:text-[10px] mt-2">
+                                Chia sẻ kinh nghiệm & Kỹ thuật âm thanh
+                            </p>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+
+                        {/* Container Carousel: Flex trên mobile, Grid trên md */}
+                        <div className="
+                            flex flex-nowrap overflow-x-auto gap-6 pb-8 scrollbar-hide
+                            md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0
+                            snap-x snap-mandatory
+                        ">
                             {PostList.map((article, index) => (
-                                <ArticleCard key={index} article={article} />
+                                <div
+                                    key={index}
+                                    className="min-w-[80%] sm:min-w-[45%] md:min-w-0 snap-center flex-shrink-0 md:flex-shrink"
+                                >
+                                    <ArticleCard article={article} />
+                                </div>
                             ))}
                         </div>
                     </div>

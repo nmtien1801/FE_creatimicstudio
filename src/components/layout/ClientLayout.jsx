@@ -6,22 +6,24 @@ import { ToastContainer } from "react-toastify";
 import Header from "../header/HeaderClient";
 import Footer from "../footer";
 import { ArrowUp } from "lucide-react";
+import { getListCategory } from '../../redux/categorySlice.js';
+import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 function ClientLayout() {
+    const dispatch = useDispatch();
+    const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
-    const categories = [
-        { name: "Cho thuê không gian Studio", subs: ["Micro thu âm Condenser", "Tai nghe kiểm âm", "Phụ kiện Studio"] },
-        { name: "Cho thuê thiết bị Studio", subs: ["Soundcard giá rẻ", "Mixer chất lượng cao", "Micro quay MV"] },
-        { name: "Bộ livestream - thu âm cơ bản", subs: [] },
-        { name: "Soundcard - Mixer", subs: ["Soundcard giá rẻ", "Soundcard thu âm", "Mixer giá rẻ"] },
-        { name: "Tai nghe kiểm âm", subs: ["Tai nghe Kiểm Âm In-ear", "Tai nghe kiểm âm phòng thu"] },
-        { name: "Microphone", subs: [] },
-        { name: "Box Livestream", subs: [] },
-        { name: "Phụ kiện thu âm", subs: [] },
-        { name: "Loa", subs: [] },
-        { name: "Thiết bị Like-new chính hãng", subs: [] },
-    ];
+
+    // ================================================ INIT DATA ===========================================
+    useEffect(() => {
+        const fetchListCategory = async () => {
+            let res = await dispatch(getListCategory({ page: null, limit: null })).unwrap();
+        };
+
+        fetchListCategory();
+    }, []);
 
     const mainRef = useRef(null);
 
@@ -53,7 +55,7 @@ function ClientLayout() {
             <div className="flex flex-col h-full transition-all duration-300">
                 {/* Header */}
                 <Header
-                    categories={categories}
+                    categories={CategoryList}
                     isMobileMenuOpen={isMobileMenuOpen}
                     setIsMobileMenuOpen={setIsMobileMenuOpen}
                 />
