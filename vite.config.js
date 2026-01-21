@@ -7,7 +7,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     allowedHosts: [
-      'localhost',
+      // 'localhost',
       '180.93.52.86',
       '127.0.0.1',
     ]
