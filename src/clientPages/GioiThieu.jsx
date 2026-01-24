@@ -9,21 +9,9 @@ export default function CMICStudio() {
                 <h2 className="text-4xl font-bold text-orange-500 text-center mb-12">
                     CÂU CHUYỆN THƯƠNG HIỆU
                 </h2>
-
                 <div className="grid md:grid-cols-2 gap-8 items-center">
                     <div className="relative">
-                        <div className="bg-gradient-to-br from-purple-100 to-blue-100 rounded-2xl p-8 shadow-lg">
-                            <div className="aspect-video bg-white rounded-lg shadow-inner flex items-center justify-center">
-                                <Mic className="w-24 h-24 text-gray-300" />
-                            </div>
-                            <div className="mt-6 space-y-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                    <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
-                                </div>
-                            </div>
-                        </div>
+                        <img src="/CauChuyenThuongHieu.png" alt="CÂU CHUYỆN THƯƠNG HIỆU" className="mx-auto mb-12" />
                     </div>
 
                     <div className="space-y-6">
@@ -223,17 +211,7 @@ export default function CMICStudio() {
                                 Chúng tôi cung cấp thiết bị thu âm chính hãng, đồng thời hỗ trợ các dịch vụ đi kèm như set up live stream, cài cubase, cho thuê linh động các thiết bị tùy theo nhu cầu của khách hàng.
                             </h1>
                         </div>
-
-                        <div className="bg-white rounded-2xl shadow-xl p-8">
-                            <h3 className="text-2xl font-bold text-center mb-6 text-orange-600">
-                                TRỌN BỘ THIẾT BỊ
-                                <br />
-                                <span className="text-lg font-medium">TẠI CMIC STUDIO</span>
-                            </h3>
-                            <div className="aspect-square bg-gradient-to-br from-orange-100 to-yellow-100 rounded-lg flex items-center justify-center">
-                                <Mic className="w-32 h-32 text-orange-400" />
-                            </div>
-                        </div>
+                        <img src="/LinhVucHoatDong.png" alt="LĨNH VỰC HOẠT ĐỘNG" className="bg-white " />
                     </div>
 
 
@@ -291,7 +269,7 @@ export default function CMICStudio() {
                         </div>
 
                         {/* Phân cách giữa 2 hàng (Tùy chọn: Có thể dùng border-t hoặc khoảng cách grid) */}
-                        <div className="hidden md:block col-span-3 h-px bg-gray-100 my-4"></div>
+                        <div className="hidden md:block col-span-3 h-[10px] bg-black my-4"></div>
 
                         {/* 4. Tư vấn đúng nhu cầu */}
                         <div className="flex flex-col items-center text-center group">
@@ -341,31 +319,43 @@ export default function CMICStudio() {
                     NHÀ SÁNG LẬP CMIC STUDIO
                 </h2>
 
-                <div className="grid md:grid-cols-2 gap-12">
-                    <div className="bg-white border border-gray-100 rounded-[2rem] p-10 shadow-xl text-center">
-                        <div className="w-48 h-48 mx-auto mb-8 rounded-full overflow-hidden border-4 border-orange-50 bg-gray-100">
-                            <img
-                                src="/thao.jpg"
-                                alt="NGUYỄN THANH THẢO"
-                                className="w-full h-full object-cover"
-                            />
-                        </div>
-                        <h3 className="text-2xl font-bold mb-2">NGUYỄN THANH THẢO</h3>
-                        <p className="text-orange-600 font-bold text-lg tracking-widest">FOUNDER</p>
+                <div className="relative w-full bg-white overflow-hidden py-20">
+                    {/* IMAGE LEFT */}
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -skew-x-6">
+                        <img
+                            src="/thao.jpg"
+                            alt="NGUYỄN THANH THẢO"
+                            className="h-[380px] object-cover"
+                        />
+                    </div>
+                    {/* IMAGE RIGHT */}
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 skew-x-6">
+                        <img
+                            src="/quynh.jpg"
+                            alt="LÊ XUÂN QUỲNH"
+                            className="h-[380px] object-cover"
+                        />
                     </div>
 
-                    <div className="bg-white border border-gray-100 rounded-[2rem] p-10 shadow-xl text-center">
-                        <div className="w-48 h-48 mx-auto mb-8 rounded-full overflow-hidden border-4 border-gray-50 bg-gray-100">
-                            <img
-                                src="/quynh.jpg"
-                                alt="LÊ XUÂN QUỲNH"
-                                className="w-full h-full object-cover"
-                            />
+                    {/* CENTER CONTENT */}
+                    <div className="relative z-10 max-w-3xl mx-auto text-center space-y-16">
+                        {/* THẢO – lệch sang trái */}
+                        <div className="-translate-x-40">
+                            <h3 className="text-3xl font-bold tracking-wide">NGUYỄN THANH THẢO</h3>
+                            <p className="mt-2 text-gray-600 tracking-widest">FOUNDER</p>
                         </div>
-                        <h3 className="text-2xl font-bold mb-2">LÊ XUÂN QUỲNH</h3>
-                        <p className="text-orange-600 font-bold text-lg tracking-widest">CO-FOUNDER</p>
+
+                        <div className="h-px bg-gray-200 w-full"></div>
+
+                        {/* QUỲNH – lệch sang phải */}
+                        <div className="translate-x-50">
+                            <h3 className="text-3xl font-bold tracking-wide">LÊ XUÂN QUỲNH</h3>
+                            <p className="mt-2 text-gray-600 tracking-widest">CO-FOUNDER</p>
+                        </div>
                     </div>
+
                 </div>
+
             </section>
         </div>
     );

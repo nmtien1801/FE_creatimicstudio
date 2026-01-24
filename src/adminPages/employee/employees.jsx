@@ -123,10 +123,10 @@ export default function Employees() {
       try {
         let res = await ApiAuth.deleteUserApi(id);
         if (res && res.EC === 0) {
-          toast.success(EM);
+          toast.success(res.EM);
           fetchList();
         } else {
-          toast.error(EM);
+          toast.error(res.EM);
         }
       } catch (error) {
         console.error('Error deleting employee:', error);

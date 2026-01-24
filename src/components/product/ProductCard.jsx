@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Star, Heart } from 'lucide-react';
+import ImageLoader from "../../components/FormFields/ImageLoader";
 
 export default function ProductCard({ product, isTopSeller = false }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
@@ -14,11 +15,11 @@ export default function ProductCard({ product, isTopSeller = false }) {
         <div onClick={handleProductClick} className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2`}>
             {/* Image Container - Giảm chiều cao đáng kể nếu là Compact */}
             <div className={`relative overflow-hidden h-48 sm:h-56`}>
-                <img
-                    src={product.image}
-                    alt={product.name}
+                <ImageLoader
+                    imagePath={product.image}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                 />
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
                 <div className={`absolute top-2 right-2 bg-red-500 text-white font-bold shadow-lg rounded-full px-3 py-1 text-xs`}>
