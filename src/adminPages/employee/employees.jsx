@@ -151,6 +151,8 @@ export default function Employees() {
         if (res && res.EC === 0) {
           toast.success('Thêm mới nhân viên thành công');
           fetchList();
+        }else{
+          toast.error(res.EM);
         }
       }
       setShowModal(false);
