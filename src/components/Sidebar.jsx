@@ -34,7 +34,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         { label: 'Đổi mật khẩu', path: '/profile/change-password' },
         userInfo.role === 'admin' && { label: 'Làm mới mật khẩu NV', path: '/profile/change-password-staff' },
         { label: 'Thông tin tài khoản', path: '/profile/info' },
-      ]
+      ].filter(Boolean)
     },
     {
       id: 'products',
@@ -63,7 +63,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         // { label: 'Phân quyền hệ thống', path: '/hr/roles' },
       ]
     }
-  ];
+  ].filter(Boolean);
 
   return (
     <aside
@@ -125,9 +125,9 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
 
                   {expandedMenu === menu.id && (
                     <div className="mt-1 ml-2 space-y-0.5">
-                      {menu.items.map((item, index) => (
+                      {menu.items.map((item) => (
                         <NavLink
-                          key={index}
+                          key={item.path}
                           to={item.path}
                           onClick={() => window.innerWidth < 1024 && onToggleSidebar?.()}
                           className={({ isActive }) =>

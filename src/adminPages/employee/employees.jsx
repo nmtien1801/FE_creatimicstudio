@@ -105,7 +105,15 @@ export default function Employees() {
   // MỞ MODAL SỬA
   const handleEditClick = (employee) => {
     setEditingEmployee(employee);
-    setFormData(employee);
+    setFormData({
+      id: employee.id || '',
+      userName: employee.userName || '',
+      email: employee.email || '',
+      image: employee.image || '',
+      phone: employee.phone || '',
+      address: employee.address || '',
+      role: employee.role || ''
+    });
     setShowModal(true);
   };
 
@@ -117,7 +125,7 @@ export default function Employees() {
         if (res && res.EC === 0) {
           toast.success(EM);
           fetchList();
-        }else{
+        } else {
           toast.error(EM);
         }
       } catch (error) {
@@ -144,14 +152,13 @@ export default function Employees() {
           toast.success('Cập nhật nhân viên thành công');
           fetchList();
         }
-
       } else {
         // Add new employee
         let res = await ApiAuth.createUserApi(formData);
         if (res && res.EC === 0) {
           toast.success('Thêm mới nhân viên thành công');
           fetchList();
-        }else{
+        } else {
           toast.error(res.EM);
         }
       }

@@ -8,7 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 
 const MOBILE_BREAKPOINT = 1024;
 
-function AuthenticatedLayout() {
+function AdminLayout() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isMobile, setIsMobile] = useState(window.innerWidth < MOBILE_BREAKPOINT);
     const { type } = useSelector((state) => state.auth);
@@ -82,4 +82,4 @@ function AuthenticatedLayout() {
     );
 }
 
-export default AuthenticatedLayout;
+export default AdminLayout;

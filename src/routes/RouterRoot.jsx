@@ -37,7 +37,7 @@ import JobDetail from '../components/hire/JobDetail';
 import PostDetail from '../components/post/postDetail.jsx'
 import ProductDetail from '../components/product/ProductDetail.jsx'
 
-const ProtectedRoute = ({ children, role }) => {
+const ProtectedRoute = ({ children }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
 
   if (isLoading) {
@@ -48,7 +48,7 @@ const ProtectedRoute = ({ children, role }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (role && userInfo.role !== role) return <Navigate to="/dashboard" replace />;
+  if (userInfo.role === "client") return <Navigate to="/profile/info" replace />;
 
   return children;
 };
@@ -61,7 +61,7 @@ const PublicRoute = ({ children }) => {
   }
 
   if (userInfo && Object.keys(userInfo).length > 0) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/profile/info" replace />;
   }
 
   return children;
@@ -105,7 +105,7 @@ function RouterRoot() {
         <Route
           path="/"
           element={
-            <ProtectedRoute role="admin">
+            <ProtectedRoute>
               <AdminLayout />
             </ProtectedRoute>
           }
