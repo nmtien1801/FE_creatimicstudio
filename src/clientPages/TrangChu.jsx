@@ -33,8 +33,8 @@ const comboBanners = [
 ];
 
 const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
-    <section className="py-5 px-4 sm:px-6 lg:px-8 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-7xl mx-auto">
+    <section className="px-5 sm:px-0 bg-gray-50 border-y border-gray-100">
+        <div className="max-w-6xl mx-auto">
             <div className="flex justify-between items-center mb-12 mt-5">
                 <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
                     {header}
@@ -44,17 +44,13 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                 {/* Banner Dọc */}
-                <div className="md:col-span-5">
-                    <div className="md:col-span-3">
-                        <div className="hidden md:block relative h-full min-h-[770px] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
-                            {/* Background Image */}
-                            <img
-                                src={bannerImage}
-                                alt=""
-                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                            />
-
-                        </div>
+                <div className="md:col-span-5 flex justify-center">
+                    <div className="hidden md:block relative w-full max-w-[542px] aspect-[542/640] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
+                        <img
+                            src={bannerImage}
+                            alt=""
+                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                        />
                     </div>
                 </div>
 
@@ -79,9 +75,9 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
 );
 
 const ArticleCard = ({ article }) => (
-    <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer md:hover:-translate-y-2 border border-gray-100">
+    <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer md:hover:-translate-y-1 border border-gray-100">
         {/* Chiều cao ảnh: h-48 trên mobile, h-56 trên desktop */}
-        <div className="h-48 md:h-56 w-full overflow-hidden">
+        <div className="h-40 md:h-48 w-full overflow-hidden">
             <ImageLoader
                 imagePath={article.image}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -89,9 +85,9 @@ const ArticleCard = ({ article }) => (
         </div>
 
         {/* Padding: p-5 trên mobile, p-8 trên desktop */}
-        <div className="p-5 md:p-8">
+        <div className="p-4 md:p-6">
             {/* Font size & min-h: Nhỏ lại trên mobile để tiết kiệm không gian */}
-            <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4 line-clamp-2 min-h-[48px] md:min-h-[56px] group-hover:text-[#ed792f] transition-colors uppercase italic">
+            <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4 line-clamp-2 min-h-[40px] md:min-h-[44px] group-hover:text-[#ed792f] transition-colors uppercase italic">
                 {article.title}
             </h3>
 
@@ -172,7 +168,7 @@ export default function TrangChu() {
                 {/* 1. HERO SLIDER */}
                 <section className="w-full mt-6 mb-12 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
-                        <div className="relative h-[450px] md:h-[800px] rounded-[3rem] overflow-hidden shadow-2xl">
+                        <div className="relative w-full max-w-[650px] aspect-[3/2] rounded-[3rem] overflow-hidden shadow-2xl mx-auto">
                             <div
                                 className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
                                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -186,7 +182,7 @@ export default function TrangChu() {
                                         <img
                                             src={slide.img}
                                             alt=""
-                                            className="absolute inset-0 w-full h-full object-cover"
+                                            className="absolute inset-0 w-full h-full object-contain"
                                         />
                                     </div>
                                 ))}
@@ -206,8 +202,8 @@ export default function TrangChu() {
                 </section>
 
                 {/* 2. TOP SELLER SECTION */}
-                <section className="py-10 md:py-16 px-4 sm:px-6 lg:px-8 bg-[#ed792f] overflow-hidden">
-                    <div className="max-w-7xl mx-auto">
+                <section className="py-8 md:py-10 px-4 bg-[#ed792f] overflow-hidden">
+                    <div className="max-w-6xl mx-auto">
                         {/* Tiêu đề */}
                         <div className="flex flex-col items-center mb-10 md:mb-16">
                             <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">
@@ -220,10 +216,10 @@ export default function TrangChu() {
 
                         {/* Container Carousel: Flex trên mobile (< 640px), Grid trên sm trở lên */}
                         <div className="
-            flex flex-nowrap overflow-x-auto gap-6 pb-10 scrollbar-hide
-            sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-10 sm:overflow-visible sm:pb-0
-            snap-x snap-mandatory
-        ">
+                            flex flex-nowrap overflow-x-auto gap-6 pb-10 scrollbar-hide
+                            sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-3 sm:gap-y-4 sm:overflow-visible sm:pb-0
+                            snap-x snap-mandatory
+                        ">
                             {randomTopSellers.map((p) => (
                                 <div
                                     key={p.id}
@@ -288,7 +284,7 @@ export default function TrangChu() {
                 </section>
 
                 {/* 5. 4 BANNER COMBO - Thay my-20 thành responsive margin */}
-                <section className="px-4 sm:px-6 lg:px-8 my-8 md:my-12">
+                <section className="sm:px-4 lg:px-6">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex flex-nowrap overflow-x-auto pb-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
                             {comboBanners.map((banner, i) => (
@@ -322,10 +318,10 @@ export default function TrangChu() {
                 />
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
-                <section className="py-10 md:py-16 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100 overflow-hidden">
+                <section className="py-16 md:py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100 overflow-hidden">
                     <div className="max-w-7xl mx-auto">
                         {/* Tiêu đề: Giảm mb trên mobile */}
-                        <div className="text-center mb-10 md:mb-16">
+                        <div className="text-center mb-6 md:mb-10">
                             <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-black uppercase tracking-tighter">
                                 BÀI VIẾT HỮU ÍCH
                             </h2>

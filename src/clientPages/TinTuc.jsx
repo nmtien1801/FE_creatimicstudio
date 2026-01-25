@@ -210,7 +210,7 @@ const TinTuc = () => {
                         </div>
 
                         {/* Banner Dọc */}
-                        <div className="md:h-[700px] lg:min-h-[500px] rounded-2xl shadow-xl relative overflow-hidden group cursor-pointer">
+                        <div className="w-full aspect-[3/4] rounded-2xl shadow-xl relative overflow-hidden group cursor-pointer">
                             <img
                                 src="/BannerBộLivestream.png"
                                 alt="Combo livestream"

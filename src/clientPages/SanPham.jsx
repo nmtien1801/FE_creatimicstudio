@@ -28,7 +28,7 @@ const getTitleByCategory = (selectedCategory, subCategory) => {
 // ================= FilterSidebar: BỘ LỌC GIÁ =================
 const FilterSidebar = ({ selectedCategory, filters, onFilterChange }) => {
     return (
-        <div className="w-full md:w-64 lg:w-72 p-6 bg-white rounded-2xl shadow-xl sticky top-4 self-start">
+        <div className=" w-full md:w-64 lg:w-72 flex-shrink-0 p-6 bg-white rounded-2xl shadow-xl top-4 self-start">
             <h2 className="text-2xl font-black text-gray-800 mb-6 flex items-center gap-2">
                 <Filter className="w-5 h-5 text-orange-500" />
                 Bộ Lọc
@@ -131,7 +131,7 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onSelectCategory, onS
 const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading }) => {
 
     return (
-        <div className="w-full md:w-3/4 md:pl-8">
+        <div className="flex-1 md:pl-8">
             <div className="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
                 <h1 className="text-2xl font-black text-gray-900">
                     Sản Phẩm
@@ -262,7 +262,7 @@ export default function SanPham() {
                 }
             />
 
-            <div className="max-w-0xl mx-auto flex flex-col md:flex-row gap-8">
+            <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
                 {/* Sidebar */}
                 <FilterSidebar selectedCategory={selectedCategory} filters={filters} onFilterChange={handleFilterChange} />
 

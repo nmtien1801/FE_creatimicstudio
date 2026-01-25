@@ -13,8 +13,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
 
     return (
         <div onClick={handleProductClick} className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2`}>
-            {/* Image Container - Giảm chiều cao đáng kể nếu là Compact */}
-            <div className={`relative overflow-hidden h-48 sm:h-56`}>
+            <div className="relative overflow-hidden h-40 sm:h-44">
                 <ImageLoader
                     imagePath={product.image}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -27,7 +26,6 @@ export default function ProductCard({ product, isTopSeller = false }) {
                 </div>
 
 
-                {/* Wishlist Button - Nhỏ hơn trong compact */}
                 <button
                     onClick={() => setIsWishlisted(!isWishlisted)}
                     className={`absolute bottom-2 right-2 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg w-9 h-9`}
@@ -36,13 +34,13 @@ export default function ProductCard({ product, isTopSeller = false }) {
                 </button>
             </div>
 
-            {/* Content Section - Giảm Padding */}
-            <div className={`p-4 sm:p-5`}>
-                <h3 className={`text-gray-800 font-bold mb-1.5 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg min-h-[48px]`}>
+            {/* Content Section */}
+            <div className="p-3 sm:p-4">
+                <h3 className={`text-gray-800 font-bold mb-1.5 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg min-h-[40px]`}>
                     {product.name}
                 </h3>
 
-                {/* Price & Contact - Chuyển thành cột nếu quá hẹp trong compact */}
+                {/* Price & Contact */}
                 <div className={`flex flex-row items-baseline gap-2 mb-4 justify-between`}>
                     <div className="flex flex-col">
                         {isTopSeller ?
