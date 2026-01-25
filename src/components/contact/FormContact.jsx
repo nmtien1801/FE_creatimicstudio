@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ApiContact from "../../apis/ApiContact";
+import { toast } from 'react-toastify'
 
 const CustomInput = ({ name, placeholder, required = true, type = 'text', value, onChange }) => (
     <input
@@ -13,6 +15,8 @@ const CustomInput = ({ name, placeholder, required = true, type = 'text', value,
 );
 
 const ContactForm = () => {
+    const [loading, setLoading] = useState(false);
+
     // State để quản lý dữ liệu form
     const [formData, setFormData] = useState({
         fullName: '',
@@ -28,41 +32,54 @@ const ContactForm = () => {
         });
     };
 
-    const handleSubmit = (e) => {
+    const handleSend = async (e) => {
         e.preventDefault();
-        console.log('Form data submitted:', formData);
-        alert('Đã gửi thông tin liên hệ!');
-        
-        // Tùy chọn: Reset form sau khi gửi thành công
-        setFormData({
-            fullName: '',
-            email: '',
-            phone: '',
-            content: ''
-        });
+        try {
+            setLoading(true);
+            const contactData = {
+                name: formData.fullName,
+                email: formData.email,
+                message: formData.content + ` .Tôi đang quan tâm đến sản phẩm của bạn.Hãy liên hệ tới số điện thoại: ` + formData.phone,
+            };
+            await ApiContact.sendContactApi(contactData);
+            toast.success('Đã gửi thông tin liên hệ thành công!');
+
+            // Reset form sau khi gửi thành công
+            setFormData({
+                fullName: '',
+                email: '',
+                phone: '',
+                content: ''
+            });
+        } catch (error) {
+            console.error('Error sending contact:', error);
+            toast.error('Gửi thông tin liên hệ thất bại. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="space-y-4">
             <h2 className="text-xl font-bold text-orange-800 uppercase">Liên hệ với chúng tôi</h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <CustomInput 
-                    name="fullName" 
+            <form onSubmit={handleSend} className="space-y-4">
+                <CustomInput
+                    name="fullName"
                     placeholder="Họ và tên"
                     value={formData.fullName}
                     onChange={handleChange}
                 />
-                <CustomInput 
-                    name="email" 
+                <CustomInput
+                    name="email"
                     placeholder="Email (không bắt buộc)"
                     required={false}
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
                 />
-                <CustomInput 
-                    name="phone" 
+                <CustomInput
+                    name="phone"
                     placeholder="Số điện thoại"
                     type="tel"
                     value={formData.phone}
@@ -80,9 +97,17 @@ const ContactForm = () => {
 
                 <button
                     type="submit"
-                    className="bg-black text-white px-8 py-3 text-lg font-bold hover:bg-gray-800 transition duration-300"
+                    disabled={loading}
+                    className={`
+                        px-8 py-3 text-lg font-bold transition duration-300 cursor-pointer
+                        ${loading
+                                            ? "bg-gray-500 cursor-not-allowed"
+                                            : "bg-black hover:bg-gray-800"
+                                        }
+                        text-white
+                    `}
                 >
-                    GỬI
+                    {loading ? "ĐANG GỬI..." : "GỬI"}
                 </button>
             </form>
         </div>

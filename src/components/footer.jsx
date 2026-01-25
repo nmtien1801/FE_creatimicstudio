@@ -9,9 +9,28 @@ import {
     Mail,
     Globe,
 } from "lucide-react";
+import ApiContact from "../apis/ApiContact";
+import { toast } from 'react-toastify'
+
+const ServiceCommitment = ({ icon: Icon, title, description }) => (
+    <div className="group text-center p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-500 hover:-translate-y-1 w-full max-w-[150px] aspect-square flex flex-col justify-center items-center mx-auto border border-gray-50">
+        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mb-2 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-md">
+            <Icon className="w-5 h-5 text-white" />
+        </div>
+        <div className="px-1">
+            <h4 className="text-[12px] font-bold text-gray-900 mb-1 leading-tight line-clamp-2 uppercase">
+                {title}
+            </h4>
+            <p className="text-[10px] text-gray-600 leading-tight line-clamp-2">
+                {description}
+            </p>
+        </div>
+    </div>
+);
 
 export default function Footer() {
     const [email, setEmail] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const PLACEHOLDER_LOGO_URL = "https://placehold.co/200x200/4F46E5/ffffff?text=STUDIO+LOGO";
     const ZALOPAY_IMG = "/zalopay.png";
@@ -25,21 +44,25 @@ export default function Footer() {
         { name: "Zalo", src: "/zalo.webp", href: "#" }
     ];
 
-    const ServiceCommitment = ({ icon: Icon, title, description }) => (
-        <div className="group text-center p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-500 hover:-translate-y-1 w-full max-w-[150px] aspect-square flex flex-col justify-center items-center mx-auto border border-gray-50">
-            <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mb-2 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-md">
-                <Icon className="w-5 h-5 text-white" />
-            </div>
-            <div className="px-1">
-                <h4 className="text-[12px] font-bold text-gray-900 mb-1 leading-tight line-clamp-2 uppercase">
-                    {title}
-                </h4>
-                <p className="text-[10px] text-gray-600 leading-tight line-clamp-2">
-                    {description}
-                </p>
-            </div>
-        </div>
-    );
+    const handleSend = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const contactData = {
+                name: "client",
+                email: email,
+                message: `Tôi đang quan tâm đến sản phẩm của bạn. Hãy liên hệ với tôi sớm nhất có thể!`,
+            };
+            let res = await ApiContact.sendContactApi(contactData);
+            toast.success('Đã gửi thông tin liên hệ thành công!');
+            setEmail('');
+        } catch (error) {
+            console.error('Error sending contact:', error);
+            toast.error('Gửi thông tin liên hệ thất bại. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <footer className="text-white mt-8 font-sans">
@@ -120,14 +143,25 @@ export default function Footer() {
                             <p className="text-sm italic opacity-90">Nhận tin mới nhất từ chúng tôi</p>
                         </div>
 
-                        <form className="flex w-full max-w-sm h-11 bg-black rounded-lg overflow-hidden p-[2px] shadow-md">
+                        <div className="flex w-full max-w-sm h-11 bg-black rounded-lg overflow-hidden p-[2px] shadow-md">
                             <input
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="flex-grow bg-white px-4 outline-none text-black text-sm rounded-l-md"
                                 placeholder="Email của bạn..."
                             />
-                            <button className="bg-black text-white px-6 text-sm font-bold uppercase hover:bg-zinc-800 transition-colors">GỬI</button>
-                        </form>
+                            <button
+                                disabled={loading}
+                                onClick={handleSend}
+                                className={`
+                                    px-6 text-sm font-bold uppercase transition-colors cursor-pointer
+                                    ${loading ? "bg-gray-500 cursor-not-allowed" : "bg-black hover:bg-zinc-800"}
+                                    text-white
+                                `}>
+                                {loading ? "ĐANG GỬI..." : "GỬI"}
+                            </button>
+                        </div>
 
                         <div className="w-full flex flex-col items-center lg:items-start gap-5 pt-5 border-t border-white/20">
                             <div className="flex space-x-3">
