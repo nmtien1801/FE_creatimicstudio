@@ -314,50 +314,54 @@ export default function CMICStudio() {
             </section>
 
             {/* Section 5: Nhà sáng lập */}
-            <section className="max-w-7xl mx-auto px-4 py-20">
-                <h2 className="text-4xl font-bold text-orange-500 text-center mb-16">
+            <section className="max-w-7xl mx-auto px-4 py-12 md:py-20">
+                <h2 className="text-3xl md:text-4xl font-bold text-orange-500 text-center mb-10 md:mb-16">
                     NHÀ SÁNG LẬP CMIC STUDIO
                 </h2>
-
-                <div className="relative w-full bg-white overflow-hidden py-20">
-                    {/* IMAGE LEFT */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2">
-                        <img
-                            src="/thao.jpg"
-                            alt="NGUYỄN THANH THẢO"
-                            className="h-[380px] w-[300px] object-cover"
-                            style={{ clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)' }}
-                        />
-                    </div>
-
-                    {/* IMAGE RIGHT */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2">
-                        <img
-                            src="/quynh.jpg"
-                            alt="LÊ XUÂN QUỲNH"
-                            className="h-[380px] w-[300px] object-cover"
-                            style={{ clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)' }}
-                        />
-                    </div>
-
-                    {/* CENTER CONTENT */}
-                    <div className="relative z-10 max-w-3xl mx-auto text-center space-y-16">
-                        {/* THẢO – lệch sang trái */}
-                        <div className="-translate-x-35">
-                            <h3 className="text-3xl font-bold tracking-wide">NGUYỄN THANH THẢO</h3>
-                            <p className="mt-2 text-gray-600 tracking-widest">FOUNDER</p>
+                <div className="relative w-full bg-white overflow-hidden flex flex-col lg:block py-10 lg:py-20">
+                    <div className="flex flex-col lg:block items-center mb-16 lg:mb-0">
+                        {/* IMAGE LEFT */}
+                        <div className="lg:absolute lg:left-0 lg:top-1/2 lg:-translate-y-1/2 z-0 mb-6 lg:mb-0">
+                            <img
+                                src="/thao.jpg"
+                                alt="NGUYỄN THANH THẢO"
+                                className="h-[300px] md:h-[380px] w-[250px] md:w-[300px] object-cover mx-auto"
+                                style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}
+                            />
                         </div>
+                        <div className="relative z-10 lg:max-w-3xl lg:mx-auto text-center lg:text-left">
+                            <div
+                                className="lg:translate-x-15 inline-block px-8 py-4 w-full lg:w-auto"
+                                style={{ background: 'linear-gradient(to right, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%)' }}
+                            >
+                                <h3 className="text-2xl md:text-3xl font-bold tracking-wide">NGUYỄN THANH THẢO</h3>
+                                <p className="mt-1 md:mt-2 text-gray-600 tracking-widest text-sm md:text-base">FOUNDER</p>
+                            </div>
+                        </div>
+                    </div>
 
-                        <div className="h-px bg-gray-200 w-full"></div>
-
-                        {/* QUỲNH – lệch sang phải */}
-                        <div className="translate-x-47">
-                            <h3 className="text-3xl font-bold tracking-wide">LÊ XUÂN QUỲNH</h3>
-                            <p className="mt-2 text-gray-600 tracking-widest">CO-FOUNDER</p>
+                    <div className="hidden lg:block h-px bg-gray-200 w-1/3 mx-auto my-16 relative z-10"></div>
+                    {/* IMAGE RIGHT */}
+                    <div className="flex flex-col lg:block items-center">
+                        <div className="lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 z-0 mb-6 lg:mb-0 order-first lg:order-none">
+                            <img
+                                src="/quynh.jpg"
+                                alt="LÊ XUÂN QUỲNH"
+                                className="h-[300px] md:h-[380px] w-[250px] md:w-[300px] object-cover mx-auto"
+                                style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}
+                            />
+                        </div>
+                        <div className="relative z-10 lg:max-w-3xl lg:mx-auto text-center lg:text-right">
+                            <div
+                                className="lg:-translate-x-15 inline-block px-8 py-4 w-full lg:w-auto"
+                                style={{ background: 'linear-gradient(to left, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%)' }}
+                            >
+                                <h3 className="text-2xl md:text-3xl font-bold tracking-wide">LÊ XUÂN QUỲNH</h3>
+                                <p className="mt-1 md:mt-2 text-gray-600 tracking-widest text-sm md:text-base">CO-FOUNDER</p>
+                            </div>
                         </div>
                     </div>
                 </div>
-
             </section>
         </div>
     );
