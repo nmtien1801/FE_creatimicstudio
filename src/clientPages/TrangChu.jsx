@@ -32,47 +32,51 @@ const comboBanners = [
     },
 ];
 
-const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
-    <section className="px-5 sm:px-0 py-4 md:py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center mb-12 mt-5">
-                <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
-                    {header}
-                </h2>
-                <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
-            </div>
+const CategorySection = ({ header, products, bannerImage, buttonLink }) => {
+    const limitedProducts = products.slice(0, 6);
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                {/* Banner Dọc */}
-                <div className="md:col-span-4 flex justify-center">
-                    <div className="hidden md:block relative w-full max-w-[542px] aspect-[542/640] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
-                        <img
-                            src={bannerImage}
-                            alt=""
-                            className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                        />
+    return (
+        <section className="px-5 sm:px-0 py-4 md:py-8 bg-white">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="flex justify-between items-center mb-12 mt-5">
+                    <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
+                        {header}
+                    </h2>
+                    <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
+                    {/* Banner Dọc */}
+                    <div className="md:col-span-4 flex justify-center">
+                        <div className="hidden md:block relative w-full max-w-[542px] aspect-[542/640] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
+                            <img
+                                src={bannerImage}
+                                alt=""
+                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Lưới Sản phẩm - Giới hạn 2 hàng */}
+                    <div className="md:col-span-8">
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 cursor-pointer">
+                            {limitedProducts.map(product => (
+                                <ProductCard key={product.id} product={product} ProductCard={true} />
+                            ))}
+                        </div>
                     </div>
                 </div>
 
-                {/* Lưới Sản phẩm */}
-                <div className="md:col-span-8">
-                    <div className={`grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 cursor-pointer`}>
-                        {products.map(product => (
-                            <ProductCard key={product.id} product={product} ProductCard={true} />
-                        ))}
-                    </div>
+                {/* Nút Xem thêm */}
+                <div className="mt-12 text-center">
+                    <a href={buttonLink} className="inline-flex items-center justify-center px-10 py-4 bg-[#ed792f] text-white text-lg font-bold rounded-full shadow-lg hover:brightness-110 hover:scale-105 transition-all duration-300">
+                        Xem thêm
+                    </a>
                 </div>
             </div>
-
-            {/* Nút Xem thêm */}
-            <div className="mt-12 text-center">
-                <a href={buttonLink} className="inline-flex items-center justify-center px-10 py-4 bg-[#ed792f] text-white text-lg font-bold rounded-full shadow-lg hover:brightness-110 hover:scale-105 transition-all duration-300">
-                    Xem thêm
-                </a>
-            </div>
-        </div>
-    </section>
-);
+        </section>
+    );
+};
 
 const ArticleCard = ({ article }) => (
     <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer md:hover:-translate-y-1 border border-gray-100">
