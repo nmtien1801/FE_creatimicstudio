@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, Package } from "lucide-react";
+import { ChevronDown, Package, ChevronRight } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
 
 const MegaMenu = ({ categories }) => {
@@ -29,103 +29,99 @@ const MegaMenu = ({ categories }) => {
   return (
     <div className="w-64 bg-white border border-gray-200 rounded-xl shadow-2xl p-2 z-[2001]">
       <ul className="space-y-1">
-        {categories && categories.length > 0 ? (
-          categories.map((cat) => (
+        {categories?.map((cat) => {
+          // Kiểm tra xem cha có nội dung gì để mở menu không
+          const hasContent = (cat.children?.length > 0) || (cat.product?.length > 0);
+
+          return (
             <li
               key={cat.id}
               className="relative"
               onMouseEnter={() => {
-                if (closeTimeout.current) {
-                  clearTimeout(closeTimeout.current);
-                  closeTimeout.current = null;
-                }
+                if (closeTimeout.current) clearTimeout(closeTimeout.current);
                 setOpenCategory(cat.id);
               }}
               onMouseLeave={() => {
                 closeTimeout.current = setTimeout(() => {
                   setOpenCategory(null);
                   setOpenSubCategory(null);
-                  closeTimeout.current = null;
                 }, 300);
               }}
             >
-              {/* DANH MỤC CHA */}
+              {/* LEVEL 1: CATEGORY CHA */}
               <div
                 onClick={(e) => handleNavigateByCateId(cat.id, e)}
-                className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${
-                  openCategory === cat.id 
-                    ? "bg-orange-50 text-orange-600" 
-                    : "text-gray-800 hover:bg-gray-50"
-                }`}
+                className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${openCategory === cat.id ? "bg-orange-50 text-orange-600" : "text-gray-800 hover:bg-gray-50"
+                  }`}
               >
                 <span className="font-medium">{cat.name}</span>
-                {cat.children?.length > 0 && (
-                  <ChevronDown
-                    className={`w-4 h-4 transition-transform duration-300 ${
-                      openCategory === cat.id ? "rotate-[-90deg]" : ""
-                    }`}
-                  />
-                )}
+                {hasContent && <ChevronRight className="w-4 h-4 opacity-50" />}
               </div>
 
-              {/* SUB MENU */}
-              {cat.children?.length > 0 && openCategory === cat.id && (
-                <div className="absolute top-0 left-full ml-2 w-72 bg-white border border-gray-200 rounded-xl shadow-xl p-2 z-[2002]">
+              {/* LEVEL 2: SUB MENU (HIỆN CHILDREN VÀ PRODUCTS CỦA CHA) */}
+              {openCategory === cat.id && hasContent && (
+                <div className="absolute top-0 left-full ml-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl p-2 z-[2002]">
                   <ul className="space-y-1">
-                    {cat.children.map((sub) => (
-                      <li key={sub.id}>
-                        {/* DANH MỤC CON */}
+
+                    {/* --- PHẦN 1: HIỂN THỊ DANH MỤC CON --- */}
+                    {cat.children?.map((sub) => (
+                      <li
+                        key={sub.id}
+                        className="relative"
+                        onMouseEnter={() => setOpenSubCategory(sub.id)}
+                      >
                         <div
                           onClick={(e) => handleNavigateByCateId(sub.id, e)}
-                          onMouseEnter={() => setOpenSubCategory(sub.id)}
-                          className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${
-                            openSubCategory === sub.id
-                              ? "bg-orange-50 text-orange-600"
-                              : "text-gray-800 hover:bg-gray-50"
-                          }`}
+                          className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${openSubCategory === sub.id ? "bg-orange-50 text-orange-600" : "text-gray-800 hover:bg-gray-50"
+                            }`}
                         >
-                          <span className="font-medium">{sub.name}</span>
-                          {sub.product?.length > 0 && (
-                            <ChevronDown
-                              className={`w-4 h-4 transition-transform duration-300 ${
-                                openSubCategory === sub.id ? "rotate-[-90deg]" : ""
-                              }`}
-                            />
-                          )}
+                          <span className="font-medium text-sm">{sub.name}</span>
+                          {sub.product?.length > 0 && <ChevronRight className="w-4 h-4 opacity-50" />}
                         </div>
 
-                        {/* HIỂN THỊ PRODUCTS NẾU CÓ */}
-                        {sub.product && sub.product.length > 0 && openSubCategory === sub.id && (
-                          <div className="ml-3 mt-1 space-y-1">
-                            {sub.product.map((prod) => (
-                              <div
-                                key={prod.id}
-                                onClick={(e) => handleNavigateToProduct(prod.id, e)}
-                                className="flex items-center gap-2 p-2 rounded-lg hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-all group"
-                              >
-                                <Package className="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-400" />
-                                <div className="flex-1">
-                                  <div className="font-medium line-clamp-1">{prod.name}</div>
-                                  {prod.price && (
-                                    <div className="text-[10px] text-gray-400">
-                                      {Number(prod.price).toLocaleString('vi-VN')}đ
-                                    </div>
-                                  )}
+                        {/* LEVEL 3: PRODUCTS CỦA SUB CATE */}
+                        {sub.product?.length > 0 && openSubCategory === sub.id && (
+                          <div className="absolute top-0 left-full ml-2 w-64 bg-white border border-gray-200 rounded-xl shadow-xl p-2 z-[2003] animate-in fade-in slide-in-from-left-2 duration-200">
+                            <div className="space-y-1">
+                              {sub.product.map((prod) => (
+                                <div
+                                  key={prod.id}
+                                  onClick={(e) => handleNavigateToProduct(prod.id, e)}
+                                  className="flex items-center gap-2 p-2 rounded-lg hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-all group"
+                                >
+                                  <Package className="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-400" />
+                                  <div className="flex-1 line-clamp-1 font-medium">{prod.name}</div>
                                 </div>
-                              </div>
-                            ))}
+                              ))}
+                            </div>
                           </div>
                         )}
                       </li>
                     ))}
+
+                    {/* --- PHẦN 2: HIỂN THỊ PRODUCTS TRỰC THUỘC CHA (NẾU CÓ) --- */}
+                    {cat.product?.length > 0 && (
+                      <>
+                        {cat.children?.length > 0 && <div className="my-2 border-t border-gray-100" />}
+                        {cat.product.map((p) => (
+                          <div
+                            key={p.id}
+                            onClick={(e) => handleNavigateToProduct(p.id, e)}
+                            className="flex items-center gap-2 p-3 rounded-md hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-colors group"
+                          >
+                            <Package className="w-4 h-4 text-gray-300 group-hover:text-orange-400" />
+                            <span className="font-medium line-clamp-1">{p.name}</span>
+                          </div>
+                        ))}
+                      </>
+                    )}
+
                   </ul>
                 </div>
               )}
             </li>
-          ))
-        ) : (
-          <li className="p-3 text-gray-500 text-center italic">Không có danh mục</li>
-        )}
+          );
+        })}
       </ul>
     </div>
   );
