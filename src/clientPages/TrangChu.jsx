@@ -202,45 +202,43 @@ export default function TrangChu() {
                 </section>
 
                 {/* 2. TOP SELLER SECTION */}
-                <section className="py-8 md:py-10 px-4 bg-[#ed792f] overflow-hidden">
-                    <div className="max-w-6xl mx-auto">
-                        {/* Tiêu đề */}
-                        <div className="flex flex-col items-center mb-10 md:mb-16">
-                            <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">
-                                TOP SELLER
-                            </h2>
-                            <p className="text-black/80 font-bold uppercase mt-4 md:mt-6 text-xs md:text-sm text-center">
-                                Sản phẩm khách hàng tin dùng nhất
-                            </p>
-                        </div>
+                <section className="max-w-7xl mx-auto py-8 md:py-10 px-4 bg-[#ed792f] overflow-hidden">
+                    {/* Tiêu đề */}
+                    <div className="flex flex-col items-center mb-10 md:mb-16">
+                        <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">
+                            TOP SELLER
+                        </h2>
+                        <p className="text-black/80 font-bold uppercase mt-4 md:mt-6 text-xs md:text-sm text-center">
+                            Sản phẩm khách hàng tin dùng nhất
+                        </p>
+                    </div>
 
-                        {/* Container Carousel: Flex trên mobile (< 640px), Grid trên sm trở lên */}
-                        <div className="
+                    {/* Container Carousel: Flex trên mobile (< 640px), Grid trên sm trở lên */}
+                    <div className="
                             flex flex-nowrap overflow-x-auto gap-6 pb-10 scrollbar-hide
                             sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-3 sm:gap-y-4 sm:overflow-visible sm:pb-0
                             snap-x snap-mandatory
                         ">
-                            {randomTopSellers.map((p) => (
-                                <div
-                                    key={p.id}
-                                    className="relative min-w-[80%] sm:min-w-0 snap-center flex-shrink-0 sm:flex-shrink"
-                                >
-                                    {/* Thẻ sản phẩm */}
-                                    <ProductCard product={p} isTopSeller={true} />
+                        {randomTopSellers.map((p) => (
+                            <div
+                                key={p.id}
+                                className="relative min-w-[80%] sm:min-w-0 snap-center flex-shrink-0 sm:flex-shrink"
+                            >
+                                {/* Thẻ sản phẩm */}
+                                <ProductCard product={p} isTopSeller={true} />
 
-                                    {/* Nhãn Top Seller đè lên trên */}
-                                    <div
-                                        className="absolute -top-2 -left-2 bg-black text-white px-3 py-1 text-[10px] font-bold shadow-lg transform -rotate-12 origin-top-left z-10"
-                                        style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}
-                                    >
-                                        <div className="transform rotate-12 text-center leading-tight">
-                                            <div className="text-[8px]">TOP</div>
-                                            <div className="font-black">SELLER</div>
-                                        </div>
+                                {/* Nhãn Top Seller đè lên trên */}
+                                <div
+                                    className="absolute -top-2 -left-2 bg-black text-white px-3 py-1 text-[10px] font-bold shadow-lg transform -rotate-12 origin-top-left z-10"
+                                    style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}
+                                >
+                                    <div className="transform rotate-12 text-center leading-tight">
+                                        <div className="text-[8px]">TOP</div>
+                                        <div className="font-black">SELLER</div>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
+                            </div>
+                        ))}
                     </div>
                 </section>
 

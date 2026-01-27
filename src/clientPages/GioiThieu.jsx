@@ -321,26 +321,29 @@ export default function CMICStudio() {
 
                 <div className="relative w-full bg-white overflow-hidden py-20">
                     {/* IMAGE LEFT */}
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 -skew-x-6">
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2">
                         <img
                             src="/thao.jpg"
                             alt="NGUYỄN THANH THẢO"
-                            className="h-[380px] object-cover"
+                            className="h-[380px] w-[300px] object-cover"
+                            style={{ clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)' }}
                         />
                     </div>
+
                     {/* IMAGE RIGHT */}
-                    <div className="absolute right-0 top-1/2 -translate-y-1/2 skew-x-6">
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2">
                         <img
                             src="/quynh.jpg"
                             alt="LÊ XUÂN QUỲNH"
-                            className="h-[380px] object-cover"
+                            className="h-[380px] w-[300px] object-cover"
+                            style={{ clipPath: 'polygon(20% 0%, 100% 0%, 80% 100%, 0% 100%)' }}
                         />
                     </div>
 
                     {/* CENTER CONTENT */}
                     <div className="relative z-10 max-w-3xl mx-auto text-center space-y-16">
                         {/* THẢO – lệch sang trái */}
-                        <div className="-translate-x-40">
+                        <div className="-translate-x-35">
                             <h3 className="text-3xl font-bold tracking-wide">NGUYỄN THANH THẢO</h3>
                             <p className="mt-2 text-gray-600 tracking-widest">FOUNDER</p>
                         </div>
@@ -348,12 +351,11 @@ export default function CMICStudio() {
                         <div className="h-px bg-gray-200 w-full"></div>
 
                         {/* QUỲNH – lệch sang phải */}
-                        <div className="translate-x-50">
+                        <div className="translate-x-47">
                             <h3 className="text-3xl font-bold tracking-wide">LÊ XUÂN QUỲNH</h3>
                             <p className="mt-2 text-gray-600 tracking-widest">CO-FOUNDER</p>
                         </div>
                     </div>
-
                 </div>
 
             </section>
