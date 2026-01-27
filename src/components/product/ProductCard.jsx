@@ -12,7 +12,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
     };
 
     return (
-        <div onClick={handleProductClick} className={`group bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2`}>
+        <div onClick={handleProductClick} className="group bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2">
             <div className="relative overflow-hidden h-40 sm:h-44">
                 <ImageLoader
                     imagePath={product.image}

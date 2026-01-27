@@ -34,7 +34,6 @@ const comboBanners = [
 
 const CategorySection = ({ header, products, bannerImage, buttonLink }) => {
     const limitedProducts = products.slice(0, 6);
-
     return (
         <section className="px-5 sm:px-0 py-4 md:py-8 bg-white">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -47,7 +46,7 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                     {/* Banner Dọc */}
-                    <div className="md:col-span-4 flex justify-center">
+                    <div className="md:col-span-4 flex justify-center self-center">
                         <div className="hidden md:block relative w-full max-w-[542px] aspect-[542/640] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
                             <img
                                 src={bannerImage}
