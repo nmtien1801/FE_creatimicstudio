@@ -33,8 +33,8 @@ const comboBanners = [
 ];
 
 const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
-    <section className="px-5 sm:px-0 bg-gray-50 border-y border-gray-100">
-        <div className="w-full px-4 sm:px-6 lg:px-8">
+    <section className="px-5 sm:px-0 py-4 md:py-8 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12 mt-5">
                 <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
                     {header}
@@ -202,7 +202,7 @@ export default function TrangChu() {
                 </section>
 
                 {/* 2. TOP SELLER SECTION */}
-                <section className="max-w-7xl mx-auto py-8 md:py-10 px-4 bg-[#ed792f] overflow-hidden">
+                <section className="max-w-7xl mx-auto py-8 md:py-10 px-8 bg-[#ed792f] overflow-hidden rounded-2xl">
                     {/* Tiêu đề */}
                     <div className="flex flex-col items-center mb-10 md:mb-16">
                         <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">
@@ -215,7 +215,7 @@ export default function TrangChu() {
 
                     {/* Container Carousel: Flex trên mobile (< 640px), Grid trên sm trở lên */}
                     <div className="
-                            flex flex-nowrap overflow-x-auto gap-6 pb-10 scrollbar-hide
+                            flex flex-nowrap overflow-x-auto gap-6 pb-15 scrollbar-hide
                             sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-3 sm:gap-y-4 sm:overflow-visible sm:pb-0
                             snap-x snap-mandatory
                         ">
@@ -252,7 +252,7 @@ export default function TrangChu() {
 
                 {/* 4. PHỤ KIỆN THU ÂM  */}
                 <section className="py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
-                    <div className="max-w-0xl mx-auto">
+                    <div className="max-w-7xl mx-auto">
 
                         {/* Tiêu đề: Giảm mb trên mobile */}
                         <div className="flex justify-between items-center mb-6 md:mb-6">
