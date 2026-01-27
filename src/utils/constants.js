@@ -9,8 +9,8 @@ const TypeUserIDCons = {
 
 const typeCategory_obligatory = {
   comboLivestream: 1,
-  resPhuKienThuAm: 2,
-  Loa: 3,
+  resPhuKienThuAm: 11,
+  Loa: 12,
 };
 
 const formatDate = (isoDate) => {

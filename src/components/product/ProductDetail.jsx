@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import ApiProduct from '../../apis/ApiProduct'
-import { Mic, Radio, Battery, Zap, Shield, Phone, ShoppingCart } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ImageLoader from '../FormFields/ImageLoader';
 
