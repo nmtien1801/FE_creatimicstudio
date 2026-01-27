@@ -34,7 +34,7 @@ const comboBanners = [
 
 const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
     <section className="px-5 sm:px-0 bg-gray-50 border-y border-gray-100">
-        <div className="max-w-6xl mx-auto">
+        <div className="w-full px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center mb-12 mt-5">
                 <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
                     {header}
@@ -44,7 +44,7 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
                 {/* Banner Dọc */}
-                <div className="md:col-span-5 flex justify-center">
+                <div className="md:col-span-4 flex justify-center">
                     <div className="hidden md:block relative w-full max-w-[542px] aspect-[542/640] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
                         <img
                             src={bannerImage}
@@ -55,7 +55,7 @@ const CategorySection = ({ header, products, bannerImage, buttonLink }) => (
                 </div>
 
                 {/* Lưới Sản phẩm */}
-                <div className="md:col-span-7">
+                <div className="md:col-span-8">
                     <div className={`grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 cursor-pointer`}>
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} ProductCard={true} />
@@ -168,7 +168,7 @@ export default function TrangChu() {
                 {/* 1. HERO SLIDER */}
                 <section className="w-full mt-6 mb-12 px-4 sm:px-6 lg:px-8">
                     <div className="max-w-7xl mx-auto">
-                        <div className="relative w-full max-w-[650px] aspect-[3/2] rounded-[3rem] overflow-hidden shadow-2xl mx-auto">
+                        <div className="relative w-full max-w-[650px] lg:max-w-[1280px] aspect-[3/2] rounded-[3rem] overflow-hidden shadow-2xl mx-auto">
                             <div
                                 className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
                                 style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -254,7 +254,7 @@ export default function TrangChu() {
 
                 {/* 4. PHỤ KIỆN THU ÂM  */}
                 <section className="py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
-                    <div className="max-w-7xl mx-auto">
+                    <div className="max-w-0xl mx-auto">
 
                         {/* Tiêu đề: Giảm mb trên mobile */}
                         <div className="flex justify-between items-center mb-6 md:mb-6">
