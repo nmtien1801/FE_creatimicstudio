@@ -37,6 +37,19 @@ export default function ProductManager() {
     fetchList();
   }, [currentPage, pageSize, searchTerm]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchTerm]);
+
+  // tránh tìm liên tục 
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setCurrentPage(1);
+    }, 300);
+
+    return () => clearTimeout(t);
+  }, [searchTerm]);
+  
   // =========================================== CRUD Operations ===========================================
   // Hàm mở form thêm mới
   const handleAddNewProduct = () => {
