@@ -37,9 +37,9 @@ export default function ProductManager() {
     fetchList();
   }, [currentPage, pageSize, searchTerm]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
+  // useEffect(() => {
+  //   setCurrentPage(1);
+  // }, [searchTerm]);
 
   // tránh tìm liên tục 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function ProductManager() {
 
     return () => clearTimeout(t);
   }, [searchTerm]);
-  
+
   // =========================================== CRUD Operations ===========================================
   // Hàm mở form thêm mới
   const handleAddNewProduct = () => {
