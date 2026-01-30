@@ -1,7 +1,7 @@
 import { ApiManager } from "./ApiManager";
 
 const ApiProduct = {
-    getListProductApi: (page, limit) => ApiManager.get(`/product/list?page=${page}&limit=${limit}`),
+    getListProductApi: (page, limit, keyword = "") => ApiManager.get(`/product/list?page=${page}&limit=${limit}&keyword=${keyword}`),
     getProductByIdApi: (id) => ApiManager.get(`/product/byProductId/${id}`),
     createProductApi: (data) => ApiManager.post(`/product/create`, data),
     updateProductApi: (id, data) => ApiManager.put(`/product/update/${id}`, data),

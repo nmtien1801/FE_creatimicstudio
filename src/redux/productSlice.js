@@ -9,8 +9,8 @@ const initialState = {
 
 export const getListProduct = createAsyncThunk(
   "product/getListProduct",
-  async ({ page, limit }, thunkAPI) => {
-    const response = await ApiProduct.getListProductApi(page, limit);
+  async ({ page, limit, keyword }, thunkAPI) => {
+    const response = await ApiProduct.getListProductApi(page, limit, keyword);
     return response;
   }
 );

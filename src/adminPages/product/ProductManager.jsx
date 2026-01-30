@@ -25,7 +25,7 @@ export default function ProductManager() {
   const fetchList = async () => {
     setIsLoading(true);
     try {
-      const res = await dispatch(getListProduct({ page: currentPage, limit: pageSize })).unwrap();
+      const res = await dispatch(getListProduct({ page: currentPage, limit: pageSize, keyword: searchTerm })).unwrap();
     } catch (error) {
       toast.error("Không thể tải danh sách sản phẩm");
     } finally {
@@ -35,11 +35,7 @@ export default function ProductManager() {
 
   useEffect(() => {
     fetchList();
-  }, [currentPage, pageSize]);
-
-  const filteredProducts = ProductList.filter(item =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  }, [currentPage, pageSize, searchTerm]);
 
   // =========================================== CRUD Operations ===========================================
   // Hàm mở form thêm mới
@@ -107,7 +103,7 @@ export default function ProductManager() {
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="max-w-7xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200">
+      <div className="max-w-0xl mx-auto bg-white rounded-xl shadow-sm border border-gray-200">
 
         {/* Header & Actions */}
         <div className="p-6 border-b border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -157,7 +153,7 @@ export default function ProductManager() {
             <tbody className="divide-y divide-gray-200 text-sm">
               {isLoading ? (
                 <tr><td colSpan="6" className="py-20 text-center"><Loader2 className="animate-spin mx-auto text-teal-600" size={40} /></td></tr>
-              ) : filteredProducts.map((item, idx) => (
+              ) : ProductList.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-center text-gray-500 font-medium">
                     {(currentPage - 1) * pageSize + idx + 1}
