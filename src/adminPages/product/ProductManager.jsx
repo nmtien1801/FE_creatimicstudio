@@ -37,10 +37,6 @@ export default function ProductManager() {
     fetchList();
   }, [currentPage, pageSize, searchTerm]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [searchTerm]);
-
   // tránh tìm liên tục 
   useEffect(() => {
     const t = setTimeout(() => {
