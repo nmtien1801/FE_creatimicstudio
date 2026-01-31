@@ -32,7 +32,7 @@ export default function Footer() {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const PLACEHOLDER_LOGO_URL = "https://placehold.co/200x200/4F46E5/ffffff?text=STUDIO+LOGO";
+    const LOGO = "/logo1.png";
     const ZALOPAY_IMG = "/zalopay.png";
     const MOMO_IMG = "/MoMo.png";
     const BANK_TRANSFER_IMG = "/Bank.png";
@@ -100,16 +100,19 @@ export default function Footer() {
                     <div className="w-full lg:w-auto space-y-6">
                         <div className="flex justify-center lg:justify-start items-center space-x-4">
                             <img
-                                src={PLACEHOLDER_LOGO_URL}
+                                src={LOGO}
                                 alt="Logo"
                                 className="h-20 w-20 rounded-full object-cover shadow-lg border-2 border-white/20"
                             />
                             <div>
                                 <h2 className="text-xl lg:text-2xl font-black text-orange-950 leading-tight tracking-tight">
-                                    CREATIMIC STUDIO
+                                    CMIC STUDIO
                                 </h2>
                                 <p className="text-white text-sm lg:text-base font-medium opacity-90">
-                                    Âm thanh sáng tạo - kết nối cảm xúc
+                                    Giải pháp dịch vụ livestream &
+                                </p>
+                                 <p className="text-white text-sm lg:text-base font-medium opacity-90">
+                                    thiết bị phòng thu chính hãng
                                 </p>
                             </div>
                         </div>

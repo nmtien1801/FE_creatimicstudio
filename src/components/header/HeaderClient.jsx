@@ -36,20 +36,9 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
 
       {/* 1. MAIN HEADER CONTAINER */}
       <div className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-4 flex items-center justify-between gap-3">
-
+        <div className="py-1 flex items-center justify-between gap-3">
           {/* LOGO */}
-          <div className="flex flex-col items-center justify-center flex-shrink-0">
-            {/* Icon Mic cách điệu giống ảnh */}
-            <div className="relative">
-              <Mic className="w-10 h-10 text-black stroke-[1.5]" />
-              {/* Đường gạch ngang chân mic nếu cần */}
-              <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-6 h-[2px] bg-black"></div>
-            </div>
-            <span className="text-black font-extrabold text-[13px] tracking-wide mt-1">
-              CMIC STUDIO
-            </span>
-          </div>
+          <img src="/logo1.png" alt="logo" className="w-20 h-20 object-contain rounded-lg" />
 
           {/* SEARCH + MEGA MENU */}
           <div className="hidden md:flex flex-1 w-full max-w-2xl h-[45px] bg-white items-center border border-black/10 shadow-sm">
