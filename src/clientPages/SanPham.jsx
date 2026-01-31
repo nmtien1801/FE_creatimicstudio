@@ -191,7 +191,7 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
 export default function SanPham() {
     const dispatch = useDispatch();
     const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
-    const { categoryId: urlCategoryId, subCategoryId: urlSubCategoryId } = useParams();
+    const { id_category: urlCategoryId, id_product: urlSubCategoryId } = useParams();
     const navigate = useNavigate();
 
     const [filters, setFilters] = useState({
@@ -271,7 +271,7 @@ export default function SanPham() {
     };
 
     const handleSubClick = (cat, sub) => {
-        navigate(`/product/${cat.id}/${sub.id}`);
+        navigate(`/product/${sub.id}/all`);
     };
 
     return (
