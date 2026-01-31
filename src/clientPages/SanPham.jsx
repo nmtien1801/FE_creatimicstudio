@@ -26,7 +26,7 @@ const getTitleByCategory = (selectedCategory, subCategory) => {
 };
 
 // ================= FilterSidebar: BỘ LỌC GIÁ =================
-const FilterSidebar = ({ selectedCategory, filters, onFilterChange }) => {
+const FilterSidebar = ({ filters, onFilterChange }) => {
     return (
         <div className=" w-full md:w-64 lg:w-72 flex-shrink-0 p-6 bg-white rounded-2xl shadow-xl top-4 self-start">
             <h2 className="text-2xl font-black text-gray-800 mb-6 flex items-center gap-2">
@@ -264,7 +264,7 @@ export default function SanPham() {
 
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
                 {/* Sidebar */}
-                <FilterSidebar selectedCategory={selectedCategory} filters={filters} onFilterChange={handleFilterChange} />
+                <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
 
                 {/* Product list */}
                 <ProductsList
