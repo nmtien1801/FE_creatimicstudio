@@ -2,8 +2,17 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import ApiAuth from "../apis/ApiAuth.js";
 import Cookies from "js-cookie";
 
+const getInitialUserInfo = () => {
+  try {
+    const userInfo = localStorage.getItem("userInfo");
+    return userInfo ? JSON.parse(userInfo) : {};
+  } catch (error) {
+    return {};
+  }
+};
+
 const initialState = {
-  userInfo: {},
+  userInfo: getInitialUserInfo(),
   isLoading: false,
   hasCheckedAuth: false,
   UserList: [],
@@ -104,6 +113,9 @@ const authSlice = createSlice({
       .addCase(GetAccount.rejected, (state, action) => {
         state.isLoading = false;
         state.hasCheckedAuth = true;
+        // Clear userInfo if GetAccount fails
+        state.userInfo = {};
+        localStorage.removeItem("userInfo");
       });
 
     // logout
