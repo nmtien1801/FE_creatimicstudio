@@ -10,7 +10,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
   const menuItems = [
     { label: "TRANG CHỦ", path: "/home" },
     { label: "GIỚI THIỆU", path: "/about" },
-    { label: "SẢN PHẨM", path: "/products" },
+    { label: "SẢN PHẨM", path: "/product/all/all" },
     { label: "DỊCH VỤ", path: "/service" },
     { label: "TIN TỨC", path: "/post" },
     { label: "TUYỂN DỤNG", path: "/careers" },

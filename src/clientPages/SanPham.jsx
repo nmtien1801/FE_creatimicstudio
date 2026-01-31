@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard.jsx';
 import { getListCategory } from '../redux/categorySlice.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -60,12 +61,12 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
 };
 
 // ================= CategoryTopMenu: BỘ LỌC CATEGORY =================
-const CategoryTopMenu = ({ categoryList, selectedCategory, onSelectCategory, onSelectSub }) => {
+const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSubClick }) => {
     return (
         <div className="flex justify-center mb-10">
             <div className="flex flex-wrap justify-center gap-4">
                 <button
-                    onClick={() => onSelectCategory('all')}
+                    onClick={() => onCategoryClick('all')}
                     className={`px-6 py-3 rounded-2xl text-lg font-bold transition
                         ${selectedCategory === 'all'
                             ? 'bg-orange-500 text-white shadow-lg'
@@ -81,7 +82,7 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onSelectCategory, onS
                         className="relative group px-2 py-2" // 👈 tăng vùng hover
                     >
                         <button
-                            onClick={() => onSelectCategory(cat.name)}
+                            onClick={() => onCategoryClick(cat)}
                             className={`px-6 py-3 rounded-2xl text-lg font-bold transition
                                 ${selectedCategory === cat.name
                                     ? 'bg-orange-500 text-white shadow-lg'
@@ -105,10 +106,7 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onSelectCategory, onS
                                     {cat.children.map(sub => (
                                         <button
                                             key={sub.name}
-                                            onClick={() => {
-                                                onSelectCategory(cat.name);
-                                                onSelectSub(sub.name);
-                                            }}
+                                            onClick={() => onSubClick(cat, sub)}
                                             className="block w-full text-left px-5 py-3
                                                 text-base font-medium
                                                 hover:bg-orange-50 text-gray-700"
@@ -193,15 +191,34 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
 export default function SanPham() {
     const dispatch = useDispatch();
     const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    const { categoryId: urlCategoryId, subCategoryId: urlSubCategoryId } = useParams();
+    const navigate = useNavigate();
+
     const [filters, setFilters] = useState({
         priceRange: 'all',
-        subCategory: 'all',
     });
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
+
+    // Tính selectedCategory từ URL params
+    const selectedCategory = useMemo(() => {
+        if (urlCategoryId === 'all' || !urlCategoryId) return 'all';
+        const category = CategoryList.find(cat => cat.id === urlCategoryId);
+        return category ? category.name : 'all';
+    }, [urlCategoryId, CategoryList]);
+
+    // Tính subCategory từ URL params
+    const subCategory = useMemo(() => {
+        if (urlSubCategoryId === 'all' || !urlSubCategoryId) return 'all';
+        const category = CategoryList.find(cat => cat.id === urlCategoryId);
+        if (category) {
+            const sub = category.children.find(child => child.id === urlSubCategoryId);
+            return sub ? sub.name : 'all';
+        }
+        return 'all';
+    }, [urlSubCategoryId, urlCategoryId, CategoryList]);
 
     // ================================================ INIT DATA ===========================================
     const fetchListCategory = async () => {
@@ -211,10 +228,9 @@ export default function SanPham() {
     const fetchProducts = async (page = 1) => {
         setLoading(true);
         try {
-            let categoryId = 'all';
-            if (selectedCategory !== 'all') {
-                const category = CategoryList.find(cat => cat.name === selectedCategory);
-                if (category) categoryId = category.id;
+            let categoryId = urlCategoryId || 'all';
+            if (urlSubCategoryId && urlSubCategoryId !== 'all') {
+                categoryId = urlSubCategoryId;
             }
 
             const priceProduct = filters.priceRange;
@@ -231,20 +247,31 @@ export default function SanPham() {
         }
     };
 
-
     useEffect(() => {
         fetchListCategory();
     }, []);
 
     useEffect(() => {
-        if (CategoryList.length > 0) {
+        if (CategoryList.length > 0 && urlCategoryId !== undefined) {
             fetchProducts(1);
         }
-    }, [selectedCategory, filters.priceRange, CategoryList]);
+    }, [urlCategoryId, urlSubCategoryId, filters.priceRange, CategoryList]);
     // ============================================= ACTION ================================================
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
+    };
+
+    const handleCategoryClick = (cat) => {
+        if (cat === 'all') {
+            navigate('/product/all/all');
+        } else {
+            navigate(`/product/${cat.id}/all`);
+        }
+    };
+
+    const handleSubClick = (cat, sub) => {
+        navigate(`/product/${cat.id}/${sub.id}`);
     };
 
     return (
@@ -253,13 +280,8 @@ export default function SanPham() {
             <CategoryTopMenu
                 categoryList={CategoryList}
                 selectedCategory={selectedCategory}
-                onSelectCategory={cat => {
-                    setSelectedCategory(cat);
-                    setFilters(prev => ({ ...prev, subCategory: 'all' }));
-                }}
-                onSelectSub={sub =>
-                    setFilters(prev => ({ ...prev, subCategory: sub }))
-                }
+                onCategoryClick={handleCategoryClick}
+                onSubClick={handleSubClick}
             />
 
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">

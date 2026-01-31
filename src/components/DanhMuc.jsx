@@ -15,15 +15,15 @@ const MegaMenu = ({ categories }) => {
   }, []);
 
   // Hàm điều hướng đến sản phẩm
-  const handleNavigateToProduct = (productId, e) => {
+  const handleNavigateToProduct = (catId, productId, e) => {
     e.stopPropagation();
-    navigate(`/product/${productId}`);
+    navigate(`/product/${catId}/${productId}`);
   };
 
   // Hàm điều hướng đến danh mục
   const handleNavigateByCateId = (cateId, e) => {
     e.stopPropagation();
-    navigate(`/category/${cateId}`);
+    navigate(`/product/${cateId}/all`);
   };
 
   return (
@@ -86,7 +86,7 @@ const MegaMenu = ({ categories }) => {
                               {sub.product.map((prod) => (
                                 <div
                                   key={prod.id}
-                                  onClick={(e) => handleNavigateToProduct(prod.id, e)}
+                                  onClick={(e) => handleNavigateToProduct(sub.id, prod.id, e)}
                                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-all group"
                                 >
                                   <Package className="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-400" />
@@ -106,7 +106,7 @@ const MegaMenu = ({ categories }) => {
                         {cat.product.map((p) => (
                           <div
                             key={p.id}
-                            onClick={(e) => handleNavigateToProduct(p.id, e)}
+                            onClick={(e) => handleNavigateToProduct(cat.id, p.id, e)}
                             className="flex items-center gap-2 p-3 rounded-md hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-colors group"
                           >
                             <Package className="w-4 h-4 text-gray-300 group-hover:text-orange-400" />

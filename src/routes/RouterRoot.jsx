@@ -29,13 +29,12 @@ import Cookies from "js-cookie";
 import Home from "../clientPages/TrangChu.jsx";
 import About from "../clientPages/GioiThieu.jsx";
 import Service from "../clientPages/DichVu.jsx";
-import Products from "../clientPages/SanPham.jsx";
 import News from "../clientPages/TinTuc.jsx";
 import Careers from "../clientPages/TuyenDung.jsx";
 import Contact from "../clientPages/LienHe.jsx";
 import JobDetail from '../components/hire/JobDetail';
 import PostDetail from '../components/post/postDetail.jsx'
-import ProductDetail from '../components/product/ProductDetail.jsx'
+import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
 
 const ProtectedRoute = ({ children }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
@@ -91,8 +90,7 @@ function RouterRoot() {
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
           <Route path="about" element={<About />} />
-          <Route path="products" element={<Products />} />
-          <Route path="/product/:id" element={<ProductDetail />} />
+          <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />
           <Route path="service" element={<Service />} />
           <Route path="post" element={<News />} />
           <Route path="/post/:id" element={<PostDetail />} />

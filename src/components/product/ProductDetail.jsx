@@ -6,21 +6,21 @@ import { toast } from 'react-toastify';
 import ImageLoader from '../FormFields/ImageLoader';
 
 const ProductDetail = () => {
-    const { id } = useParams();
+    const { id_product } = useParams();
     const dispatch = useDispatch();
     let [product, setProduct] = useState({})
 
     useEffect(() => {
         let fetchDetail = async () => {
-            let res = await ApiProduct.getProductByIdApi(id)
+            let res = await ApiProduct.getProductByIdApi(id_product)
             if (res && res.DT) {
                 setProduct(res.DT)
             }
         }
-        if (id) {
+        if (id_product) {
             fetchDetail()
         }
-    }, [id, dispatch]);
+    }, [id_product, dispatch]);
 
     if (!product) {
         return (

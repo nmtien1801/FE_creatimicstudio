@@ -8,7 +8,12 @@ export default function ProductCard({ product, isTopSeller = false }) {
     const navigate = useNavigate();
 
     const handleProductClick = () => {
-        navigate(`/product/${product.id}`);
+        // Giả sử trong object product của bạn có trường category_id hoặc categoryId
+        const catId = product.category_id || product.categoryId || 'all';
+        const prodId = product.id;
+
+        // Chuyển hướng theo cấu trúc mới
+        navigate(`/product/${catId}/${prodId}`);
     };
 
     return (
@@ -27,7 +32,10 @@ export default function ProductCard({ product, isTopSeller = false }) {
 
 
                 <button
-                    onClick={() => setIsWishlisted(!isWishlisted)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsWishlisted(!isWishlisted);
+                    }}
                     className={`absolute bottom-2 right-2 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg w-9 h-9`}
                 >
                     <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
