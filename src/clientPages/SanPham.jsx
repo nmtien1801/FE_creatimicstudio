@@ -84,7 +84,7 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSu
                         <button
                             onClick={() => onCategoryClick(cat)}
                             className={`px-6 py-3 rounded-2xl text-lg font-bold transition
-                                ${selectedCategory === cat.name
+                                ${selectedCategory === String(cat.id)
                                     ? 'bg-orange-500 text-white shadow-lg'
                                     : 'bg-white shadow hover:bg-orange-50'}
                             `}
@@ -204,10 +204,8 @@ export default function SanPham() {
 
     // Tính selectedCategory từ URL params
     const selectedCategory = useMemo(() => {
-        if (urlCategoryId === 'all' || !urlCategoryId) return 'all';
-        const category = CategoryList.find(cat => cat.id === urlCategoryId);
-        return category ? category.name : 'all';
-    }, [urlCategoryId, CategoryList]);
+        return urlCategoryId || 'all';
+    }, [urlCategoryId]);
 
     // Tính subCategory từ URL params
     const subCategory = useMemo(() => {
