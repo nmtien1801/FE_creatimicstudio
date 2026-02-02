@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { PackagePlus, X, Edit3, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import { useForm, Controller } from 'react-hook-form';
+import CKEditorField from '../../components/FormFields/CKEditor/CkEditorField';
 import ApiUpload from '../../apis/ApiUpload';
 import { loadImage } from '../../utils/constants';
 
@@ -8,14 +10,17 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // Ví dụ: 2MB
 
 export default function FormProduct({ initialData, onClose, onSubmit }) {
     const [isLoading, setIsLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        name: '',
-        price: 0,
-        description: '',
-        detail: '',
-        status: true,
-        image: null, // Store File object, not URL
-        imagePreview: '' // Store preview URL separately
+    const [imagePreview, setImagePreview] = useState('');
+    const [imageFile, setImageFile] = useState(null);
+
+    const { control, handleSubmit, setValue, getValues } = useForm({
+        defaultValues: {
+            name: '',
+            price: 0,
+            description: '',
+            detail: '',
+            status: true,
+        },
     });
 
     // ====================================== INIT ================================
@@ -25,10 +30,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 setIsLoading(true);
                 const previewUrl = await loadImage(imagePath)
 
-                setFormData(prev => ({
-                    ...prev,
-                    imagePreview: previewUrl
-                }));
+                setImagePreview(previewUrl);
             } catch (error) {
                 console.error('Failed to load initial image:', error);
             } finally {
@@ -37,22 +39,20 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         };
 
         if (initialData) {
-            setFormData({
-                name: initialData.name || '',
-                price: initialData.price || 0,
-                description: initialData.description || '',
-                detail: initialData.detail || '',
-                status: initialData.status ?? true,
-                image: null, // Keep file as null for existing products
-                imagePreview: initialData.image || '' // Show existing image as preview
-            });
+            setValue('name', initialData.name || '');
+            setValue('price', initialData.price || 0);
+            setValue('description', initialData.description || '');
+            setValue('detail', initialData.detail || '');
+            setValue('status', initialData.status ?? true);
+            setImageFile(null); // Keep file as null for existing products
+            setImagePreview(initialData.image || ''); // Show existing image as preview
 
             // Nếu sản phẩm đã có ảnh, gọi API để lấy nội dung ảnh hiển thị
             if (initialData.image) {
                 loadInitialImage(initialData.image);
             }
         }
-    }, [initialData]);
+    }, [initialData, setValue]);
 
     // =========================================== CRUD ================================================
     // Hàm xử lý upload ảnh từ logic bạn cung cấp
@@ -89,11 +89,8 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 const blob = new Blob([imageRes], { type: 'image/jpeg' });
                 const previewUrl = URL.createObjectURL(blob);
 
-                setFormData(prev => ({
-                    ...prev,
-                    image: filePath, // Lưu path từ backend
-                    imagePreview: previewUrl
-                }));
+                setImageFile(filePath); // Lưu path từ backend
+                setImagePreview(previewUrl);
                 toast.success('Tải tệp lên thành công!');
             } else {
                 toast.error('Không thể lấy path file từ server!');
@@ -107,27 +104,14 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         }
     };
 
-    const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: type === 'checkbox' ? checked : value
-        }));
-    };
-
-    const handleLocalSubmit = (e) => {
-        e.preventDefault();
-
+    const handleLocalSubmit = handleSubmit((data) => {
         // Gửi image path (string), không gửi file object
         onSubmit({
-            name: formData.name,
-            price: Number(formData.price),
-            description: formData.description,
-            detail: formData.detail,
-            status: formData.status,
-            image: formData.image // Gửi path string từ server hoặc existing path
+            ...data,
+            price: Number(data.price),
+            image: imageFile // Gửi path string từ server hoặc existing path
         });
-    };
+    });
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -147,14 +131,18 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 <form className="p-6 space-y-4 max-h-[80vh] overflow-y-auto" onSubmit={handleLocalSubmit}>
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Tên sản phẩm</label>
-                        <input
-                            required
+                        <Controller
                             name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            type="text"
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
-                            placeholder="Ví dụ: iPhone 15 Pro Max..."
+                            control={control}
+                            render={({ field }) => (
+                                <input
+                                    {...field}
+                                    required
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    placeholder="Ví dụ: iPhone 15 Pro Max..."
+                                />
+                            )}
                         />
                     </div>
 
@@ -163,8 +151,8 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                         <label className="block text-sm font-semibold text-gray-700">Hình ảnh sản phẩm</label>
                         <div className="flex items-center gap-4">
                             <div className="w-24 h-24 border-2 border-dashed border-gray-300 rounded-lg flex items-center justify-center overflow-hidden bg-gray-50">
-                                {formData.imagePreview ? (
-                                    <img src={formData.imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                {imagePreview ? (
+                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                                 ) : (
                                     <ImageIcon className="text-gray-400" size={32} />
                                 )}
@@ -183,7 +171,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                                     className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-25 cursor-pointer"
                                 >
                                     {isLoading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-                                    {formData.imagePreview ? 'Thay đổi ảnh' : 'Chọn ảnh'}
+                                    {imagePreview ? 'Thay đổi ảnh' : 'Chọn ảnh'}
                                 </label>
                                 <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF tối đa 5MB.</p>
                             </div>
@@ -193,39 +181,58 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                     <div className="grid grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Giá bán (VNĐ)</label>
-                            <input
-                                required
+                            <Controller
                                 name="price"
-                                value={formData.price}
-                                onChange={handleChange}
-                                type="number"
-                                className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                control={control}
+                                render={({ field }) => (
+                                    <input
+                                        {...field}
+                                        required
+                                        type="number"
+                                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    />
+                                )}
                             />
                         </div>
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Trạng thái</label>
                             <label className="relative inline-flex items-center cursor-pointer mt-2">
-                                <input
-                                    type="checkbox"
+                                <Controller
                                     name="status"
-                                    checked={formData.status}
-                                    onChange={handleChange}
-                                    className="sr-only peer"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input
+                                            type="checkbox"
+                                            checked={field.value}
+                                            onChange={field.onChange}
+                                            className="sr-only peer"
+                                        />
+                                    )}
                                 />
                                 <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
-                                <span className="ml-3 text-sm font-medium text-gray-700">{formData.status ? 'Đang bán' : 'Ngừng bán'}</span>
+                                <span className="ml-3 text-sm font-medium text-gray-700">
+                                    <Controller
+                                        name="status"
+                                        control={control}
+                                        render={({ field }) => field.value ? 'Đang bán' : 'Ngừng bán'}
+                                    />
+                                </span>
                             </label>
                         </div>
                     </div>
 
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Mô tả ngắn</label>
-                        <textarea
+                        <Controller
                             name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
-                            rows="2"
+                            control={control}
+                            render={({ field }) => (
+                                <textarea
+                                    {...field}
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    rows="2"
+                                />
+                            )}
                         />
                     </div>
 
@@ -233,13 +240,10 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                         <label className="block text-sm font-semibold text-gray-700 mb-1">
                             Mô tả chi tiết
                         </label>
-                        <textarea
+                        <CKEditorField
                             name="detail"
-                            value={formData.detail}
-                            onChange={handleChange}
-                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none transition-all"
-                            placeholder="Nhập mô tả chi tiết sản phẩm..."
-                            rows="4"
+                            control={control}
+                            label=""
                         />
                     </div>
 
