@@ -5,6 +5,7 @@ import { useForm, Controller } from 'react-hook-form';
 import CKEditorField from '../../components/FormFields/CKEditor/CkEditorField';
 import ApiUpload from '../../apis/ApiUpload';
 import { loadImage } from '../../utils/constants';
+import ProductImageModal from './ProductImageModal';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // Ví dụ: 2MB
 
@@ -12,6 +13,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
     const [isLoading, setIsLoading] = useState(false);
     const [imagePreview, setImagePreview] = useState('');
     const [imageFile, setImageFile] = useState(null);
+    const [showImageModal, setShowImageModal] = useState(false);
 
     const { control, handleSubmit, setValue, getValues } = useForm({
         defaultValues: {
@@ -166,13 +168,26 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                                     onChange={handleFileChange}
                                     disabled={isLoading}
                                 />
-                                <label
-                                    htmlFor="file-upload"
-                                    className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-25 cursor-pointer"
-                                >
-                                    {isLoading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
-                                    {imagePreview ? 'Thay đổi ảnh' : 'Chọn ảnh'}
-                                </label>
+                                <div className="flex items-center gap-6">
+                                    {/* Nút chọn / thay đổi */}
+                                    <label
+                                        htmlFor="file-upload"
+                                        className="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                                    >
+                                        {isLoading && <Loader2 className="animate-spin mr-2" size={16} />}
+                                        {imagePreview ? 'Thay đổi ảnh' : 'Chọn ảnh'}
+                                    </label>
+
+                                    {/* Nút thêm ảnh */}
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowImageModal(true)}
+                                        className="inline-flex items-center px-4 py-2 bg-teal-600 text-white rounded-md text-xs font-semibold hover:bg-teal-700"
+                                    >
+                                        <ImageIcon size={16} className="mr-1" />
+                                        Thêm ảnh
+                                    </button>
+                                </div>
                                 <p className="mt-1 text-xs text-gray-500">PNG, JPG, GIF tối đa 5MB.</p>
                             </div>
                         </div>
@@ -261,6 +276,18 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                     </div>
                 </form>
             </div>
+
+            {showImageModal && (
+                <ProductImageModal
+                    productId={initialData?.id}
+                    onClose={() => setShowImageModal(false)}
+                    onSelect={(img) => {
+                        setImagePreview(img.previewUrl);
+                        setImageFile(img.image);
+                        setShowImageModal(false);
+                    }}
+                />
+            )}
         </div>
     );
 }
