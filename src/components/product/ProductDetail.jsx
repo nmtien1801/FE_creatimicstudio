@@ -80,11 +80,11 @@ const ProductDetail = () => {
             {/* 1. HERO SECTION */}
             <section className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 py-10 lg:py-16">
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                         {/* Hình ảnh sản phẩm với gallery */}
                         <div className="space-y-4">
                             {/* Ảnh chính */}
-                            <div className="relative bg-[#f8f8f8] rounded-3xl p-8 flex justify-center items-center overflow-hidden group">
+                            <div className="relative bg-[#f8f8f8] rounded-3xl p-2 flex justify-center items-center overflow-hidden group">
                                 {product.discount && (
                                     <div className="absolute top-0 left-0 bg-[#ed792f] text-white px-6 py-2 rounded-br-2xl font-bold uppercase tracking-widest shadow-lg z-10">
                                         -{product.discount}%
@@ -187,16 +187,5 @@ const ProductDetail = () => {
         </div>
     );
 };
-
-// Component con cho Feature
-const FeatureCard = ({ icon, title, desc }) => (
-    <div className="bg-white p-6 rounded-2xl shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-        <div className="mb-4 bg-orange-50 w-12 h-12 rounded-xl flex items-center justify-center">
-            {icon}
-        </div>
-        <h3 className="font-bold text-gray-900 mb-2">{title}</h3>
-        <p className="text-sm text-gray-500 leading-relaxed">{desc}</p>
-    </div>
-);
 
 export default ProductDetail;
