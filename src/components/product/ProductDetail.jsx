@@ -4,17 +4,48 @@ import { useDispatch, useSelector } from 'react-redux';
 import ApiProduct from '../../apis/ApiProduct'
 import { toast } from 'react-toastify';
 import ImageLoader from '../FormFields/ImageLoader';
+import ApiProductImage from "../../apis/ApiProductImage";
+import { loadImage } from '../../utils/constants';
 
 const ProductDetail = () => {
     const { id_product } = useParams();
     const dispatch = useDispatch();
     let [product, setProduct] = useState({})
+    let [productImages, setProductImages] = useState([]);
+    let [selectedImage, setSelectedImage] = useState(null);
+    let [isLoadingImages, setIsLoadingImages] = useState(false);
 
     useEffect(() => {
         let fetchDetail = async () => {
             let res = await ApiProduct.getProductByIdApi(id_product)
             if (res && res.DT) {
                 setProduct(res.DT)
+                setSelectedImage(res.DT.image); // Set ảnh chính làm ảnh được chọn
+
+                // Fetch các ảnh phụ
+                setIsLoadingImages(true);
+                try {
+                    let imageRes = await ApiProductImage.getProductImagesByProductIdApi(id_product);
+                    if (imageRes && imageRes.DT) {
+                        // Load preview cho tất cả ảnh
+                        const imagesWithPreview = await Promise.all(
+                            imageRes.DT.map(async (img) => {
+                                try {
+                                    const previewUrl = await loadImage(img.image);
+                                    return { ...img, previewUrl };
+                                } catch (error) {
+                                    console.error('Failed to load image:', error);
+                                    return { ...img, previewUrl: img.image };
+                                }
+                            })
+                        );
+                        setProductImages(imagesWithPreview);
+                    }
+                } catch (error) {
+                    console.error('Error loading product images:', error);
+                } finally {
+                    setIsLoadingImages(false);
+                }
             }
         }
         if (id_product) {
@@ -50,17 +81,65 @@ const ProductDetail = () => {
             <section className="bg-white">
                 <div className="max-w-7xl mx-auto px-4 py-10 lg:py-16">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                        {/* Hình ảnh sản phẩm */}
-                        <div className="relative bg-[#f8f8f8] rounded-3xl p-8 flex justify-center items-center overflow-hidden group">
-                            {product.discount && (
-                                <div className="absolute top-0 left-0 bg-[#ed792f] text-white px-6 py-2 rounded-br-2xl font-bold uppercase tracking-widest shadow-lg">
-                                    -{product.discount}%
+                        {/* Hình ảnh sản phẩm với gallery */}
+                        <div className="space-y-4">
+                            {/* Ảnh chính */}
+                            <div className="relative bg-[#f8f8f8] rounded-3xl p-8 flex justify-center items-center overflow-hidden group">
+                                {product.discount && (
+                                    <div className="absolute top-0 left-0 bg-[#ed792f] text-white px-6 py-2 rounded-br-2xl font-bold uppercase tracking-widest shadow-lg z-10">
+                                        -{product.discount}%
+                                    </div>
+                                )}
+                                <ImageLoader
+                                    imagePath={selectedImage || product.image || product.images?.[0]}
+                                    className="w-auto h-[400px] object-contain transform group-hover:scale-105 transition-transform duration-500"
+                                />
+                            </div>
+
+                            {/* Gallery ảnh phụ */}
+                            {productImages.length > 0 && (
+                                <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
+                                    {/* Ảnh chính */}
+                                    <button
+                                        onClick={() => setSelectedImage(product.image)}
+                                        className={`relative bg-[#f8f8f8] rounded-xl p-2 overflow-hidden transition-all hover:ring-2 hover:ring-orange-400 ${selectedImage === product.image ? 'ring-2 ring-orange-500' : ''
+                                            }`}
+                                    >
+                                        <ImageLoader
+                                            imagePath={product.image}
+                                            className="w-full h-20 object-contain"
+                                        />
+                                    </button>
+
+                                    {/* Các ảnh phụ */}
+                                    {productImages.map((img, index) => (
+                                        <button
+                                            key={img.id}
+                                            onClick={() => setSelectedImage(img.image)}
+                                            className={`relative bg-[#f8f8f8] rounded-xl p-2 overflow-hidden transition-all hover:ring-2 hover:ring-orange-400 ${selectedImage === img.image ? 'ring-2 ring-orange-500' : ''
+                                                }`}
+                                        >
+                                            <img
+                                                src={img.previewUrl || img.image}
+                                                alt={`${product.name} - ${img.color}`}
+                                                className="w-full h-20 object-contain"
+                                            />
+                                            {img.color && (
+                                                <div className="absolute bottom-1 left-1 bg-black/60 text-white text-[10px] px-1.5 py-0.5 rounded truncate max-w-[90%]">
+                                                    {img.color}
+                                                </div>
+                                            )}
+                                        </button>
+                                    ))}
                                 </div>
                             )}
-                            <ImageLoader
-                                imagePath={product.image || product.images?.[0]}
-                                className="w-auto h-[400px] object-contain transform group-hover:scale-105 transition-transform duration-500"
-                            />
+
+                            {/* Loading state cho gallery */}
+                            {isLoadingImages && (
+                                <div className="text-center py-4">
+                                    <p className="text-sm text-gray-500">Đang tải thêm ảnh...</p>
+                                </div>
+                            )}
                         </div>
 
                         {/* Thông tin cơ bản */}

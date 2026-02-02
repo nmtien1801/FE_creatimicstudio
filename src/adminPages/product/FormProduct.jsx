@@ -281,11 +281,6 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 <ProductImageModal
                     productId={initialData?.id}
                     onClose={() => setShowImageModal(false)}
-                    onSelect={(img) => {
-                        setImagePreview(img.previewUrl);
-                        setImageFile(img.image);
-                        setShowImageModal(false);
-                    }}
                 />
             )}
         </div>
