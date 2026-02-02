@@ -115,7 +115,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
 
     return (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden animate-in fade-in zoom-in duration-200">
 
                 {/* Header */}
                 <div className={`${initialData ? 'bg-blue-600' : 'bg-teal-600'} p-4 flex justify-between items-center text-white`}>
