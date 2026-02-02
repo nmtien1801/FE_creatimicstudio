@@ -101,7 +101,7 @@ const ProductDetail = () => {
                 <h2 className="text-2xl font-black uppercase">Mô tả sản phẩm</h2>
                 <div className="prose prose-lg text-gray-600 max-w-none">
                     <p>
-                        {product.detail}
+                        <div dangerouslySetInnerHTML={{ __html: product.detail }} />
                     </p>
                 </div>
             </section>
