@@ -159,7 +159,7 @@ export default function NewsManager() {
 
         {/* Footer */}
         <div className="mt-8 text-right text-xs text-gray-400 font-medium">
-          Copyright © 2025 by <span className="text-gray-600">CREATIMICSTUDIO</span>
+          Copyright © 2025 by <span className="text-gray-600">CMICSTUDIO</span>
         </div>
       </div>
     </div>

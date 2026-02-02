@@ -57,7 +57,7 @@ const ContactPage = () => {
                             <div className="flex items-start gap-4">
                                 <Home className="w-6 h-6 mt-1" />
                                 <div>
-                                    <p className="font-semibold">Chung cư Khang gia, Phường 14, Gò Vấp,</p>
+                                    <p className="font-semibold">Số 49 , Đường 45, P14, Gò Vấp, </p>
                                     <p className="text-sm">Tp. Hồ Chí Minh</p>
                                 </div>
                             </div>

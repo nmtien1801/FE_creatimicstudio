@@ -45,7 +45,7 @@ const JobDetail = () => {
                     <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-t pt-4 mt-4">
                         <span className="flex items-center gap-2">
                             <MapPin className="w-5 h-5 text-indigo-500" />
-                            Chung cư Khang gia, Phường 14, Gò Vấp
+                            Số 49 , Đường 45, P14, Gò Vấp, TP. HCM
                         </span>
                         <span className="flex items-center gap-2">
                             <Clock className="w-5 h-5 text-blue-500" />

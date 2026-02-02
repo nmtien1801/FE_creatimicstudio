@@ -225,7 +225,7 @@ export default function Dashboard() {
 
                 {/* Footer */}
                 <div className="mt-8 text-right text-xs text-gray-500">
-                    Copyright © 2025 by CREATIMICSTUDIO
+                    Copyright © 2025 by CMICSTUDIO
                 </div>
             </div>
         </div>

@@ -38,9 +38,9 @@ export default function Footer() {
     const BANK_TRANSFER_IMG = "/Bank.png";
 
     const socialImages = [
-        { name: "Facebook", src: "/facebook.png", href: "https://www.facebook.com/creatimicstudio" },
-        { name: "YouTube", src: "/YouTube.png", href: "#" },
-        { name: "TikTok", src: "/tiktok.png", href: "#" },
+        { name: "Facebook", src: "/facebook.png", href: "https://www.facebook.com/cmicstudio" },
+        { name: "YouTube", src: "/YouTube.png", href: "https://www.youtube.com/@CMICSTUDIO" },
+        { name: "TikTok", src: "/tiktok.png", href: "https://www.tiktok.com/@cmic.studio" },
         { name: "Zalo", src: "/zalo.webp", href: "#" }
     ];
 
@@ -111,7 +111,7 @@ export default function Footer() {
                                 <p className="text-white text-sm lg:text-base font-medium opacity-90">
                                     Giải pháp dịch vụ livestream &
                                 </p>
-                                 <p className="text-white text-sm lg:text-base font-medium opacity-90">
+                                <p className="text-white text-sm lg:text-base font-medium opacity-90">
                                     thiết bị phòng thu chính hãng
                                 </p>
                             </div>
@@ -120,7 +120,7 @@ export default function Footer() {
                         <div className="text-base space-y-4">
                             <div className="flex items-start justify-center lg:justify-start">
                                 <MapPin className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3 mt-1" />
-                                <p className="max-w-xs">Chung cư Khang gia, Phường 14, Gò Vấp, TP. HCM</p>
+                                <p className="max-w-xs">Số 49 , Đường 45, P14, Gò Vấp, TP. HCM</p>
                             </div>
                             <div className="flex items-center justify-center lg:justify-start">
                                 <Phone className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
@@ -128,7 +128,7 @@ export default function Footer() {
                             </div>
                             <div className="flex items-center justify-center lg:justify-start">
                                 <Globe className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
-                                <p><span className="font-bold">Website:</span> creatimicstudio.vn</p>
+                                <p><span className="font-bold">Website:</span> cmicstudio.vn</p>
                             </div>
                             <div className="flex items-center justify-center lg:justify-start">
                                 <Mail className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
@@ -185,7 +185,7 @@ export default function Footer() {
             </div>
 
             <div className="bg-[#ed780f] text-center py-3 text-xs text-white/90">
-                © 2025 CREATIMICSTUDIO. All rights reserved.
+                © 2025 CMICSTUDIO. All rights reserved.
             </div>
         </footer>
     );

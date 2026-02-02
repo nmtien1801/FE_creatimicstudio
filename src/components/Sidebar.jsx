@@ -78,9 +78,9 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
           {isSidebarOpen ? (
             <>
               <div className="bg-[#026aa8] p-4 flex items-center justify-between shadow-md">
-                <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/dashboard")}>
+                <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/profile/info")}>
                   <img src="/logo.png" alt="logo" className="w-10 h-10 object-contain rounded-lg" />
-                  <span className="font-bold text-base lg:text-lg whitespace-nowrap">CREATIMICSTUDIO</span>
+                  <span className="font-bold text-base lg:text-lg whitespace-nowrap">CMICSTUDIO</span>
                 </div>
                 <button onClick={onToggleSidebar} className="lg:hidden p-1 hover:bg-white/10 rounded-lg">
                   <X className="w-6 h-6" />
