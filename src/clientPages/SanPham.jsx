@@ -137,23 +137,36 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
                 <p className="text-gray-600 font-medium">{products.length} kết quả</p>
             </div>
 
-            {loading ? (
-                <div className="text-center p-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">Đang tải sản phẩm...</p>
-                </div>
-            ) : products.length > 0 ? (
-                <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
-                    {products.map(product => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+            {/* GRID + OVERLAY */}
+            {products.length > 0 ? (
+                <div className="relative">
+
+                    {/* GRID */}
+                    <div
+                        className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6
+            ${loading ? 'opacity-40 pointer-events-none' : ''}`}
+                    >
+                        {products.map(product => (
+                            <ProductCard key={product.id} product={product} />
+                        ))}
+                    </div>
+
+                    {/* OVERLAY LOADING */}
+                    {loading && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-white/60">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+                        </div>
+                    )}
                 </div>
             ) : (
-                <div className="text-center p-12 bg-white rounded-xl shadow-inner mt-10">
-                    <h3 className="text-xl font-bold text-gray-700">Không tìm thấy sản phẩm nào</h3>
-                    <p className="text-gray-500 mt-2">Vui lòng thử điều chỉnh bộ lọc của bạn.</p>
-                </div>
+                !loading && (
+                    <div className="text-center p-12 bg-white rounded-xl shadow-inner mt-10">
+                        <h3 className="text-xl font-bold text-gray-700">Không tìm thấy sản phẩm nào</h3>
+                        <p className="text-gray-500 mt-2">Vui lòng thử điều chỉnh bộ lọc của bạn.</p>
+                    </div>
+                )
             )}
+
 
             {totalPages > 1 && (
                 <div className="flex justify-center items-center space-x-2 mt-10">
@@ -232,7 +245,7 @@ export default function SanPham() {
             }
 
             const priceProduct = filters.priceRange;
-            const res = await ApiProduct.filterProductApi(page, 8, categoryId, priceProduct);
+            const res = await ApiProduct.filterProductApi(page, 9, categoryId, priceProduct);
 
             setProducts(res.DT.products || []);
             setTotalPages(Math.ceil(res.DT.total / res.DT.limit));
@@ -272,6 +285,11 @@ export default function SanPham() {
         navigate(`/product/${sub.id}/all`);
     };
 
+    const handlePageChange = (page) => {
+        setLoading(true);   // bật loading trước
+        fetchProducts(page);
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 p-4 sm:p-8 lg:p-12 font-sans">
             {/* Top category menu */}
@@ -291,7 +309,7 @@ export default function SanPham() {
                     products={products}
                     currentPage={currentPage}
                     totalPages={totalPages}
-                    onPageChange={fetchProducts}
+                    onPageChange={handlePageChange}
                     loading={loading}
                 />
             </div>
