@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
     Outlet,
+    useLocation,
 } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import Header from "../header/HeaderClient";
@@ -15,6 +16,7 @@ function ClientLayout() {
     const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
+    const location = useLocation();
 
     // ================================================ INIT DATA ===========================================
     useEffect(() => {
@@ -27,16 +29,25 @@ function ClientLayout() {
 
     const mainRef = useRef(null);
 
+    // ================================================ SCROLL TO TOP ON ROUTE CHANGE ===========================================
     useEffect(() => {
+        // Scroll to top when route changes
+        if (mainRef.current) {
+            mainRef.current.scrollTo({
+                top: 0,
+                behavior: "instant", // Use instant for immediate scroll, or "smooth" for smooth scroll
+            });
+        }
+    }, [location.pathname]);
+
+    useEffect(() => {
+        const mainEl = mainRef.current;
+        if (!mainEl) return;
+
         const handleScroll = () => {
-            if (mainRef.current.scrollTop > 300) {
-                setShowScrollTop(true);
-            } else {
-                setShowScrollTop(false);
-            }
+            setShowScrollTop(mainEl.scrollTop > 300);
         };
 
-        const mainEl = mainRef.current;
         mainEl.addEventListener("scroll", handleScroll);
         return () => mainEl.removeEventListener("scroll", handleScroll);
     }, []);
@@ -51,7 +62,7 @@ function ClientLayout() {
     };
 
     return (
-        <div className="h-screen w-full bg-gray-50 text-gray-800 font-sans overflow-auto">
+        <div className="h-screen w-full bg-gray-50 text-gray-800 font-sans">
             <div className="flex flex-col h-full transition-all duration-300">
                 {/* Header */}
                 <Header
@@ -61,7 +72,7 @@ function ClientLayout() {
                 />
 
                 {/* Main Content */}
-                <main ref={mainRef} className="">
+                <main ref={mainRef} className="flex-1 overflow-y-auto">
                     <Outlet />
                     <Footer />
                 </main>
@@ -82,7 +93,7 @@ function ClientLayout() {
             {showScrollTop && (
                 <button
                     onClick={scrollToTop}
-                    className="fixed bottom-6 right-6 w-12 h-12 bg-orange-500 hover:bg-orange-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all z-50 hover:scale-110"
+                    className="fixed bottom-6 right-6 w-12 h-12 bg-black text-white rounded-full flex items-center justify-center shadow-lg transition-all z-50 hover:scale-110"
                     title="Lên đầu trang"
                 >
                     <ArrowUp className="w-6 h-6" />

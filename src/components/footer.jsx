@@ -169,7 +169,13 @@ export default function Footer() {
                         <div className="w-full flex flex-col items-center lg:items-start gap-5 pt-5 border-t border-white/20">
                             <div className="flex space-x-3">
                                 {socialImages.map((item) => (
-                                    <a key={item.name} href={item.href} className="p-2 rounded-full bg-orange-950/20 hover:bg-black transition-all">
+                                    <a
+                                        key={item.name}
+                                        href={item.href}
+                                        target={item.href !== "#" ? "_blank" : undefined}
+                                        rel={item.href !== "#" ? "noopener noreferrer" : undefined}
+                                        className="p-2 rounded-full bg-orange-950/20 hover:bg-black transition-all"
+                                    >
                                         <img src={item.src} alt={item.name} className="w-5 h-5 object-contain invert" />
                                     </a>
                                 ))}
