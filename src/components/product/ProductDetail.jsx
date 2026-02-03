@@ -178,11 +178,10 @@ const ProductDetail = () => {
             {/* 3. SPECIFICATIONS & DESCRIPTION */}
             <section className="max-w-7xl mx-auto px-4 grid gap-8">
                 <h2 className="text-2xl font-black uppercase">Mô tả sản phẩm</h2>
-                <div className="prose prose-lg text-gray-600 max-w-none">
-                    <p>
-                        <div dangerouslySetInnerHTML={{ __html: product.detail }} />
-                    </p>
-                </div>
+                <div
+                    className="prose prose-lg text-gray-600 max-w-none break-words"
+                    dangerouslySetInnerHTML={{ __html: product.detail }}
+                />
             </section>
         </div>
     );
