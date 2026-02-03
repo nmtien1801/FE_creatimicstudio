@@ -250,7 +250,7 @@ export default function TrangChu() {
                     header="COMBO LIVESTREAM"
                     products={comboLivestream}
                     bannerImage="/BannerBộLivestream.png"
-                    buttonLink="#"
+                    buttonLink="/product/1/all"
                 />
 
                 {/* 4. PHỤ KIỆN THU ÂM  */}
@@ -267,7 +267,7 @@ export default function TrangChu() {
 
                         {/* Lưới sản phẩm: Giảm gap-y trên mobile */}
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-4 gap-y-6 md:gap-y-10">
-                            {phuKien.slice(0, 12).map((p) => (
+                            {phuKien.slice(0, 8).map((p) => (
                                 <ProductCard key={p.id} product={p} />
                             ))}
                         </div>
@@ -275,7 +275,7 @@ export default function TrangChu() {
                         {/* Nút Xem thêm: Giảm mt trên mobile */}
                         <div className="mt-10 md:mt-16 text-center">
                             <a
-                                href="#"
+                                href="/product/11/all"
                                 className="inline-flex items-center justify-center px-8 md:px-12 py-3 md:py-4 bg-[#ed792f] text-white text-xs md:text-sm font-black uppercase tracking-widest rounded-full shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
                             >
                                 Xem thêm sản phẩm
@@ -315,7 +315,7 @@ export default function TrangChu() {
                     header="LOA KIỂM ÂM"
                     products={loa}
                     bannerImage="/BannerLoa.png"
-                    buttonLink="#"
+                    buttonLink="/product/12/all"
                 />
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
