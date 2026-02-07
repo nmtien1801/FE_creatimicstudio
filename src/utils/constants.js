@@ -26,7 +26,7 @@ const formatToISODate = (displayDate) => {
   const m = moment(
     displayDate,
     ["YYYY-MM-DDTHH:mm:ss.SSS", "DD/MM/YYYY"],
-    true
+    true,
   );
 
   if (!m.isValid()) return "01/01/0001";
@@ -82,6 +82,19 @@ const arrayBufferToUrl = (arrayBuffer) => {
   return URL.createObjectURL(blob);
 };
 
+const slug = (text) => {
+  return text
+    .toString()
+    .toLowerCase()
+    .normalize("NFD") // Normalize to decompose accented characters
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/[^\w\-]+/g, "") // Remove all non-word characters
+    .replace(/\-\-+/g, "-") // Replace multiple hyphens with a single hyphen
+    .replace(/^-+/, "") // Trim hyphens from the start
+    .replace(/-+$/, ""); // Trim hyphens from the end
+};
+
 export {
   TypeUserIDCons,
   typeCategory_obligatory,
@@ -93,4 +106,5 @@ export {
   loadImage,
   arrayBufferToUrl,
   formatToInputDate,
+  slug,
 };

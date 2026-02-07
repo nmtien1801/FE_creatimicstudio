@@ -90,7 +90,9 @@ function RouterRoot() {
           <Route index element={<Navigate to="home" replace />} />
           <Route path="home" element={<Home />} />
           <Route path="about" element={<About />} />
-          <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />
+          {/* path route: /product/ */}
+          {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
+          <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} /> 
           <Route path="service" element={<Service />} />
           <Route path="post" element={<News />} />
           <Route path="/post/:id" element={<PostDetail />} />

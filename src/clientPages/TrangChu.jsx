@@ -114,6 +114,7 @@ export default function TrangChu() {
         { img: '/bannerhome1.png', },
         { img: '/bannerhome2.png', },
         { img: '/bannerhome3.png', },
+        // { imgDesktop: '/bannerHome4.png', },
     ];
 
     const nextSlide = useCallback(() => {
@@ -181,11 +182,18 @@ export default function TrangChu() {
                                         key={index}
                                         className="relative flex-shrink-0 w-full h-full"
                                     >
-                                        {/* Background Image */}
+                                        {/* Desktop */}
                                         <img
                                             src={slide.img}
                                             alt=""
-                                            className="absolute inset-0 w-full h-full object-contain"
+                                            className="hidden md:block absolute inset-0 w-full h-full object-contain"
+                                        />
+
+                                        {/* Mobile */}
+                                        <img
+                                            src={slide.img}
+                                            alt=""
+                                            className="block md:hidden absolute inset-0 w-full h-full object-cover"
                                         />
                                     </div>
                                 ))}
@@ -250,7 +258,7 @@ export default function TrangChu() {
                     header="COMBO LIVESTREAM"
                     products={comboLivestream}
                     bannerImage="/BannerBộLivestream.png"
-                    buttonLink="/product/1/all"
+                    buttonLink="/combo-livestream/1/all"
                 />
 
                 {/* 4. PHỤ KIỆN THU ÂM  */}
@@ -275,7 +283,7 @@ export default function TrangChu() {
                         {/* Nút Xem thêm: Giảm mt trên mobile */}
                         <div className="mt-10 md:mt-16 text-center">
                             <a
-                                href="/product/11/all"
+                                href="/phu-kien-thu-am/11/all"
                                 className="inline-flex items-center justify-center px-8 md:px-12 py-3 md:py-4 bg-[#ed792f] text-white text-xs md:text-sm font-black uppercase tracking-widest rounded-full shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
                             >
                                 Xem thêm sản phẩm
@@ -315,7 +323,7 @@ export default function TrangChu() {
                     header="LOA KIỂM ÂM"
                     products={loa}
                     bannerImage="/BannerLoa.png"
-                    buttonLink="/product/12/all"
+                    buttonLink="/loa-kiem-am/12/all"
                 />
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}

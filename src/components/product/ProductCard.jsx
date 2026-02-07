@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Star, Heart } from 'lucide-react';
 import ImageLoader from "../../components/FormFields/ImageLoader";
+import { slug } from '../../utils/constants.js';
 
 export default function ProductCard({ product, isTopSeller = false }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
@@ -13,7 +14,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
         const prodId = product.id;
 
         // Chuyển hướng theo cấu trúc mới
-        navigate(`/product/${catId}/${prodId}`);
+        navigate(`/${slug(product.name)}/${catId}/${prodId}`);
     };
 
     return (

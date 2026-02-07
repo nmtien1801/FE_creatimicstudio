@@ -6,6 +6,7 @@ import { getListCategory } from '../redux/categorySlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import ApiProduct from '../apis/ApiProduct.js';
+import { slug } from '../utils/constants.js';
 
 const priceRanges = [
     { value: 'all', label: 'Tất cả mức giá', min: 0, max: Infinity },
@@ -277,12 +278,12 @@ export default function SanPham() {
         if (cat === 'all') {
             navigate('/product/all/all');
         } else {
-            navigate(`/product/${cat.id}/all`);
+            navigate(`/${slug(cat.name)}/${cat.id}/all`);
         }
     };
 
     const handleSubClick = (cat, sub) => {
-        navigate(`/product/${sub.id}/all`);
+        navigate(`/${slug(sub.name)}/${sub.id}/all`);
     };
 
     const handlePageChange = (page) => {

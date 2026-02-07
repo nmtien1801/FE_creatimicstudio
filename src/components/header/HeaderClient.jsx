@@ -5,6 +5,7 @@ import MegaMenu from "../DanhMuc.jsx";
 import { toast } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
 import DropdownSearch from '../../components/FormFields/DropdownSearch';
+import { slug } from '../../utils/constants.js';
 
 export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOpen }) {
   const navigate = useNavigate();
@@ -37,9 +38,13 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
   }, []);
 
   // ============================================ ACTIONS ==========================================
-  const handleSearch = (productId) => {
-    if (productId) {
-      navigate(`/product/all/${productId}`);
+  const handleSetValue = (e) => {
+    setSearchQuery(e);
+  }
+
+  const handleSearch = (product) => {
+    if (product.id) {
+      navigate(`/${slug(product.name)}/all/${product.id}`);
     } else {
       toast.warning("Vui lòng chọn sản phẩm để tìm kiếm!");
     }
@@ -61,7 +66,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
               placeholder="VD: Micro cài tai không dây ...."
               labelKey="name"
               valueKey="id"
-              onChange={(e) => setSearchQuery(e.id)}
+              onChange={(e) => handleSetValue(e)}
             />
 
             {/* Phần chọn Danh Mục (Có đường kẻ dọc ngăn cách) */}

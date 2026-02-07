@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Package, ChevronRight } from "lucide-react";
 import { useNavigate } from 'react-router-dom';
+import { slug } from '../utils/constants.js';
 
 const MegaMenu = ({ categories }) => {
   const [openCategory, setOpenCategory] = useState(null);
@@ -15,15 +16,15 @@ const MegaMenu = ({ categories }) => {
   }, []);
 
   // Hàm điều hướng đến sản phẩm
-  const handleNavigateToProduct = (catId, productId, e) => {
+  const handleNavigateToProduct = (cat, product, e) => {
     e.stopPropagation();
-    navigate(`/product/${catId}/${productId}`);
+    navigate(`/${slug(product.name)}/${cat.id}/${product.id}`);
   };
 
   // Hàm điều hướng đến danh mục
-  const handleNavigateByCateId = (cateId, e) => {
+  const handleNavigateByCateId = (cate, e) => {
     e.stopPropagation();
-    navigate(`/product/${cateId}/all`);
+    navigate(`/${slug(cate.name)}/${cate.id}/all`);
   };
 
   return (
@@ -50,7 +51,7 @@ const MegaMenu = ({ categories }) => {
             >
               {/* LEVEL 1: CATEGORY CHA */}
               <div
-                onClick={(e) => handleNavigateByCateId(cat.id, e)}
+                onClick={(e) => handleNavigateByCateId(cat, e)}
                 className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${openCategory === cat.id ? "bg-orange-50 text-orange-600" : "text-gray-800 hover:bg-gray-50"
                   }`}
               >
@@ -71,7 +72,7 @@ const MegaMenu = ({ categories }) => {
                         onMouseEnter={() => setOpenSubCategory(sub.id)}
                       >
                         <div
-                          onClick={(e) => handleNavigateByCateId(sub.id, e)}
+                          onClick={(e) => handleNavigateByCateId(sub, e)}
                           className={`flex items-center justify-between p-3 rounded-md cursor-pointer transition-colors ${openSubCategory === sub.id ? "bg-orange-50 text-orange-600" : "text-gray-800 hover:bg-gray-50"
                             }`}
                         >
@@ -86,7 +87,7 @@ const MegaMenu = ({ categories }) => {
                               {sub.product.map((prod) => (
                                 <div
                                   key={prod.id}
-                                  onClick={(e) => handleNavigateToProduct(sub.id, prod.id, e)}
+                                  onClick={(e) => handleNavigateToProduct(sub, prod, e)}
                                   className="flex items-center gap-2 p-2 rounded-lg hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-all group"
                                 >
                                   <Package className="w-3.5 h-3.5 text-gray-300 group-hover:text-orange-400" />
@@ -106,7 +107,7 @@ const MegaMenu = ({ categories }) => {
                         {cat.product.map((p) => (
                           <div
                             key={p.id}
-                            onClick={(e) => handleNavigateToProduct(cat.id, p.id, e)}
+                            onClick={(e) => handleNavigateToProduct(cat, p, e)}
                             className="flex items-center gap-2 p-3 rounded-md hover:bg-orange-50 hover:text-orange-600 cursor-pointer text-sm transition-colors group"
                           >
                             <Package className="w-4 h-4 text-gray-300 group-hover:text-orange-400" />
