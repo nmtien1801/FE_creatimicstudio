@@ -1,11 +1,17 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Menu, Search, Phone, ChevronDown, Mic } from "lucide-react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import MegaMenu from "../DanhMuc.jsx";
+import { toast } from 'react-toastify';
+import { useSelector, useDispatch } from "react-redux";
+import DropdownSearch from '../../components/FormFields/DropdownSearch';
 
 export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOpen }) {
-  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const [searchQuery, setSearchQuery] = useState(null);
   const [isMegaOpen, setIsMegaOpen] = useState(false);
+  const { ProductDropdown } = useSelector((state) => state.product);
 
   const menuItems = [
     { label: "TRANG CHỦ", path: "/home" },
@@ -30,6 +36,14 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
+  // ============================================ ACTIONS ==========================================
+  const handleSearch = (productId) => {
+    if (productId) {
+      navigate(`/product/all/${productId}`);
+    } else {
+      toast.warning("Vui lòng chọn sản phẩm để tìm kiếm!");
+    }
+  };
 
   return (
     <header className="bg-[#ed792f] shadow-md sticky top-0 z-50">
@@ -42,13 +56,12 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
 
           {/* SEARCH + MEGA MENU */}
           <div className="hidden md:flex flex-1 w-full max-w-2xl h-[45px] bg-white items-center border border-black/10 shadow-sm">
-            {/* Input */}
-            <input
-              type="text"
-              placeholder="" // Trong ảnh input trống
-              className="flex-1 h-full px-4 text-gray-700 outline-none text-base"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+            <DropdownSearch
+              options={ProductDropdown}
+              placeholder="VD: Micro cài tai không dây ...."
+              labelKey="name"
+              valueKey="id"
+              onChange={(e) => setSearchQuery(e.id)}
             />
 
             {/* Phần chọn Danh Mục (Có đường kẻ dọc ngăn cách) */}
@@ -75,7 +88,9 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
 
 
             {/* Nút Search Icon */}
-            <button className="h-full px-5 flex items-center justify-center hover:bg-gray-100 transition-colors">
+            <button className="h-full px-5 flex items-center justify-center hover:bg-gray-100 transition-colors cursor-pointer"
+              onClick={() => { handleSearch(searchQuery) }}
+            >
               <Search className="w-6 h-6 text-black" />
             </button>
           </div>
