@@ -12,6 +12,13 @@ const stepColorMap = {
     orange: 'bg-orange-400',
 };
 
+const stepBorderMap = {
+    cyan: "border-cyan-400",
+    slate: "border-slate-400",
+    yellow: "border-yellow-400",
+    orange: "border-orange-400",
+};
+
 const CMICLandingPage = () => {
     return (
         <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-20">
@@ -164,7 +171,7 @@ const CMICLandingPage = () => {
                     ].map((step, index) => (
                         <div
                             key={index}
-                            className="relative z-10 bg-white border-2 border-gray-100 rounded-2xl p-6 w-full md:w-60 shadow-md text-center flex flex-col items-center"
+                            className={`relative z-10 bg-white border-2 ${stepBorderMap[step.color]} rounded-2xl p-6 w-full md:w-60 shadow-md text-center flex flex-col items-center`}
                         >
                             {/* Hình tròn: Trên mobile sẽ đẩy card xuống, trên desktop sẽ bay lên trên */}
                             <div className={`
@@ -184,7 +191,7 @@ const CMICLandingPage = () => {
             </section>
 
             {/* SECTION 3: TẠI SAO CHỌN CMIC */}
-            <section className="max-w-4xl mx-auto px-4 py-12">
+            <section className="max-w-4xl mx-auto px-4 py-8">
                 <h2 className="text-orange-600 text-3xl font-bold text-center mb-10 uppercase">Tại sao chọn CMIC Studio?</h2>
                 <div className="space-y-6">
                     {[

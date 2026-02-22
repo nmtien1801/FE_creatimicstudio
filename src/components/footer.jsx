@@ -176,11 +176,11 @@ export default function Footer() {
                                         rel={item.href !== "#" ? "noopener noreferrer" : undefined}
                                         className="p-2 rounded-full bg-orange-950/20 hover:bg-black transition-all"
                                     >
-                                        <img src={item.src} alt={item.name} className="w-5 h-5 object-contain invert" />
+                                        <img src={item.src} alt={item.name} className="w-7 h-7 object-contain" />
                                     </a>
                                 ))}
                             </div>
-                            <div className="flex items-center space-x-4 opacity-90 grayscale hover:grayscale-0 transition-all">
+                            <div className="flex items-center space-x-4 opacity-90 transition-all">
                                 <img src={ZALOPAY_IMG} alt="ZaloPay" className="h-6" />
                                 <img src={MOMO_IMG} alt="MoMo" className="h-6" />
                                 <img src={BANK_TRANSFER_IMG} alt="Bank" className="h-6" />
