@@ -72,7 +72,7 @@ const CMICLandingPage = () => {
                             <div className="absolute -right-6 -top-38  w-90 h-90 drop-shadow-xl z-10">
                                 <div className="w-full h-full bg-orange-500 p-1.5" style={hexagonStyle}>
                                     <div className="w-full h-full bg-white overflow-hidden" style={hexagonStyle}>
-                                        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500"
+                                        <img src="/dichvu1.png"
                                             className="w-full h-full object-cover" alt="setup 1" />
                                     </div>
                                 </div>
@@ -82,7 +82,7 @@ const CMICLandingPage = () => {
                             <div className="absolute left-6 top-[20%] translate-y-1 w-90 h-90 drop-shadow-2xl z-20">
                                 <div className="w-full h-full bg-orange-500 p-1.5" style={hexagonStyle}>
                                     <div className="w-full h-full bg-white overflow-hidden" style={hexagonStyle}>
-                                        <img src="https://images.unsplash.com/photo-1478737270239-2fccd2c7862a?w=600"
+                                        <img src="/dichvu2.png"
                                             className="w-full h-full object-cover" alt="setup 2" />
                                     </div>
                                 </div>
@@ -214,13 +214,13 @@ const CMICLandingPage = () => {
                 <h2 className="text-orange-600 text-3xl font-bold text-center mb-10 uppercase">Một số dự án tiêu biểu</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 border-4 border-yellow-200 p-6 rounded-3xl bg-white">
                     <div className="aspect-[3/4] bg-gray-200 rounded-xl overflow-hidden shadow-lg">
-                        <img src="/api/placeholder/400/600" alt="Project 1" className="w-full h-full object-cover" />
+                        <img src="/duan1.jpg" alt="Project 1" className="w-full h-full object-cover" />
                     </div>
                     <div className="aspect-[3/4] bg-gray-200 rounded-xl overflow-hidden shadow-lg">
-                        <img src="/api/placeholder/400/600" alt="Project 2" className="w-full h-full object-cover" />
+                        <img src="/duan2.jpg" alt="Project 2" className="w-full h-full object-cover" />
                     </div>
                     <div className="aspect-[3/4] bg-gray-200 rounded-xl overflow-hidden shadow-lg">
-                        <img src="/api/placeholder/400/600" alt="Project 3" className="w-full h-full object-cover" />
+                        <img src="/duan3.jpg" alt="Project 3" className="w-full h-full object-cover" />
                     </div>
                 </div>
             </section>
