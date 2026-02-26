@@ -75,7 +75,7 @@ export default function ProductManager() {
   // Hàm xử lý khi FormProduct gửi dữ liệu về
   const handleSubmitForm = async (formData) => {
     if (selectedProduct) {
-      // Logic Update
+      // Logic Update      
       let res = await ApiProduct.updateProductApi(selectedProduct.id, formData);
       if (res && res.EC === 0) {
         fetchList()

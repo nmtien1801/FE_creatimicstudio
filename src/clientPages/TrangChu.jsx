@@ -106,6 +106,7 @@ export default function TrangChu() {
     const [currentSlide, setCurrentSlide] = useState(0);
     const { PostList } = useSelector((state) => state.post);
     const { ProductDropdown } = useSelector((state) => state.product);
+    const [topSeller, setTopSeller] = useState([]);
     const [comboLivestream, setComboLivestream] = useState([]);
     const [phuKien, setPhuKien] = useState([]);
     const [loa, setLoa] = useState([]);
@@ -135,6 +136,9 @@ export default function TrangChu() {
         }
 
         let resProductTopSeller = await dispatch(getListProductDropdown()).unwrap();
+        if (resProductTopSeller && resProductTopSeller.EC === 0) {
+            setTopSeller(resProductTopSeller.DT.filter(p => p.isTopSeller === true));
+        }
 
         // comboLivestream
         let resCombo = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.comboLivestream);
@@ -164,13 +168,6 @@ export default function TrangChu() {
     useEffect(() => {
         fetchList();
     }, []);
-
-    // ========================================== ACTION ===========================================
-    const randomTopSellers = useMemo(() => {
-        return [...ProductDropdown]
-            .sort(() => Math.random() - 0.5)
-            .slice(0, 3);
-    }, [ProductDropdown]);
 
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-[#ed792f] selection:text-white">
@@ -237,7 +234,7 @@ export default function TrangChu() {
                             sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-3 sm:gap-y-4 sm:overflow-visible sm:pb-0
                             snap-x snap-mandatory
                         ">
-                        {randomTopSellers.map((p) => (
+                        {topSeller.map((p) => (
                             <div
                                 key={p.id}
                                 className="relative min-w-[80%] sm:min-w-0 snap-center flex-shrink-0 sm:flex-shrink"
@@ -287,7 +284,7 @@ export default function TrangChu() {
                 {/* 6. 4 BANNER COMBO - Thay my-20 thành responsive margin */}
                 <section className="sm:px-4 lg:px-6">
                     <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-nowrap overflow-x-auto pb-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
+                        <div className="flex flex-nowrap overflow-x-auto pb-6 pt-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
                             {comboBanners.map((banner, i) => (
                                 <div
                                     key={i}

@@ -22,6 +22,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
             description: '',
             detail: '',
             status: true,
+            isTopSeller: false,
         },
     });
 
@@ -46,6 +47,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
             setValue('description', initialData.description || '');
             setValue('detail', initialData.detail || '');
             setValue('status', initialData.status ?? true);
+            setValue('isTopSeller', initialData.isTopSeller ?? true);
             setImageFile(null); // Keep file as null for existing products
             setImagePreview(initialData.image || ''); // Show existing image as preview
 
@@ -193,7 +195,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-5">
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Giá bán (VNĐ)</label>
                             <Controller
@@ -230,6 +232,31 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                                         name="status"
                                         control={control}
                                         render={({ field }) => field.value ? 'Đang bán' : 'Ngừng bán'}
+                                    />
+                                </span>
+                            </label>
+                        </div>
+                         <div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-1">Top Seller</label>
+                            <label className="relative inline-flex items-center cursor-pointer mt-2">
+                                <Controller
+                                    name="isTopSeller"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <input
+                                            type="checkbox"
+                                            checked={field.value}
+                                            onChange={field.onChange}
+                                            className="sr-only peer"
+                                        />
+                                    )}
+                                />
+                                <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                                <span className="ml-3 text-sm font-medium text-gray-700">
+                                    <Controller
+                                        name="isTopSeller"
+                                        control={control}
+                                        render={({ field }) => field.value ? 'Top Seller' : 'Bình thường'}
                                     />
                                 </span>
                             </label>
