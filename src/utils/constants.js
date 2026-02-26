@@ -11,6 +11,7 @@ const typeCategory_obligatory = {
   comboLivestream: 1,
   resPhuKienThuAm: 11,
   Loa: 12,
+  Soundcard: 7,
 };
 
 const formatDate = (isoDate) => {

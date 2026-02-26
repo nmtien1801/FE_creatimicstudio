@@ -109,6 +109,7 @@ export default function TrangChu() {
     const [comboLivestream, setComboLivestream] = useState([]);
     const [phuKien, setPhuKien] = useState([]);
     const [loa, setLoa] = useState([]);
+    const [Soundcard, setSoundcard] = useState([]);
 
     const slides = [
         { img: '/bannerhome1.png', },
@@ -151,6 +152,12 @@ export default function TrangChu() {
         let resLoa = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.Loa);
         if (resLoa && resLoa.DT) {
             setLoa(resLoa.DT)
+        }
+
+        // Soundcard
+        let resSoundcard = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.Soundcard);
+        if (resSoundcard && resSoundcard.DT) {
+            setSoundcard(resSoundcard.DT)
         }
     };
 
@@ -261,7 +268,49 @@ export default function TrangChu() {
                     buttonLink="/combo-livestream/1/all"
                 />
 
-                {/* 4. PHỤ KIỆN THU ÂM  */}
+                {/* 4. Soundcard - Mixer*/}
+                <CategorySection
+                    header="SOUNDCARD - MIXER"
+                    products={Soundcard}
+                    bannerImage="/BannerLoa.png"
+                    buttonLink="/soundcard-mixer/7/all"
+                />
+
+                {/* 5. LOA KIỂM ÂM */}
+                <CategorySection
+                    header="LOA KIỂM ÂM"
+                    products={loa}
+                    bannerImage="/BannerLoa.png"
+                    buttonLink="/loa-kiem-am/12/all"
+                />
+
+                {/* 6. 4 BANNER COMBO - Thay my-20 thành responsive margin */}
+                <section className="sm:px-4 lg:px-6">
+                    <div className="max-w-7xl mx-auto">
+                        <div className="flex flex-nowrap overflow-x-auto pb-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
+                            {comboBanners.map((banner, i) => (
+                                <div
+                                    key={i}
+                                    className="group relative aspect-[4/3] min-w-[85%] sm:min-w-0 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl cursor-pointer bg-gray-100 flex-shrink-0 sm:flex-shrink"
+                                >
+                                    <img src={banner.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt="" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#ed792f] via-[#ed792f]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
+
+                                    {/* Nội dung Banner: Giảm padding trên mobile */}
+                                    <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end text-white">
+                                        <span className="text-[10px] font-black tracking-[0.3em] mb-1 md:mb-2 opacity-80 uppercase">{banner.subtitle}</span>
+                                        <h3 className="text-lg md:text-xl font-black leading-tight uppercase italic drop-shadow-md group-hover:text-yellow-300 transition-colors">
+                                            {banner.title}
+                                        </h3>
+                                        <div className="mt-2 md:mt-4 w-12 h-1 bg-white group-hover:w-24 transition-all duration-500"></div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+                {/* 7. PHỤ KIỆN THU ÂM  */}
                 <section className="py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
                     <div className="max-w-7xl mx-auto">
 
@@ -291,40 +340,6 @@ export default function TrangChu() {
                         </div>
                     </div>
                 </section>
-
-                {/* 5. 4 BANNER COMBO - Thay my-20 thành responsive margin */}
-                <section className="sm:px-4 lg:px-6">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-nowrap overflow-x-auto pb-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
-                            {comboBanners.map((banner, i) => (
-                                <div
-                                    key={i}
-                                    className="group relative aspect-[4/3] min-w-[85%] sm:min-w-0 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl cursor-pointer bg-gray-100 flex-shrink-0 sm:flex-shrink"
-                                >
-                                    <img src={banner.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt="" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#ed792f] via-[#ed792f]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
-
-                                    {/* Nội dung Banner: Giảm padding trên mobile */}
-                                    <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end text-white">
-                                        <span className="text-[10px] font-black tracking-[0.3em] mb-1 md:mb-2 opacity-80 uppercase">{banner.subtitle}</span>
-                                        <h3 className="text-lg md:text-xl font-black leading-tight uppercase italic drop-shadow-md group-hover:text-yellow-300 transition-colors">
-                                            {banner.title}
-                                        </h3>
-                                        <div className="mt-2 md:mt-4 w-12 h-1 bg-white group-hover:w-24 transition-all duration-500"></div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                {/* 6. LOA KIỂM ÂM */}
-                <CategorySection
-                    header="LOA KIỂM ÂM"
-                    products={loa}
-                    bannerImage="/BannerLoa.png"
-                    buttonLink="/loa-kiem-am/12/all"
-                />
 
                 {/* 8. BÀI VIẾT HỮU ÍCH */}
                 <section className="py-16 md:py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100 overflow-hidden">
