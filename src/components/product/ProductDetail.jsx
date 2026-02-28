@@ -158,7 +158,7 @@ const ProductDetail = () => {
                                         Giá gốc: {(Number(product.price || 0) * 1.25).toLocaleString('vi-VN')} VNĐ
                                     </span>
                                     <span className="text-2xl font-black text-red-600">
-                                        Giá khuyễn mãi: {(Number(product.price || 0)).toLocaleString('vi-VN')} VNĐ
+                                        Giá khuyến mãi: {(Number(product.price || 0)).toLocaleString('vi-VN')} VNĐ
                                     </span>
                                 </div>
                                 <div className="self-center bg-green-700 rounded-full flex items-center shadow-md transition-all hover:bg-green-800 w-fit px-4 py-2 cursor-pointer">
