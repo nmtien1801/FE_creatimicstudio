@@ -79,7 +79,7 @@ export default function NewsManager() {
                 PostList.map((item) => (
                   <div key={item.id} className="flex flex-col md:flex-row gap-4 p-4 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100 group">
                     <div className="flex-shrink-0 w-28 h-24 flex items-center justify-center text-white text-[10px] font-bold rounded-lg uppercase shadow-sm">
-                      <ImageLoader imagePath={item.image} className="w-10 h-10 rounded-md border object-cover" />
+                      <ImageLoader imagePath={item.image} className="w-full h-full rounded-md border object-cover" />
                     </div>
 
                     <div className="flex-1">

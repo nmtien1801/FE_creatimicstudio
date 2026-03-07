@@ -11,7 +11,7 @@ const NewsCard = ({ news }) => (
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
             {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
-                <ImageLoader imagePath={news.image} className="w-10 h-10 rounded-md border object-cover" />
+                <ImageLoader imagePath={news.image} className="w-full h-full rounded-md border object-cover" />
             </div>
             {/* Title & Content */}
             <div className="p-4 flex flex-col flex-grow">
