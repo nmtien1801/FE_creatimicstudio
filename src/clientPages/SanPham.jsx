@@ -276,7 +276,7 @@ export default function SanPham() {
 
     const handleCategoryClick = (cat) => {
         if (cat === 'all') {
-            navigate('/product/all/all');
+            navigate('/san-pham/all/all');
         } else {
             navigate(`/${slug(cat.name)}/${cat.id}/all`);
         }

@@ -32,7 +32,7 @@ const JobDetail = () => {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
                 {/* Header Section */}
-                <header className="p-4 md:p-6 rounded-xl mb-5">
+                <header className="rounded-xl mb-5">
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">
                         {jobData.title}
                     </h1>
@@ -43,7 +43,7 @@ const JobDetail = () => {
 
                     {/* Content Section (2/3 cột) */}
                     <div
-                        className="lg:col-span-2 space-y-4 prose max-w-none whitespace-pre-line"
+                        className="lg:col-span-2 prose max-w-none"
                         dangerouslySetInnerHTML={{ __html: jobData.detail }}
                     />
                 </div>

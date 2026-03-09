@@ -7,7 +7,7 @@ import { getListRecruitment } from '../redux/recruitmentSlice';
 import ImageLoader from '../components/FormFields/ImageLoader';
 
 const NewsCard = ({ news }) => (
-    <NavLink to={`/careers/${news.id}`} className="block">
+    <NavLink to={`/tuyen-dung/${news.id}`} className="block">
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
             {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
@@ -131,7 +131,7 @@ const TuyenDung = () => {
             RecruitmentList.length === 1 &&
             currentPage === 1
         ) {
-            navigate(`/careers/${RecruitmentList[0].id}`, {
+            navigate(`/tuyen-dung/${RecruitmentList[0].id}`, {
                 replace: true,
             });
         }

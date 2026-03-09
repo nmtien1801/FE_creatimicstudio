@@ -15,13 +15,13 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
   const { ProductDropdown } = useSelector((state) => state.product);
 
   const menuItems = [
-    { label: "TRANG CHỦ", path: "/home" },
-    { label: "GIỚI THIỆU", path: "/about" },
-    { label: "SẢN PHẨM", path: "/product/all/all" },
-    { label: "DỊCH VỤ", path: "/service" },
-    { label: "TIN TỨC", path: "/post" },
-    { label: "TUYỂN DỤNG", path: "/careers" },
-    { label: "LIÊN HỆ", path: "/contact" },
+    { label: "TRANG CHỦ", path: "/trang-chu" },
+    { label: "GIỚI THIỆU", path: "/gioi-thieu" },
+    { label: "SẢN PHẨM", path: "/san-pham/all/all" },
+    { label: "DỊCH VỤ", path: "/dich-vu" },
+    { label: "TIN TỨC", path: "/tin-tuc" },
+    { label: "TUYỂN DỤNG", path: "/tuyen-dung" },
+    { label: "LIÊN HỆ", path: "/lien-he" },
   ];
 
   const megaRef = useRef(null);

@@ -87,18 +87,19 @@ function RouterRoot() {
 
         {/* Client routes */}
         <Route path="/" element={<ClientLayout />}>
-          <Route index element={<Navigate to="home" replace />} />
-          <Route path="home" element={<Home />} />
-          <Route path="about" element={<About />} />
+          <Route index element={<Navigate to="trang-chu" replace />} />
+          <Route path="trang-chu" element={<Home />} />
+          <Route path="gioi-thieu" element={<About />} />
+
           {/* path route: /product/ */}
           {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
           <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} /> 
-          <Route path="service" element={<Service />} />
-          <Route path="post" element={<News />} />
-          <Route path="/post/:id" element={<PostDetail />} />
-          <Route path="careers" element={<Careers />} />
-          <Route path="/careers/:id" element={<JobDetail />} />
-          <Route path="contact" element={<Contact />} />
+          <Route path="dich-vu" element={<Service />} />
+          <Route path="tin-tuc" element={<News />} />
+          <Route path="/tin-tuc/:id" element={<PostDetail />} />
+          <Route path="tuyen-dung" element={<Careers />} />
+          <Route path="/tuyen-dung/:id" element={<JobDetail />} />
+          <Route path="lien-he" element={<Contact />} />
         </Route>
 
         {/* private route */}

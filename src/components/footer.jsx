@@ -102,7 +102,7 @@ export default function Footer() {
                             <img
                                 src={LOGO}
                                 alt="Logo"
-                                className="h-20 w-20 rounded-full object-cover shadow-lg border-2 border-white/20"
+                                className="h-20 w-20 rounded-full object-contain shadow-lg border-2 border-white/20 aspect-square flex-shrink-0"
                             />
                             <div>
                                 <h2 className="text-xl lg:text-2xl font-black text-orange-950 leading-tight tracking-tight">

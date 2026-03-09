@@ -29,7 +29,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       label: 'Hệ thống',
       icon: Settings,
       items: [
-        { label: 'Trang chủ', path: '/home' },
+        { label: 'Trang chủ', path: '/trang-chu' },
         // { label: 'Dashboard', path: '/dashboard' },
         { label: 'Đổi mật khẩu', path: '/profile/change-password' },
         userInfo.role === 'admin' && { label: 'Làm mới mật khẩu NV', path: '/profile/change-password-staff' },
