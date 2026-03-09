@@ -42,7 +42,7 @@ export default function NewsManager() {
     if (window.confirm('Bạn có chắc chắn muốn xóa bài viết này?')) {
       try {
         let res = await ApiPost.deletePostApi(id);
-        
+
         if (res && res.EC === 0) {
           toast.success(res.EM);
           fetchList();
@@ -84,7 +84,9 @@ export default function NewsManager() {
 
                     <div className="flex-1">
                       <div className="flex justify-between items-start">
-                        <h3 className="font-bold text-gray-800 text-[15px] mb-1 group-hover:text-blue-600 transition-colors cursor-pointer">
+                        <h3 className="font-bold text-gray-800 text-[15px] mb-1 group-hover:text-blue-600 transition-colors cursor-pointer"
+                          onClick={() => navigate('/news/detail?id=' + item.id)}
+                        >
                           {item.title}
                         </h3>
                         <div className="flex items-center gap-2 ml-4">

@@ -1,13 +1,14 @@
 import React from 'react';
 
 const MessengerButton = () => {
-  // Page ID của bạn từ ảnh chụp màn hình
   const messengerUrl = "https://m.me/508948142310781"; 
 
   return (
-    <div className="fixed bottom-20 right-6 z-50 flex flex-col items-end group">
-      {/* Lời chào hiện lên khi hover */}
-      <div className="mb-2 bg-white text-gray-800 px-4 py-2 rounded-lg shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 transition-opacity duration-300 text-sm font-medium">
+    <div className="fixed bottom-20 right-6 z-50 flex items-center group">
+      {/* Lời chào hiện bên trái khi hover */}
+      <div className="mr-3 bg-white text-gray-800 px-4 py-2 rounded-lg shadow-lg border border-gray-100 
+                      opacity-0 group-hover:opacity-100 translate-x-4 group-hover:translate-x-0 
+                      transition-all duration-300 text-sm font-medium whitespace-nowrap pointer-events-none">
         Chat với Creatimic Studio!
       </div>
       
@@ -16,7 +17,8 @@ const MessengerButton = () => {
         href={messengerUrl}
         target="_blank"
         rel="noreferrer"
-        className="bg-[#0084ff] p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 transition-all duration-200 ease-in-out flex items-center justify-center"
+        className="bg-[#0084ff] p-4 rounded-full shadow-2xl hover:scale-110 active:scale-95 
+                   transition-all duration-200 ease-in-out flex items-center justify-center shrink-0"
       >
         <svg 
           width="32" 
