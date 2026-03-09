@@ -1,5 +1,6 @@
 import moment from "moment";
 import ApiUpload from "../apis/ApiUpload.js";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 const TypeUserIDCons = {
   client: "client",
@@ -78,6 +79,20 @@ const loadImage = async (url) => {
   }
 };
 
+const loadImage2 = (path) => {
+  if (!path) return null;
+
+  // Nếu đã là URL hoàn chỉnh thì giữ nguyên
+  if (path.startsWith("http://") || path.startsWith("https://")) {
+    return path;
+  }
+
+  // Loại bỏ dấu '/' ở đầu nếu có để tránh xuất hiện '//' giữa base và path
+  const normalizedPath = path.startsWith("/") ? path.slice(1) : path;
+
+  return `${BASE_URL}/upload/${normalizedPath}`;
+};
+
 const arrayBufferToUrl = (arrayBuffer) => {
   const blob = new Blob([arrayBuffer], { type: "image/png" });
   return URL.createObjectURL(blob);
@@ -105,6 +120,7 @@ export {
   getFirstDayOfMonth,
   getLastDayOfMonth,
   loadImage,
+  loadImage2,
   arrayBufferToUrl,
   formatToInputDate,
   slug,

@@ -7,7 +7,7 @@ import { useController } from 'react-hook-form'
 import './CKEditor.css'
 import { editorConfig } from './editorConfig'
 import ApiUpload from '../../../apis/ApiUpload'
-import { loadImage } from '../../../utils/constants'
+import { loadImage2 } from '../../../utils/constants'
 
 export default function CKEditorField({
   name,
@@ -47,10 +47,12 @@ export default function CKEditorField({
               formData.append('myFiles', file);
 
               ApiUpload.UploadFileApi(formData)
-                .then(async (res) => { // Thêm async ở đây
+                .then((res) => {
                   if (res && res.DT) {
-                    // Đảm bảo hàm loadImage trả về URL chính xác (không bị lặp /api/api)
-                    const imageUrl = await loadImage(res.DT);
+                    // Dùng URL trực tiếp từ server để CKEditor lưu src thẳng vào HTML
+                    const imageUrl = loadImage2(res.DT);
+                    console.log('sssssss ', imageUrl);
+                    
                     resolve({
                       default: imageUrl,
                     });
