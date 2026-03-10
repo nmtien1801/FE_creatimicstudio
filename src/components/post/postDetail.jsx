@@ -38,15 +38,11 @@ const JobDetail = () => {
                     </h1>
                 </header>
 
-                {/* Main Content & Sidebar Grid */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-
-                    {/* Content Section (2/3 cột) */}
-                    <div
-                        className="lg:col-span-2 prose max-w-none"
-                        dangerouslySetInnerHTML={{ __html: jobData.detail }}
-                    />
-                </div>
+                {/* Main Content */}
+                <div
+                    className="prose max-w-none text-justify"
+                    dangerouslySetInnerHTML={{ __html: jobData.detail }}
+                />
             </main>
         </div>
     );
