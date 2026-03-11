@@ -96,9 +96,9 @@ function RouterRoot() {
           <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} /> 
           <Route path="dich-vu" element={<Service />} />
           <Route path="tin-tuc" element={<News />} />
-          <Route path="/tin-tuc/:id" element={<PostDetail />} />
+          <Route path="/tin-tuc/:title/:id" element={<PostDetail />} />
           <Route path="tuyen-dung" element={<Careers />} />
-          <Route path="/tuyen-dung/:id" element={<JobDetail />} />
+          <Route path="/tuyen-dung/:title/:id" element={<JobDetail />} />
           <Route path="lien-he" element={<Contact />} />
         </Route>
 

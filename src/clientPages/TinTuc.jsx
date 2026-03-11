@@ -5,9 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { getListPost } from '../redux/postSlice';
 import ImageLoader from '../components/FormFields/ImageLoader';
+import { slug } from '../utils/constants.js';
+// url: /tin-tuc/:slug/:id
 
 const NewsCard = ({ news }) => (
-    <NavLink to={`/tin-tuc/${news.id}`} className="block">
+    <NavLink to={`/tin-tuc/${slug(news.title)}/${news.id}`} className="block">
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
             {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">

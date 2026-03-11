@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Star, Heart } from 'lucide-react';
 import ImageLoader from "../../components/FormFields/ImageLoader";
 import { slug } from '../../utils/constants.js';
+// url: /product/:slug/:catId/:prodId
 
 export default function ProductCard({ product, isTopSeller = false }) {
     const [isWishlisted, setIsWishlisted] = useState(false);
