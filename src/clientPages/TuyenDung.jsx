@@ -133,7 +133,7 @@ const TuyenDung = () => {
             RecruitmentList.length === 1 &&
             currentPage === 1
         ) {
-            navigate(`/tuyen-dung/${RecruitmentList[0].id}`, {
+            navigate(`/tuyen-dung/${slug(RecruitmentList[0].title)}/${RecruitmentList[0].id}`, {
                 replace: true,
             });
         }
