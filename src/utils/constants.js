@@ -99,16 +99,23 @@ const arrayBufferToUrl = (arrayBuffer) => {
 };
 
 const slug = (text) => {
+  if (!text) return "";
+
   return text
     .toString()
+    // 1. Chuyển đổi các ký tự Unicode đặc biệt (Bold, Italic từ font social) về chữ thường
+    .normalize("NFKC") 
     .toLowerCase()
-    .normalize("NFD") // Normalize to decompose accented characters
-    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-    .replace(/\s+/g, "-") // Replace spaces with hyphens
-    .replace(/[^\w\-]+/g, "") // Remove all non-word characters
-    .replace(/\-\-+/g, "-") // Replace multiple hyphens with a single hyphen
-    .replace(/^-+/, "") // Trim hyphens from the start
-    .replace(/-+$/, ""); // Trim hyphens from the end
+    // 2. Xử lý tiếng Việt (đảm bảo các chữ đ, ô, ơ... được chuyển về d, o, o)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[đĐ]/g, "d")
+    // 3. Xử lý các ký tự đặc biệt khác
+    .replace(/([^0-z\s])/g, "-")        // Thay thế tất cả ký tự không phải chữ/số bằng dấu gạch ngang
+    .replace(/\s+/g, "-")               // Thay khoảng trắng bằng gạch ngang
+    .replace(/-+/g, "-")                // Loại bỏ nhiều gạch ngang liên tiếp
+    .replace(/^-+/, "")                 // Cắt gạch ngang ở đầu
+    .replace(/-+$/, "");                // Cắt gạch ngang ở cuối
 };
 
 export {
