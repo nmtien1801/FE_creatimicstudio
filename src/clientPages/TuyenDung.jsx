@@ -115,11 +115,14 @@ const TuyenDung = () => {
     const totalPages = Math.ceil(RecruitmentTotal / limit);
 
     // ========================================== INIT ========================================
+    const [isLoading, setIsLoading] = useState(true);
     const fetchList = async () => {
+        setIsLoading(true);
         let res = await dispatch(getListRecruitment({ page: currentPage, limit: limit })).unwrap();
         if (res && res.EC !== 0) {
             toast.error(res.EM);
         }
+        setIsLoading(false);
     };
 
     useEffect(() => {
@@ -128,16 +131,22 @@ const TuyenDung = () => {
 
     // --- LOGIC TỰ ĐỘNG CHUYỂN HƯỚNG KHI CÓ 1 TIN---
     useEffect(() => {
+        // Chỉ chuyển hướng khi KHÔNG còn loading và có đúng 1 tin
         if (
+            !isLoading &&
             RecruitmentTotal === 1 &&
-            RecruitmentList.length === 1 &&
+            RecruitmentList?.length === 1 &&
             currentPage === 1
         ) {
-            navigate(`/tuyen-dung/${slug(RecruitmentList[0].title)}/${RecruitmentList[0].id}`, {
-                replace: true,
-            });
+            const item = RecruitmentList[0];
+            // Đảm bảo item có dữ liệu rồi mới navigate
+            if (item?.id && item?.title) {
+                navigate(`/tuyen-dung/${slug(item.title)}/${item.id}`, {
+                    replace: true,
+                });
+            }
         }
-    }, [RecruitmentTotal, RecruitmentList, currentPage, navigate]);
+    }, [RecruitmentTotal, RecruitmentList, currentPage, navigate, isLoading]);
 
     return (
         <div className="min-h-screen bg-gray-50">
