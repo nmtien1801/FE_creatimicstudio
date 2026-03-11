@@ -101,21 +101,29 @@ const arrayBufferToUrl = (arrayBuffer) => {
 const slug = (text) => {
   if (!text) return "";
 
-  return text
-    .toString()
-    // 1. Chuyển đổi các ký tự Unicode đặc biệt (Bold, Italic từ font social) về chữ thường
-    .normalize("NFKC") 
-    .toLowerCase()
-    // 2. Xử lý tiếng Việt (đảm bảo các chữ đ, ô, ơ... được chuyển về d, o, o)
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[đĐ]/g, "d")
-    // 3. Xử lý các ký tự đặc biệt khác
-    .replace(/([^0-z\s])/g, "-")        // Thay thế tất cả ký tự không phải chữ/số bằng dấu gạch ngang
-    .replace(/\s+/g, "-")               // Thay khoảng trắng bằng gạch ngang
-    .replace(/-+/g, "-")                // Loại bỏ nhiều gạch ngang liên tiếp
-    .replace(/^-+/, "")                 // Cắt gạch ngang ở đầu
-    .replace(/-+$/, "");                // Cắt gạch ngang ở cuối
+  return (
+    text
+      .toString()
+      // 1. Chuyển đổi Unicode đặc biệt (Bold, Italic) về dạng ký tự chuẩn
+      .normalize("NFKC")
+      // 2. Chuyển về chữ thường
+      .toLowerCase()
+      // 3. Tách các dấu tiếng Việt ra khỏi chữ cái (ví dụ: 'ế' -> 'e' + '´')
+      .normalize("NFD")
+      // 4. Xóa các ký tự dấu sau khi tách (accents)
+      .replace(/[\u0300-\u036f]/g, "")
+      // 5. Xử lý riêng chữ đ/Đ vì NFD không tách được hoàn toàn
+      .replace(/[đĐ]/g, "d")
+      // 6. Thay thế tất cả ký tự KHÔNG phải là chữ cái (a-z) hoặc số (0-9) thành dấu gạch ngang
+      // Lưu ý: regex [^a-z0-9] cực kỳ an toàn cho URL
+      .replace(/[^a-z0-9\s-]/g, "-")
+      // 7. Thay thế một hoặc nhiều khoảng trắng bằng 1 dấu gạch ngang
+      .replace(/\s+/g, "-")
+      // 8. Dọn dẹp: Nếu có nhiều dấu gạch ngang liên tiếp (--) thì chỉ giữ lại 1 (-)
+      .replace(/-+/g, "-")
+      // 9. Cắt bỏ dấu gạch ngang dư thừa ở đầu và cuối chuỗi
+      .replace(/^-+|-+$/g, "")
+  );
 };
 
 export {
