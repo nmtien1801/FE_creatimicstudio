@@ -17,6 +17,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
 
     const { control, handleSubmit, setValue, getValues } = useForm({
         defaultValues: {
+            maSP: '',
             name: '',
             price: 0,
             description: '',
@@ -42,6 +43,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         };
 
         if (initialData) {
+            setValue('maSP', initialData.maSP || '');
             setValue('name', initialData.name || '');
             setValue('price', initialData.price || 0);
             setValue('description', initialData.description || '');
@@ -113,6 +115,8 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
         onSubmit({
             ...data,
             price: Number(data.price),
+            maSP: data.maSP,
+            name: data.name,
             image: imageFile // Gửi path string từ server hoặc existing path
         });
     });
@@ -133,6 +137,23 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                 </div>
 
                 <form className="p-6 space-y-4 max-h-[80vh] overflow-y-auto" onSubmit={handleLocalSubmit}>
+                    <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Mã sản phẩm</label>
+                        <Controller
+                            name="maSP"
+                            control={control}
+                            render={({ field }) => (
+                                <input
+                                    {...field}
+                                    required
+                                    type="text"
+                                    className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-500 outline-none"
+                                    placeholder="Ví dụ: PROD001..."
+                                />
+                            )}
+                        />
+                    </div>
+
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-1">Tên sản phẩm</label>
                         <Controller
@@ -236,7 +257,7 @@ export default function FormProduct({ initialData, onClose, onSubmit }) {
                                 </span>
                             </label>
                         </div>
-                         <div>
+                        <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-1">Top Seller</label>
                             <label className="relative inline-flex items-center cursor-pointer mt-2">
                                 <Controller

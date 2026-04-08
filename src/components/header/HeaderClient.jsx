@@ -42,11 +42,21 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // ==================================================== ACTION =====================================
   const handleSearch = () => {
     if (!searchQuery.trim()) return toast.warning("Vui lòng nhập từ khóa!");
 
     // Kiểm tra xem có khớp chính xác sản phẩm nào không
-    const exactMatch = ProductDropdown?.find(p => p.name.toLowerCase() === searchQuery.toLowerCase().trim());
+    const exactMatch = ProductDropdown?.find(p => {
+      const query = searchQuery.toLowerCase().trim();
+      // 1. Kiểm tra mã sản phẩm (maSP) trước
+      const matchMaSP = p.maSP?.toLowerCase() === query;
+
+      // 2. Nếu không khớp maSP thì kiểm tra tên (name)
+      const matchName = p.name?.toLowerCase() === query;
+
+      return matchMaSP || matchName;
+    });
 
     if (exactMatch) {
       navigate(`/${slug(exactMatch.name)}/all/${exactMatch.id}`);
