@@ -120,7 +120,7 @@ export default function Footer() {
                         <div className="text-base space-y-4">
                             <div className="flex items-start justify-center lg:justify-start">
                                 <MapPin className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3 mt-1" />
-                                <p className="max-w-xs">Số 49 , Đường 45, P14, Gò Vấp, TP. HCM</p>
+                                <p className="max-w-xs">252/21 Phạm Văn Chiêu, Phường An Hội Tây, Gò Vấp, TP.HCM</p>
                             </div>
                             <div className="flex items-center justify-center lg:justify-start">
                                 <Phone className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />

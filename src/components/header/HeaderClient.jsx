@@ -76,7 +76,7 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
           {/* LOGO (Trái) */}
           <div className="flex-shrink-0 w-[120px] lg:w-[150px]">
             <NavLink to="/trang-chu">
-              <img src="/logo1.png" alt="logo" className="w-16 h-16 lg:w-20 lg:h-20 object-contain rounded-lg shadow-sm bg-white/10" />
+              <img src="/logo1.png" alt="logo" className="w-16 h-16 lg:w-20 lg:h-20 object-contain" />
             </NavLink>
           </div>
 

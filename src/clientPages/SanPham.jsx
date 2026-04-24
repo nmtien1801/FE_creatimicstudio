@@ -10,9 +10,10 @@ import { slug } from '../utils/constants.js';
 
 const priceRanges = [
     { value: 'all', label: 'Tất cả mức giá', min: 0, max: Infinity },
-    { value: 'under500k', label: 'Dưới 500.000₫', min: 0, max: 499999 },
-    { value: '500kto1m', label: '500.000₫ - 1.000.000₫', min: 500000, max: 1000000 },
-    { value: 'over1m', label: 'Trên 1.000.000₫', min: 1000001, max: Infinity },
+    { value: 'under2m', label: 'Dưới 2.000.000₫', min: 0, max: 2000000 },
+    { value: '2mto4m', label: '2.000.000₫ - 4.000.000₫', min: 2000000, max: 4000000 },
+    { value: '4mto8m', label: '4.000.000₫ - 8.000.000₫', min: 4000000, max: 8000000 },
+    { value: 'over8m', label: 'Trên 8.000.000₫', min: 8000000, max: Infinity },
 ];
 
 const getTitleByCategory = (selectedCategory, subCategory) => {

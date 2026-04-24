@@ -113,7 +113,7 @@ const JobDetail = () => {
                 <header className="bg-white p-6 md:p-8 rounded-xl shadow-lg mb-10">
                     <h1 className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2">{jobData.title}</h1>
                     <div className="flex flex-wrap gap-4 text-sm text-gray-600 border-t pt-4 mt-4">
-                        <span className="flex items-center gap-2"><MapPin className="w-5 h-5 text-indigo-500" /> Số 49 , Đường 45, P14, Gò Vấp, TP. HCM</span>
+                        <span className="flex items-center gap-2"><MapPin className="w-5 h-5 text-indigo-500" /> 252/21 Phạm Văn Chiêu, Phường An Hội Tây, Gò Vấp, TP.HCM</span>
                         <span className="flex items-center gap-2"><Clock className="w-5 h-5 text-blue-500" /> {jobData.type}</span>
                         <span className="flex items-center gap-2"><UserCheck className="w-5 h-5 text-red-500" /> {jobData.experience} năm</span>
                     </div>

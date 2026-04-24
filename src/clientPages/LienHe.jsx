@@ -57,8 +57,7 @@ const ContactPage = () => {
                             <div className="flex items-start gap-4">
                                 <Home className="w-6 h-6 mt-1" />
                                 <div>
-                                    <p className="font-semibold">Số 49 , Đường 45, P14, Gò Vấp, </p>
-                                    <p className="text-sm">Tp. Hồ Chí Minh</p>
+                                    <p className="font-semibold">252/21 Phạm Văn Chiêu, Phường An Hội Tây, Gò Vấp, TP.HCM</p>
                                 </div>
                             </div>
 
@@ -80,7 +79,7 @@ const ContactPage = () => {
                                 <p>contact@creatimichub.vn</p>
                             </div>
                         </div>
-                        
+
                         {/* 2. Contact Form */}
                         <ContactForm />
                     </div>
@@ -88,7 +87,7 @@ const ContactPage = () => {
                     {/* Right Column: Map Placeholder */}
                     <div className="lg:min-h-full">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3918.5775884053332!2d106.6338516108667!3d10.843602757905886!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3175298438641ae7%3A0xff62706173136f71!2zQ2h1bmcgQ8awIEtoYW5nIEdpYSwgTMO0IEEvMDA2QSDEkC4gNDUsIFBoxrDhu51uZyAxNCwgR8OyIFbhuqVwLCBUaMOgbmggcGjhu5EgSOG7kyBDaMOtIE1pbmggNzAwMDAsIFZp4buHdCBOYW0!5e0!3m2!1svi!2sbd!4v1763259832646!5m2!1svi!2sbd"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d704.2809929549429!2d106.65029307551326!3d10.848435389843468!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317529a63ab3fd91%3A0xd0ab5aecf34d89a9!2zMjUyLzMxLzE5IMSQLiBQaOG6oW0gVsSDbiBDaGnDqnUsIFBoxrDhu51uZyA4LCBUaMO0bmcgVMOieSBI4buZaSwgSOG7kyBDaMOtIE1pbmgsIFZp4buHdCBOYW0!5e0!3m2!1svi!2s!4v1777026853071!5m2!1svi!2s"
                             allowFullScreen=""
                             loading="lazy"
                             referrerPolicy="no-referrer-when-downgrade"
