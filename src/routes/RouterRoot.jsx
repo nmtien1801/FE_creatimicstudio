@@ -22,6 +22,7 @@ import RecruitmentDetail from "../adminPages/recruitment/RecruitmentDetail.jsx";
 import Account from "../adminPages/system/Account.jsx";
 import Login from "../adminPages/auth/Login.jsx";
 import Register from "../adminPages/auth/Register.jsx";
+import UserCutVideoManager from "../adminPages/userCutVideo/UserCutVideoManager.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { GetAccount } from "../redux/authSlice";
 import Cookies from "js-cookie";
@@ -93,7 +94,7 @@ function RouterRoot() {
 
           {/* path route: /product/ */}
           {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
-          <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} /> 
+          <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} />
           <Route path="dich-vu" element={<Service />} />
           <Route path="tin-tuc" element={<News />} />
           <Route path="/tin-tuc/:title/:id" element={<PostDetail />} />
@@ -133,6 +134,9 @@ function RouterRoot() {
           {/* route hr */}
           <Route path="hr/employees" element={<Employee />} />   {/* Nhân viên */}
           <Route path="hr/roles" element={<EmployeeRole />} />      {/* Phân quyền (ví dụ) */}
+
+          {/* route user cut video */}
+          <Route path="user-cut-video/manager" element={<UserCutVideoManager />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />
