@@ -3,13 +3,13 @@ import RouterRoot from "./routes/RouterRoot.jsx";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import MessengerButton from "./components/chatbox/MessengerButton.jsx";
-// import ZaloBot from "./components/chatbox/zaloBot.jsx";
+import ZaloBot from "./components/chatbox/zaloBot.jsx";
 
 function App() {
   return (
     <>
       <RouterRoot />
-      {/* <ZaloBot /> */}
+      <ZaloBot />
       <MessengerButton />
       <ToastContainer
         position="top-right"
