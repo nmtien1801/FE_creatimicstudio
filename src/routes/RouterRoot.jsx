@@ -36,6 +36,7 @@ import Contact from "../clientPages/LienHe.jsx";
 import JobDetail from '../components/hire/JobDetail';
 import PostDetail from '../components/post/postDetail.jsx'
 import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
+import PaymentPage from '../components/payment/PaymentPage.jsx'
 
 const ProtectedRoute = ({ children }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
@@ -101,6 +102,7 @@ function RouterRoot() {
           <Route path="tuyen-dung" element={<Careers />} />
           <Route path="/tuyen-dung/:title/:id" element={<JobDetail />} />
           <Route path="lien-he" element={<Contact />} />
+          <Route path="payment" element={<PaymentPage />} />
         </Route>
 
         {/* private route */}
