@@ -5,6 +5,8 @@ const initialState = {
   ProductList: [],
   ProductTotal: 0,
   ProductDropdown: [],
+  searchResults: [],
+  isSearching: false,
 };
 
 export const getListProduct = createAsyncThunk(
@@ -12,7 +14,7 @@ export const getListProduct = createAsyncThunk(
   async ({ page, limit, keyword }, thunkAPI) => {
     const response = await ApiProduct.getListProductApi(page, limit, keyword);
     return response;
-  }
+  },
 );
 
 export const getListProductDropdown = createAsyncThunk(
@@ -20,7 +22,7 @@ export const getListProductDropdown = createAsyncThunk(
   async (thunkAPI) => {
     const response = await ApiProduct.getListProductDropdownApi();
     return response;
-  }
+  },
 );
 
 const productSlice = createSlice({
@@ -30,6 +32,14 @@ const productSlice = createSlice({
   reducers: {
     resetProduct: (state) => {
       return initialState;
+    },
+    setSearchResults: (state, action) => {
+      state.searchResults = action.payload;
+      state.isSearching = true;
+    },
+    clearSearchResults: (state) => {
+      state.searchResults = [];
+      state.isSearching = false;
     },
   },
 
@@ -54,7 +64,8 @@ const productSlice = createSlice({
 });
 
 // Export actions
-export const { resetProduct } = productSlice.actions;
+export const { resetProduct, setSearchResults, clearSearchResults } =
+  productSlice.actions;
 
 // Export reducer
 export default productSlice.reducer;

@@ -3,14 +3,17 @@ import { Menu, Search, Phone, ChevronDown, X } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import MegaMenu from "../DanhMuc.jsx";
 import { toast } from 'react-toastify';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { slug } from '../../utils/constants.js';
+import { setSearchResults } from '../../redux/productSlice.js';
 
 export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOpen }) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [isMegaOpen, setIsMegaOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
 
   const { ProductDropdown } = useSelector((state) => state.product);
 
@@ -61,10 +64,19 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
     if (exactMatch) {
       navigate(`/${slug(exactMatch.name)}/all/${exactMatch.id}`);
     } else {
-      // Nếu không khớp chính xác, chuyển đến trang danh sách kèm query
-      navigate(`/san-pham/all/all?search=${encodeURIComponent(searchQuery.trim())}`);
+      // Lọc các sản phẩm khớp với từ khóa từ dropdown
+      const matchedProducts = ProductDropdown?.filter(item =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
+      ) || [];
+
+      // Lưu kết quả tìm kiếm vào Redux
+      dispatch(setSearchResults(matchedProducts));
+
+      // Navigate tới trang sản phẩm
+      navigate(`/san-pham/all/all?search=true`);
     }
     setShowSuggestions(false);
+    setHighlightedIndex(-1);
   };
 
   return (
@@ -93,25 +105,78 @@ export default function Header({ categories, isMobileMenuOpen, setIsMobileMenuOp
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setShowSuggestions(true);
+                  setHighlightedIndex(-1);
                 }}
                 onFocus={() => searchQuery && setShowSuggestions(true)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowDown' && filteredSuggestions?.length > 0) {
+                    e.preventDefault();
+                    setHighlightedIndex(prev =>
+                      prev < filteredSuggestions.length - 1 ? prev + 1 : prev
+                    );
+                  } else if (e.key === 'ArrowUp' && highlightedIndex > 0) {
+                    e.preventDefault();
+                    setHighlightedIndex(prev => prev - 1);
+                  } else if (e.key === 'Enter') {
+                    if (highlightedIndex >= 0 && filteredSuggestions?.[highlightedIndex]) {
+                      setSearchQuery(filteredSuggestions[highlightedIndex].name);
+                      setShowSuggestions(false);
+                      setHighlightedIndex(-1);
+                    } else {
+                      handleSearch();
+                    }
+                  }
+                }}
               />
 
               {/* Dropdown Gợi ý */}
               {showSuggestions && searchQuery && filteredSuggestions?.length > 0 && (
-                <div className="absolute top-[48px] left-0 w-full bg-white border border-gray-200 shadow-2xl z-[70] max-h-[350px] overflow-y-auto rounded-b-md animate-in fade-in slide-in-from-top-1">
-                  {filteredSuggestions.map((item) => (
+                <div className="absolute top-[48px] left-0 w-full bg-white border border-gray-200 shadow-2xl z-[70] max-h-[400px] overflow-y-auto rounded-b-md animate-in fade-in slide-in-from-top-1">
+                  {/* Header hiển thị số lượng kết quả */}
+                  <div className="sticky top-0 bg-gradient-to-r from-orange-50 to-orange-100 px-4 py-2 border-b border-gray-200">
+                    <p className="text-xs font-semibold text-gray-700">
+                      Tìm thấy <span className="text-orange-600 font-bold">{filteredSuggestions.length}</span> sản phẩm
+                    </p>
+                  </div>
+
+                  {/* Danh sách sản phẩm */}
+                  {filteredSuggestions.map((item, index) => (
                     <div
                       key={item.id}
-                      className="px-4 py-3 hover:bg-orange-50 cursor-pointer text-sm text-gray-700 border-b border-gray-50 flex items-center gap-2 transition-colors"
+                      className={`px-4 py-3 cursor-pointer text-sm border-b border-gray-50 flex items-center gap-3 transition-all ${index === 0 ? 'bg-orange-50' : 'hover:bg-gray-50'
+                        } ${highlightedIndex === index ? 'bg-orange-100' : ''}`}
+                      onMouseEnter={() => setHighlightedIndex(index)}
+                      onMouseLeave={() => setHighlightedIndex(-1)}
                       onClick={() => {
                         setSearchQuery(item.name);
                         setShowSuggestions(false);
                       }}
                     >
-                      <Search className="w-3 h-3 text-gray-400" />
-                      <span className="truncate">{item.name}</span>
+                      {/* Hình ảnh sản phẩm */}
+                      {item.ProductImages?.[0]?.image ? (
+                        <img
+                          src={item.ProductImages[0].image}
+                          alt={item.name}
+                          className="w-10 h-10 rounded-md object-cover flex-shrink-0 border border-gray-200"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
+                          <Search className="w-5 h-5 text-gray-400" />
+                        </div>
+                      )}
+
+                      {/* Thông tin sản phẩm */}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-800 truncate">{item.name}</p>
+                        <p className="text-xs text-gray-500 truncate">Mã: {item.maSP}</p>
+                      </div>
+
+                      {/* Giá */}
+                      {item.price && (
+                        <span className="text-xs font-bold text-orange-600 whitespace-nowrap ml-2">
+                          {(item.price).toLocaleString('vi-VN')}₫
+                        </span>
+                      )}
                     </div>
                   ))}
                 </div>
