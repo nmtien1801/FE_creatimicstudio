@@ -32,7 +32,7 @@ export default function Footer() {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const LOGO = "/logo1.png";
+    const LOGO = "/logo.png";
     const ZALOPAY_IMG = "/zalopay.png";
     const MOMO_IMG = "/MoMo.png";
     const BANK_TRANSFER_IMG = "/Bank.png";

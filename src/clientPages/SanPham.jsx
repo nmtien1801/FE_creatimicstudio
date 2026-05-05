@@ -1,10 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard.jsx';
 import { getListCategory } from '../redux/categorySlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { clearSearchResults } from '../redux/productSlice.js';
 import ApiProduct from '../apis/ApiProduct.js';
 import { slug } from '../utils/constants.js';
 
@@ -205,7 +206,9 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
 // ================= SanPham Component =================
 export default function SanPham() {
     const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
     const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
+    const { searchResults, isSearching } = useSelector((state) => state.product);
     const { id_category: urlCategoryId, id_product: urlSubCategoryId } = useParams();
     const navigate = useNavigate();
 
@@ -216,6 +219,7 @@ export default function SanPham() {
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [isSearchMode, setIsSearchMode] = useState(searchParams.get('search') === 'true');
 
     // Tính selectedCategory từ URL params
     const selectedCategory = useMemo(() => {
@@ -241,17 +245,25 @@ export default function SanPham() {
     const fetchProducts = async (page = 1) => {
         setLoading(true);
         try {
-            let categoryId = urlCategoryId || 'all';
-            if (urlSubCategoryId && urlSubCategoryId !== 'all') {
-                categoryId = urlSubCategoryId;
+            // Nếu ở chế độ tìm kiếm, sử dụng searchResults từ Redux
+            if (isSearchMode && searchResults && searchResults.length > 0) {
+                setProducts(searchResults);
+                setTotalPages(1);
+                setCurrentPage(1);
+            } else {
+                // Ngược lại, gọi API bình thường
+                let categoryId = urlCategoryId || 'all';
+                if (urlSubCategoryId && urlSubCategoryId !== 'all') {
+                    categoryId = urlSubCategoryId;
+                }
+
+                const priceProduct = filters.priceRange;
+                const res = await ApiProduct.filterProductApi(page, 9, categoryId, priceProduct);
+
+                setProducts(res.DT.products || []);
+                setTotalPages(Math.ceil(res.DT.total / res.DT.limit));
+                setCurrentPage(res.DT.page);
             }
-
-            const priceProduct = filters.priceRange;
-            const res = await ApiProduct.filterProductApi(page, 9, categoryId, priceProduct);
-
-            setProducts(res.DT.products || []);
-            setTotalPages(Math.ceil(res.DT.total / res.DT.limit));
-            setCurrentPage(res.DT.page);
         } catch (error) {
             console.error(error);
             toast.error('Lỗi khi tải sản phẩm');
@@ -265,10 +277,16 @@ export default function SanPham() {
     }, []);
 
     useEffect(() => {
-        if (CategoryList.length > 0 && urlCategoryId !== undefined) {
+        if (searchParams.get('search') === 'true') {
+            setIsSearchMode(true);
             fetchProducts(1);
+        } else {
+            setIsSearchMode(false);
+            if (CategoryList.length > 0 && urlCategoryId !== undefined) {
+                fetchProducts(1);
+            }
         }
-    }, [urlCategoryId, urlSubCategoryId, filters.priceRange, CategoryList]);
+    }, [urlCategoryId, urlSubCategoryId, filters.priceRange, CategoryList, searchParams, searchResults]);
     // ============================================= ACTION ================================================
 
     const handleFilterChange = (key, value) => {
@@ -294,17 +312,43 @@ export default function SanPham() {
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 sm:p-8 lg:p-12 font-sans">
+            {/* Thông báo chế độ tìm kiếm */}
+            {isSearchMode && (
+                <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <span className="text-2xl">🔍</span>
+                        <div>
+                            <p className="font-bold text-blue-900">Chế độ tìm kiếm</p>
+                            <p className="text-sm text-blue-700">Đang hiển thị {searchResults?.length || 0} sản phẩm khớp</p>
+                        </div>
+                    </div>
+                    <button
+                        onClick={() => {
+                            dispatch(clearSearchResults());
+                            navigate('/san-pham/all/all');
+                        }}
+                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium text-sm"
+                    >
+                        Xóa tìm kiếm
+                    </button>
+                </div>
+            )}
+
             {/* Top category menu */}
-            <CategoryTopMenu
-                categoryList={CategoryList}
-                selectedCategory={selectedCategory}
-                onCategoryClick={handleCategoryClick}
-                onSubClick={handleSubClick}
-            />
+            {!isSearchMode && (
+                <CategoryTopMenu
+                    categoryList={CategoryList}
+                    selectedCategory={selectedCategory}
+                    onCategoryClick={handleCategoryClick}
+                    onSubClick={handleSubClick}
+                />
+            )}
 
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
-                {/* Sidebar */}
-                <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+                {/* Sidebar - ẩn khi ở chế độ tìm kiếm */}
+                {!isSearchMode && (
+                    <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
+                )}
 
                 {/* Product list */}
                 <ProductsList
