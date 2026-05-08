@@ -9,6 +9,8 @@ import { loadImage } from '../../utils/constants';
 
 const ProductDetail = () => {
     const { id_product } = useParams();
+    const userInfo = useSelector(state => state.auth?.userInfo);
+
     const navigate = useNavigate(); // Hook để chuyển trang
     const dispatch = useDispatch();
     let [product, setProduct] = useState({})
@@ -54,8 +56,21 @@ const ProductDetail = () => {
 
     // Hàm xử lý thanh toán
     const handleCheckout = () => {
+        if (!userInfo?.id) {
+            toast.error('Vui lòng đăng nhập trước khi thanh toán');
+            return;
+        }
+
+        const cleanProduct = {
+            id: product.id || product.productId || id_product,
+            name: String(product.name),
+            price: Number(product.price),
+            image: product.image || "",
+            description: String(product.description || ""),
+        };
+
         toast.success("Đang chuyển hướng đến trang thanh toán...");
-        navigate('/payment', { state: { product } });
+        navigate('/payment', { state: { product: cleanProduct } });
     };
 
     if (!product || Object.keys(product).length === 0) {

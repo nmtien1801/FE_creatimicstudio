@@ -30,7 +30,13 @@ axiosRetry(api, {
 // 🧩 Interceptor request
 api.interceptors.request.use((config) => {
   const token = Cookies.get("fr");
-  const headerValue = JSON.parse(localStorage.getItem("userInfo"));
+  let headerValue = null;
+
+  try {
+    headerValue = JSON.parse(localStorage.getItem("userInfo"));
+  } catch (parseError) {
+    console.warn("ApiManager: invalid userInfo in localStorage", parseError);
+  }
 
   if (token && headerValue) {
     config.headers["Authorization"] = `Bearer ${token}`;
@@ -105,7 +111,7 @@ api.interceptors.response.use(
         return Promise.reject(error); // Lỗi server bất ngờ
       }
     }
-  }
+  },
 );
 
 // 🧩 Wrapper API
