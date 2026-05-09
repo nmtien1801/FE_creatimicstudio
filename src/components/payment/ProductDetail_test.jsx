@@ -23,7 +23,7 @@ const ProductDetail = () => {
             let res = await ApiProduct.getProductByIdApi(id_product)
             if (res && res.DT) {
                 setProduct(res.DT)
-                setSelectedImage(res.DT.image);
+                setSelectedImage(res.DT.image || null);
 
                 setIsLoadingImages(true);
                 try {
@@ -61,11 +61,15 @@ const ProductDetail = () => {
             return;
         }
 
+        // Bug fix 1 (Circular JSON): Only include plain serializable primitives.
+        // Never include `detail` (raw HTML) or any field that may hold DOM/React refs.
         const cleanProduct = {
-            id: product.id || product.productId || id_product,
-            name: String(product.name),
-            price: Number(product.price),
-            image: product.image || "",
+            id: String(product.id || product.productId || id_product || ""),
+            name: String(product.name || ""),
+            price: Number(product.price) || 0,
+            // Bug fix 2 (empty src): Normalize falsy image strings to null so
+            // PaymentPage's <img src={product.image}> never receives "".
+            image: typeof product.image === 'string' ? product.image : "",
             description: String(product.description || ""),
         };
 
@@ -97,7 +101,7 @@ const ProductDetail = () => {
                                     </div>
                                 )}
                                 <ImageLoader
-                                    imagePath={selectedImage || product.image}
+                                    imagePath={selectedImage || product.image || null}
                                     className="w-auto h-[400px] object-contain transform group-hover:scale-105 transition-transform duration-500"
                                 />
                             </div>
@@ -106,10 +110,10 @@ const ProductDetail = () => {
                             {productImages.length > 0 && (
                                 <div className="grid grid-cols-4 sm:grid-cols-5 gap-3">
                                     <button
-                                        onClick={() => setSelectedImage(product.image)}
+                                        onClick={() => setSelectedImage(product.image || null)}
                                         className={`relative bg-[#f8f8f8] rounded-xl p-2 overflow-hidden transition-all hover:ring-2 hover:ring-orange-400 ${selectedImage === product.image ? 'ring-2 ring-orange-500' : ''}`}
                                     >
-                                        <ImageLoader imagePath={product.image} className="w-full h-20 object-contain" />
+                                        <ImageLoader imagePath={product.image || null} className="w-full h-20 object-contain" />
                                     </button>
                                     {productImages.map((img) => (
                                         <button
