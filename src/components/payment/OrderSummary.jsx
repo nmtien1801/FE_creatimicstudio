@@ -1,4 +1,4 @@
-import { formatCurrency } from '../utils/format.js';
+import { formatCurrency } from '../../utils/format.js';
 import { ShoppingBag } from 'lucide-react';
 
 export default function OrderSummary({ items = [], totalAmount }) {

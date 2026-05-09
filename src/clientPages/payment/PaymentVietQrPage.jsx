@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { ArrowLeft, ArrowRight, Loader2, Zap, CheckCircle2 } from 'lucide-react';
-import BankSelect from '../components/BankSelect.jsx';
-import QRDisplay from '../components/QRDisplay.jsx';
-import StepIndicator from '../components/StepIndicator.jsx';
-import PaymentTimer from '../components/PaymentTimer.jsx';
-import OrderSummary from '../components/OrderSummary.jsx';
-import StatusBadge from '../components/StatusBadge.jsx';
-import QuickLinkPanel from '../components/QuickLinkPanel.jsx';
-import { createOrder, confirmOrder } from '../utils/api.js';
-import { formatCurrency, formatNumber, parseNumber, sanitizeAddInfo } from '../utils/format.js';
+import BankSelect from '../../components/payment/BankSelect.jsx';
+import QRDisplay from '../../components/payment/QRDisplay.jsx';
+import StepIndicator from '../../components/payment/StepIndicator.jsx';
+import PaymentTimer from '../../components/payment/PaymentTimer.jsx';
+import OrderSummary from '../../components/payment/OrderSummary.jsx';
+import StatusBadge from '../../components/payment/StatusBadge.jsx';
+import QuickLinkPanel from '../../components/payment/QuickLinkPanel.jsx';
+import ApiPaymentVietQr from '../../apis/payment/ApiPaymentVietQr.js';
+import { formatCurrency, formatNumber, parseNumber, sanitizeAddInfo } from '../../utils/format.js';
 import clsx from 'clsx';
 
 const DEMO_ITEMS = [
@@ -47,7 +47,7 @@ export default function PaymentPage() {
     setFormErrors({});
     setLoading(true);
     try {
-      const res = await createOrder({
+      const res = await ApiPaymentVietQr.createOrder({
         items: DEMO_ITEMS,
         totalAmount: parseNumber(form.amount),
         description: sanitizeAddInfo(form.addInfo),
@@ -55,12 +55,17 @@ export default function PaymentPage() {
         accountNo: form.accountNo,
         accountName: form.accountName,
       });
+
+      if (!res.success) {
+        throw new Error(res.message || 'Không thể tạo đơn hàng VietQR');
+      }
+
       setOrder(res.order);
       setPayment(res.payment);
       setOrderStatus('pending');
       setStep(2);
     } catch (err) {
-      setFormErrors({ submit: err.message });
+      setFormErrors({ submit: err.message || 'Đã có lỗi xảy ra' });
     } finally {
       setLoading(false);
     }
@@ -70,11 +75,14 @@ export default function PaymentPage() {
     if (!order) return;
     setLoading(true);
     try {
-      await confirmOrder(order.orderId);
+      const res = await ApiPaymentVietQr.confirmOrder(order.orderId);
+      if (!res.success) {
+        throw new Error(res.message || 'Không thể xác nhận thanh toán');
+      }
       setOrderStatus('paid');
       setStep(3);
     } catch (err) {
-      setFormErrors({ submit: err.message });
+      setFormErrors({ submit: err.message || 'Đã có lỗi khi xác nhận thanh toán' });
     } finally {
       setLoading(false);
     }

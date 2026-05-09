@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Search, ChevronDown, Building2 } from 'lucide-react';
-import { useBanks } from '../hooks/useBanks.js';
+import { useBanks } from '../../utils/vietQRhooks/useBanks.js';
 import clsx from 'clsx';
 
 export default function BankSelect({ value, onChange, error }) {

@@ -1,19 +1,19 @@
 import { useState } from 'react';
 import { Zap, ExternalLink } from 'lucide-react';
-import { formatNumber, parseNumber, sanitizeAddInfo } from '../utils/format.js';
+import { formatNumber, parseNumber, sanitizeAddInfo } from '../../utils/format.js';
 
 const TEMPLATES = [
   { value: 'compact2', label: 'compact2 — 540×640' },
-  { value: 'compact',  label: 'compact — 540×540' },
-  { value: 'qr_only',  label: 'qr_only — 480×480' },
-  { value: 'print',    label: 'print — 600×776' },
+  { value: 'compact', label: 'compact — 540×540' },
+  { value: 'qr_only', label: 'qr_only — 480×480' },
+  { value: 'print', label: 'print — 600×776' },
 ];
 
 export default function QuickLinkPanel({ bankBin, accountNo }) {
   const [amount, setAmount] = useState('');
-  const [desc, setDesc]     = useState('');
+  const [desc, setDesc] = useState('');
   const [template, setTemplate] = useState('compact2');
-  const [url, setUrl]       = useState('');
+  const [url, setUrl] = useState('');
 
   const generate = () => {
     if (!bankBin || !accountNo) return;

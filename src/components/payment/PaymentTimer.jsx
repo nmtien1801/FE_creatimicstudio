@@ -1,5 +1,5 @@
 import { Clock, AlertCircle } from 'lucide-react';
-import { usePaymentTimer } from '../hooks/usePaymentTimer.js';
+import { usePaymentTimer } from '../../utils/vietQRhooks/usePaymentTimer.js';
 import clsx from 'clsx';
 
 export default function PaymentTimer({ expiresAt, onExpire }) {
