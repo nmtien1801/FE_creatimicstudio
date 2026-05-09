@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import QRCode from 'qrcode';
-import ApiPayment from '../../apis/ApiPayment';
+import ApiPayment from '../../apis/payment/ApiPaymentMomo';
 
-const PaymentPage = () => {
+const PaymentMomoPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
     const { userInfo, isLoading: authLoading, hasCheckedAuth } = useSelector((state) => state.auth);
@@ -300,4 +300,4 @@ const PaymentPage = () => {
     );
 };
 
-export default PaymentPage;
+export default PaymentMomoPage;

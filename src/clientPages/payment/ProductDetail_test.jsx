@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom'; // Thêm useNavigate
 import { useDispatch, useSelector } from 'react-redux';
 import ApiProduct from '../../apis/ApiProduct'
 import { toast } from 'react-toastify';
-import ImageLoader from '../FormFields/ImageLoader';
+import ImageLoader from '../../components/FormFields/ImageLoader';
 import ApiProductImage from "../../apis/ApiProductImage";
 import { loadImage } from '../../utils/constants';
 
@@ -59,22 +59,22 @@ const ProductDetail = () => {
         if (!userInfo?.id) {
             toast.error('Vui lòng đăng nhập trước khi thanh toán');
             return;
+        } else {
+            // Bug fix 1 (Circular JSON): Only include plain serializable primitives.
+            // Never include `detail` (raw HTML) or any field that may hold DOM/React refs.
+            const cleanProduct = {
+                id: String(product.id || product.productId || id_product || ""),
+                name: String(product.name || ""),
+                price: Number(product.price) || 0,
+                // Bug fix 2 (empty src): Normalize falsy image strings to null so
+                // PaymentPage's <img src={product.image}> never receives "".
+                image: typeof product.image === 'string' ? product.image : "",
+                description: String(product.description || ""),
+            };
+
+            toast.success("Đang chuyển hướng đến trang thanh toán...");
+            navigate('/payment', { state: { product: cleanProduct } });
         }
-
-        // Bug fix 1 (Circular JSON): Only include plain serializable primitives.
-        // Never include `detail` (raw HTML) or any field that may hold DOM/React refs.
-        const cleanProduct = {
-            id: String(product.id || product.productId || id_product || ""),
-            name: String(product.name || ""),
-            price: Number(product.price) || 0,
-            // Bug fix 2 (empty src): Normalize falsy image strings to null so
-            // PaymentPage's <img src={product.image}> never receives "".
-            image: typeof product.image === 'string' ? product.image : "",
-            description: String(product.description || ""),
-        };
-
-        toast.success("Đang chuyển hướng đến trang thanh toán...");
-        navigate('/payment', { state: { product: cleanProduct } });
     };
 
     if (!product || Object.keys(product).length === 0) {

@@ -1,4 +1,4 @@
-import { ApiManager } from "./ApiManager";
+import { ApiManager } from "../ApiManager";
 
 const ApiPayment = {
   // Tạo QR Code MoMo cho thanh toán
