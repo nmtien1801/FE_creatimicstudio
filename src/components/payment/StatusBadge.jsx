@@ -1,20 +1,21 @@
-import clsx from 'clsx';
+import React from 'react';
 import { CheckCircle2, Clock, XCircle, AlertCircle } from 'lucide-react';
+import clsx from 'clsx';
 
-const STATUS_MAP = {
-  pending: { label: 'Chờ thanh toán', icon: Clock, color: 'text-yellow-400 bg-yellow-400/10 border-yellow-400/20' },
-  paid:    { label: 'Đã thanh toán', icon: CheckCircle2, color: 'text-brand-400 bg-brand-400/10 border-brand-400/20' },
-  expired: { label: 'Hết hạn', icon: XCircle, color: 'text-red-400 bg-red-400/10 border-red-400/20' },
-  failed:  { label: 'Thất bại', icon: AlertCircle, color: 'text-orange-400 bg-orange-400/10 border-orange-400/20' },
+const MAP = {
+  pending: { label: 'Chờ thanh toán', icon: Clock, cls: 'bg-amber-50 text-amber-700 border-amber-100' },
+  paid: { label: 'Đã thanh toán', icon: CheckCircle2, cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+  expired: { label: 'Hết hạn', icon: XCircle, cls: 'bg-red-50 text-red-600 border-red-100' },
+  failed: { label: 'Thất bại', icon: AlertCircle, cls: 'bg-orange-50 text-orange-600 border-orange-100' },
+  completed: { label: 'Hoàn thành', icon: CheckCircle2, cls: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
 };
 
 export default function StatusBadge({ status }) {
-  const cfg = STATUS_MAP[status] || STATUS_MAP.pending;
+  const cfg = MAP[status] || MAP.pending;
   const Icon = cfg.icon;
-
   return (
-    <span className={clsx('badge border', cfg.color)}>
-      <Icon size={12} />
+    <span className={clsx('inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border', cfg.cls)}>
+      <Icon size={11} />
       {cfg.label}
     </span>
   );

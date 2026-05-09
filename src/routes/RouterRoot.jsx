@@ -103,8 +103,8 @@ function RouterRoot() {
           <Route path="tuyen-dung" element={<Careers />} />
           <Route path="/tuyen-dung/:title/:id" element={<JobDetail />} />
           <Route path="lien-he" element={<Contact />} />
-          <Route path="payment" element={<PaymentMomoPage />} />
-          <Route path="payment/vietqr" element={<PaymentVietQrPage />} />
+          <Route path="payment-momo" element={<PaymentMomoPage />} />
+          <Route path="payment-vietqr" element={<PaymentVietQrPage />} />
         </Route>
 
         {/* private route */}

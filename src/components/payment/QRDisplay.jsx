@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Download, Copy, Check, ExternalLink, RefreshCw } from 'lucide-react';
 import clsx from 'clsx';
 
 export default function QRDisplay({ qrImageUrl, qrDataURL, deeplink, accountInfo, amount, addInfo, onRegenerate }) {
   const [copied, setCopied] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
-
   const src = qrDataURL || qrImageUrl;
 
-  const copyDeeplink = async () => {
-    if (!deeplink) return;
-    await navigator.clipboard.writeText(deeplink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+  const copyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(deeplink || src || '');
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch { }
   };
 
   const download = () => {
@@ -24,61 +24,58 @@ export default function QRDisplay({ qrImageUrl, qrDataURL, deeplink, accountInfo
   };
 
   return (
-    <div className="flex flex-col items-center gap-5">
-      {/* QR Image */}
-      <div className="relative">
+    <div className="flex flex-col items-center gap-4">
+      {/* QR frame */}
+      <div className="relative p-3 bg-white border border-slate-100 rounded-2xl shadow-sm">
         {!imgLoaded && (
-          <div className="w-52 h-52 rounded-2xl qr-shimmer" />
+          <div className="w-44 h-44 rounded-xl bg-slate-100 animate-pulse" />
         )}
         <img
           src={src}
           alt="VietQR Code"
           onLoad={() => setImgLoaded(true)}
           className={clsx(
-            'w-52 h-52 rounded-2xl object-contain bg-white p-2 shadow-xl shadow-black/40 transition-opacity duration-300',
-            imgLoaded ? 'opacity-100' : 'opacity-0 absolute inset-0'
+            'w-44 h-44 rounded-xl object-contain transition-opacity duration-300',
+            imgLoaded ? 'opacity-100' : 'opacity-0 absolute inset-3'
           )}
         />
+        {/* VietQR badge */}
+        <div className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-emerald-600 text-white text-[9px] font-semibold rounded-full tracking-wide">
+          VietQR
+        </div>
       </div>
 
-      {/* Bank info */}
+      {/* Account info */}
       {accountInfo && (
-        <div className="text-center space-y-0.5">
-          <p className="font-semibold text-white">{accountInfo.accountName}</p>
-          <p className="text-sm text-gray-400 font-mono">{accountInfo.accountNo}</p>
+        <div className="text-center mt-1">
+          <p className="font-semibold text-sm text-slate-800">{accountInfo.accountName}</p>
+          <p className="text-xs text-slate-400 font-mono mt-0.5">{accountInfo.accountNo}</p>
           {accountInfo.bankName && (
-            <p className="text-xs text-gray-500">{accountInfo.bankName}</p>
+            <p className="text-[11px] text-slate-400 mt-0.5">{accountInfo.bankName}</p>
           )}
         </div>
       )}
 
-      {/* Amount & description */}
-      {(amount || addInfo) && (
-        <div className="w-full card px-4 py-3 space-y-1 text-center">
-          {amount > 0 && (
-            <p className="text-brand-400 font-bold text-lg">
-              {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND', maximumFractionDigits: 0 }).format(amount)}
-            </p>
-          )}
-          {addInfo && <p className="text-sm text-gray-400">{addInfo}</p>}
-        </div>
-      )}
-
-      {/* Actions */}
+      {/* Action buttons */}
       <div className="flex gap-2 w-full">
-        <button onClick={download} className="btn-secondary flex-1 flex items-center justify-center gap-2 text-sm">
-          <Download size={15} /> Tải QR
+        <button
+          onClick={download}
+          className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-slate-200 text-slate-600 text-xs font-medium hover:bg-slate-50 transition-colors"
+        >
+          <Download size={13} /> Tải QR
         </button>
-
-        {deeplink && (
-          <button onClick={copyDeeplink} className={clsx(
-            'btn-secondary flex-1 flex items-center justify-center gap-2 text-sm transition-colors',
-            copied && 'text-brand-400 border-brand-700'
-          )}>
-            {copied ? <Check size={15} /> : <Copy size={15} />}
-            {copied ? 'Đã sao chép' : 'Sao chép link'}
-          </button>
-        )}
+        <button
+          onClick={copyLink}
+          className={clsx(
+            'flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-medium transition-colors',
+            copied
+              ? 'border-emerald-300 bg-emerald-50 text-emerald-700'
+              : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+          )}
+        >
+          {copied ? <Check size={13} /> : <Copy size={13} />}
+          {copied ? 'Đã sao chép' : 'Sao chép'}
+        </button>
       </div>
 
       {deeplink && (
@@ -86,18 +83,18 @@ export default function QRDisplay({ qrImageUrl, qrDataURL, deeplink, accountInfo
           href={deeplink}
           target="_blank"
           rel="noopener noreferrer"
-          className="btn-primary w-full flex items-center justify-center gap-2 text-sm"
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition-colors"
         >
-          <ExternalLink size={15} /> Mở app ngân hàng
+          <ExternalLink size={13} /> Mở app ngân hàng
         </a>
       )}
 
       {onRegenerate && (
         <button
           onClick={onRegenerate}
-          className="btn-ghost flex items-center gap-2 text-sm"
+          className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-600 transition-colors"
         >
-          <RefreshCw size={14} /> Tạo mã mới
+          <RefreshCw size={12} /> Tạo mã mới
         </button>
       )}
     </div>

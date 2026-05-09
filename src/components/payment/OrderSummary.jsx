@@ -1,32 +1,36 @@
-import { formatCurrency } from '../../utils/format.js';
+import React from 'react';
 import { ShoppingBag } from 'lucide-react';
+import { formatCurrency } from '../../utils/format.js';
 
 export default function OrderSummary({ items = [], totalAmount }) {
   return (
-    <div className="card p-4 space-y-3">
-      <div className="flex items-center gap-2 text-sm font-semibold text-gray-300">
-        <ShoppingBag size={15} className="text-brand-400" />
+    <div className="bg-white rounded-xl border border-slate-100 p-5">
+      <div className="flex items-center gap-2 text-xs font-semibold text-slate-500 uppercase tracking-wide mb-4">
+        <ShoppingBag size={13} className="text-emerald-500" />
         Đơn hàng
       </div>
 
-      {items.length > 0 && (
-        <div className="space-y-2">
-          {items.map((item, i) => (
-            <div key={i} className="flex justify-between items-center text-sm">
-              <span className="text-gray-400">
-                {item.name}
-                {item.qty > 1 && <span className="text-gray-600 ml-1">×{item.qty}</span>}
-              </span>
-              <span className="font-medium text-white">{formatCurrency(item.price * (item.qty || 1))}</span>
+      <div className="space-y-3">
+        {items.map((item, i) => (
+          <div key={i} className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <p className="text-sm text-slate-700 font-medium leading-tight">{item.name}</p>
+              {item.qty > 1 && (
+                <p className="text-xs text-slate-400 mt-0.5">×{item.qty}</p>
+              )}
             </div>
-          ))}
-          <div className="border-t border-surface-border pt-2" />
-        </div>
-      )}
+            <span className="text-sm font-semibold text-slate-800 shrink-0">
+              {formatCurrency(item.price * (item.qty || 1))}
+            </span>
+          </div>
+        ))}
+      </div>
 
-      <div className="flex justify-between items-center">
-        <span className="text-gray-400 text-sm">Tổng cộng</span>
-        <span className="text-brand-400 font-bold text-lg">{formatCurrency(totalAmount)}</span>
+      <div className="mt-4 pt-4 border-t border-dashed border-slate-100 flex items-center justify-between">
+        <span className="text-xs text-slate-500 font-medium">Tổng cộng</span>
+        <span className="text-base font-semibold text-emerald-600">
+          {formatCurrency(totalAmount)}
+        </span>
       </div>
     </div>
   );

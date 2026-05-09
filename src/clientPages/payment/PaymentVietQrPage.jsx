@@ -1,5 +1,9 @@
-import { useState } from 'react';
-import { ArrowLeft, ArrowRight, Loader2, Zap, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  ArrowLeft, ArrowRight, Loader2, Zap, CheckCircle2,
+  ShieldCheck, CreditCard, Info, Copy, ExternalLink,
+  ShoppingBag, Receipt, Mail, Plus, FileText
+} from 'lucide-react';
 import BankSelect from '../../components/payment/BankSelect.jsx';
 import QRDisplay from '../../components/payment/QRDisplay.jsx';
 import StepIndicator from '../../components/payment/StepIndicator.jsx';
@@ -55,17 +59,13 @@ export default function PaymentPage() {
         accountNo: form.accountNo,
         accountName: form.accountName,
       });
-
-      if (!res.success) {
-        throw new Error(res.message || 'Không thể tạo đơn hàng VietQR');
-      }
-
+      if (!res.success) throw new Error(res.message);
       setOrder(res.order);
       setPayment(res.payment);
       setOrderStatus('pending');
       setStep(2);
     } catch (err) {
-      setFormErrors({ submit: err.message || 'Đã có lỗi xảy ra' });
+      setFormErrors({ submit: err.message || 'Lỗi hệ thống, vui lòng thử lại' });
     } finally {
       setLoading(false);
     }
@@ -75,14 +75,11 @@ export default function PaymentPage() {
     if (!order) return;
     setLoading(true);
     try {
-      const res = await ApiPaymentVietQr.confirmOrder(order.orderId);
-      if (!res.success) {
-        throw new Error(res.message || 'Không thể xác nhận thanh toán');
-      }
+      await ApiPaymentVietQr.confirmOrder(order.orderId);
       setOrderStatus('paid');
       setStep(3);
     } catch (err) {
-      setFormErrors({ submit: err.message || 'Đã có lỗi khi xác nhận thanh toán' });
+      setFormErrors({ submit: err.message });
     } finally {
       setLoading(false);
     }
@@ -94,187 +91,329 @@ export default function PaymentPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b border-surface-border bg-surface/80 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-brand-500 flex items-center justify-center">
-              <Zap size={16} className="text-white" />
-            </div>
-            <span className="font-display font-bold text-lg text-gradient">VietQR Pay</span>
-          </div>
-          <div className="flex items-center gap-3">
-            {order && <StatusBadge status={orderStatus} />}
-            {order && <span className="text-xs text-gray-500 font-mono hidden sm:inline">#{order.orderId}</span>}
-          </div>
+    <div className="min-h-screen bg-[#f8f9fb] font-['DM_Sans',sans-serif]">
+      {/* ── Main ── */}
+      <main className="max-w-6xl mx-auto px-6 py-8">
+        {/* Step indicator */}
+        <div className="max-w-sm mx-auto mb-10">
+          <StepIndicator current={step} />
         </div>
-      </header>
 
-      <main className="flex-1 max-w-6xl mx-auto w-full px-4 py-8">
-        <div className="mb-10"><StepIndicator current={step} /></div>
+        <div className="grid lg:grid-cols-12 gap-6 items-start">
 
-        <div className="grid lg:grid-cols-5 gap-6">
-          <div className="lg:col-span-3 space-y-5">
+          {/* ── Left: main panel ── */}
+          <div className="lg:col-span-8">
 
+            {/* STEP 1 — Form */}
             {step === 1 && (
-              <div className="card p-6 space-y-5 animate-fade-up">
-                <div>
-                  <h2 className="text-xl font-display font-bold text-white">Thông tin thanh toán</h2>
-                  <p className="text-sm text-gray-500 mt-1">Nhập thông tin tài khoản nhận tiền VietQR</p>
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div className="mb-7">
+                  <h2 className="text-xl font-semibold text-slate-900">Thông tin tài khoản nhận tiền</h2>
+                  <p className="text-sm text-slate-400 mt-1">Điền đầy đủ để tạo mã QR chuyển khoản</p>
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-5">
+                  {/* Bank */}
                   <div>
-                    <label className="label">Ngân hàng nhận tiền *</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                      Ngân hàng thụ hưởng *
+                    </label>
                     <BankSelect
                       value={form.bankBin}
-                      onChange={(bin, bank) => setForm((f) => ({ ...f, bankBin: bin, bankInfo: bank }))}
+                      onChange={(bin, bank) => setForm(f => ({ ...f, bankBin: bin, bankInfo: bank }))}
                       error={formErrors.bankBin}
                     />
                   </div>
 
-                  <div>
-                    <label className="label">Số tài khoản *</label>
-                    <input
-                      value={form.accountNo}
-                      onChange={(e) => setForm((f) => ({ ...f, accountNo: e.target.value.replace(/\D/g, '') }))}
-                      placeholder="Nhập số tài khoản"
-                      maxLength={19}
-                      className={clsx('input font-mono', formErrors.accountNo && 'border-red-500/70')}
-                    />
-                    {formErrors.accountNo && <p className="mt-1.5 text-red-400 text-xs">{formErrors.accountNo}</p>}
+                  {/* Account No + Name */}
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                        Số tài khoản *
+                      </label>
+                      <div className="relative">
+                        <CreditCard size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300" />
+                        <input
+                          value={form.accountNo}
+                          onChange={e => setForm(f => ({ ...f, accountNo: e.target.value.replace(/\D/g, '') }))}
+                          placeholder="113366668888"
+                          maxLength={19}
+                          className={clsx(
+                            'w-full pl-9 pr-4 py-3 rounded-xl border text-sm font-mono text-slate-800',
+                            'bg-slate-50/60 outline-none transition-all',
+                            'focus:bg-white focus:ring-2 focus:ring-emerald-500/15 focus:border-emerald-500',
+                            formErrors.accountNo ? 'border-red-300' : 'border-slate-200'
+                          )}
+                        />
+                      </div>
+                      {formErrors.accountNo && (
+                        <p className="mt-1.5 text-xs text-red-500">{formErrors.accountNo}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                        Tên chủ tài khoản
+                      </label>
+                      <input
+                        value={form.accountName}
+                        onChange={e => setForm(f => ({ ...f, accountName: e.target.value.toUpperCase() }))}
+                        placeholder="NGUYEN VAN A"
+                        className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/60 text-sm font-semibold text-slate-800 uppercase outline-none transition-all focus:bg-white focus:ring-2 focus:ring-emerald-500/15 focus:border-emerald-500"
+                      />
+                    </div>
                   </div>
 
-                  <div>
-                    <label className="label">Tên chủ tài khoản</label>
-                    <input
-                      value={form.accountName}
-                      onChange={(e) => setForm((f) => ({ ...f, accountName: e.target.value.toUpperCase() }))}
-                      placeholder="NGUYEN VAN A"
-                      className="input uppercase"
-                    />
-                  </div>
+                  {/* Divider */}
+                  <div className="border-t border-dashed border-slate-100" />
 
+                  {/* Amount */}
                   <div>
-                    <label className="label">Số tiền *</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                      Số tiền (VNĐ) *
+                    </label>
                     <div className="relative">
+                      <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">₫</span>
                       <input
                         value={form.amount}
-                        onChange={(e) => {
+                        onChange={e => {
                           const raw = e.target.value.replace(/\D/g, '');
-                          setForm((f) => ({ ...f, amount: formatNumber(raw) }));
+                          setForm(f => ({ ...f, amount: formatNumber(raw) }));
                         }}
                         placeholder="0"
-                        className={clsx('input pr-14', formErrors.amount && 'border-red-500/70')}
+                        className={clsx(
+                          'w-full pl-8 pr-4 py-3 rounded-xl border text-base font-semibold font-mono text-slate-800',
+                          'bg-slate-50/60 outline-none transition-all',
+                          'focus:bg-white focus:ring-2 focus:ring-emerald-500/15 focus:border-emerald-500',
+                          formErrors.amount ? 'border-red-300' : 'border-slate-200'
+                        )}
                       />
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm">₫</span>
                     </div>
                     {form.amount && (
-                      <p className="mt-1 text-xs text-gray-500">= {formatCurrency(parseNumber(form.amount))}</p>
+                      <p className="mt-1.5 text-xs text-emerald-600 font-medium">
+                        = {formatCurrency(parseNumber(form.amount))}
+                      </p>
                     )}
-                    {formErrors.amount && <p className="mt-1.5 text-red-400 text-xs">{formErrors.amount}</p>}
+                    {formErrors.amount && <p className="mt-1 text-xs text-red-500">{formErrors.amount}</p>}
                   </div>
 
+                  {/* Add info */}
                   <div>
-                    <label className="label">Nội dung chuyển khoản</label>
+                    <label className="block text-xs font-semibold text-slate-600 mb-2 uppercase tracking-wide">
+                      Nội dung chuyển khoản
+                    </label>
                     <input
                       value={form.addInfo}
-                      onChange={(e) => setForm((f) => ({ ...f, addInfo: e.target.value }))}
-                      placeholder="Ghi chú (tối đa 25 ký tự, không dấu)"
+                      onChange={e => setForm(f => ({ ...f, addInfo: e.target.value }))}
+                      placeholder="Nội dung (tối đa 25 ký tự, không dấu)"
                       maxLength={50}
-                      className="input"
+                      className="w-full px-4 py-3 rounded-xl border border-slate-200 bg-slate-50/60 text-sm text-slate-800 outline-none transition-all focus:bg-white focus:ring-2 focus:ring-emerald-500/15 focus:border-emerald-500"
                     />
-                    <p className="mt-1 text-xs text-gray-600">Sẽ gửi: "{sanitizeAddInfo(form.addInfo)}"</p>
+                    <p className="mt-1.5 text-xs text-slate-400">
+                      Sẽ gửi: <span className="font-mono text-slate-600">"{sanitizeAddInfo(form.addInfo)}"</span>
+                    </p>
                   </div>
 
+                  {/* Submit error */}
                   {formErrors.submit && (
-                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+                    <div className="flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-100 rounded-xl text-sm text-red-600">
+                      <Info size={15} className="shrink-0 mt-0.5" />
                       {formErrors.submit}
                     </div>
                   )}
                 </div>
 
-                <button onClick={handleNext} disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2">
-                  {loading && <Loader2 size={16} className="animate-spin" />}
-                  {loading ? 'Đang tạo đơn hàng...' : 'Tạo mã QR thanh toán'}
-                  {!loading && <ArrowRight size={16} />}
+                <button
+                  onClick={handleNext}
+                  disabled={loading}
+                  className="mt-8 w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-semibold transition-all shadow-sm shadow-emerald-100 active:scale-[.99]"
+                >
+                  {loading ? (
+                    <><Loader2 size={16} className="animate-spin" /> Đang khởi tạo...</>
+                  ) : (
+                    <>Tạo mã QR thanh toán <ArrowRight size={16} /></>
+                  )}
                 </button>
               </div>
             )}
 
+            {/* STEP 2 — QR */}
             {step === 2 && payment && (
-              <div className="card p-6 space-y-5 animate-fade-up">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-display font-bold text-white">Quét mã QR thanh toán</h2>
-                    <p className="text-sm text-gray-500 mt-1">Mở app ngân hàng và quét mã QR</p>
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-8 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                {/* Header row */}
+                <div className="flex items-center justify-between mb-7">
+                  <div className="flex items-center gap-3">
+                    <button
+                      onClick={() => setStep(1)}
+                      className="p-2 rounded-lg hover:bg-slate-50 text-slate-400 hover:text-slate-700 transition-colors"
+                    >
+                      <ArrowLeft size={18} />
+                    </button>
+                    <div>
+                      <h2 className="text-xl font-semibold text-slate-900">Quét mã QR thanh toán</h2>
+                      <p className="text-sm text-slate-400 mt-0.5">Dùng app ngân hàng bất kỳ hỗ trợ VietQR</p>
+                    </div>
                   </div>
-                  <button onClick={() => setStep(1)} className="btn-ghost flex items-center gap-1.5 text-sm">
-                    <ArrowLeft size={14} /> Sửa
-                  </button>
+                  <PaymentTimer
+                    expiresAt={order?.expiresAt}
+                    onExpire={() => setOrderStatus('expired')}
+                  />
                 </div>
 
-                {order && (
-                  <PaymentTimer expiresAt={order.expiresAt} onExpire={() => setOrderStatus('expired')} />
-                )}
+                <div className="grid sm:grid-cols-2 gap-8 items-start">
+                  {/* QR */}
+                  <QRDisplay
+                    qrImageUrl={payment.qrImageUrl}
+                    deeplink={payment.deeplink}
+                    accountInfo={{
+                      accountName: form.accountName,
+                      accountNo: form.accountNo,
+                      bankName: form.bankInfo?.name,
+                    }}
+                    amount={parseNumber(form.amount)}
+                    addInfo={sanitizeAddInfo(form.addInfo)}
+                  />
 
-                <QRDisplay
-                  qrImageUrl={payment.qrImageUrl}
-                  deeplink={payment.deeplink}
-                  accountInfo={{ accountName: form.accountName, accountNo: form.accountNo, bankName: form.bankInfo?.name }}
-                  amount={parseNumber(form.amount)}
-                  addInfo={sanitizeAddInfo(form.addInfo)}
-                  onRegenerate={reset}
-                />
+                  {/* Guide */}
+                  <div className="space-y-5">
+                    {/* Amount card */}
+                    <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-100">
+                      <p className="text-xs text-emerald-700 font-semibold mb-1">Số tiền cần thanh toán</p>
+                      <p className="text-2xl font-semibold text-emerald-700">
+                        {formatCurrency(parseNumber(form.amount))}
+                      </p>
+                      <p className="text-xs text-emerald-600 mt-1 font-mono">
+                        Nội dung: {sanitizeAddInfo(form.addInfo)}
+                      </p>
+                    </div>
 
-                <div className="pt-2 border-t border-surface-border">
-                  <p className="text-xs text-gray-600 text-center mb-4">Sau khi chuyển khoản xong, nhấn xác nhận</p>
+                    {/* Steps */}
+                    <div className="space-y-3">
+                      {[
+                        'Mở app ngân hàng, chọn Quét QR',
+                        'Hướng camera vào mã QR bên cạnh',
+                        `Kiểm tra số tiền ${formatCurrency(parseNumber(form.amount))} rồi xác nhận`,
+                      ].map((text, i) => (
+                        <div key={i} className="flex items-start gap-3">
+                          <span className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 text-[11px] font-semibold flex items-center justify-center shrink-0 mt-0.5">
+                            {i + 1}
+                          </span>
+                          <p className="text-sm text-slate-600 leading-relaxed">{text}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Info note */}
+                    <div className="flex items-start gap-2.5 p-3 bg-blue-50 rounded-xl border border-blue-100">
+                      <Info size={14} className="text-blue-500 shrink-0 mt-0.5" />
+                      <p className="text-xs text-blue-700 leading-relaxed">
+                        Mã QR hết hạn sau <strong>15 phút</strong>. Không thoát trang trong khi chờ xác nhận.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Confirm button */}
+                <div className="mt-8 pt-6 border-t border-slate-50 space-y-2.5">
+                  <p className="text-center text-xs text-slate-400">
+                    Sau khi chuyển khoản thành công, nhấn xác nhận bên dưới
+                  </p>
                   <button
                     onClick={handleConfirm}
                     disabled={loading || orderStatus === 'expired'}
-                    className="btn-primary w-full flex items-center justify-center gap-2"
+                    className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-semibold transition-all shadow-sm active:scale-[.99]"
                   >
-                    {loading ? <Loader2 size={16} className="animate-spin" /> : <CheckCircle2 size={16} />}
-                    {loading ? 'Đang xác nhận...' : 'Xác nhận đã thanh toán'}
+                    {loading ? (
+                      <><Loader2 size={16} className="animate-spin" /> Đang xác nhận...</>
+                    ) : (
+                      <><CheckCircle2 size={16} /> Xác nhận đã chuyển khoản</>
+                    )}
                   </button>
                 </div>
+
+                {formErrors.submit && (
+                  <div className="mt-3 flex items-start gap-2.5 p-3.5 bg-red-50 border border-red-100 rounded-xl text-sm text-red-600">
+                    <Info size={15} className="shrink-0 mt-0.5" />
+                    {formErrors.submit}
+                  </div>
+                )}
               </div>
             )}
 
+            {/* STEP 3 — Success */}
             {step === 3 && (
-              <div className="card p-8 text-center space-y-5 animate-fade-up">
-                <div className="w-20 h-20 rounded-full bg-brand-500/15 border-2 border-brand-500/30 flex items-center justify-center mx-auto glow">
-                  <CheckCircle2 size={40} className="text-brand-400" />
+              <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-10 text-center animate-in fade-in zoom-in-95 duration-300">
+                {/* Icon */}
+                <div className="w-16 h-16 rounded-full bg-emerald-50 border-2 border-emerald-200 flex items-center justify-center mx-auto mb-5">
+                  <CheckCircle2 size={32} className="text-emerald-600" />
                 </div>
-                <div>
-                  <h2 className="text-2xl font-display font-bold text-white">Thanh toán thành công!</h2>
-                  <p className="text-gray-400 mt-2">Cảm ơn bạn đã thanh toán qua VietQR</p>
-                </div>
+
+                <h2 className="text-xl font-semibold text-slate-900 mb-2">Thanh toán thành công!</h2>
+                <p className="text-sm text-slate-400 mb-8">Giao dịch đã được xác nhận qua VietQR</p>
+
+                {/* Detail card */}
                 {order && (
-                  <div className="card-elevated p-4 text-left space-y-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Mã đơn hàng</span>
-                      <span className="font-mono font-medium text-white">#{order.orderId}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Số tiền</span>
-                      <span className="font-bold text-brand-400">{formatCurrency(order.totalAmount)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-gray-500">Trạng thái</span>
+                  <div className="bg-slate-50 rounded-xl p-5 text-left space-y-3 mb-7 border border-slate-100">
+                    {[
+                      { label: 'Mã đơn hàng', value: `#${order.orderId}`, mono: true },
+                      { label: 'Ngân hàng', value: form.bankInfo?.shortName || 'VietinBank' },
+                      { label: 'Số tài khoản', value: form.accountNo, mono: true },
+                      { label: 'Nội dung', value: sanitizeAddInfo(form.addInfo) },
+                      { label: 'Số tiền', value: formatCurrency(order.totalAmount), highlight: true },
+                    ].map(({ label, value, mono, highlight }) => (
+                      <div key={label} className="flex items-center justify-between">
+                        <span className="text-sm text-slate-500">{label}</span>
+                        <span className={clsx(
+                          'text-sm font-medium',
+                          highlight ? 'text-emerald-600 text-base' : 'text-slate-800',
+                          mono && 'font-mono text-xs'
+                        )}>
+                          {value}
+                        </span>
+                      </div>
+                    ))}
+                    <div className="flex items-center justify-between pt-1 border-t border-slate-200">
+                      <span className="text-sm text-slate-500">Trạng thái</span>
                       <StatusBadge status="paid" />
                     </div>
                   </div>
                 )}
-                <button onClick={reset} className="btn-secondary w-full">Tạo thanh toán mới</button>
+
+                {/* Email note */}
+                <div className="flex items-center justify-center gap-2 text-xs text-slate-400 mb-7">
+                  <Mail size={13} />
+                  Biên lai đã được gửi đến email đăng ký của bạn
+                </div>
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={reset}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
+                  >
+                    <Plus size={15} /> Tạo thanh toán mới
+                  </button>
+                  <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors">
+                    <FileText size={15} /> Xuất hóa đơn
+                  </button>
+                </div>
               </div>
             )}
           </div>
 
-          <div className="lg:col-span-2 space-y-4">
-            <OrderSummary items={DEMO_ITEMS} totalAmount={DEMO_TOTAL} />
-            <QuickLinkPanel bankBin={form.bankBin} accountNo={form.accountNo} />
+          {/* ── Right: sidebar ── */}
+          <div className="lg:col-span-4">
+            <div className="sticky top-24 space-y-4">
+              <OrderSummary items={DEMO_ITEMS} totalAmount={DEMO_TOTAL} />
+              <QuickLinkPanel bankBin={form.bankBin} accountNo={form.accountNo} />
+
+              {/* Support */}
+              <div className="bg-white rounded-xl border border-slate-100 px-5 py-4 text-center">
+                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest mb-1">Hỗ trợ kỹ thuật</p>
+                <p className="text-sm font-medium text-slate-700">support@creatimic.vn</p>
+              </div>
+            </div>
           </div>
+
         </div>
       </main>
     </div>

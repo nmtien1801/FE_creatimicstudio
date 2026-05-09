@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import getTransferBanks from '../../apis/payment/ApiPaymentVietQr.js';
+import React, { useState, useEffect } from "react";
+import ApiPaymentVietQr from "../../apis/payment/ApiPaymentVietQr.js";
 
 export function useBanks() {
   const [banks, setBanks] = useState([]);
@@ -7,7 +7,7 @@ export function useBanks() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const CACHE_KEY = 'vietqr_banks';
+    const CACHE_KEY = "vietqr_banks";
     const CACHE_TTL = 24 * 60 * 60 * 1000; // 24h
 
     const cached = sessionStorage.getItem(CACHE_KEY);
@@ -22,10 +22,13 @@ export function useBanks() {
       } catch {}
     }
 
-    getTransferBanks()
+    ApiPaymentVietQr.getTransferBanks()
       .then((res) => {
         setBanks(res.data);
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: res.data, ts: Date.now() }));
+        sessionStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({ data: res.data, ts: Date.now() }),
+        );
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));
