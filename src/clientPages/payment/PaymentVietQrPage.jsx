@@ -35,10 +35,10 @@ export default function PaymentPage() {
 
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
-    bankBin: '970415',
-    bankInfo: null,
-    accountNo: '113366668888',
-    accountName: 'NGUYEN VAN A',
+    bankBin: '970422',
+    bankInfo: { shortName: 'MBBank', bin: '970422' },
+    accountNo: '0967273063',
+    accountName: 'NGUYEN Minh TIEN',
     amount: formatNumber(totalAmount),
     addInfo: `Thanh toan don hang: ${product?.name || 'don hang'}`,
   });
@@ -66,7 +66,6 @@ export default function PaymentPage() {
   const getAppIdFromBank = (bank) => {
     if (!bank) return 'vietinbank'; // Mặc định nếu chưa chọn
 
-    // Chuyển shortName (ví dụ: "VietinBank") thành "vietinbank"
     const shortName = bank.shortName.toLowerCase().replace(/\s+/g, '');
 
     // Các trường hợp đặc biệt không theo quy tắc "tên viết tắt"
@@ -300,6 +299,7 @@ export default function PaymentPage() {
                   <QRDisplay
                     qrImageUrl={payment.qrImageUrl}
                     deeplink={payment.deeplink}
+                    bankShortName={form.bankInfo?.shortName}
                     accountInfo={{
                       accountName: form.accountName,
                       accountNo: form.accountNo,

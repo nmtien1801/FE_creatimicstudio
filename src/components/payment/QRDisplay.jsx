@@ -2,10 +2,25 @@ import React, { useState } from 'react';
 import { Download, Copy, Check, ExternalLink, RefreshCw } from 'lucide-react';
 import clsx from 'clsx';
 
-export default function QRDisplay({ qrImageUrl, qrDataURL, deeplink, accountInfo, amount, addInfo, onRegenerate }) {
+// Build deeplink đúng format: thêm app=<shortName viết thường>
+function buildDeeplink(baseDeeplink, bankShortName) {
+  if (!baseDeeplink) return null;
+  if (!bankShortName) return baseDeeplink;
+  try {
+    const url = new URL(baseDeeplink);
+    url.searchParams.set('app', bankShortName.toLowerCase());
+    return url.toString();
+  } catch {
+    const sep = baseDeeplink.includes('?') ? '&' : '?';
+    return `${baseDeeplink}${sep}app=${bankShortName.toLowerCase()}`;
+  }
+}
+
+export default function QRDisplay({ qrImageUrl, qrDataURL, deeplink, bankShortName, accountInfo, amount, addInfo, onRegenerate }) {
   const [copied, setCopied] = useState(false);
   const [imgLoaded, setImgLoaded] = useState(false);
   const src = qrDataURL || qrImageUrl;
+  const deeplinkWithApp = buildDeeplink(deeplink, bankShortName);
 
   const copyLink = async () => {
     try {
@@ -78,9 +93,9 @@ export default function QRDisplay({ qrImageUrl, qrDataURL, deeplink, accountInfo
         </button>
       </div>
 
-      {deeplink && (
+      {deeplinkWithApp && (
         <a
-          href={deeplink}
+          href={deeplinkWithApp}
           target="_blank"
           rel="noopener noreferrer"
           className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border border-emerald-200 bg-emerald-50 text-emerald-700 text-xs font-semibold hover:bg-emerald-100 transition-colors"
