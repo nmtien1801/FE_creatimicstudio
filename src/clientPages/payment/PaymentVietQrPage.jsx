@@ -1,41 +1,59 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft, ArrowRight, Loader2, Zap, CheckCircle2,
   ShieldCheck, CreditCard, Info, Copy, ExternalLink,
-  ShoppingBag, Receipt, Mail, Plus, FileText
+  ShoppingBag, Receipt, Mail, Plus,
 } from 'lucide-react';
 import BankSelect from '../../components/payment/BankSelect.jsx';
 import QRDisplay from '../../components/payment/QRDisplay.jsx';
 import StepIndicator from '../../components/payment/StepIndicator.jsx';
 import PaymentTimer from '../../components/payment/PaymentTimer.jsx';
-import OrderSummary from '../../components/payment/OrderSummary.jsx';
 import StatusBadge from '../../components/payment/StatusBadge.jsx';
-import QuickLinkPanel from '../../components/payment/QuickLinkPanel.jsx';
 import ApiPaymentVietQr from '../../apis/payment/ApiPaymentVietQr.js';
 import { formatCurrency, formatNumber, parseNumber, sanitizeAddInfo } from '../../utils/format.js';
 import clsx from 'clsx';
 
-const DEMO_ITEMS = [
-  { name: 'MacBook Pro M4', qty: 1, price: 35990000 },
-  { name: 'Apple Care+', qty: 1, price: 2990000 },
-];
-const DEMO_TOTAL = DEMO_ITEMS.reduce((s, i) => s + i.price * i.qty, 0);
-
 export default function PaymentPage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // 1. Lấy sản phẩm từ state truyền sang, nếu không có thì dùng object rỗng để tránh lỗi
+  const product = location.state?.product;
+
+  // 2. Chuyển đổi sản phẩm sang định dạng danh sách item (thay cho DEMO_ITEMS)
+  const currentItems = product ? [
+    {
+      name: product.name,
+      qty: 1,
+      price: product.price
+    }
+  ] : [];
+
+  // Tính tổng tiền dựa trên sản phẩm thật
+  const totalAmount = currentItems.reduce((s, i) => s + i.price * i.qty, 0);
+
   const [step, setStep] = useState(1);
   const [form, setForm] = useState({
     bankBin: '970415',
     bankInfo: null,
     accountNo: '113366668888',
     accountName: 'NGUYEN VAN A',
-    amount: formatNumber(DEMO_TOTAL),
-    addInfo: 'Thanh toan don hang',
+    amount: formatNumber(totalAmount),
+    addInfo: `Thanh toan don hang: ${product?.name || 'don hang'}`,
   });
   const [formErrors, setFormErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState(null);
   const [payment, setPayment] = useState(null);
   const [orderStatus, setOrderStatus] = useState(null);
+
+  useEffect(() => {
+    if (!product) {
+      toast.error("Không tìm thấy thông tin sản phẩm");
+      navigate('/');
+    }
+  }, [product, navigate]);
 
   const validate = () => {
     const errs = {};
@@ -45,14 +63,33 @@ export default function PaymentPage() {
     return errs;
   };
 
+  const getAppIdFromBank = (bank) => {
+    if (!bank) return 'vietinbank'; // Mặc định nếu chưa chọn
+
+    // Chuyển shortName (ví dụ: "VietinBank") thành "vietinbank"
+    const shortName = bank.shortName.toLowerCase().replace(/\s+/g, '');
+
+    // Các trường hợp đặc biệt không theo quy tắc "tên viết tắt"
+    const specialCases = {
+      'mbbank': 'mb',
+      'vietcombank': 'vcb',
+      'techcombank': 'tcb',
+      'agribank': 'agribank'
+    };
+
+    return specialCases[shortName] || shortName;
+  };
+
   const handleNext = async () => {
     const errs = validate();
+    const appId = getAppIdFromBank(form.bankInfo);
+
     if (Object.keys(errs).length > 0) { setFormErrors(errs); return; }
     setFormErrors({});
     setLoading(true);
     try {
       const res = await ApiPaymentVietQr.createOrder({
-        items: DEMO_ITEMS,
+        items: currentItems,
         totalAmount: parseNumber(form.amount),
         description: sanitizeAddInfo(form.addInfo),
         bankBin: form.bankBin,
@@ -60,6 +97,11 @@ export default function PaymentPage() {
         accountName: form.accountName,
       });
       if (!res.success) throw new Error(res.message);
+      const updatedPayment = {
+        ...res.payment,
+        deeplink: res.payment.deeplink.replace('bank=', `app=${appId}&bank=`)
+      };
+
       setOrder(res.order);
       setPayment(res.payment);
       setOrderStatus('pending');
@@ -85,11 +127,6 @@ export default function PaymentPage() {
     }
   };
 
-  const reset = () => {
-    setStep(1); setOrder(null); setPayment(null);
-    setOrderStatus(null); setFormErrors({});
-  };
-
   return (
     <div className="min-h-screen bg-[#f8f9fb] font-['DM_Sans',sans-serif]">
       {/* ── Main ── */}
@@ -99,10 +136,8 @@ export default function PaymentPage() {
           <StepIndicator current={step} />
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-6 items-start">
-
-          {/* ── Left: main panel ── */}
-          <div className="lg:col-span-8">
+        <div className="flex justify-center">
+          <div className="w-full max-w-3xl">
 
             {/* STEP 1 — Form */}
             {step === 1 && (
@@ -387,33 +422,14 @@ export default function PaymentPage() {
 
                 <div className="flex gap-3">
                   <button
-                    onClick={reset}
-                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 text-slate-700 text-sm font-medium hover:bg-slate-50 transition-colors"
-                  >
-                    <Plus size={15} /> Tạo thanh toán mới
-                  </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors">
-                    <FileText size={15} /> Xuất hóa đơn
+                    onClick={() => navigate('/san-pham/all/all')}
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold transition-colors">
+                    Quay lại
                   </button>
                 </div>
               </div>
             )}
           </div>
-
-          {/* ── Right: sidebar ── */}
-          <div className="lg:col-span-4">
-            <div className="sticky top-24 space-y-4">
-              <OrderSummary items={DEMO_ITEMS} totalAmount={DEMO_TOTAL} />
-              <QuickLinkPanel bankBin={form.bankBin} accountNo={form.accountNo} />
-
-              {/* Support */}
-              <div className="bg-white rounded-xl border border-slate-100 px-5 py-4 text-center">
-                <p className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest mb-1">Hỗ trợ kỹ thuật</p>
-                <p className="text-sm font-medium text-slate-700">support@creatimic.vn</p>
-              </div>
-            </div>
-          </div>
-
         </div>
       </main>
     </div>
