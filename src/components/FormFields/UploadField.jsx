@@ -5,8 +5,8 @@ import { useController } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import ImageLoader from "./ImageLoader.jsx"; // Giữ nguyên import này
 
-// Kích thước tệp tối đa (200KB)
-const MAX_FILE_SIZE = 200 * 1024; 
+// Kích thước tệp tối đa (900KB)
+const MAX_FILE_SIZE = 900 * 1024; 
 
 export default function UploadField({
   children,
