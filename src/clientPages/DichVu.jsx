@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone } from 'lucide-react';
+import { Phone, MapPin, Disc, Music, Sparkles, CheckCircle2, Clock, Zap, Heart } from 'lucide-react';
 
 const hexagonStyle = {
     clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)'
@@ -307,6 +307,57 @@ const CMICLandingPage = () => {
                 </div>
             </section>
 
+            {/* SECTION 9: TRẢI NGHIỆM THỰC TẾ - Dựa trên image_2dedad.png */}
+            <section className="max-w-7xl mx-auto px-6 py-20">
+                {/* Header Section */}
+                <div className="flex items-center gap-4 mb-12">
+                    <div className="w-1.5 h-10 bg-[#f18132] rounded-full"></div>
+                    <h2 className="text-gray-900 text-2xl md:text-4xl font-black tracking-tight">
+                        Trải Nghiệm Thực Tế
+                    </h2>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+
+                    {/* CỘT TRÁI: VIDEO YOUTUBE */}
+                    <div className="relative group">
+                        {/* Khung viền đứt đoạn cam (Dashed Border) bao quanh video */}
+                        <div className="absolute -inset-3 border-2 border-dashed border-[#f18132] rounded-[32px] opacity-50 group-hover:opacity-100 transition-opacity"></div>
+
+                        <div className="relative aspect-video bg-black rounded-[24px] overflow-hidden shadow-2xl border-4 border-gray-900">
+                            <iframe
+                                className="w-full h-full"
+                                src="https://www.youtube.com/embed/YOUR_VIDEO_ID" // Thay YOUR_VIDEO_ID bằng mã video của bạn
+                                title="CMIC Studio Demo Video"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowFullScreen
+                            ></iframe>
+                        </div>
+                    </div>
+
+                    {/* CỘT PHẢI: NỘI DUNG */}
+                    <div className="space-y-6">
+                        <h3 className="text-[#f18132] text-2xl md:text-3xl font-black">
+                            Âm Thanh Đỉnh Cao
+                        </h3>
+
+                        <div className="space-y-4">
+                            <p className="text-gray-700 text-xl font-semibold leading-relaxed">
+                                Xem video để cảm nhận sự khác biệt khi sử dụng bộ Plugin
+                                chuyên nghiệp từ CMIC STUDIO.
+                            </p>
+
+                            <p className="text-gray-500 text-lg leading-relaxed">
+                                Hỗ trợ tinh chỉnh theo từng chất giọng riêng biệt, giúp bạn tự tin
+                                tỏa sáng khi Livestream hoặc thu âm.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
             {/* SECTION 10: PHẦN MỀM CHUYÊN NGHIỆP */}
             <section className="max-w-7xl mx-auto px-6 py-20">
                 <div className="flex items-center gap-4 mb-16">
@@ -345,6 +396,113 @@ const CMICLandingPage = () => {
                 </div>
             </section>
 
+            {/* SECTION 12: LINH HOẠT MỌI NƠI - Dựa trên image_2c9fb4.png */}
+            <section className="max-w-7xl mx-auto px-6 py-20">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+
+                    {/* CỘT TRÁI: NỘI DUNG DỊCH VỤ */}
+                    <div className="space-y-10">
+                        {/* Header với gạch đứng cam */}
+                        <div className="flex items-center gap-4">
+                            <div className="w-1.5 h-12 bg-[#f18132] rounded-full"></div>
+                            <h2 className="text-gray-900 text-2xl md:text-3xl font-black tracking-tight leading-tight">
+                                Linh Hoạt Mọi Nơi
+                            </h2>
+                        </div>
+
+                        <div className="space-y-8">
+                            <h3 className="text-gray-800 text-1xl md:text-2xl font-black">
+                                Cài Đặt Online & Offline
+                            </h3>
+
+                            <div className="space-y-6 text-gray-600 text-lg md:text-xl leading-relaxed">
+                                <p>
+                                    <span className="font-bold text-gray-900">Cài đặt Offline:</span> Kỹ thuật viên hỗ trợ tận nhà tại khu vực TP. Hồ Chí Minh.
+                                </p>
+
+                                <p>
+                                    <span className="font-bold text-gray-900">Cài đặt Online:</span> Toàn quốc và hải ngoại qua UltraView / TeamViewer cực kỳ nhanh chóng và bảo mật.
+                                </p>
+
+                                <p className="font-medium">
+                                    Hỗ trợ kiểm tra Soundcard, Micro và tối ưu hệ điều hành máy tính để đạt độ trễ thấp nhất.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CỘT PHẢI: HÌNH ẢNH MINH HỌA (image_2c9fb4.png) */}
+                    <div className="relative rounded-[40px] overflow-hidden shadow-2xl group border-4 border-white">
+                        {/* 
+                Lưu ý: Thay '/studio-setup.jpg' bằng đường dẫn ảnh thực tế của bạn 
+                để hiển thị không gian làm việc giống trong image_2c9fb4.png
+            */}
+                        <img
+                            src="/path-to-your-studio-image.jpg"
+                            alt="Studio Setup"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+
+                        {/* Lớp phủ gradient nhẹ để ảnh trông sâu hơn */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    </div>
+
+                </div>
+            </section>
+
+            {/* SECTION 13: GIẢI PHÁP CHO NGƯỜI NGẠI CÔNG NGHỆ - Dựa trên image_2c9833.png */}
+            <section className="max-w-7xl mx-auto px-6 py-24 relative overflow-hidden">
+
+                {/* Hiệu ứng mờ góc phải trên */}
+                <div className="absolute -top-20 -right-20 w-80 h-80 bg-orange-100/20 rounded-full blur-3xl -z-10"></div>
+
+                {/* Header Section */}
+                <div className="flex items-center gap-4 mb-20">
+                    <div className="w-1.5 h-12 bg-[#f18132] rounded-full"></div>
+                    <h2 className="text-gray-900 text-3xl md:text-5xl font-black tracking-tight">
+                        Giải Pháp Cho Người Ngại Công Nghệ
+                    </h2>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-16 items-center">
+
+                    {/* CỘT TRÁI: HÌNH ẢNH TRÒN (image_2c9833.png) */}
+                    <div className="relative flex justify-center">
+                        {/* Vòng tròn cam bao quanh */}
+                        <div className="relative w-80 h-80 md:w-[450px] md:h-[450px] p-2 border-4 border-[#f18132] rounded-full shadow-2xl overflow-hidden group">
+                            <img
+                                src="/laptop-setup.jpg"
+                                alt="Laptop cài sẵn"
+                                className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-700"
+                            />
+                            {/* Text cong hoặc đè nhẹ lên ảnh nếu cần (như trong ảnh mẫu) */}
+                            <div className="absolute top-10 left-1/2 -translate-x-1/2 bg-white/90 px-4 py-1 rounded-full shadow-sm">
+                                <p className="text-xs md:text-sm font-bold text-gray-800 uppercase tracking-widest">Người lớn tuổi hát vui</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* CỘT PHẢI: NỘI DUNG */}
+                    <div className="space-y-8">
+                        <h3 className="text-[#f18132] text-3xl md:text-4xl font-black leading-tight">
+                            Laptop Cài Sẵn – Hát Ngay!
+                        </h3>
+
+                        <div className="space-y-6">
+                            <p className="text-gray-700 text-xl md:text-2xl font-semibold leading-relaxed">
+                                Dành riêng cho cô chú lớn tuổi hoặc người không thích phức tạp.
+                                Chúng tôi cung cấp Laptop đã setup hoàn chỉnh mọi thứ.
+                            </p>
+
+                            <p className="text-gray-600 text-lg md:text-xl leading-relaxed italic border-l-4 border-gray-200 pl-6">
+                                <span className="font-bold text-gray-900 not-italic">Chìa Khóa Trao Tay:</span> Mua về chỉ cần cắm điện, kết nối Micro là có thể hát hay như ca sĩ ngay lập tức. Giao diện đơn giản, một nút bấm.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
             {/* SECTION 14: BẢNG GIÁ */}
             <section className="max-w-7xl mx-auto px-6 py-20">
                 <div className="flex items-center gap-4 mb-16">
@@ -372,6 +530,74 @@ const CMICLandingPage = () => {
                             ))}
                         </tbody>
                     </table>
+                </div>
+            </section>
+
+            {/* SECTION 15: TẠI SAO NÊN CHỌN CMIC STUDIO? - Dựa trên image_2bc53b.png */}
+            <section className="max-w-7xl mx-auto px-6 py-20 relative">
+
+                {/* Hiệu ứng mờ trang trí góc trên */}
+                <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100/30 rounded-full blur-3xl -z-10"></div>
+
+                {/* Header Section */}
+                <div className="flex items-center gap-4 mb-16">
+                    <div className="w-1.5 h-12 bg-[#f18132] rounded-full"></div>
+                    <h2 className="text-gray-900 text-2xl md:text-4xl font-black tracking-tight">
+                        Tại Sao Nên Chọn CMIC STUDIO?
+                    </h2>
+                </div>
+
+                {/* List of Reasons */}
+                <div className="space-y-8 max-w-5xl">
+
+                    {/* Reason 1: Chuyên Môn Cao */}
+                    <div className="flex items-start gap-6 group">
+                        <div className="bg-[#f18132] p-2 rounded-full mt-1 shrink-0 shadow-lg shadow-orange-200">
+                            <CheckCircle2 className="text-white" size={24} />
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-gray-800 text-xl md:text-2xl leading-relaxed">
+                                <span className="font-black">Chuyên Môn Cao:</span> Kỹ thuật viên am hiểu sâu về âm thanh và nhạc lý.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Reason 2: Hỗ Trợ 24/7 */}
+                    <div className="flex items-start gap-6 group">
+                        <div className="bg-[#f18132] p-2 rounded-full mt-1 shrink-0 shadow-lg shadow-orange-200">
+                            <Clock className="text-white" size={24} />
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-gray-800 text-xl md:text-2xl leading-relaxed">
+                                <span className="font-black">Hỗ Trợ 24/7:</span> Bảo hành phần mềm, hỗ trợ kỹ thuật trọn đời sau khi cài đặt.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Reason 3: Tối Ưu Tuyệt Đối */}
+                    <div className="flex items-start gap-6 group">
+                        <div className="bg-[#f18132] p-2 rounded-full mt-1 shrink-0 shadow-lg shadow-orange-200">
+                            <Zap className="text-white" size={24} />
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-gray-800 text-xl md:text-2xl leading-relaxed">
+                                <span className="font-black">Tối Ưu Tuyệt Đối:</span> Đảm bảo âm thanh sạch, không trễ tiếng (Latency), ổn định cao.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Reason 4: Tận Tâm */}
+                    <div className="flex items-start gap-6 group">
+                        <div className="bg-[#f18132] p-2 rounded-full mt-1 shrink-0 shadow-lg shadow-orange-200">
+                            <Heart className="text-white" size={24} />
+                        </div>
+                        <div className="space-y-1">
+                            <p className="text-gray-800 text-xl md:text-2xl leading-relaxed">
+                                <span className="font-black">Tận Tâm:</span> Hướng dẫn sử dụng chi tiết, dễ hiểu cho cả người không rành máy tính.
+                            </p>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
