@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { io } from 'socket.io-client';
 import {
   ArrowLeft, ArrowRight, Loader2, Zap, CheckCircle2,
   ShieldCheck, CreditCard, Info, Copy, ExternalLink,
@@ -54,6 +56,30 @@ export default function PaymentPage() {
       navigate('/');
     }
   }, [product, navigate]);
+
+  useEffect(() => {
+    if (!order?.orderId || step !== 2) return;
+
+    const backendUrl = import.meta.env.VITE_BE_URL || 'http://localhost:8080';
+    const socket = io(backendUrl, {
+      transports: ['websocket', 'polling'],
+    });
+
+    socket.emit('join-payment-session', order.orderId);
+    socket.on('payment-completed', (data) => {
+      if (data?.success) {
+        setOrderStatus('paid');
+        setStep(3);
+      } else if (data?.status === 'failed') {
+        setFormErrors({ submit: 'Thanh toán thất bại. Vui lòng thử lại.' });
+      }
+    });
+
+    return () => {
+      socket.off('payment-completed');
+      socket.disconnect();
+    };
+  }, [order, step]);
 
   const validate = () => {
     const errs = {};
