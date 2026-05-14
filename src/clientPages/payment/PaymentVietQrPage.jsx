@@ -141,12 +141,25 @@ export default function PaymentPage() {
   const handleConfirm = async () => {
     if (!order) return;
     setLoading(true);
+    setFormErrors({});
     try {
-      await ApiPaymentVietQr.confirmOrder(order.orderId);
-      setOrderStatus('paid');
-      setStep(3);
+      const res = await ApiPaymentVietQr.confirmOrder(order.orderId);
+
+      if (res.success && res.orderStatus === 'completed') {
+        setOrder(res.order || order);
+        setOrderStatus('paid');
+        setStep(3);
+        return;
+      }
+
+      if (res.orderStatus === 'failed' || res.orderStatus === 'cancelled') {
+        setFormErrors({ submit: res.message || 'Đơn hàng không thành công.' });
+        return;
+      }
+
+      setFormErrors({ submit: res.message || 'Hệ thống chưa nhận được tiền, vui lòng đợi trong giây lát.' });
     } catch (err) {
-      setFormErrors({ submit: err.message });
+      setFormErrors({ submit: err.message || 'Lỗi hệ thống, vui lòng thử lại.' });
     } finally {
       setLoading(false);
     }
@@ -377,7 +390,7 @@ export default function PaymentPage() {
                 {/* Confirm button */}
                 <div className="mt-8 pt-6 border-t border-slate-50 space-y-2.5">
                   <p className="text-center text-xs text-slate-400">
-                    Sau khi chuyển khoản thành công, nhấn xác nhận bên dưới
+                    Sau khi chuyển khoản, nhấn kiểm tra để xác nhận nếu hệ thống đã nhận được tiền
                   </p>
                   <button
                     onClick={handleConfirm}
@@ -385,9 +398,9 @@ export default function PaymentPage() {
                     className="w-full flex items-center justify-center gap-2.5 py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 disabled:bg-slate-200 disabled:text-slate-400 text-white text-sm font-semibold transition-all shadow-sm active:scale-[.99]"
                   >
                     {loading ? (
-                      <><Loader2 size={16} className="animate-spin" /> Đang xác nhận...</>
+                      <><Loader2 size={16} className="animate-spin" /> Đang kiểm tra...</>
                     ) : (
-                      <><CheckCircle2 size={16} /> Xác nhận đã chuyển khoản</>
+                      <><CheckCircle2 size={16} /> Tôi đã chuyển khoản - Kiểm tra ngay</>
                     )}
                   </button>
                 </div>
