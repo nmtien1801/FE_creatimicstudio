@@ -29,7 +29,9 @@ import Cookies from "js-cookie";
 
 import Home from "../clientPages/TrangChu.jsx";
 import About from "../clientPages/GioiThieu.jsx";
-import Service from "../clientPages/DichVu.jsx";
+import Service from "../clientPages/dichVu/DichVu.jsx";
+import ServiceLive from "../clientPages/dichVu/DvLiveStream.jsx";
+import ServiceTone from "../clientPages/dichVu/DvAutoTone.jsx";
 import News from "../clientPages/TinTuc.jsx";
 import Careers from "../clientPages/TuyenDung.jsx";
 import Contact from "../clientPages/LienHe.jsx";
@@ -96,6 +98,8 @@ function RouterRoot() {
           {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
           <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} />
           <Route path="dich-vu" element={<Service />} />
+          <Route path="dich-vu/set-up-phong-livestream" element={<ServiceLive />} />
+          <Route path="dich-vu/phan-mem-auto-tone" element={<ServiceTone />} />
           <Route path="tin-tuc" element={<News />} />
           <Route path="/tin-tuc/:title/:id" element={<PostDetail />} />
           <Route path="tuyen-dung" element={<Careers />} />
