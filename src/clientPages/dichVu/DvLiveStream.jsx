@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Phone, MapPin, Disc, Music, Sparkles, CheckCircle2, Clock, Zap, Heart } from 'lucide-react';
+import ApiContact from '../../apis/ApiContact';
+import { toast } from 'react-toastify';
 
 const hexagonStyle = {
     clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)'
@@ -30,7 +32,7 @@ const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" 
                 if (entry.isIntersecting) {
                     setIsIntersecting(true);
                     // Nếu muốn hiệu ứng chạy lại mỗi khi cuộn lên/xuống thì bỏ dòng unobserve này đi
-                    observer.unobserve(entry.target); 
+                    observer.unobserve(entry.target);
                 }
             },
             { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
@@ -43,14 +45,13 @@ const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" 
     return (
         <div
             ref={ref}
-            className={`${className} transition-all duration-1000 ease-out ${
-                isIntersecting 
-                    ? "opacity-100 translate-y-0 translate-x-0 scale-100" 
+            className={`${className} transition-all duration-1000 ease-out ${isIntersecting
+                    ? "opacity-100 translate-y-0 translate-x-0 scale-100"
                     : animation === "animate-fade-up" ? "opacity-0 translate-y-12"
-                    : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
-                    : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
-                    : "opacity-0 scale-95"
-            }`}
+                        : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
+                            : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
+                                : "opacity-0 scale-95"
+                }`}
         >
             {children}
         </div>
@@ -58,6 +59,39 @@ const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" 
 };
 
 const CMICLandingPage = () => {
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        phone: ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSend = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const contactData = {
+                name: formData.fullName,
+                email: '',
+                message: `Tôi đang quan tâm dịch vụ setup phòng hát livestream. Hãy liên hệ với tôi qua số điện thoại: ${formData.phone}`
+            };
+            await ApiContact.sendContactApi(contactData);
+            toast.success('Đã gửi yêu cầu tư vấn livestream thành công!');
+            setFormData({ fullName: '', phone: '' });
+        } catch (error) {
+            console.error('Error sending contact:', error);
+            toast.error('Gửi yêu cầu tư vấn livestream thất bại. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-20 scroll-smooth selection:bg-orange-500 selection:text-white overflow-x-hidden">
             {/* SECTION 0: HERO BANNER */}
@@ -252,18 +286,38 @@ const CMICLandingPage = () => {
                 <ScrollReveal>
                     <h2 className="text-orange-600 text-3xl font-bold mb-8 uppercase text-center tracking-wide">Đăng ký tư vấn ngay</h2>
                 </ScrollReveal>
-                <form className="space-y-6 text-left relative z-10" onSubmit={(e) => e.preventDefault()}>
+                <form className="space-y-6 text-left relative z-10" onSubmit={handleSend}>
                     <ScrollReveal className="group">
                         <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Họ và tên</label>
-                        <input type="text" placeholder="Nhập họ và tên" className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20" />
+                        <input
+                            name="fullName"
+                            type="text"
+                            placeholder="Nhập họ và tên"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
+                        />
                     </ScrollReveal>
                     <ScrollReveal className="group">
                         <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Số điện thoại</label>
-                        <input type="text" placeholder="Nhập số điện thoại" className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20" />
+                        <input
+                            name="phone"
+                            type="tel"
+                            placeholder="Nhập số điện thoại"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
+                        />
                     </ScrollReveal>
                     <ScrollReveal>
-                        <button className="w-full bg-orange-500 hover:bg-black text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-orange-200 text-xl uppercase tracking-wider active:scale-[0.99]">
-                            Gửi Yêu Cầu
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`w-full text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg text-xl uppercase tracking-wider active:scale-[0.99] ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-orange-500 hover:bg-black hover:shadow-orange-200'}`}
+                        >
+                            {loading ? 'ĐANG GỬI...' : 'Gửi Yêu Cầu'}
                         </button>
                     </ScrollReveal>
                 </form>
@@ -272,7 +326,8 @@ const CMICLandingPage = () => {
                 </p>
             </section>
 
-            <style dangerouslySetInnerHTML={{__html: `
+            <style dangerouslySetInnerHTML={{
+                __html: `
                 @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
                 @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
                 @keyframes slideRight { from { width: 0%; } to { width: 55%; } }

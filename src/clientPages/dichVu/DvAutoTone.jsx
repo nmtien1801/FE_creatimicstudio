@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MapPin, Disc, Music, Sparkles, CheckCircle2, Clock, Zap, Heart } from 'lucide-react';
+import ApiContact from '../../apis/ApiContact';
+import { toast } from 'react-toastify';
 
 // Custom Component để bọc và tạo hiệu ứng khi cuộn chuột tới
 const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" }) => {
@@ -25,11 +27,11 @@ const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" 
         <div
             ref={ref}
             className={`${className} transition-all duration-1000 ease-out ${isIntersecting
-                    ? "opacity-100 translate-y-0 translate-x-0 scale-100"
-                    : animation === "animate-fade-up" ? "opacity-0 translate-y-12"
-                        : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
-                            : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
-                                : "opacity-0 scale-95"
+                ? "opacity-100 translate-y-0 translate-x-0 scale-100"
+                : animation === "animate-fade-up" ? "opacity-0 translate-y-12"
+                    : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
+                        : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
+                            : "opacity-0 scale-95"
                 }`}
         >
             {children}
@@ -38,6 +40,39 @@ const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" 
 };
 
 const CMICLandingPage = () => {
+    const [loading, setLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        fullName: '',
+        phone: ''
+    });
+
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSend = async (e) => {
+        e.preventDefault();
+        try {
+            setLoading(true);
+            const contactData = {
+                name: formData.fullName,
+                email: '',
+                message: `Tôi đang quan tâm dịch vụ AutoTune và setup phần mềm hát livestream. Hãy liên hệ với tôi qua số điện thoại: ${formData.phone}`
+            };
+            await ApiContact.sendContactApi(contactData);
+            toast.success('Đã gửi yêu cầu tư vấn AutoTune thành công!');
+            setFormData({ fullName: '', phone: '' });
+        } catch (error) {
+            console.error('Error sending contact:', error);
+            toast.error('Gửi yêu cầu tư vấn AutoTune thất bại. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-20 scroll-smooth selection:bg-[#e67e22] selection:text-white overflow-x-hidden">
             {/* SECTION 6: FOOTER SUMMARY */}
@@ -363,6 +398,52 @@ const CMICLandingPage = () => {
                         </ScrollReveal>
                     ))}
                 </div>
+            </section>
+
+            {/* SECTION 17: FORM ĐĂNG KÝ */}
+            <section className="max-w-xl mx-auto px-6 py-16 bg-white rounded-3xl border border-orange-100 shadow-xl relative overflow-hidden">
+                <div className="absolute -top-12 -left-12 w-24 h-24 bg-orange-400/10 rounded-full blur-xl"></div>
+                <ScrollReveal>
+                    <h2 className="text-orange-600 text-3xl font-bold mb-8 uppercase text-center tracking-wide">Đăng ký tư vấn ngay</h2>
+                </ScrollReveal>
+                <form className="space-y-6 text-left relative z-10" onSubmit={handleSend}>
+                    <ScrollReveal className="group">
+                        <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Họ và tên</label>
+                        <input
+                            name="fullName"
+                            type="text"
+                            placeholder="Nhập họ và tên"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20 "
+                        />
+                    </ScrollReveal>
+                    <ScrollReveal className="group">
+                        <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Số điện thoại</label>
+                        <input
+                            name="phone"
+                            type="tel"
+                            placeholder="Nhập số điện thoại"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
+                        />
+                    </ScrollReveal>
+                    <ScrollReveal>
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className={`w-full text-white font-bold py-4 rounded-2xl transition-all duration-300 shadow-lg text-xl uppercase tracking-wider active:scale-[0.99] ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-orange-500 hover:bg-black hover:shadow-orange-200'}`}
+                        >
+                            {loading ? 'ĐANG GỬI...' : 'Gửi Yêu Cầu'}
+                        </button>
+                    </ScrollReveal>
+                </form>
+                <p className="mt-6 text-gray-500 italic text-sm text-center">
+                    CMIC STUDIO sẽ liên hệ trong vòng 24h. Thông tin của bạn sẽ được bảo mật.
+                </p>
             </section>
 
             <style dangerouslySetInnerHTML={{
