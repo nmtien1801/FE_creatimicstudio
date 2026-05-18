@@ -43,6 +43,7 @@ const CMICLandingPage = () => {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
+        email: '',
         phone: ''
     });
 
@@ -58,13 +59,14 @@ const CMICLandingPage = () => {
         try {
             setLoading(true);
             const contactData = {
-                name: formData.fullName,
-                email: '',
-                message: `Tôi đang quan tâm dịch vụ AutoTune và setup phần mềm hát livestream. Hãy liên hệ với tôi qua số điện thoại: ${formData.phone}`
+                name: formData.fullName.trim(),
+                email: formData.email.trim(),
+                message: `Tôi đang quan tâm dịch vụ AutoTune. Hãy liên hệ với tôi qua số điện thoại: ${formData.phone}`
             };
-            await ApiContact.sendContactApi(contactData);
+            let res = await ApiContact.sendContactApi(contactData);
+
             toast.success('Đã gửi yêu cầu tư vấn AutoTune thành công!');
-            setFormData({ fullName: '', phone: '' });
+            setFormData({ fullName: '', email: '', phone: '' });
         } catch (error) {
             console.error('Error sending contact:', error);
             toast.error('Gửi yêu cầu tư vấn AutoTune thất bại. Vui lòng thử lại.');
@@ -419,6 +421,19 @@ const CMICLandingPage = () => {
                             className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20 "
                         />
                     </ScrollReveal>
+                    <ScrollReveal className="group">
+                        <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Địa chỉ email</label>
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="Nhập địa chỉ email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
+                        />
+                    </ScrollReveal>
+
                     <ScrollReveal className="group">
                         <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Số điện thoại</label>
                         <input

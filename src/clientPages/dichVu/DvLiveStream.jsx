@@ -46,11 +46,11 @@ const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" 
         <div
             ref={ref}
             className={`${className} transition-all duration-1000 ease-out ${isIntersecting
-                    ? "opacity-100 translate-y-0 translate-x-0 scale-100"
-                    : animation === "animate-fade-up" ? "opacity-0 translate-y-12"
-                        : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
-                            : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
-                                : "opacity-0 scale-95"
+                ? "opacity-100 translate-y-0 translate-x-0 scale-100"
+                : animation === "animate-fade-up" ? "opacity-0 translate-y-12"
+                    : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
+                        : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
+                            : "opacity-0 scale-95"
                 }`}
         >
             {children}
@@ -62,6 +62,7 @@ const CMICLandingPage = () => {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
+        email: '',
         phone: ''
     });
 
@@ -77,13 +78,13 @@ const CMICLandingPage = () => {
         try {
             setLoading(true);
             const contactData = {
-                name: formData.fullName,
-                email: '',
+                name: formData.fullName.trim(),
+                email: formData.email.trim(),
                 message: `Tôi đang quan tâm dịch vụ setup phòng hát livestream. Hãy liên hệ với tôi qua số điện thoại: ${formData.phone}`
             };
             await ApiContact.sendContactApi(contactData);
             toast.success('Đã gửi yêu cầu tư vấn livestream thành công!');
-            setFormData({ fullName: '', phone: '' });
+            setFormData({ fullName: '', email: '', phone: '' });
         } catch (error) {
             console.error('Error sending contact:', error);
             toast.error('Gửi yêu cầu tư vấn livestream thất bại. Vui lòng thử lại.');
@@ -294,6 +295,18 @@ const CMICLandingPage = () => {
                             type="text"
                             placeholder="Nhập họ và tên"
                             value={formData.fullName}
+                            onChange={handleChange}
+                            required
+                            className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
+                        />
+                    </ScrollReveal>
+                    <ScrollReveal className="group">
+                        <label className="block font-bold mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Email</label>
+                        <input
+                            name="email"
+                            type="email"
+                            placeholder="Nhập địa chỉ email"
+                            value={formData.email}
                             onChange={handleChange}
                             required
                             className="w-full p-3.5 border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
