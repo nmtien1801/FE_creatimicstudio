@@ -8,7 +8,7 @@ import ApiProductImage from "../../apis/ApiProductImage";
 import { loadImage } from '../../utils/constants';
 
 const ProductDetail = () => {
-    const id_product = 7;
+    const id_product = 133;
     const userInfo = useSelector(state => state.auth?.userInfo);
     const navigate = useNavigate();
     const dispatch = useDispatch();
