@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import { useParams } from 'react-router-dom';
 import Products from '../../clientPages/SanPham';
-// import ProductDetail from './ProductDetail';
-import ProductDetail from "../../clientPages/payment/ProductDetail_test";
+import ProductDetail from './ProductDetail';
+// import ProductDetail from "../../clientPages/payment/ProductDetail_test";
 
 const ProductPageHandler = () => {
     const { id_product } = useParams();

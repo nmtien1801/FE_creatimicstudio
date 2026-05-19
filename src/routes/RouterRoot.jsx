@@ -41,6 +41,8 @@ import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
 import PaymentMomoPage from '../clientPages/payment/PaymentMomoPage.jsx'
 import PaymentVietQrPage from '../clientPages/payment/PaymentVietQrPage.jsx'
 
+import A from "../clientPages/payment/ProductDetail_test";
+
 const ProtectedRoute = ({ children }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
 
@@ -109,6 +111,8 @@ function RouterRoot() {
           <Route path="lien-he" element={<Contact />} />
           <Route path="payment-momo" element={<PaymentMomoPage />} />
           <Route path="payment-vietqr" element={<PaymentVietQrPage />} />
+
+          <Route path="test" element={<A />} />
         </Route>
 
         {/* private route */}

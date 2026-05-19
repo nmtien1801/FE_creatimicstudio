@@ -8,7 +8,7 @@ import ApiProductImage from "../../apis/ApiProductImage";
 import { loadImage } from '../../utils/constants';
 
 const ProductDetail = () => {
-    const { id_product } = useParams();
+    const id_product = 7;
     const userInfo = useSelector(state => state.auth?.userInfo);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -24,6 +24,8 @@ const ProductDetail = () => {
     useEffect(() => {
         let fetchDetail = async () => {
             let res = await ApiProduct.getProductByIdApi(id_product);
+            console.log('ssssss ',res);
+            
             if (res && res.DT) {
                 setProduct(res.DT);
                 setSelectedImage(res.DT.image || null);
