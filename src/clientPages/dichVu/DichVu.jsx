@@ -1,21 +1,32 @@
-import React, { useState, useEffect, useMemo } from 'react'; // Thêm useEffect
+import React, { useState, useMemo, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
-import { getListPost } from '../redux/postSlice';
-import ImageLoader from '../components/FormFields/ImageLoader';
-import { slug } from '../utils/constants.js';
-// url: /tin-tuc/:slug/:id
 
+// Mảng dữ liệu đã được thêm trường url động riêng cho mỗi bài viết
+const HARDCODED_POSTS = [
+    {
+        id: 1,
+        title: "Dịch vụ SETUP PHÒNG HÁT LIVESTREAM",
+        description: "Dịch vụ setup phòng hát livestream chuyên nghiệp, tối ưu không gian và âm thanh cho trải nghiệm hát livestream đỉnh cao.",
+        image: "/dichvu1.png",
+        url: "/dich-vu/set-up-phong-livestream" // URL động cụ thể cho bài viết 1
+    },
+    {
+        id: 2,
+        title: "Dịch vụ PHẦN MỀM AUTO TONE CHUYÊN NGHIỆP",
+        description: "Nâng tầm giọng hát của bạn với Cubase & AutoTune. Dịch vụ tận tâm, hỗ trợ mọi lúc mọi nơi.",
+        image: "/dichvu3.jpg",
+        url: "/dich-vu/phan-mem-auto-tone" // URL động cụ thể cho bài viết 2
+    }
+];
+
+// --- NewsCard nhận trực tiếp đường dẫn từ thuộc tính news.url ---
 const NewsCard = ({ news }) => (
-    <NavLink to={`/tin-tuc/${slug(news.title)}/${news.id}`} className="block">
+    <NavLink to={news.url} className="block">
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
-            {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
-                <ImageLoader imagePath={news.image} className="w-full h-full rounded-md border object-cover" />
+                <img src={news.image} alt={news.title} className="w-full h-full rounded-md border object-cover" />
             </div>
-            {/* Title & Content */}
             <div className="p-4 flex flex-col flex-grow">
                 <h3 className="text-base font-bold text-gray-800 line-clamp-2 hover:text-orange-700 transition mb-2">
                     {news.title}
@@ -28,8 +39,7 @@ const NewsCard = ({ news }) => (
     </NavLink>
 );
 
-// Component Pagination
-const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, totalItems }) => {
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     const maxPagesToShow = 5;
     let startPage, endPage;
 
@@ -53,9 +63,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
 
     return (
         <div className="flex flex-col gap-6 mt-10">
-            {/* Phần phân trang */}
             <div className="flex items-center justify-center gap-2 flex-wrap">
-                {/* Nút Previous */}
                 <button
                     onClick={() => onPageChange(currentPage - 1)}
                     disabled={currentPage === 1}
@@ -65,12 +73,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
                     <ChevronLeft className="w-5 h-5 text-gray-700" />
                 </button>
 
-                {/* Dấu ... ở đầu */}
-                {startPage > 1 && (
-                    <span className="px-2 text-gray-400">...</span>
-                )}
+                {startPage > 1 && <span className="px-2 text-gray-400">...</span>}
 
-                {/* Các nút trang */}
                 {pages.map((page) => (
                     <button
                         key={page}
@@ -86,12 +90,8 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
                     </button>
                 ))}
 
-                {/* Dấu ... ở cuối */}
-                {endPage < totalPages && (
-                    <span className="px-2 text-gray-400">...</span>
-                )}
+                {endPage < totalPages && <span className="px-2 text-gray-400">...</span>}
 
-                {/* Nút Next */}
                 <button
                     onClick={() => onPageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
@@ -105,7 +105,6 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
     );
 };
 
-// Component Thanh Tìm Kiếm tách riêng để tái sử dụng
 const SearchBar = ({ search, setSearch, className = '' }) => (
     <div className={`bg-white p-4 rounded-xl shadow-md ${className}`}>
         <h2 className="text-xl font-semibold mb-3 text-gray-800">Tìm kiếm</h2>
@@ -122,91 +121,65 @@ const SearchBar = ({ search, setSearch, className = '' }) => (
     </div>
 );
 
-const TinTuc = () => {
+const DichVu = () => {
     const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const { PostList, PostTotal } = useSelector((state) => state.post);
-
     const [search, setSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+
     const limit = 20;
-    const totalPages = Math.ceil(PostTotal / limit);
-
-    // ========================================== INIT ========================================
-    const fetchList = async () => {
-        let res = await dispatch(getListPost({ page: currentPage, limit: limit })).unwrap();
-        if (res && res.EC !== 0) {
-            toast.error(res.EM);
-        }
-    };
-
-    useEffect(() => {
-        fetchList();
-    }, [currentPage]);
+    const totalPages = Math.ceil(HARDCODED_POSTS.length / limit);
 
     useEffect(() => {
         setCurrentPage(1);
     }, [search]);
 
-    // --- LOGIC TỰ ĐỘNG CHUYỂN HƯỚNG KHI CÓ 1 TIN---
+    // Tự động chuyển hướng đến link chính xác nếu danh sách chỉ có 1 bài viết
     useEffect(() => {
-        if (
-            PostTotal === 1 &&
-            PostList.length === 1 &&
-            currentPage === 1
-        ) {
-            navigate(`/tin-tuc/${PostList[0].id}`, {
+        if (HARDCODED_POSTS.length === 1 && currentPage === 1) {
+            navigate(HARDCODED_POSTS[0].url, {
                 replace: true,
             });
         }
-    }, [PostTotal, PostList, currentPage, navigate]);
+    }, [currentPage, navigate]);
 
-    // Logic lọc tin tức (Giữ nguyên)
     const filteredNews = useMemo(() => {
-        if (!search) return PostList;
+        if (!search) return HARDCODED_POSTS;
 
         const lower = search.toLowerCase();
 
-        return PostList.filter(news =>
-            news.title?.toLowerCase().includes(lower) ||
-            news.description?.toLowerCase().includes(lower)
+        return HARDCODED_POSTS.filter(news =>
+            news.title?.toLowerCase().includes(lower)
         );
-    }, [search, PostList]);
+    }, [search]);
 
     return (
         <div className="min-h-screen bg-gray-50">
             <main className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
                 <h1 className="text-3xl md:text-4xl font-black mb-12 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
-                    TIN TỨC
+                    Dịch Vụ
                 </h1>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-
-                    {/* Main Content - Giờ chiếm full width */}
+                    {/* Main Content */}
                     <div className="lg:col-span-3">
-                        {/* Grid News - 4 cột trên màn hình lớn */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {filteredNews.map((news) => (
                                 <NewsCard key={news.id} news={news} />
                             ))}
                         </div>
 
-                        {/* Pagination chỉ hiển thị khi có nhiều trang */}
                         {totalPages > 1 && (
                             <Pagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
                                 onPageChange={setCurrentPage}
-                                itemsPerPage={limit}
-                                totalItems={PostTotal}
                             />
                         )}
                     </div>
-                    {/* Sidebar - 1/4 cột */}
-                    <div className="lg:col-span-1 space-y-8">
 
-                        {/* 2. Thanh tìm kiếm trong Sidebar (Ẩn đi ở màn hình nhỏ, hiển thị từ màn hình lớn trở lên) */}
+                    {/* Sidebar */}
+                    <div className="lg:col-span-1 space-y-8">
                         <div className="hidden lg:block">
                             <SearchBar search={search} setSearch={setSearch} />
                         </div>
@@ -219,11 +192,7 @@ const TinTuc = () => {
                                 className="absolute inset-0 w-full h-full object-cover"
                                 loading="lazy"
                             />
-
-                            {/* Overlay */}
                             <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
-
-                            {/* Content */}
                             <div className="relative z-10 flex items-center justify-center h-full text-center text-white p-6">
                                 <div>
                                     <div className="text-2xl font-black mb-4 leading-tight">
@@ -240,7 +209,6 @@ const TinTuc = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </main>
@@ -248,4 +216,4 @@ const TinTuc = () => {
     );
 };
 
-export default TinTuc;
+export default DichVu;

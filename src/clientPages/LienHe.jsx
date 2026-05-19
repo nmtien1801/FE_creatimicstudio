@@ -57,7 +57,7 @@ const ContactPage = () => {
                             <div className="flex items-start gap-4">
                                 <Home className="w-6 h-6 mt-1" />
                                 <div>
-                                    <p className="font-semibold">252/21 Phạm Văn Chiêu, Phường An Hội Tây, Gò Vấp, TP.HCM</p>
+                                    <p className="font-semibold">252/21/18 Phạm Văn Chiêu, Khu phố 30, Phường Thông Tây Hội, TP.HCM</p>
                                 </div>
                             </div>
 
