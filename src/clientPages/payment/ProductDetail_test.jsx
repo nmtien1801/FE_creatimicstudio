@@ -8,7 +8,7 @@ import ApiProductImage from "../../apis/ApiProductImage";
 import { loadImage } from '../../utils/constants';
 
 const ProductDetail = () => {
-    const id_product = 133;
+    const id_product = 134;
     const userInfo = useSelector(state => state.auth?.userInfo);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -17,15 +17,14 @@ const ProductDetail = () => {
     const [productImages, setProductImages] = useState([]);
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoadingImages, setIsLoadingImages] = useState(false);
-    
+
     // --- STATE CHO POPUP ---
     const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     useEffect(() => {
         let fetchDetail = async () => {
             let res = await ApiProduct.getProductByIdApi(id_product);
-            console.log('ssssss ',res);
-            
+
             if (res && res.DT) {
                 setProduct(res.DT);
                 setSelectedImage(res.DT.image || null);
@@ -106,7 +105,7 @@ const ProductDetail = () => {
                                 {product.name}
                             </h1>
                             <p className="text-gray-600 text-lg leading-relaxed mb-8">{product.description}</p>
-                            
+
                             <div className="flex flex-col gap-6 mb-10">
                                 <div className="flex flex-col">
                                     <span className="text-3xl font-black text-red-600">
@@ -143,10 +142,10 @@ const ProductDetail = () => {
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                             </button>
                         </div>
-                        
+
                         <div className="p-6 space-y-4">
                             {/* Nút MoMo */}
-                            <button 
+                            <button
                                 onClick={() => goToPayment('momo')}
                                 className="w-full flex items-center justify-between p-4 border-2 border-gray-100 rounded-2xl hover:border-pink-500 hover:bg-pink-50 transition-all group"
                             >
@@ -163,7 +162,7 @@ const ProductDetail = () => {
                             </button>
 
                             {/* Nút VietQR */}
-                            <button 
+                            <button
                                 onClick={() => goToPayment('vietqr')}
                                 className="w-full flex items-center justify-between p-4 border-2 border-gray-100 rounded-2xl hover:border-blue-500 hover:bg-blue-50 transition-all group"
                             >

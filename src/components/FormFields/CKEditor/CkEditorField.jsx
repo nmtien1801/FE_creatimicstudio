@@ -51,7 +51,6 @@ export default function CKEditorField({
                   if (res && res.DT) {
                     // Dùng URL trực tiếp từ server để CKEditor lưu src thẳng vào HTML
                     const imageUrl = loadImage2(res.DT);
-                    console.log('sssssss ', imageUrl);
                     
                     resolve({
                       default: imageUrl,

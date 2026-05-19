@@ -102,6 +102,8 @@ const PaymentMomoPage = () => {
             toast.success('Đã tạo mã thanh toán');
             pollPaymentStatus(oid);
         } catch (error) {
+console.log('ssssssssss ', error);
+
             toast.error('Không thể kết nối máy chủ MoMo');
         } finally {
             setIsLoading(false);
