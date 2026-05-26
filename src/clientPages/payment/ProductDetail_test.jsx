@@ -8,7 +8,7 @@ import ApiProductImage from "../../apis/ApiProductImage";
 import { loadImage } from '../../utils/constants';
 
 const ProductDetail = () => {
-    const id_product = 134;
+    const id_product = 7;
     const userInfo = useSelector(state => state.auth?.userInfo);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -73,7 +73,7 @@ const ProductDetail = () => {
             description: String(product.description || ""),
         };
 
-        const path = type === 'momo' ? '/payment-momo' : '/payment-vietqr';
+        const path = type === 'momo' ? '/payment-momo' : type === 'sepay' ? '/payment-sepay' : '/payment-vietqr';
         navigate(path, { state: { product: cleanProduct } });
         setShowPaymentModal(false);
     };
@@ -174,6 +174,23 @@ const ProductDetail = () => {
                                     </div>
                                 </div>
                                 <div className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+                                </div>
+                            </button>
+
+                            {/* Nút sepay */}
+                            <button
+                                onClick={() => goToPayment('sepay')}
+                                className="w-full flex items-center justify-between p-4 border-2 border-gray-100 rounded-2xl hover:border-green-500 hover:bg-green-50 transition-all group"
+                            >
+                                <div className="flex items-center gap-4">
+                                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center font-bold text-green-600">S</div>
+                                    <div className="text-left">
+                                        <div className="font-bold text-gray-900">Sepay</div>
+                                        <div className="text-xs text-gray-500">Thanh toán qua ứng dụng Sepay</div>
+                                    </div>
+                                </div>
+                                <div className="text-green-500 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
                                 </div>
                             </button>

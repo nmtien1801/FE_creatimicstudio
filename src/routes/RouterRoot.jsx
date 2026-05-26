@@ -40,6 +40,7 @@ import PostDetail from '../components/post/postDetail.jsx'
 import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
 import PaymentMomoPage from '../clientPages/payment/PaymentMomoPage.jsx'
 import PaymentVietQrPage from '../clientPages/payment/PaymentVietQrPage.jsx'
+import PaymentSepayPage from '../clientPages/payment/PaymentSepayVietQr.jsx'
 
 import A from "../clientPages/payment/ProductDetail_test";
 
@@ -111,6 +112,7 @@ function RouterRoot() {
           <Route path="lien-he" element={<Contact />} />
           <Route path="payment-momo" element={<PaymentMomoPage />} />
           <Route path="payment-vietqr" element={<PaymentVietQrPage />} />
+          <Route path="payment-sepay" element={<PaymentSepayPage />} />
 
           <Route path="test" element={<A />} />
         </Route>
