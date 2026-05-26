@@ -136,6 +136,9 @@ export default function Footer() {
                                     <strong className="font-bold">Email:</strong> contact@creatimichub.vn
                                 </p>
                             </div>
+                            <div className="flex items-start justify-center lg:justify-start">
+                                <p className="max-w-xs">HỘ KINH DOANH CMIC MEDIA SERVICES - MST: 075301018907</p>
+                            </div>
                         </div>
                     </div>
 
@@ -184,6 +187,9 @@ export default function Footer() {
                                 <img src={ZALOPAY_IMG} alt="ZaloPay" className="h-6" />
                                 <img src={MOMO_IMG} alt="MoMo" className="h-6" />
                                 <img src={BANK_TRANSFER_IMG} alt="Bank" className="h-6" />
+                            </div>
+                            <div className="flex items-center space-x-4 opacity-90 transition-all">
+                                <img src="/bct.gif" alt="ZaloPay" className="h-16" />
                             </div>
                         </div>
                     </div>
