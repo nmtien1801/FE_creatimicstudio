@@ -11,13 +11,13 @@ const HARDCODED_POSTS = [
         image: "/dichvu1.png",
         url: "/dich-vu/set-up-phong-livestream" // URL động cụ thể cho bài viết 1
     },
-    {
-        id: 2,
-        title: "Dịch vụ PHẦN MỀM AUTO TONE CHUYÊN NGHIỆP",
-        description: "Nâng tầm giọng hát của bạn với Cubase & AutoTune. Dịch vụ tận tâm, hỗ trợ mọi lúc mọi nơi.",
-        image: "/dichvu3.jpg",
-        url: "/dich-vu/phan-mem-auto-tone" // URL động cụ thể cho bài viết 2
-    }
+    // {
+    //     id: 2,
+    //     title: "Dịch vụ PHẦN MỀM AUTO TONE CHUYÊN NGHIỆP",
+    //     description: "Nâng tầm giọng hát của bạn với Cubase & AutoTune. Dịch vụ tận tâm, hỗ trợ mọi lúc mọi nơi.",
+    //     image: "/dichvu3.jpg",
+    //     url: "/dich-vu/phan-mem-auto-tone" // URL động cụ thể cho bài viết 2
+    // }
 ];
 
 // --- NewsCard nhận trực tiếp đường dẫn từ thuộc tính news.url ---

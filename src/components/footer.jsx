@@ -142,7 +142,32 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Cột 2: Đăng ký & Social */}
+                    {/* Cột 2: Chính sách & Hỗ trợ */}
+                    <div className="w-full lg:w-auto flex flex-col items-center lg:items-start text-center lg:text-left space-y-4">
+                        <h2 className="text-lg lg:text-xl font-bold uppercase tracking-wider">Chính sách & Hỗ trợ</h2>
+                        <ul className="space-y-2 ">
+                            <li>
+                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Hướng dẫn trả góp</a>
+                            </li>
+                            <li>
+                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Hướng dẫn thanh toán</a>
+                            </li>
+                            <li>
+                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách giao hàng</a>
+                            </li>
+                            <li>
+                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách bảo hành</a>
+                            </li>
+                            <li>
+                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách đổi trả</a>
+                            </li>
+                            <li>
+                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách bảo mật thông tin</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    {/* Cột 3: Đăng ký & Social */}
                     <div className="w-full lg:w-auto flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
                         <div className="space-y-2">
                             <h2 className="text-lg lg:text-xl font-bold uppercase tracking-wider">ĐĂNG KÝ NHẬN TIN</h2>
