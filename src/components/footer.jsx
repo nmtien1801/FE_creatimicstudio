@@ -147,22 +147,16 @@ export default function Footer() {
                         <h2 className="text-lg lg:text-xl font-bold uppercase tracking-wider">Chính sách & Hỗ trợ</h2>
                         <ul className="space-y-2 ">
                             <li>
-                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Hướng dẫn trả góp</a>
+                                <a href="dieu-khoan-dich-vu-va-dieu-kien-giao-dich-chung" className="hover:underline hover:text-orange-950 transition-colors">• Điều khoản dịch vụ & Điều kiện giao dịch chung</a>
                             </li>
                             <li>
-                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Hướng dẫn thanh toán</a>
+                                <a href="cac-phuong-thuc-thanh-toan" className="hover:underline hover:text-orange-950 transition-colors">• Các phương thức thanh toán</a>
                             </li>
                             <li>
-                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách giao hàng</a>
+                                <a href="chinh-sach-van-chuyen-va-giao-nhan" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách vận chuyển và giao nhận</a>
                             </li>
                             <li>
-                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách bảo hành</a>
-                            </li>
-                            <li>
-                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách đổi trả</a>
-                            </li>
-                            <li>
-                                <a href="#" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách bảo mật thông tin</a>
+                                <a href="chinh-sach-bao-mat-thong-tin-ca-nhan" className="hover:underline hover:text-orange-950 transition-colors">• Chính sách bảo mật thông tin cá nhân</a>
                             </li>
                         </ul>
                     </div>
