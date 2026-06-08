@@ -72,28 +72,47 @@ export default function ChinhSach2() {
                   </div>
                   <div className="relative">
                     <span className="absolute -left-[31px] top-0 bg-indigo-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center">2</span>
-                    <p className="text-sm text-slate-600 mb-3"><strong className="text-slate-900">Bước 2:</strong> Khách hàng thực hiện chuyển khoản giá trị đơn hàng vào tài khoản ngân hàng chính thức của CMIC STUDIO theo thông tin dưới đây:</p>
+                    <p className="text-sm text-slate-600 mb-3">
+                      <strong className="text-slate-900">Bước 2:</strong> Khách hàng thực hiện chuyển khoản giá trị đơn hàng vào tài khoản ngân hàng chính thức của CMIC STUDIO theo thông tin dưới đây:
+                    </p>
 
-                    {/* Hộp thông tin số tài khoản */}
-                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 max-w-xl space-y-2 text-sm ml-2">
-                      <div className="grid grid-cols-3 border-b border-slate-200/60 pb-2">
-                        <span className="text-slate-500">Tên tài khoản:</span>
-                        <span className="col-span-2 font-bold text-slate-900">[Tên chủ tài khoản / Hộ kinh doanh]</span>
+                    {/* Hộp thông tin bao gồm số tài khoản và QR */}
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 max-w-xl ml-2 flex flex-col sm:flex-row gap-4 items-center">
+
+                      {/* Bên trái: Thông tin tài khoản */}
+                      <div className="space-y-2 text-sm w-full sm:flex-1">
+                        <div className="grid grid-cols-3 border-b border-slate-200/60 pb-2">
+                          <span className="text-slate-500">Tên tài khoản:</span>
+                          <span className="col-span-2 font-bold text-slate-900">HỘ KINH DOANH CMIC MEDIA SERVICE</span>
+                        </div>
+                        <div className="grid grid-cols-3 border-b border-slate-200/60 pb-2">
+                          <span className="text-slate-500">Số tài khoản:</span>
+                          <span className="col-span-2 font-mono font-bold text-indigo-600 tracking-wider">101886741536</span>
+                        </div>
+                        <div className="grid grid-cols-3 border-b border-slate-200/60 pb-2">
+                          <span className="text-slate-500">Ngân hàng:</span>
+                          <span className="col-span-2 font-medium text-slate-800">Vietinbank CN THU THIEM-PGD VINHOMES TAN CANG</span>
+                        </div>
+                        <div className="grid grid-cols-3 pt-1">
+                          <span className="text-slate-500">Nội dung CK:</span>
+                          <span className="col-span-2 font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60 w-fit block sm:inline-block">
+                            [Mã đơn hàng] <span className="font-normal text-slate-500">hoặc</span> [SĐT]
+                          </span>
+                        </div>
                       </div>
-                      <div className="grid grid-cols-3 border-b border-slate-200/60 pb-2">
-                        <span className="text-slate-500">Số tài khoản:</span>
-                        <span className="col-span-2 font-mono font-bold text-indigo-600 tracking-wider">[Số tài khoản tại đây]</span>
+
+                      {/* Bên phải: Ô QR Code */}
+                      <div className="flex flex-col items-center justify-center bg-white p-2 border border-slate-200 rounded-lg shadow-sm w-32 h-32 shrink-0">
+                        {/* Thay src bằng link ảnh QR thực tế của bạn, ví dụ từ VietQR hoặc ảnh tĩnh */}
+                        <img
+                          src="qr.png"
+                          alt="QR Code Chuyển Khoản"
+                          className="w-full h-full object-contain"
+                        />
+                        {/* Bạn có thể bỏ hoặc giữ dòng text nhỏ dưới ảnh QR này */}
+                        <span className="text-[10px] text-slate-400 mt-1 block sm:hidden">Quét mã để chuyển khoản</span>
                       </div>
-                      <div className="grid grid-cols-3 border-b border-slate-200/60 pb-2">
-                        <span className="text-slate-500">Ngân hàng:</span>
-                        <span className="col-span-2 font-medium text-slate-800">[Tên ngân hàng và chi nhánh]</span>
-                      </div>
-                      <div className="grid grid-cols-3 pt-1">
-                        <span className="text-slate-500">Nội dung CK:</span>
-                        <span className="col-span-2 font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200/60 w-fit">
-                          [Mã đơn hàng] <span className=" font-normal">hoặc</span> [Số điện thoại đặt hàng]
-                        </span>
-                      </div>
+
                     </div>
                   </div>
                   <div className="relative">
