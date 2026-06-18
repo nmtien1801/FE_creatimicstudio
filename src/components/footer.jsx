@@ -207,8 +207,10 @@ export default function Footer() {
                                 <img src={MOMO_IMG} alt="MoMo" className="h-6" />
                                 <img src={BANK_TRANSFER_IMG} alt="Bank" className="h-6" />
                             </div>
-                            <div className="flex items-center space-x-4 opacity-90 transition-all">
-                                <img src="/bct.gif" alt="ZaloPay" className="h-16" />
+                            <div className="flex items-center space-x-4 opacity-90 transition-all cursor-pointer">
+                                <a href="http://online.gov.vn/Home/WebDetails/143786" target="_blank" rel="noopener noreferrer">
+                                    <img src="/bct.gif" alt="Bộ Công Thương" className="h-16" />
+                                </a>
                             </div>
                         </div>
                     </div>
