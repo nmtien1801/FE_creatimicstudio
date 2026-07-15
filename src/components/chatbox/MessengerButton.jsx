@@ -4,7 +4,7 @@ const MessengerButton = () => {
   const messengerUrl = "https://m.me/508948142310781";
 
   return (
-    <div className="fixed bottom-28 right-13 z-50 flex items-center group">
+    <div className="fixed bottom-50 right-5 z-50 flex items-center group">
       <a
         href={messengerUrl}
         target="_blank"

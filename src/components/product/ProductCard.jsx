@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Star, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import ImageLoader from "../../components/FormFields/ImageLoader";
 import { slug } from '../../utils/constants.js';
 
@@ -14,15 +14,14 @@ export default function ProductCard({ product, isTopSeller = false }) {
     return (
         <Link
             to={productUrl}
-            className="group block bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2"
+            className="group block bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 w-full max-w-full min-w-0 box-border"
         >
-            {/* Giữ nguyên khung div cũ của bạn và thêm flex để căn giữa ảnh */}
-            <div className="relative overflow-hidden h-40 sm:h-44 bg-gray-50 flex items-center justify-center">
+            <div className="relative overflow-hidden h-40 sm:h-44 bg-gray-50 flex flex-col items-center justify-center p-2 w-full max-w-full box-border">
 
-                {/* Thu nhỏ ảnh xuống 85% khung hình để tạo khoảng trống an toàn xung quanh */}
+                {/* ImageLoader: Thêm class w-full h-full để nó tuân thủ kích thước của khung cha */}
                 <ImageLoader
                     imagePath={product.image}
-                    className="w-[85%] h-[85%] object-contain group-hover:scale-105 transition-transform duration-700"
+                    className="w-full h-full max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-700 block"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
@@ -43,14 +42,12 @@ export default function ProductCard({ product, isTopSeller = false }) {
                 </button>
             </div>
 
-            {/* Content Section */}
-            <div className="p-3 sm:p-4">
-                <h3 className="text-gray-800 font-bold mb-1.5 line-clamp-2 group-hover:text-orange-600 transition-colors text-base sm:text-lg min-h-[40px]">
+            <div className="p-3 sm:p-4 w-full box-border">
+                <h3 className="text-gray-800 font-bold mb-1.5 line-clamp-2 group-hover:text-orange-600 transition-colors text-xs sm:text-base md:text-lg min-h-fit sm:min-h-[40px]">
                     {product.name}
                 </h3>
 
-                {/* Thay justify-between bằng flex-wrap và gap-3 để khống chế khoảng cách gần nhau hơn */}
-                <div className="flex flex-wrap items-center gap-3 mb-2">
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-2 mb-2 w-full">
                     <div className="flex flex-col min-w-fit">
                         <span className="font-bold text-[11px] sm:text-[13px] text-gray-900 whitespace-nowrap">
                             {Number(product.price).toLocaleString('vi-VN')} VNĐ
@@ -60,8 +57,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
                         </span>
                     </div>
 
-                    {/* Nút SĐT: Thu gọn padding (px-2.5 py-1) và giảm font chữ một chút để vừa vặn khi thu nhỏ */}
-                    <div className="bg-green-50 border border-green-100 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100 w-fit p-1 ml-auto xs:ml-0">
+                    <div className="bg-green-50 border border-green-100 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100 w-fit px-2.5 py-1 sm:ml-auto">
                         <span className="text-[9px] uppercase tracking-wider text-green-600 font-bold mr-1">LH:</span>
                         <span className="font-bold text-green-700 tracking-wider text-[11px] sm:text-[12px] whitespace-nowrap">
                             037.2672.396

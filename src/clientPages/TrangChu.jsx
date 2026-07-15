@@ -237,7 +237,7 @@ export default function TrangChu() {
                         {topSeller.map((p) => (
                             <div
                                 key={p.id}
-                                className="relative min-w-[80%] sm:min-w-0 snap-center flex-shrink-0 sm:flex-shrink"
+                                className="relative w-full min-w-full sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink"
                             >
                                 {/* Thẻ sản phẩm */}
                                 <ProductCard product={p} isTopSeller={true} />
@@ -360,7 +360,7 @@ export default function TrangChu() {
                             {PostList.map((article, index) => (
                                 <div
                                     key={index}
-                                    className="min-w-[80%] sm:min-w-[45%] md:min-w-0 snap-center flex-shrink-0 md:flex-shrink"
+                                    className="relative w-full min-w-full sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink"
                                 >
                                     <ArticleCard article={article} />
                                 </div>

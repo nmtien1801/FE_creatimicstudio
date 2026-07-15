@@ -8,8 +8,8 @@ const ZaloChatWidget = () => {
       rel="noopener noreferrer"
       style={{
         position: 'fixed',
-        bottom: '48px',
-        right: '50px', // Tăng từ 20px lên 80px để đẩy nút dịch sang bên trái nhiều hơn
+        bottom: '140px',
+        right: '20px', // Tăng từ 20px lên 80px để đẩy nút dịch sang bên trái nhiều hơn
         zIndex: 9999,
         display: 'block',
         width: '45px', // Nhỏ lại
