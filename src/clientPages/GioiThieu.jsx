@@ -5,16 +5,16 @@ export default function CMICStudio() {
     return (
         <div className="min-h-screen bg-white">
             {/* Section 1: Câu chuyện thương hiệu */}
-            <section className="max-w-7xl mx-auto px-4 py-16 bg-white">
-                <h2 className="text-4xl font-bold text-orange-500 text-center mb-12">
+            <section className="max-w-7xl mx-auto px-4 py-10 md:py-16 bg-white">
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-500 text-center mb-6 md:mb-12">
                     CÂU CHUYỆN THƯƠNG HIỆU
                 </h2>
-                <div className="grid md:grid-cols-2 gap-8 items-center">
+                <div className="grid md:grid-cols-2 gap-6 md:gap-8 items-center">
                     <div className="relative">
-                        <img src="/CauChuyenThuongHieu.png" alt="CÂU CHUYỆN THƯƠNG HIỆU" className="mx-auto mb-12" />
+                        <img src="/CauChuyenThuongHieu.png" alt="CÂU CHUYỆN THƯƠNG HIỆU" className="mx-auto mb-6 md:mb-12 max-w-[80%] md:max-w-full" />
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6 text-xs sm:text-sm md:text-base">
                         <p className="text-gray-700 leading-relaxed">
                             Trong suốt thời gian làm nội dung, thu âm giọng nói hay hát live tại
                             nhà, hầu hết khách hàng đều gặp chung một vấn đề: Họ không biết
@@ -22,7 +22,7 @@ export default function CMICStudio() {
                             tìm hiểu, mà vì thị trường quá nhiều thông tin:
                         </p>
 
-                        <ul className="space-y-3 text-gray-700">
+                        <ul className="space-y-2 md:space-y-3 text-gray-700">
                             <li className="flex items-start gap-2">
                                 <span className="text-orange-500 font-bold">•</span>
                                 <span>Thông số kỹ thuật phức tạp</span>
@@ -54,13 +54,13 @@ export default function CMICStudio() {
                             và sẵn sàng bổ sung cho những điều còn thiếu sót:
                         </p>
 
-                        <div className="bg-orange-50 border-l-4 border-orange-500 p-4 rounded">
-                            <p className="text-gray-700 italic">
+                        <div className="bg-orange-50 border-l-4 border-orange-500 p-3 md:p-4 rounded">
+                            <p className="text-gray-700 italic text-[11px] sm:text-sm md:text-base">
                                 "Nếu những kiến thức kỹ thuật kia được hệ thống lại, nếu có một thương hiệu thực sự quan tâm tới việc giúp khách hàng chọn đúng thiết bị ngay từ đầu, thì đấy không còn là việc bán lẻ, mà là một dịch vụ có giá trị thực sự."
                             </p>
                         </div>
 
-                        <p className="text-gray-800 font-semibold">
+                        <p className="text-gray-800 font-semibold text-sm md:text-base">
                             Từ một cái bật tay, thương hiệu CMIC Studio từ đó ra đời.
                         </p>
 
@@ -69,11 +69,11 @@ export default function CMICStudio() {
                             quanh một nguyên tắc:
                         </p>
 
-                        <div className="text-center py-4">
-                            <p className="text-xl font-bold text-gray-800 mb-2">
+                        <div className="text-center py-2 md:py-4">
+                            <p className="text-base sm:text-lg md:text-xl font-bold text-gray-800 mb-1 md:mb-2">
                                 TƯ VẤN THỨ BẠN MUỐN - BÁN ĐÚNG THỨ BẠN CẦN
                             </p>
-                            <p className="text-gray-600">
+                            <p className="text-gray-600 text-[11px] sm:text-sm">
                                 Chúng tôi không chạy theo việc bán nhiều nhất. Chúng tôi theo đuổi việc bán đúng nhất.
                             </p>
                         </div>
@@ -81,59 +81,53 @@ export default function CMICStudio() {
                 </div>
             </section>
 
-            {/* Section 2: TẦM NHÌN (Nền đen bọc trong nền trắng) */}
-            <section className="bg-white px-4">
+            {/* Section 2: TẦM NHÌN (Grid 3 cột cố định, chữ thu nhỏ full) */}
+            <section className="bg-white px-2 sm:px-4">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-bold text-orange-500 text-center mb-10 tracking-wider">TẦM NHÌN</h2>
+                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-orange-500 text-center mb-6 sm:mb-10 tracking-wider">
+                        TẦM NHÌN
+                    </h2>
 
-                    <div className="relative bg-black text-white rounded-[2rem] overflow-hidden py-20 px-6 md:px-12 shadow-2xl">
-                        {/* Overlay ảnh nền tối */}
+                    <div className="relative bg-black text-white rounded-[1.5rem] md:rounded-[2rem] overflow-hidden py-8 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 shadow-2xl">
                         <div className="absolute inset-0 opacity-40 bg-[url('https://images.unsplash.com/photo-1590602847861-f357a9332bbc?q=80&w=2000')] bg-cover bg-center"></div>
 
                         <div className="relative z-10">
-                            <div className="text-center mb-16 max-w-4xl mx-auto space-y-4">
-                                <p className="text-lg md:text-xl font-semibold leading-relaxed">
+                            <div className="text-center mb-8 sm:mb-16 max-w-4xl mx-auto space-y-2 sm:space-y-4">
+                                <p className="text-xs sm:text-lg md:text-xl font-semibold leading-relaxed px-2">
                                     Trở thành hệ sinh thái audio toàn diện dành cho nhà sáng tạo nội dung âm thanh tại Việt Nam -
                                     nơi khách hàng được đồng hành từ thiết bị, kỹ thuật, đến kiến thức tối ưu âm thanh.
                                 </p>
-                                <p className="text-orange-400 italic text-sm md:text-base">
+                                <p className="text-orange-400 italic text-[11px] sm:text-sm md:text-base">
                                     Trong 3 - 5 năm tới, CMIC Studio hướng đến:
                                 </p>
                             </div>
 
-                            <div className="grid md:grid-cols-3 gap-12 text-center">
-                                <div className="flex flex-col items-center">
-                                    <Headphones className="w-16 h-16 text-orange-500 mb-6" />
-                                    <h3 className="font-bold text-lg mb-2 text-white">Xây dựng thương hiệu chuẩn mực
-                                        tư vấn âm thanh cho người mới,
-                                        uy tín nhất tại Việt Nam.</h3>
+                            <div className="grid grid-cols-3 gap-2 sm:gap-6 md:gap-12 text-center items-start">
+                                <div className="flex flex-col items-center px-0.5 sm:px-1">
+                                    <Headphones className="w-7 h-7 sm:w-12 sm:h-12 md:w-16 md:h-16 text-orange-500 mb-2 sm:mb-4 md:mb-6 flex-shrink-0" />
+                                    <h3 className="font-medium md:font-bold text-[9px] sm:text-xs md:text-lg text-white leading-tight sm:leading-snug">
+                                        Xây dựng thương hiệu chuẩn mực tư vấn âm thanh cho người mới, uy tín nhất tại Việt Nam.
+                                    </h3>
                                 </div>
 
-                                <div className="flex flex-col items-center">
-                                    <Radio className="w-16 h-16 text-orange-500 mb-6" />
-                                    <h3 className="font-bold text-lg mb-2 text-white">Phát triển hệ thống dịch vụ
-                                        setup livestream -
-                                        nâng cao chất lượng âm
-                                        thanh và hình ảnh -
-                                        lựa chọn thiết bị phù hợp và
-                                        chuyên nghiệp</h3>
+                                <div className="flex flex-col items-center px-0.5 sm:px-1">
+                                    <Radio className="w-7 h-7 sm:w-12 sm:h-12 md:w-16 md:h-16 text-orange-500 mb-2 sm:mb-4 md:mb-6 flex-shrink-0" />
+                                    <h3 className="font-medium md:font-bold text-[9px] sm:text-xs md:text-lg text-white leading-tight sm:leading-snug">
+                                        Phát triển hệ thống dịch vụ setup livestream - nâng cao chất lượng âm thanh và hình ảnh - lựa chọn thiết bị phù hợp và chuyên nghiệp
+                                    </h3>
                                 </div>
 
-                                <div className="flex flex-col items-center">
-                                    <Volume2 className="w-16 h-16 text-orange-500 mb-6" />
-                                    <h3 className="font-bold text-lg mb-2 text-white">Tạo ra một hệ sinh thái nội
-                                        dung, khóa học và tài
-                                        nguyên chất lượng để bất
-                                        kỳ ai cũng có thể bắt đầu
-                                        hành trình trở thành nhà
-                                        sáng tạo nội dung âm
-                                        thanh không rào cản</h3>
+                                <div className="flex flex-col items-center px-0.5 sm:px-1">
+                                    <Volume2 className="w-7 h-7 sm:w-12 sm:h-12 md:w-16 md:h-16 text-orange-500 mb-2 sm:mb-4 md:mb-6 flex-shrink-0" />
+                                    <h3 className="font-medium md:font-bold text-[9px] sm:text-xs md:text-lg text-white leading-tight sm:leading-snug">
+                                        Tạo ra một hệ sinh thái nội dung, khóa học và tài nguyên chất lượng để bất kỳ ai cũng có thể bắt đầu hành trình trở thành nhà sáng tạo nội dung âm thanh không rào cản
+                                    </h3>
                                 </div>
                             </div>
 
-                            <div className="mt-20 text-center max-w-4xl mx-auto border-t border-white/10 pt-8">
-                                <p className="text-lg md:text-xl font-medium">Tầm nhìn của chúng tôi dựa trên một niềm tin đơn giản:</p>
-                                <p className="italic text-gray-400 mb-2  ">
+                            <div className="mt-10 sm:mt-20 text-center max-w-4xl mx-auto border-t border-white/10 pt-6 sm:pt-8">
+                                <p className="text-xs sm:text-lg md:text-xl font-medium mb-1">Tầm nhìn của chúng tôi dựa trên một niềm tin đơn giản:</p>
+                                <p className="italic text-gray-400 text-[10px] sm:text-sm md:text-base leading-normal px-2">
                                     Âm thanh chất lượng không nên là đặc quyền của những người chuyên về kỹ thuật, mà là quyền của mọi nhà sáng tạo nội dung.
                                 </p>
                             </div>
@@ -142,56 +136,54 @@ export default function CMICStudio() {
                 </div>
             </section>
 
-            {/* Section 3: SỨ MỆNH (Nền đen bọc trong nền trắng + Card trắng) */}
-            <section className="bg-white py-16 px-4">
+            {/* Section 3: SỨ MỆNH (Grid 2 cột cố định, chữ thu nhỏ full) */}
+            <section className="bg-white py-12 sm:py-16 px-2 sm:px-4">
                 <div className="max-w-7xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-bold text-orange-500 text-center mb-10 tracking-wider">SỨ MỆNH</h2>
+                    <h2 className="text-2xl sm:text-4xl md:text-5xl font-bold text-orange-500 text-center mb-6 sm:mb-10 tracking-wider">
+                        SỨ MỆNH
+                    </h2>
 
-                    <div className="relative bg-[#0a0a0a] text-white rounded-[2rem] overflow-hidden py-20 px-6 md:px-12 shadow-2xl">
+                    <div className="relative bg-[#0a0a0a] text-white rounded-[1.5rem] md:rounded-[2rem] overflow-hidden py-8 sm:py-16 md:py-20 px-4 sm:px-6 md:px-12 shadow-2xl">
                         <div className="absolute inset-0 opacity-30 bg-[url('https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?q=80&w=2000')] bg-cover bg-center"></div>
 
                         <div className="relative z-10">
-                            <div className="text-center mb-12 space-y-4 max-w-4xl mx-auto">
-                                <p className="text-lg md:text-xl font-semibold">
+                            <div className="text-center mb-8 sm:mb-12 space-y-2 sm:space-y-4 max-w-4xl mx-auto px-2">
+                                <p className="text-xs sm:text-lg md:text-xl font-semibold leading-relaxed">
                                     Giúp các nhà sáng tạo nội dung tạo ra âm thanh chất lượng một cách dễ dàng, đúng nhu cầu và không tốn kém sai lầm.
                                 </p>
-                                <p className="text-gray-300">
+                                <p className="text-gray-300 text-[10px] sm:text-sm md:text-base leading-normal">
                                     CMIC Studio tồn tại với mục tiêu duy nhất: giải quyết nỗi lo <span className="text-white font-bold">"mua sai thiết bị"</span> và mang đến trải nghiệm âm thanh trọn vẹn cho khách hàng.
                                 </p>
-                                <p className="italic text-gray-400">Chúng tôi thực hiện điều đó bằng cách:</p>
+                                <p className="italic text-gray-400 text-[10px] sm:text-sm md:text-base">Chúng tôi thực hiện điều đó bằng cách:</p>
                             </div>
 
-                            <div className="grid md:grid-cols-2 gap-8">
-                                {/* Card 1 */}
-                                <div className="bg-white text-black p-8 rounded-[1.5rem] relative min-h-[140px] flex items-center shadow-lg">
-                                    <p className="font-bold text-lg pr-12 leading-tight">
+                            <div className="grid grid-cols-2 gap-2 sm:gap-6 md:gap-8">
+                                <div className="bg-white text-black p-3 sm:p-6 md:p-8 rounded-[1rem] md:rounded-[1.5rem] relative min-h-[85px] sm:min-h-[120px] md:min-h-[140px] flex items-center shadow-lg">
+                                    <p className="font-bold text-[9px] sm:text-sm md:text-lg pr-4 sm:pr-8 md:pr-12 leading-tight">
                                         Tư vấn cá nhân hoá 1:1 dựa trên mục tiêu và nhu cầu của khách
                                     </p>
-                                    <Users className="absolute bottom-4 right-6 w-10 h-10 text-orange-500" />
+                                    <Users className="absolute bottom-2 right-2 sm:bottom-4 sm:right-6 w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10 text-orange-500 flex-shrink-0" />
                                 </div>
 
-                                {/* Card 2 */}
-                                <div className="bg-white text-black p-8 rounded-[1.5rem] relative min-h-[140px] flex items-center shadow-lg">
-                                    <p className="font-bold text-lg pr-12 leading-tight">
+                                <div className="bg-white text-black p-3 sm:p-6 md:p-8 rounded-[1rem] md:rounded-[1.5rem] relative min-h-[85px] sm:min-h-[120px] md:min-h-[140px] flex items-center shadow-lg">
+                                    <p className="font-bold text-[9px] sm:text-sm md:text-lg pr-4 sm:pr-8 md:pr-12 leading-tight">
                                         Đảm bảo bán đúng - không upsell - không lãng phí
                                     </p>
-                                    <CheckCircle className="absolute bottom-4 right-6 w-10 h-10 text-orange-500" />
+                                    <CheckCircle className="absolute bottom-2 right-2 sm:bottom-4 sm:right-6 w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10 text-orange-500 flex-shrink-0" />
                                 </div>
 
-                                {/* Card 3 */}
-                                <div className="bg-white text-black p-8 rounded-[1.5rem] relative min-h-[140px] flex items-center shadow-lg">
-                                    <p className="font-bold text-lg pr-12 leading-tight">
+                                <div className="bg-white text-black p-3 sm:p-6 md:p-8 rounded-[1rem] md:rounded-[1.5rem] relative min-h-[85px] sm:min-h-[120px] md:min-h-[140px] flex items-center shadow-lg">
+                                    <p className="font-bold text-[9px] sm:text-sm md:text-lg pr-4 sm:pr-8 md:pr-12 leading-tight">
                                         Đồng hành & hỗ trợ sau bán
                                     </p>
-                                    <HeartHandshake className="absolute bottom-4 right-6 w-10 h-10 text-orange-500" />
+                                    <HeartHandshake className="absolute bottom-2 right-2 sm:bottom-4 sm:right-6 w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10 text-orange-500 flex-shrink-0" />
                                 </div>
 
-                                {/* Card 4 */}
-                                <div className="bg-white text-black p-8 rounded-[1.5rem] relative min-h-[140px] flex items-center shadow-lg">
-                                    <p className="font-bold text-lg pr-12 leading-tight">
+                                <div className="bg-white text-black p-3 sm:p-6 md:p-8 rounded-[1rem] md:rounded-[1.5rem] relative min-h-[85px] sm:min-h-[120px] md:min-h-[140px] flex items-center shadow-lg">
+                                    <p className="font-bold text-[9px] sm:text-sm md:text-lg pr-4 sm:pr-8 md:pr-12 leading-tight">
                                         Hệ thống hoá kiến thức âm thanh để giúp khách hàng hiểu - làm - kiểm soát chất lượng theo cách đơn giản nhất.
                                     </p>
-                                    <BookOpen className="absolute bottom-4 right-6 w-10 h-10 text-orange-500" />
+                                    <BookOpen className="absolute bottom-2 right-2 sm:bottom-4 sm:right-6 w-4 h-4 sm:w-8 sm:h-8 md:w-10 md:h-10 text-orange-500 flex-shrink-0" />
                                 </div>
                             </div>
                         </div>
@@ -200,112 +192,110 @@ export default function CMICStudio() {
             </section>
 
             {/* Section 4: Lĩnh vực hoạt động */}
-            <section className="bg-white py-16">
+            <section className="bg-white py-10 md:py-16">
                 <div className="max-w-7xl mx-auto px-4">
-                    <div className="grid md:grid-cols-2 gap-12 items-center">
-                        <div>
-                            <h2 className="text-4xl font-bold text-orange-500 mb-6">
+                    <div className="grid md:grid-cols-2 gap-6 md:gap-12 items-center">
+                        <div className="text-center md:text-left">
+                            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-orange-500 mb-4 md:mb-6">
                                 LĨNH VỰC HOẠT ĐỘNG
                             </h2>
-                            <h1 className=" font-medium mb-6 text-gray-700 leading-relaxed">
+                            <h1 className="text-xs sm:text-sm md:text-base font-medium mb-6 text-gray-700 leading-relaxed">
                                 Chúng tôi cung cấp thiết bị thu âm chính hãng, đồng thời hỗ trợ các dịch vụ đi kèm như set up live stream, cài cubase, cho thuê linh động các thiết bị tùy theo nhu cầu của khách hàng.
                             </h1>
                         </div>
-                        <img src="/LinhVucHoatDong.png" alt="LĨNH VỰC HOẠT ĐỘNG" className="bg-white " />
+                        <img src="/LinhVucHoatDong.png" alt="LĨNH VỰC HOẠT ĐỘNG" className="bg-white max-w-[80%] md:max-w-full mx-auto" />
                     </div>
-
-
                 </div>
             </section>
 
             {/* Giá trị cốt lõi */}
             <section className="bg-white py-4 px-4">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <h2 className="text-4xl font-bold text-orange-500 inline-block relative pb-4">
+                    <div className="text-center mb-8 md:mb-16">
+                        <h2 className="text-2xl sm:text-4xl font-bold text-orange-500 inline-block relative pb-4">
                             GIÁ TRỊ CỐT LÕI
                             <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-24 h-1 bg-black"></span>
                         </h2>
                     </div>
 
-                    <div className="grid md:grid-cols-3 gap-y-12 gap-x-8">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-y-8 gap-x-4 md:gap-x-8">
                         {/* 1. Nhiệt tình - Tận tâm */}
                         <div className="flex flex-col items-center text-center group">
-                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
-                                <Zap className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            <div className="mb-3 md:mb-6 p-3 md:p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <Zap className="w-6 h-6 md:w-10 md:h-10 text-orange-500 group-hover:text-white" />
                             </div>
-                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                            <h3 className="font-extrabold text-xs sm:text-sm md:text-lg mb-1 md:mb-3 uppercase tracking-tight">
                                 NHIỆT TÌNH - TẬN TÂM - CHUYÊN NGHIỆP
                             </h3>
-                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                            <p className="text-gray-600 text-[11px] sm:text-xs md:text-sm leading-relaxed max-w-[280px]">
                                 Mỗi khách hàng đều được hỗ trợ nghiêm túc
                             </p>
                         </div>
 
                         {/* 2. Minh bạch giá */}
                         <div className="flex flex-col items-center text-center group">
-                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
-                                <ShieldCheck className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            <div className="mb-3 md:mb-6 p-3 md:p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <ShieldCheck className="w-6 h-6 md:w-10 md:h-10 text-orange-500 group-hover:text-white" />
                             </div>
-                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                            <h3 className="font-extrabold text-xs sm:text-sm md:text-lg mb-1 md:mb-3 uppercase tracking-tight">
                                 MINH BẠCH GIÁ
                             </h3>
-                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                            <p className="text-gray-600 text-[11px] sm:text-xs md:text-sm leading-relaxed max-w-[280px]">
                                 Không đội giá, không "seller nói sao thì mua vậy".
                             </p>
                         </div>
 
                         {/* 3. Không Upsell */}
                         <div className="flex flex-col items-center text-center group">
-                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
-                                <CheckCircle className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            <div className="mb-3 md:mb-6 p-3 md:p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <CheckCircle className="w-6 h-6 md:w-10 md:h-10 text-orange-500 group-hover:text-white" />
                             </div>
-                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                            <h3 className="font-extrabold text-xs sm:text-sm md:text-lg mb-1 md:mb-3 uppercase tracking-tight">
                                 KHÔNG UPSELL
                             </h3>
-                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                            <p className="text-gray-600 text-[11px] sm:text-xs md:text-sm leading-relaxed max-w-[280px]">
                                 Nếu thiết bị rẻ hơn mà dùng vẫn tốt - chúng tôi chọn phương án đó
                             </p>
                         </div>
 
-                        {/* Phân cách giữa 2 hàng (Tùy chọn: Có thể dùng border-t hoặc khoảng cách grid) */}
-                        <div className="hidden md:block col-span-3 h-[10px] bg-black my-4"></div>
+                        {/* Phân cách line đen ngang ở desktop */}
+                        <div className="hidden md:block col-span-3 h-[2px] bg-black/10 my-4"></div>
 
                         {/* 4. Tư vấn đúng nhu cầu */}
                         <div className="flex flex-col items-center text-center group">
-                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
-                                <Headphones className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            <div className="mb-3 md:mb-6 p-3 md:p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <Headphones className="w-6 h-6 md:w-10 md:h-10 text-orange-500 group-hover:text-white" />
                             </div>
-                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                            <h3 className="font-extrabold text-xs sm:text-sm md:text-lg mb-1 md:mb-3 uppercase tracking-tight">
                                 TƯ VẤN ĐÚNG NHU CẦU
                             </h3>
-                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                            <p className="text-gray-600 text-[11px] sm:text-xs md:text-sm leading-relaxed max-w-[280px]">
                                 Không phải ai cũng cần soundcard 3-4 triệu; đôi khi chỉ cần micro 900k.
                             </p>
                         </div>
 
                         {/* 5. Đồng hành sau bán */}
                         <div className="flex flex-col items-center text-center group">
-                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
-                                <HeartHandshake className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            <div className="mb-3 md:mb-6 p-3 md:p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <HeartHandshake className="w-6 h-6 md:w-10 md:h-10 text-orange-500 group-hover:text-white" />
                             </div>
-                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                            <h3 className="font-extrabold text-xs sm:text-sm md:text-lg mb-1 md:mb-3 uppercase tracking-tight">
                                 ĐỒNG HÀNH SAU BÁN
                             </h3>
-                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                            <p className="text-gray-600 text-[11px] sm:text-xs md:text-sm leading-relaxed max-w-[280px]">
                                 Setup 1:1, hỗ trợ chỉnh và khắc phục vấn đề về âm thanh
                             </p>
                         </div>
 
                         {/* 6. Tối ưu chi phí */}
                         <div className="flex flex-col items-center text-center group">
-                            <div className="mb-6 p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
-                                <TrendingDown className="w-10 h-10 text-orange-500 group-hover:text-white" />
+                            <div className="mb-3 md:mb-6 p-3 md:p-5 bg-orange-50 rounded-full group-hover:bg-orange-500 transition-colors duration-300">
+                                <TrendingDown className="w-6 h-6 md:w-10 md:h-10 text-orange-500 group-hover:text-white" />
                             </div>
-                            <h3 className="font-extrabold text-lg mb-3 uppercase tracking-tight">
+                            <h3 className="font-extrabold text-xs sm:text-sm md:text-lg mb-1 md:mb-3 uppercase tracking-tight">
                                 TỐI ƯU CHI PHÍ
                             </h3>
-                            <p className="text-gray-600 leading-relaxed max-w-[280px]">
+                            <p className="text-gray-600 text-[11px] sm:text-xs md:text-sm leading-relaxed max-w-[280px]">
                                 Giúp khách tránh mua sai, tránh lãng phí
                             </p>
                         </div>
@@ -315,49 +305,48 @@ export default function CMICStudio() {
 
             {/* Section 5: Nhà sáng lập */}
             <section className="max-w-7xl mx-auto px-4 py-12 md:py-20">
-                <h2 className="text-3xl md:text-4xl font-bold text-orange-500 text-center mb-10 md:mb-16">
+                <h2 className="text-2xl md:text-4xl font-bold text-orange-500 text-center mb-8 md:mb-16">
                     NHÀ SÁNG LẬP CMIC STUDIO
                 </h2>
-                <div className="relative w-full bg-white overflow-hidden flex flex-col lg:block py-10 lg:py-20">
-                    <div className="flex flex-col lg:block items-center mb-16 lg:mb-0">
-                        {/* IMAGE LEFT */}
-                        <div className="lg:absolute lg:left-0 lg:top-1/2 lg:-translate-y-1/2 z-0 mb-6 lg:mb-0">
+                <div className="relative w-full bg-white overflow-hidden flex flex-col lg:block py-4 lg:py-20">
+                    <div className="flex flex-col lg:block items-center mb-10 lg:mb-0">
+                        <div className="lg:absolute lg:left-0 lg:top-1/2 lg:-translate-y-1/2 z-0 mb-4 lg:mb-0">
                             <img
                                 src="/thao.jpg"
                                 alt="NGUYỄN THANH THẢO"
-                                className="h-[300px] md:h-[380px] w-[250px] md:w-[300px] object-cover mx-auto"
+                                className="h-[220px] md:h-[380px] w-[180px] md:w-[300px] object-cover mx-auto"
                                 style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}
                             />
                         </div>
                         <div className="relative z-10 lg:max-w-3xl lg:mx-auto text-center lg:text-left">
                             <div
-                                className="lg:translate-x-15 inline-block px-8 py-4 w-full lg:w-auto"
+                                className="inline-block px-6 py-3 w-full lg:w-auto"
                                 style={{ background: 'linear-gradient(to right, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%)' }}
                             >
-                                <h3 className="text-2xl md:text-3xl font-bold tracking-wide">NGUYỄN THANH THẢO</h3>
-                                <p className="mt-1 md:mt-2 text-gray-600 tracking-widest text-sm md:text-base">FOUNDER</p>
+                                <h3 className="text-xl md:text-3xl font-bold tracking-wide">NGUYỄN THANH THẢO</h3>
+                                <p className="mt-1 text-gray-600 tracking-widest text-xs md:text-base">FOUNDER</p>
                             </div>
                         </div>
                     </div>
 
                     <div className="hidden lg:block h-px bg-gray-200 w-1/3 mx-auto my-16 relative z-10"></div>
-                    {/* IMAGE RIGHT */}
+
                     <div className="flex flex-col lg:block items-center">
-                        <div className="lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 z-0 mb-6 lg:mb-0 order-first lg:order-none">
+                        <div className="lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2 z-0 mb-4 lg:mb-0 order-first lg:order-none">
                             <img
                                 src="/quynh.jpg"
                                 alt="LÊ XUÂN QUỲNH"
-                                className="h-[300px] md:h-[380px] w-[250px] md:w-[300px] object-cover mx-auto"
+                                className="h-[220px] md:h-[380px] w-[180px] md:w-[300px] object-cover mx-auto"
                                 style={{ clipPath: 'polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%)' }}
                             />
                         </div>
                         <div className="relative z-10 lg:max-w-3xl lg:mx-auto text-center lg:text-right">
                             <div
-                                className="lg:-translate-x-15 inline-block px-8 py-4 w-full lg:w-auto"
+                                className="inline-block px-6 py-3 w-full lg:w-auto"
                                 style={{ background: 'linear-gradient(to left, #f3f4f6 0%, rgba(243, 244, 246, 0) 100%)' }}
                             >
-                                <h3 className="text-2xl md:text-3xl font-bold tracking-wide">LÊ XUÂN QUỲNH</h3>
-                                <p className="mt-1 md:mt-2 text-gray-600 tracking-widest text-sm md:text-base">CO-FOUNDER</p>
+                                <h3 className="text-xl md:text-3xl font-bold tracking-wide">LÊ XUÂN QUỲNH</h3>
+                                <p className="mt-1 text-gray-600 tracking-widest text-xs md:text-base">CO-FOUNDER</p>
                             </div>
                         </div>
                     </div>

@@ -12,12 +12,13 @@ import {
 import ApiContact from "../apis/ApiContact";
 import { toast } from 'react-toastify'
 
+// ================= ServiceCommitment: ĐÃ SỬA SANG CĂN TRÁI =================
 const ServiceCommitment = ({ icon: Icon, title, description }) => (
-    <div className="group text-center p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-500 hover:-translate-y-1 w-full max-w-[150px] aspect-square flex flex-col justify-center items-center mx-auto border border-gray-50">
+    <div className="group text-left p-3 bg-white rounded-xl hover:shadow-lg transition-all duration-500 hover:-translate-y-1 w-full max-w-[150px] aspect-square flex flex-col justify-center items-start mx-auto border border-gray-50">
         <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-pink-500 rounded-lg flex items-center justify-center mb-2 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 shadow-md">
             <Icon className="w-5 h-5 text-white" />
         </div>
-        <div className="px-1">
+        <div className="px-0">
             <h4 className="text-[12px] font-bold text-gray-900 mb-1 leading-tight line-clamp-2 uppercase">
                 {title}
             </h4>
@@ -66,7 +67,7 @@ export default function Footer() {
 
     return (
         <footer className="text-white mt-8 font-sans">
-            {/* Phần cam kết dịch vụ - Gap nhỏ để xích lại gần nhau */}
+            {/* Phần cam kết dịch vụ */}
             <div className="bg-black">
                 <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 px-4 py-8">
                     <ServiceCommitment
@@ -92,13 +93,13 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Phần thông tin chính - Đã sửa justify-between */}
+            {/* Phần thông tin chính - Thay items-center thành items-start */}
             <div className="bg-[#ed792f]">
-                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-center lg:items-start gap-12 px-6 py-12">
+                <div className="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-start gap-12 px-6 py-12">
 
-                    {/* Cột 1: Thông tin liên hệ */}
-                    <div className="w-full lg:w-auto space-y-6">
-                        <div className="flex justify-center lg:justify-start items-center space-x-4">
+                    {/* Cột 1: Thông tin liên hệ - Đổi justify-center thành justify-start */}
+                    <div className="w-full lg:w-auto space-y-6 text-left">
+                        <div className="flex justify-start items-center space-x-4">
                             <img
                                 src={LOGO}
                                 alt="Logo"
@@ -117,35 +118,36 @@ export default function Footer() {
                             </div>
                         </div>
 
+                        {/* Danh sách thông tin dạng Icon + Text liên kết thẳng góc trái */}
                         <div className="text-base space-y-4">
-                            <div className="flex items-start justify-center lg:justify-start">
+                            <div className="flex items-start justify-start">
                                 <MapPin className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3 mt-1" />
                                 <p className="max-w-xs">252/21/18 Phạm Văn Chiêu, Khu phố 30, Phường Thông Tây Hội, TP.HCM</p>
                             </div>
-                            <div className="flex items-center justify-center lg:justify-start">
+                            <div className="flex items-center justify-start">
                                 <Phone className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
                                 <p><span className="font-bold">Hotline:</span> 037.2672.396</p>
                             </div>
-                            <div className="flex items-center justify-center lg:justify-start">
+                            <div className="flex items-center justify-start">
                                 <Globe className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
                                 <p><span className="font-bold">Website:</span> cmicstudio.vn</p>
                             </div>
-                            <div className="flex items-center justify-center lg:justify-start">
+                            <div className="flex items-center justify-start">
                                 <Mail className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
                                 <p>
                                     <strong className="font-bold">Email:</strong> contact@creatimichub.vn
                                 </p>
                             </div>
-                            <div className="flex items-start justify-center lg:justify-start">
+                            <div className="flex items-start justify-start">
                                 <p className="max-w-xs">HỘ KINH DOANH CMIC MEDIA SERVICES - MST: 075301018907</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Cột 2: Chính sách & Hỗ trợ */}
-                    <div className="w-full lg:w-auto flex flex-col items-center lg:items-start text-center lg:text-left space-y-4">
+                    {/* Cột 2: Chính sách & Hỗ trợ - Chuyển items-center sang items-start, text-center sang text-left */}
+                    <div className="w-full lg:w-auto flex flex-col items-start text-left space-y-4">
                         <h2 className="text-lg lg:text-xl font-bold uppercase tracking-wider">Chính sách & Hỗ trợ</h2>
-                        <ul className="space-y-2 ">
+                        <ul className="space-y-2">
                             <li>
                                 <a href="dieu-khoan-dich-vu-va-dieu-kien-giao-dich-chung" className="hover:underline hover:text-orange-950 transition-colors">• Điều khoản dịch vụ & Điều kiện giao dịch chung</a>
                             </li>
@@ -161,8 +163,8 @@ export default function Footer() {
                         </ul>
                     </div>
 
-                    {/* Cột 3: Đăng ký & Social */}
-                    <div className="w-full lg:w-auto flex flex-col items-center lg:items-start text-center lg:text-left space-y-6">
+                    {/* Cột 3: Đăng ký & Social - Sửa sang items-start và text-left toàn diện */}
+                    <div className="w-full lg:w-auto flex flex-col items-start text-left space-y-6">
                         <div className="space-y-2">
                             <h2 className="text-lg lg:text-xl font-bold uppercase tracking-wider">ĐĂNG KÝ NHẬN TIN</h2>
                             <p className="text-sm italic opacity-90">Nhận tin mới nhất từ chúng tôi</p>
@@ -188,7 +190,8 @@ export default function Footer() {
                             </button>
                         </div>
 
-                        <div className="w-full flex flex-col items-center lg:items-start gap-5 pt-5 border-t border-white/20">
+                        {/* Social + Payment: Sửa flex flex-col items-center sang items-start */}
+                        <div className="w-full flex flex-col items-start gap-5 pt-5 border-t border-white/20">
                             <div className="flex space-x-3">
                                 {socialImages.map((item) => (
                                     <a
@@ -217,6 +220,7 @@ export default function Footer() {
                 </div>
             </div>
 
+            {/* Dòng bản quyền dưới cùng: Nếu bạn muốn nó cũng nằm trái thì đổi text-center thành text-left pl-6 */}
             <div className="bg-[#ed780f] text-center py-3 text-xs text-white/90">
                 © 2025 CMICSTUDIO. All rights reserved.
             </div>
