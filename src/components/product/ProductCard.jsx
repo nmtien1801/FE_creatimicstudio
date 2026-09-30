@@ -43,25 +43,22 @@ export default function ProductCard({ product, isTopSeller = false }) {
             </div>
 
             <div className="p-3 sm:p-4 w-full box-border">
-                <h3 className="text-gray-800 font-bold mb-1.5 line-clamp-2 group-hover:text-orange-600 transition-colors text-xs sm:text-base md:text-lg min-h-fit sm:min-h-[40px]">
+                <h3 className="text-gray-800 mb-1.5 line-clamp-2 group-hover:text-orange-600 transition-colors text-xs sm:text-base md:text-lg min-h-fit sm:min-h-[40px]">
                     {product.name}
                 </h3>
 
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-2 mb-2 w-full">
                     <div className="flex flex-col min-w-fit">
-                        <span className="font-bold text-[11px] sm:text-[13px] text-gray-900 whitespace-nowrap">
+                        <span className="text-[11px] sm:text-[13px] text-gray-900 whitespace-nowrap text-orange-600">
                             {Number(product.price).toLocaleString('vi-VN')} VNĐ
                         </span>
-                        <span className="text-gray-400 line-through text-[10px] sm:text-[11px] font-medium whitespace-nowrap">
+                        <span className="text-orange-600 line-through text-[10px] sm:text-[11px] font-medium whitespace-nowrap">
                             {(Number(product.price || 0) * 1.25).toLocaleString('vi-VN')} VNĐ
                         </span>
                     </div>
 
                     <div className="bg-green-50 border border-green-100 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100 w-fit px-2.5 py-1 sm:ml-auto">
-                        <span className="text-[9px] uppercase tracking-wider text-green-600 font-bold mr-1">LH:</span>
-                        <span className="font-bold text-green-700 tracking-wider text-[11px] sm:text-[12px] whitespace-nowrap">
-                            037.2672.396
-                        </span>
+                        <span className="text-[9px] uppercase tracking-wider text-green-600 font-bold mr-1">210 đã bán</span>
                     </div>
                 </div>
             </div>

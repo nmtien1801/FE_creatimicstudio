@@ -1,105 +1,128 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { ArrowRight } from 'lucide-react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { ArrowRight, ChevronRight, ChevronLeft, Play } from 'lucide-react';
 import ProductCard from '../components/product/ProductCard.jsx';
 import { useDispatch, useSelector } from 'react-redux';
 import { getListPost } from '../redux/postSlice';
 import { toast } from 'react-toastify';
 import ImageLoader from '../components/FormFields/ImageLoader';
 import { getListProductDropdown } from '../redux/productSlice';
-import { typeCategory_obligatory } from '../utils/constants.js'
-import ApiProductCategory from '../apis/ApiProductCategory'
+import { typeCategory_obligatory } from '../utils/constants.js';
+import ApiProductCategory from '../apis/ApiProductCategory';
 
-const comboBanners = [
-    {
-        title: "COMBO KẾT NỐI LIVESTREAM",
-        subtitle: "CHUYÊN NGHIỆP",
-        img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=600&q=80',
-    },
-    {
-        title: "COMBO PHỤ KIỆN CƠ BẢN",
-        subtitle: "TỐI ƯU HIỆU SUẤT",
-        img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=600&q=80',
-    },
-    {
-        title: "BỘ 3 PHỤ KIỆN",
-        subtitle: "CHO MIC KHÔNG DÂY",
-        img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=600&q=80',
-    },
-    {
-        title: "COMBO CHẶN ÂM",
-        subtitle: "DÀNH CHO PODCASTER",
-        img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=600&q=80',
-    },
+// Danh mục icon bar phía trên danh sách sản phẩm
+const quickCategories = [
+    { title: "Loa", img: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=200&q=80", link: "/loa-kiem-am/12/all" },
+    { title: "Tai nghe", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80", link: "/tai-nghe" },
+    { title: "Box Livestream", img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=200&q=80", link: "/box-livestream" },
+    { title: "Setup Livestream", img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&q=80", link: "/setup-livestream" },
+    { title: "Thuê thiết bị", img: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=200&q=80", link: "/thue-thiet-bi" },
 ];
 
-const CategorySection = ({ header, products, bannerImage, buttonLink }) => {
-    const limitedProducts = products.slice(0, 6);
+const youtubeReviews = [
+    {
+        id: '1',
+        title: 'Hướng dẫn cài đặt trọn bộ Micro và Soundcard Livestream',
+        thumbnail: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&q=80',
+        url: 'https://youtube.com',
+        duration: '12:45'
+    },
+    {
+        id: '2',
+        title: 'Review chi tiết Soundcard thu âm chuyên nghiệp 2026',
+        thumbnail: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80',
+        url: 'https://youtube.com',
+        duration: '08:20'
+    },
+    {
+        id: '3',
+        title: 'Top 3 Combo thu âm dành cho người mới bắt đầu',
+        thumbnail: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=500&q=80',
+        url: 'https://youtube.com',
+        duration: '15:10'
+    },
+    {
+        id: '4',
+        title: 'Test chất âm Micro kiểm âm thực tế trong phòng kín',
+        thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80',
+        url: 'https://youtube.com',
+        duration: '06:40'
+    },
+    {
+        id: '5',
+        title: 'Kinh nghiệm setup góc livestream chuẩn studio tại nhà',
+        thumbnail: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=500&q=80',
+        url: 'https://youtube.com',
+        duration: '10:15'
+    }
+];
+
+const brandPartners = [
+    { name: "AVANTA", src: "/brands/avanta.png" },
+    { name: "LUMINA", src: "/brands/lumina.png" },
+    { name: "ÁNH DƯƠNG", src: "/brands/anhduong.png" },
+    { name: "MENSPIRE", src: "/brands/menspire.png" },
+    { name: "LUMINELLA", src: "/brands/luminella.png" },
+    { name: "VANGUARD", src: "/brands/vanguard.png" },
+    { name: "SEN AN", src: "/brands/senan.png" },
+    { name: "CHRONOS AURA", src: "/brands/chronos.png" },
+    { name: "GIA DỤNG AN KHANG", src: "/brands/ankhang.png" },
+    { name: "AURELIA LUNA", src: "/brands/aurelia.png" },
+];
+
+const ArticleCard = ({ article }) => (
+    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group cursor-pointer border border-gray-100 flex flex-col">
+        <div className="h-32 sm:h-36 w-full overflow-hidden">
+            <ImageLoader
+                imagePath={article.image}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
+        </div>
+        <div className="p-3">
+            <h3 className="text-xs md:text-sm text-gray-600 line-clamp-2 min-h-[34px] group-hover:text-[#ed792f] transition-colors uppercase italic leading-snug">
+                {article.title}
+            </h3>
+        </div>
+    </div>
+);
+
+const SectionHeader = ({ title, viewAllLink, note }) => (
+    <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-6">
+        <div className="flex items-center space-x-3">
+            <span className="w-1.5 h-6 bg-[#ed792f] rounded-full inline-block"></span>
+            <h2 className="text-lg md:text-xl font-bold uppercase tracking-tight text-gray-900">
+                {title}
+            </h2>
+            {note && (
+                <span className="hidden sm:inline-block bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded font-normal">
+                    {note}
+                </span>
+            )}
+        </div>
+        {viewAllLink && (
+            <a
+                href={viewAllLink}
+                className="text-[#ed792f] hover:text-[#d4621a] text-xs md:text-sm font-semibold flex items-center gap-1 transition-colors"
+            >
+                Xem tất cả <ChevronRight className="w-4 h-4" />
+            </a>
+        )}
+    </div>
+);
+
+// Lưới sản phẩm chuẩn 5 cột
+const ProductGridSection = ({ title, products = [], viewAllLink, limit = 10 }) => {
+    const displayProducts = products.slice(0, limit);
     return (
-        <section className="px-5 sm:px-0 py-4 md:py-8 bg-white">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="flex justify-between items-center mb-12 mt-5">
-                    <h2 className="text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
-                        {header}
-                    </h2>
-                    <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-                    {/* Banner Dọc */}
-                    <div className="md:col-span-4 flex justify-center self-center">
-                        <div className="hidden md:block relative w-full max-w-[542px] aspect-[542/640] rounded-[2.5rem] overflow-hidden shadow-2xl group cursor-pointer">
-                            <img
-                                src={bannerImage}
-                                alt=""
-                                className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Lưới Sản phẩm - Giới hạn 2 hàng */}
-                    <div className="md:col-span-8">
-                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 cursor-pointer">
-                            {limitedProducts.map(product => (
-                                <ProductCard key={product.id} product={product} ProductCard={true} />
-                            ))}
-                        </div>
-                    </div>
-                </div>
-
-                {/* Nút Xem thêm */}
-                <div className="mt-12 text-center">
-                    <a href={buttonLink} className="inline-flex items-center justify-center px-10 py-4 bg-[#ed792f] text-white text-lg font-bold rounded-full shadow-lg hover:brightness-110 hover:scale-105 transition-all duration-300">
-                        Xem thêm
-                    </a>
-                </div>
+        <section className="mb-10">
+            <SectionHeader title={title} viewAllLink={viewAllLink} />
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
+                {displayProducts.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                ))}
             </div>
         </section>
     );
 };
-
-const ArticleCard = ({ article }) => (
-    <div className="bg-white rounded-[1.5rem] md:rounded-[2rem] shadow-sm hover:shadow-2xl transition-all duration-500 overflow-hidden group cursor-pointer md:hover:-translate-y-1 border border-gray-100">
-        {/* Chiều cao ảnh: h-48 trên mobile, h-56 trên desktop */}
-        <div className="h-40 md:h-48 w-full overflow-hidden">
-            <ImageLoader
-                imagePath={article.image}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-            />
-        </div>
-
-        {/* Padding: p-5 trên mobile, p-8 trên desktop */}
-        <div className="p-4 md:p-6">
-            {/* Font size & min-h: Nhỏ lại trên mobile để tiết kiệm không gian */}
-            <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3 md:mb-4 line-clamp-2 min-h-[40px] md:min-h-[44px] group-hover:text-[#ed792f] transition-colors uppercase italic">
-                {article.title}
-            </h3>
-
-            <span className="inline-flex items-center text-[#ed792f] font-black text-[10px] md:text-xs uppercase tracking-widest">
-                Đọc thêm <ArrowRight className="ml-1 md:ml-2 w-3 h-3 md:w-4 md:h-4" />
-            </span>
-        </div>
-    </div>
-);
 
 export default function TrangChu() {
     const dispatch = useDispatch();
@@ -109,14 +132,30 @@ export default function TrangChu() {
     const [topSeller, setTopSeller] = useState([]);
     const [comboLivestream, setComboLivestream] = useState([]);
     const [phuKien, setPhuKien] = useState([]);
-    const [loa, setLoa] = useState([]);
-    const [Soundcard, setSoundcard] = useState([]);
+    const [soundcard, setSoundcard] = useState([]);
+
+    const [consultForm, setConsultForm] = useState({ name: '', phone: '', note: '' });
+
+    // ID video YouTube review
+    const reviewYoutubeId = "dQw4w9WgXcQ";
+
+    const toneCarouselRef = useRef(null);
+
+    const scrollToneCarousel = (direction) => {
+        if (toneCarouselRef.current) {
+            const { scrollLeft, clientWidth } = toneCarouselRef.current;
+            const scrollAmount = clientWidth * 0.75;
+            toneCarouselRef.current.scrollTo({
+                left: direction === 'left' ? scrollLeft - scrollAmount : scrollLeft + scrollAmount,
+                behavior: 'smooth'
+            });
+        }
+    };
 
     const slides = [
-        { img: '/bannerhome1.png', },
-        { img: '/bannerhome2.png', },
-        { img: '/bannerhome3.png', },
-        // { imgDesktop: '/bannerHome4.png', },
+        { img: '/bannerhome1.png' },
+        { img: '/bannerhome2.png' },
+        { img: '/bannerhome3.png' },
     ];
 
     const nextSlide = useCallback(() => {
@@ -128,40 +167,40 @@ export default function TrangChu() {
         return () => clearInterval(interval);
     }, [nextSlide]);
 
-    // ========================================== INIT ========================================
+    const handleFormSubmit = (e) => {
+        e.preventDefault();
+        if (!consultForm.name || !consultForm.phone) {
+            toast.error('Vui lòng nhập tên và số điện thoại!');
+            return;
+        }
+        toast.success('Gửi thông tin tư vấn thành công!');
+        setConsultForm({ name: '', phone: '', note: '' });
+    };
+
     const fetchList = async () => {
-        let resPost = await dispatch(getListPost({ page: 1, limit: 3 })).unwrap();
+        let resPost = await dispatch(getListPost({ page: 1, limit: 5 })).unwrap();
         if (resPost && resPost.EC !== 0) {
             toast.error(resPost.EM);
         }
 
         let resProductTopSeller = await dispatch(getListProductDropdown()).unwrap();
         if (resProductTopSeller && resProductTopSeller.EC === 0) {
-            setTopSeller(resProductTopSeller.DT.filter(p => p.isTopSeller === true));
+            setTopSeller(resProductTopSeller.DT.filter((p) => p.isTopSeller === true));
         }
 
-        // comboLivestream
         let resCombo = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.comboLivestream);
         if (resCombo && resCombo.DT) {
-            setComboLivestream(resCombo.DT)
+            setComboLivestream(resCombo.DT);
         }
 
-        // Phu Kien Thu Am
-        let resPhuKienThuAm = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.resPhuKienThuAm);
-        if (resPhuKienThuAm && resPhuKienThuAm.DT) {
-            setPhuKien(resPhuKienThuAm.DT)
-        }
-
-        // Loa
-        let resLoa = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.Loa);
-        if (resLoa && resLoa.DT) {
-            setLoa(resLoa.DT)
-        }
-
-        // Soundcard
         let resSoundcard = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.Soundcard);
         if (resSoundcard && resSoundcard.DT) {
-            setSoundcard(resSoundcard.DT)
+            setSoundcard(resSoundcard.DT);
+        }
+
+        let resPhuKienThuAm = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.resPhuKienThuAm);
+        if (resPhuKienThuAm && resPhuKienThuAm.DT) {
+            setPhuKien(resPhuKienThuAm.DT);
         }
     };
 
@@ -169,205 +208,403 @@ export default function TrangChu() {
         fetchList();
     }, []);
 
+    const toneAppImages = [
+        { id: 1, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80', title: 'Giao diện Dò Tone v1' },
+        { id: 2, img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&q=80', title: 'Setup Tone Phòng Thu' },
+        { id: 3, img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=500&q=80', title: 'Auto Key Nhận Diện' },
+        { id: 4, img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80', title: 'Plugin Cubase AI' },
+        { id: 5, img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=500&q=80', title: 'Tinh Chỉnh Giọng Hát' },
+        { id: 6, img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&q=80', title: 'Hỗ Trợ Soundcard Đa Dòng' },
+        { id: 7, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80', title: 'Cài Đặt Livestream 1 Chạm' }
+    ];
+
     return (
         <div className="min-h-screen bg-white font-sans selection:bg-[#ed792f] selection:text-white">
-            <main className="">
+            <main>
+                <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
 
-                {/* 1. HERO SLIDER */}
-                <section className="w-full mt-6 mb-12 px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="relative w-full max-w-[650px] lg:max-w-[1280px] aspect-[3/2] rounded-[3rem] overflow-hidden shadow-2xl mx-auto">
-                            <div
-                                className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
-                                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                            >
-                                {slides.map((slide, index) => (
+                    {/* BỐ CỤC 2 CỘT: TRÁI & PHẢI */}
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                        {/* ===================== CỘT TRÁI ===================== */}
+                        <div className="lg:col-span-8 xl:col-span-9 space-y-8">
+
+                            {/* 1. HERO SLIDER BANNER */}
+                            <section className="w-full">
+                                <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] md:aspect-[3/2] lg:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-xl mx-auto">
                                     <div
-                                        key={index}
-                                        className="relative flex-shrink-0 w-full h-full"
+                                        className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
+                                        style={{ transform: `translateX(-${currentSlide * 100}%)` }}
                                     >
-                                        {/* Desktop */}
-                                        <img
-                                            src={slide.img}
-                                            alt=""
-                                            className="hidden md:block absolute inset-0 w-full h-full object-contain"
-                                        />
-
-                                        {/* Mobile */}
-                                        <img
-                                            src={slide.img}
-                                            alt=""
-                                            className="block md:hidden absolute inset-0 w-full h-full object-cover"
-                                        />
+                                        {slides.map((slide, index) => (
+                                            <div
+                                                key={index}
+                                                className="relative flex-shrink-0 w-full h-full"
+                                            >
+                                                <img
+                                                    src={slide.img}
+                                                    alt=""
+                                                    className="hidden md:block absolute inset-0 w-full h-full object-cover"
+                                                />
+                                                <img
+                                                    src={slide.img}
+                                                    alt=""
+                                                    className="block md:hidden absolute inset-0 w-full h-full object-cover"
+                                                />
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
-                            </div>
-                            {/* Dots */}
-                            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex space-x-3">
-                                {slides.map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setCurrentSlide(i)}
-                                        className={`h-2 rounded-full transition-all ${currentSlide === i ? 'bg-white w-12' : 'bg-white/40 w-2'}`}
-                                    />
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* 2. TOP SELLER SECTION */}
-                <section className="max-w-7xl mx-auto py-8 md:py-10 px-8 bg-[#ed792f] overflow-hidden rounded-2xl">
-                    {/* Tiêu đề */}
-                    <div className="flex flex-col items-center mb-10 md:mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-black text-black tracking-tighter uppercase">
-                            TOP SELLER
-                        </h2>
-                        <p className="text-black/80 font-bold uppercase mt-4 md:mt-6 text-xs md:text-sm text-center">
-                            Sản phẩm khách hàng tin dùng nhất
-                        </p>
-                    </div>
-
-                    {/* Container Carousel: Flex trên mobile (< 640px), Grid trên sm trở lên */}
-                    <div className="
-                            flex flex-nowrap overflow-x-auto gap-6 pb-15 scrollbar-hide
-                            sm:grid sm:grid-cols-2 lg:grid-cols-3 sm:gap-x-3 sm:gap-y-4 sm:overflow-visible sm:pb-0
-                            snap-x snap-mandatory
-                        ">
-                        {topSeller.map((p) => (
-                            <div
-                                key={p.id}
-                                className="relative w-full min-w-full sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink"
-                            >
-                                {/* Thẻ sản phẩm */}
-                                <ProductCard product={p} isTopSeller={true} />
-
-                                {/* Nhãn Top Seller đè lên trên */}
-                                <div
-                                    className="absolute -top-2 -left-2 bg-black text-white px-3 py-1 text-[10px] font-bold shadow-lg transform -rotate-12 origin-top-left z-10"
-                                    style={{ clipPath: 'polygon(0 0, 100% 0, 85% 100%, 0 100%)' }}
-                                >
-                                    <div className="transform rotate-12 text-center leading-tight">
-                                        <div className="text-[8px]">TOP</div>
-                                        <div className="font-black">SELLER</div>
+                                    <div className="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex space-x-2">
+                                        {slides.map((_, i) => (
+                                            <button
+                                                key={i}
+                                                onClick={() => setCurrentSlide(i)}
+                                                className={`h-2 rounded-full transition-all ${currentSlide === i ? 'bg-white w-8' : 'bg-white/40 w-2'
+                                                    }`}
+                                            />
+                                        ))}
                                     </div>
                                 </div>
+                            </section>
+
+                            {/* 2. DANH MỤC SẢN PHẨM - DỊCH VỤ */}
+                            <section className="mb-10">
+                                <SectionHeader
+                                    title="DANH MỤC SẢN PHẨM - DỊCH VỤ"
+                                    viewAllLink="/danh-muc"
+                                />
+                                <div className="bg-gray-50/70 p-4 rounded-2xl border border-gray-100">
+                                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 md:gap-4 items-center">
+                                        {quickCategories.map((cat, idx) => (
+                                            <a
+                                                key={idx}
+                                                href={cat.link}
+                                                className="group flex flex-col items-center justify-center p-2 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300"
+                                            >
+                                                <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden bg-white p-1 mb-2 border border-gray-100 shadow-sm group-hover:scale-105 transition-transform">
+                                                    <img
+                                                        src={cat.img}
+                                                        alt={cat.title}
+                                                        className="w-full h-full object-cover rounded-lg"
+                                                    />
+                                                </div>
+                                                <span className="text-xs md:text-sm font-semibold text-gray-800 text-center group-hover:text-[#ed792f] transition-colors line-clamp-1">
+                                                    {cat.title}
+                                                </span>
+                                            </a>
+                                        ))}
+                                    </div>
+                                </div>
+                            </section>
+
+                            {/* 3. TÌM KIẾM NHIỀU NHẤT (5 CỘT - 1 HÀNG) */}
+                            <ProductGridSection
+                                title="TÌM KIẾM NHIỀU NHẤT"
+                                products={topSeller}
+                                viewAllLink="/tim-kiem-nhieu-nhat"
+                                limit={5}
+                            />
+
+                            {/* 4. COMBO THU ÂM - LIVESTREAM (5 CỘT - 2 HÀNG) */}
+                            <ProductGridSection
+                                title="COMBO THU ÂM - LIVESTREAM"
+                                products={comboLivestream}
+                                viewAllLink="/combo-livestream/1/all"
+                                limit={10}
+                            />
+
+                            {/* 5. SOUNDCARD - MIXER (5 CỘT - 2 HÀNG) */}
+                            <ProductGridSection
+                                title="SOUNDCARD - MIXER"
+                                products={soundcard}
+                                viewAllLink="/soundcard-mixer/7/all"
+                                limit={10}
+                            />
+
+                            {/* 6. MICRO THU ÂM (5 CỘT - 2 HÀNG) */}
+                            <ProductGridSection
+                                title="MICRO THU ÂM"
+                                products={phuKien}
+                                viewAllLink="/micro-thu-am"
+                                limit={10}
+                            />
+
+                            {/* 7. PHẦN MỀM DÒ TONE TỰ ĐỘNG */}
+                            <section className="mb-10 relative">
+                                <SectionHeader
+                                    title="PHẦN MỀM DÒ TONE TỰ ĐỘNG"
+                                    viewAllLink="/phan-mem-do-tone"
+                                />
+
+                                <div className="relative group/carousel">
+                                    <button
+                                        onClick={() => scrollToneCarousel('left')}
+                                        className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/95 border border-gray-200 rounded-full shadow-md flex items-center justify-center text-gray-700 hover:text-[#ed792f] hover:scale-110 transition-all opacity-0 group-hover/carousel:opacity-100"
+                                        aria-label="Previous"
+                                    >
+                                        <ChevronLeft className="w-5 h-5" />
+                                    </button>
+
+                                    <div
+                                        ref={toneCarouselRef}
+                                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                                        className="flex gap-3 md:gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory py-1 [&::-webkit-scrollbar]:hidden"
+                                    >
+                                        {toneAppImages.map((item) => (
+                                            <div
+                                                key={item.id}
+                                                className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(20%-13px)] flex-shrink-0 snap-start group cursor-pointer"
+                                            >
+                                                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50">
+                                                    <img
+                                                        src={item.img}
+                                                        alt={item.title}
+                                                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                                                    />
+                                                </div>
+                                                <h4 className="mt-2 text-xs font-semibold text-gray-800 line-clamp-1 group-hover:text-[#ed792f] transition-colors text-center">
+                                                    {item.title}
+                                                </h4>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <button
+                                        onClick={() => scrollToneCarousel('right')}
+                                        className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/95 border border-gray-200 rounded-full shadow-md flex items-center justify-center text-gray-700 hover:text-[#ed792f] hover:scale-110 transition-all opacity-0 group-hover/carousel:opacity-100"
+                                        aria-label="Next"
+                                    >
+                                        <ChevronRight className="w-5 h-5" />
+                                    </button>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-gray-50 rounded-2xl p-6 mt-6 border border-gray-100">
+                                    <div className="md:col-span-5 text-center md:text-left space-y-2">
+                                        <h3 className="text-lg md:text-xl font-black text-gray-900 uppercase">
+                                            XEM NGAY VIDEO REVIEW
+                                        </h3>
+                                        <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
+                                            Autotune AI là giải pháp tinh chỉnh giọng hát thông minh giúp bạn tự tin tỏa sáng mà không cần hiểu biết kỹ thuật phức tạp.
+                                        </p>
+                                    </div>
+                                    <div className="md:col-span-7">
+                                        <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg bg-black">
+                                            <iframe
+                                                className="w-full h-full object-cover"
+                                                src={`https://www.youtube.com/embed/${reviewYoutubeId}?rel=0`}
+                                                title="Video Review"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+
+                        </div>
+
+                        {/* ===================== CỘT PHẢI ===================== */}
+                        <aside className="lg:col-span-4 xl:col-span-3 space-y-6">
+
+                            {/* 1. REVIEW CHI TIẾT (5 Video YouTube) */}
+                            <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
+                                <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-100">
+                                    <div className="flex items-center space-x-2">
+                                        <span className="w-1.5 h-5 bg-[#ed792f] rounded-full inline-block"></span>
+                                        <h3 className="text-sm md:text-base font-bold uppercase text-gray-900 tracking-tight">
+                                            REVIEW CHI TIẾT
+                                        </h3>
+                                    </div>
+                                    <span className="text-[10px] uppercase font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">
+                                        YouTube
+                                    </span>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {youtubeReviews.map((video) => (
+                                        <a
+                                            key={video.id}
+                                            href={video.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="group flex gap-3 p-2 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100"
+                                        >
+                                            <div className="relative w-28 h-18 rounded-lg overflow-hidden flex-shrink-0 bg-black">
+                                                <img
+                                                    src={video.thumbnail}
+                                                    alt={video.title}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 opacity-90"
+                                                />
+                                                <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                                                    <div className="w-7 h-7 bg-red-600 rounded-full flex items-center justify-center text-white shadow-md">
+                                                        <Play className="w-3.5 h-3.5 fill-current ml-0.5" />
+                                                    </div>
+                                                </div>
+                                                <span className="absolute bottom-1 right-1 bg-black/80 text-white text-[9px] px-1 rounded font-medium">
+                                                    {video.duration}
+                                                </span>
+                                            </div>
+
+                                            <div className="flex-1 flex flex-col justify-center">
+                                                <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug group-hover:text-[#ed792f] transition-colors">
+                                                    {video.title}
+                                                </h4>
+                                                <span className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+                                                    Xem ngay <ChevronRight className="w-3 h-3 text-[#ed792f]" />
+                                                </span>
+                                            </div>
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
-                        ))}
+
+                            {/* 2. BÀI VIẾT HỮU ÍCH (5 bài viết) */}
+                            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-4 shadow-sm">
+                                <div className="flex items-center justify-between mb-4 pb-2 border-b border-gray-200">
+                                    <div className="flex items-center space-x-2">
+                                        <span className="w-1.5 h-5 bg-[#ed792f] rounded-full inline-block"></span>
+                                        <h3 className="text-sm md:text-base font-bold uppercase text-gray-900 tracking-tight">
+                                            BÀI VIẾT HỮU ÍCH
+                                        </h3>
+                                    </div>
+                                    <span className="text-[10px] uppercase font-bold text-[#ed792f]">
+                                        Tin tức
+                                    </span>
+                                </div>
+                                <div className="space-y-3">
+                                    {PostList.slice(0, 5).map((article, index) => (
+                                        <ArticleCard key={article.id || index} article={article} />
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* 3. BANNER CỘT PHẢI */}
+                            <div className="w-full rounded-2xl overflow-hidden shadow-md cursor-pointer group bg-gray-50">
+                                <img
+                                    src="/BannerBộLivestream.png"
+                                    alt="Banner Thành Viên"
+                                    className="w-full min-h-[480px] aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-500"
+                                />
+                            </div>
+
+                            {/* 4. FORM "BẠN CẦN TƯ VẤN?" */}
+                            <div
+                                id="form-tu-van"
+                                className="bg-white border-2 border-purple-400 rounded-2xl p-5 shadow-sm"
+                            >
+                                <h3 className="text-2xl font-bold text-[#ed792f] text-center mb-5">
+                                    Bạn cần tư vấn?
+                                </h3>
+                                <form onSubmit={handleFormSubmit} className="space-y-3">
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">
+                                            Tên*
+                                        </label>
+                                        <input
+                                            type="text"
+                                            required
+                                            placeholder="Nhập họ và tên"
+                                            value={consultForm.name}
+                                            onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">
+                                            SĐT*
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            required
+                                            placeholder="Nhập số điện thoại"
+                                            value={consultForm.phone}
+                                            onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-xs font-bold text-gray-700 mb-1">
+                                            Để lại lời nhắn
+                                        </label>
+                                        <textarea
+                                            rows="3"
+                                            placeholder="Nội dung cần hỗ trợ..."
+                                            value={consultForm.note}
+                                            onChange={(e) => setConsultForm({ ...consultForm, note: e.target.value })}
+                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f] resize-none"
+                                        ></textarea>
+                                    </div>
+
+                                    <button
+                                        type="submit"
+                                        className="w-full py-2.5 bg-[#ed792f] hover:bg-[#d8681e] text-white font-bold text-sm rounded-xl shadow-md transition-colors"
+                                    >
+                                        Gửi đi
+                                    </button>
+
+                                    <p className="text-[10px] text-gray-400 text-center leading-relaxed">
+                                        Thông tin của bạn sẽ được bảo mật. Tuyệt đối không gửi mật khẩu.
+                                    </p>
+                                </form>
+                            </div>
+
+                        </aside>
                     </div>
-                </section>
 
-                {/* 3. COMBO LIVESTREAM */}
-                <CategorySection
-                    header="COMBO LIVESTREAM"
-                    products={comboLivestream}
-                    bannerImage="/BannerBộLivestream.png"
-                    buttonLink="/combo-livestream/1/all"
-                />
+                    {/* ===================== KHỐI DƯỚI TOÀN TRANG (FULL WIDTH): SETUP LIVESTREAM TRỌN GÓI ===================== */}
+                    <section className="w-full pt-8 pb-4 border-t border-gray-100">
+                        {/* Tiêu đề góc trái: thanh dọc màu cam + text */}
+                        <div className="flex items-center space-x-2 text-base md:text-lg font-bold text-black uppercase tracking-wide">
+                            <span className="w-1.5 h-6 bg-[#ed792f] inline-block rounded-sm"></span>
+                            <span>SETUP LIVESTREAM TRỌN GÓI</span>
+                        </div>
 
-                {/* 4. Soundcard - Mixer*/}
-                <CategorySection
-                    header="SOUNDCARD - MIXER"
-                    products={Soundcard}
-                    bannerImage="/BannerLoa.png"
-                    buttonLink="/soundcard-mixer/7/all"
-                />
+                        {/* Tiêu đề giữa */}
+                        <div className="text-center mt-6 mb-10">
+                            <h3 className="text-lg md:text-xl font-bold uppercase tracking-wider text-black">
+                                THƯƠNG HIỆU ĐÃ HỢP TÁC
+                            </h3>
+                        </div>
 
-                {/* 5. LOA KIỂM ÂM */}
-                <CategorySection
-                    header="LOA KIỂM ÂM"
-                    products={loa}
-                    bannerImage="/BannerLoa.png"
-                    buttonLink="/loa-kiem-am/12/all"
-                />
-
-                {/* 6. 4 BANNER COMBO - Thay my-20 thành responsive margin */}
-                <section className="sm:px-4 lg:px-6">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="flex flex-nowrap overflow-x-auto pb-6 pt-6 gap-4 md:gap-8 scrollbar-hide sm:grid sm:grid-cols-2 lg:grid-cols-4 sm:overflow-visible">
-                            {comboBanners.map((banner, i) => (
+                        {/* Lưới 10 Logo: 5 cột x 2 hàng không viền hộp */}
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 lg:gap-12 items-center justify-items-center">
+                            {brandPartners.map((brand, i) => (
                                 <div
                                     key={i}
-                                    className="group relative aspect-[4/3] min-w-[85%] sm:min-w-0 overflow-hidden rounded-[1.5rem] md:rounded-[2.5rem] shadow-xl cursor-pointer bg-gray-100 flex-shrink-0 sm:flex-shrink"
+                                    className="h-24 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
                                 >
-                                    <img src={banner.img} className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-all duration-700" alt="" />
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#ed792f] via-[#ed792f]/20 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
-
-                                    {/* Nội dung Banner: Giảm padding trên mobile */}
-                                    <div className="absolute inset-0 p-5 md:p-8 flex flex-col justify-end text-white">
-                                        <span className="text-[10px] font-black tracking-[0.3em] mb-1 md:mb-2 opacity-80 uppercase">{banner.subtitle}</span>
-                                        <h3 className="text-lg md:text-xl font-black leading-tight uppercase italic drop-shadow-md group-hover:text-yellow-300 transition-colors">
-                                            {banner.title}
-                                        </h3>
-                                        <div className="mt-2 md:mt-4 w-12 h-1 bg-white group-hover:w-24 transition-all duration-500"></div>
-                                    </div>
+                                    <img
+                                        src={brand.src}
+                                        alt={brand.name}
+                                        className="max-h-full max-w-full object-contain filter contrast-105"
+                                        onError={(e) => {
+                                            e.currentTarget.style.display = "none";
+                                            e.currentTarget.parentElement.innerText = brand.name;
+                                            e.currentTarget.parentElement.className =
+                                                "h-24 w-full flex items-center justify-center text-xs font-bold text-gray-500 uppercase tracking-wider";
+                                        }}
+                                    />
                                 </div>
                             ))}
                         </div>
-                    </div>
-                </section>
 
-                {/* 7. PHỤ KIỆN THU ÂM  */}
-                <section className="py-8 md:py-16 px-4 sm:px-6 lg:px-8 bg-white">
-                    <div className="max-w-7xl mx-auto">
-
-                        {/* Tiêu đề: Giảm mb trên mobile */}
-                        <div className="flex justify-between items-center mb-6 md:mb-6">
-                            <h2 className="text-xl md:text-2xl lg:text-3xl font-black text-black uppercase tracking-tighter">
-                                PHỤ KIỆN THU ÂM
-                            </h2>
-                            <div className="hidden md:block flex-1 h-[1px] bg-gray-100 mx-10"></div>
-                        </div>
-
-                        {/* Lưới sản phẩm: Giảm gap-y trên mobile */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-x-4 gap-y-6 md:gap-y-10">
-                            {phuKien.slice(0, 8).map((p) => (
-                                <ProductCard key={p.id} product={p} />
-                            ))}
-                        </div>
-
-                        {/* Nút Xem thêm: Giảm mt trên mobile */}
-                        <div className="mt-10 md:mt-16 text-center">
+                        {/* Nút Tư Vấn Báo Giá */}
+                        <div className="mt-12 text-center">
                             <a
-                                href="/phu-kien-thu-am/11/all"
-                                className="inline-flex items-center justify-center px-8 md:px-12 py-3 md:py-4 bg-[#ed792f] text-white text-xs md:text-sm font-black uppercase tracking-widest rounded-full shadow-xl hover:bg-black hover:scale-105 transition-all duration-300"
+                                href="#form-tu-van"
+                                className="inline-flex items-center gap-3 pl-8 pr-3 py-2.5 bg-[#e8702a] hover:bg-[#d8621d] text-white font-extrabold rounded-full shadow-md transition-all duration-300 hover:shadow-lg uppercase text-sm tracking-wider"
                             >
-                                Xem thêm sản phẩm
+                                <span>TƯ VẤN BÁO GIÁ</span>
+                                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#e8702a] shadow-inner">
+                                    <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+                                </div>
                             </a>
                         </div>
-                    </div>
-                </section>
+                    </section>
 
-                {/* 8. BÀI VIẾT HỮU ÍCH */}
-                <section className="py-16 md:py-10 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100 overflow-hidden">
-                    <div className="max-w-7xl mx-auto">
-                        {/* Tiêu đề: Giảm mb trên mobile */}
-                        <div className="text-center mb-6 md:mb-10">
-                            <h2 className="text-2xl md:text-3xl lg:text-4xl font-black text-black uppercase tracking-tighter">
-                                BÀI VIẾT HỮU ÍCH
-                            </h2>
-                            <p className="text-gray-400 font-medium uppercase tracking-[0.3em] text-[9px] md:text-[10px] mt-2">
-                                Chia sẻ kinh nghiệm & Kỹ thuật âm thanh
-                            </p>
-                        </div>
-
-                        {/* Container Carousel: Flex trên mobile, Grid trên md */}
-                        <div className="
-                            flex flex-nowrap overflow-x-auto gap-6 pb-8 scrollbar-hide
-                            md:grid md:grid-cols-3 md:gap-10 md:overflow-visible md:pb-0
-                            snap-x snap-mandatory
-                        ">
-                            {PostList.map((article, index) => (
-                                <div
-                                    key={index}
-                                    className="relative w-full min-w-full sm:min-w-0 snap-start flex-shrink-0 sm:flex-shrink"
-                                >
-                                    <ArticleCard article={article} />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
+                </div>
             </main>
         </div>
     );

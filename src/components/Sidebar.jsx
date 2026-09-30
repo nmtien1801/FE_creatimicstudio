@@ -56,10 +56,10 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
     },
     userInfo.role === 'admin' && {
       id: 'hr',
-      label: 'Quản lý nhân sự',
+      label: 'Quản lý tài khoản',
       icon: Calendar,
       items: [
-        { label: 'Danh sách nhân viên', path: '/hr/employees' },
+        { label: 'Danh sách tài khoản', path: '/hr/employees' },
         // { label: 'Phân quyền hệ thống', path: '/hr/roles' },
       ]
     }
@@ -110,68 +110,38 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-2 scrollbar-hide">
-          {isSidebarOpen ? (
-            <div className="px-2 space-y-1">
-              {menuConfig.map((menu) => (
-                <div key={menu.id}>
-                  <button
-                    onClick={() => toggleMenu(menu.id)}
-                    className={`w-full px-3 py-2.5 flex items-center gap-3 rounded-lg hover:bg-white/10 transition-all ${expandedMenu === menu.id ? 'bg-white/15 shadow-sm' : ''}`}
-                  >
-                    <menu.icon className="w-5 h-5 flex-shrink-0" />
-                    <span className="flex-1 text-left text-sm font-medium">{menu.label}</span>
-                    <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === menu.id ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {expandedMenu === menu.id && (
-                    <div className="mt-1 ml-2 space-y-0.5">
-                      {menu.items.map((item) => (
-                        <NavLink
-                          key={item.path}
-                          to={item.path}
-                          onClick={() => window.innerWidth < 1024 && onToggleSidebar?.()}
-                          className={({ isActive }) =>
-                            `flex items-center gap-2 px-3 py-2 pl-10 rounded-lg transition-all text-sm text-white no-underline ${isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'}`
-                          }
-                        >
-                          <div className="w-1.5 h-1.5 bg-white rounded-full flex-shrink-0"></div>
-                          <span className="truncate">{item.label}</span>
-                        </NavLink>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-
-              {/* Link lẻ */}
-              <NavLink
-                to="/recruitment/manager"
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all text-sm text-white no-underline ${isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'}`
-                }
-              >
-                <Briefcase className="w-5 h-5 flex-shrink-0" />
-                <span className="flex-1 text-left font-medium">Đăng tuyển dụng</span>
-              </NavLink>
-            </div>
-          ) : (
-            /* Collapsed Icons */
-            <div className="hidden lg:flex flex-col items-center gap-4 px-2">
-              {menuConfig.map((menu) => (
+          <div className="px-2 space-y-1">
+            {menuConfig.map((menu) => (
+              <div key={menu.id}>
                 <button
-                  key={menu.id}
-                  onClick={() => { onToggleSidebar(); setExpandedMenu(menu.id); }}
-                  className="p-3 hover:bg-white/10 rounded-lg transition-colors w-full flex justify-center"
-                  title={menu.label}
+                  onClick={() => toggleMenu(menu.id)}
+                  className={`w-full px-3 py-2.5 flex items-center gap-3 rounded-lg hover:bg-white/10 transition-all ${expandedMenu === menu.id ? 'bg-white/15 shadow-sm' : ''}`}
                 >
-                  <menu.icon className="w-6 h-6" />
+                  <menu.icon className="w-5 h-5 flex-shrink-0" />
+                  <span className="flex-1 text-left text-sm font-medium">{menu.label}</span>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${expandedMenu === menu.id ? 'rotate-180' : ''}`} />
                 </button>
-              ))}
-              <NavLink to="/recruitment/post-job" className="p-3 hover:bg-white/10 rounded-lg w-full flex justify-center text-white" title="Đăng tuyển dụng">
-                <Briefcase className="w-6 h-6" />
-              </NavLink>
-            </div>
-          )}
+
+                {expandedMenu === menu.id && (
+                  <div className="mt-1 ml-2 space-y-0.5">
+                    {menu.items.map((item) => (
+                      <NavLink
+                        key={item.path}
+                        to={item.path}
+                        onClick={() => window.innerWidth < 1024 && onToggleSidebar?.()}
+                        className={({ isActive }) =>
+                          `flex items-center gap-2 px-3 py-2 pl-10 rounded-lg transition-all text-sm text-white no-underline ${isActive ? 'bg-white/20 font-semibold' : 'hover:bg-white/10'}`
+                        }
+                      >
+                        <div className="w-1.5 h-1.5 bg-white rounded-full flex-shrink-0"></div>
+                        <span className="truncate">{item.label}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
         </nav>
       </div>
     </aside>

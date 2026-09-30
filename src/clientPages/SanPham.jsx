@@ -82,10 +82,11 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSu
     return (
         <div className="mb-10 w-full overflow-hidden">
             {/* 
-              - Trên mobile: Cuộn ngang (flex-nowrap overflow-x-auto) kèm thanh cuộn ẩn (scrollbar-none)
-              - Trên desktop: Tự động căn giữa và bọc dòng nếu cần (md:flex-wrap md:justify-center)
+              - flex-nowrap: Bắt buộc tất cả nút nằm trên 1 dòng duy nhất
+              - overflow-x-auto: Tự động cho phép trượt/cuộn ngang khi vượt quá màn hình
+              - scrollbar-none: Ẩn thanh cuộn xấu xí
             */}
-            <div className="flex flex-nowrap overflow-x-auto md:flex-wrap md:justify-center gap-4 pb-4 px-2 scrollbar-none snap-x">
+            <div className="flex flex-nowrap items-center overflow-x-auto gap-3 md:gap-4 pb-4 px-2 scrollbar-none snap-x">
 
                 <div className="snap-center flex-shrink-0">
                     <button
@@ -107,7 +108,7 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSu
                     >
                         <button
                             onClick={() => onCategoryClick(cat)}
-                            className={`px-5 py-2.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-base md:text-lg font-bold transition whitespace-nowrap
+                            className={`px-5 py-2.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-base font-bold transition whitespace-nowrap
                                 ${selectedCategory === String(cat.id)
                                     ? 'bg-orange-500 text-white shadow-lg'
                                     : 'bg-white shadow hover:bg-orange-50'}
@@ -116,24 +117,23 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSu
                             {cat.name}
                         </button>
 
-                        {/* Dropdown Menu - Chỉ hiển thị Hover từ màn hình md (Desktop) trở lên */}
-                        {cat.children.length > 0 && (
+                        {/* Dropdown Menu */}
+                        {cat.children && cat.children.length > 0 && (
                             <div className="hidden md:block">
-                                {/* Hover bridge (vùng đệm vô hình) */}
                                 <div className="absolute left-0 right-0 top-full h-4"></div>
 
                                 <div
                                     className="absolute left-1/2 -translate-x-1/2 top-full mt-1
                                         hidden group-hover:block
                                         bg-white shadow-xl rounded-2xl
-                                        min-w-[240px] z-50"
+                                        min-w-[220px] z-50 py-2 border border-gray-100"
                                 >
                                     {cat.children.map(sub => (
                                         <button
                                             key={sub.name}
                                             onClick={() => onSubClick(cat, sub)}
-                                            className="block w-full text-left px-5 py-3
-                                                text-base font-medium
+                                            className="block w-full text-left px-5 py-2.5
+                                                text-sm font-medium
                                                 hover:bg-orange-50 text-gray-700 transition-colors"
                                         >
                                             {sub.name}

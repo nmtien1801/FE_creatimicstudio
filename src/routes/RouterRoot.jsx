@@ -28,25 +28,17 @@ import { GetAccount } from "../redux/authSlice";
 import Cookies from "js-cookie";
 
 import Home from "../clientPages/TrangChu.jsx";
-import About from "../clientPages/GioiThieu.jsx";
-import Service from "../clientPages/dichVu/DichVu.jsx";
 import ServiceLive from "../clientPages/dichVu/DvLiveStream.jsx";
 import ServiceTone from "../clientPages/dichVu/DvAutoTone.jsx";
-import News from "../clientPages/TinTuc.jsx";
-import Careers from "../clientPages/TuyenDung.jsx";
-import Contact from "../clientPages/LienHe.jsx";
-import JobDetail from '../components/hire/JobDetail';
-import PostDetail from '../components/post/postDetail.jsx'
 import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
 import PaymentMomoPage from '../clientPages/payment/PaymentMomoPage.jsx'
 import PaymentVietQrPage from '../clientPages/payment/PaymentVietQrPage.jsx'
+import GioHang from '../clientPages/GioHang.jsx'
 
 import ChinhSach1 from '../components/chinhsach/Chinhsach1.jsx'
 import ChinhSach2 from '../components/chinhsach/Chinhsach2.jsx'
 import ChinhSach3 from '../components/chinhsach/Chinhsach3.jsx'
 import ChinhSach4 from '../components/chinhsach/Chinhsach4.jsx'
-
-import A from "../clientPages/payment/ProductDetail_test";
 
 const ProtectedRoute = ({ children }) => {
   const { userInfo, isLoading } = useSelector((state) => state.auth);
@@ -101,29 +93,21 @@ function RouterRoot() {
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Navigate to="trang-chu" replace />} />
           <Route path="trang-chu" element={<Home />} />
-          <Route path="gioi-thieu" element={<About />} />
 
           {/* path route: /product/ */}
           {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
           <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} />
-          <Route path="dich-vu" element={<Service />} />
           <Route path="dich-vu/set-up-phong-livestream" element={<ServiceLive />} />
           <Route path="dich-vu/phan-mem-auto-tone" element={<ServiceTone />} />
-          <Route path="tin-tuc" element={<News />} />
-          <Route path="/tin-tuc/:title/:id" element={<PostDetail />} />
-          <Route path="tuyen-dung" element={<Careers />} />
-          <Route path="/tuyen-dung/:title/:id" element={<JobDetail />} />
-          <Route path="lien-he" element={<Contact />} />
           <Route path="payment-momo" element={<PaymentMomoPage />} />
           <Route path="payment-vietqr" element={<PaymentVietQrPage />} />
+          <Route path="gio-hang" element={<GioHang />} />
 
           <Route path="dieu-khoan-dich-vu-va-dieu-kien-giao-dich-chung" element={<ChinhSach1 />} />
           <Route path="cac-phuong-thuc-thanh-toan" element={<ChinhSach2 />} />
           <Route path="chinh-sach-van-chuyen-va-giao-nhan" element={<ChinhSach3 />} />
           <Route path="chinh-sach-bao-mat-thong-tin-ca-nhan" element={<ChinhSach4 />} />
 
-
-          <Route path="test" element={<A />} />
         </Route>
 
         {/* private route */}
@@ -149,10 +133,6 @@ function RouterRoot() {
           {/* route news */}
           <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}
           <Route path="news/manager" element={<NewsManager />} />           {/* Danh sách tin (ví dụ) */}
-
-          {/* route recruitment */}
-          <Route path="recruitment/manager" element={<RecruitmentManager />} />
-          <Route path="recruitment/detail" element={<RecruitmentDetail />} />
 
           {/* route hr */}
           <Route path="hr/employees" element={<Employee />} />   {/* Nhân viên */}

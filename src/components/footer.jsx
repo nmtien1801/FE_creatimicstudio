@@ -66,33 +66,7 @@ export default function Footer() {
     };
 
     return (
-        <footer className="text-white mt-8 font-sans">
-            {/* Phần cam kết dịch vụ */}
-            <div className="bg-black">
-                <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-3 px-4 py-8">
-                    <ServiceCommitment
-                        icon={Truck}
-                        title="GIAO HÀNG TOÀN QUỐC"
-                        description="Giao hàng nhanh chóng và đúng hẹn."
-                    />
-                    <ServiceCommitment
-                        icon={Tag}
-                        title="THANH TOÁN COD"
-                        description="Thanh toán khi nhận sản phẩm."
-                    />
-                    <ServiceCommitment
-                        icon={MessageSquare}
-                        title="HỖ TRỢ 24/7"
-                        description="Sẵn sàng tư vấn mọi thắc mắc."
-                    />
-                    <ServiceCommitment
-                        icon={RefreshCw}
-                        title="ĐỔI TRẢ 7 NGÀY"
-                        description="Đổi trả miễn phí nếu lỗi nhà SX."
-                    />
-                </div>
-            </div>
-
+        <footer className="text-white font-sans">
             {/* Phần thông tin chính - Thay items-center thành items-start */}
             <div className="bg-[#ed792f]">
                 <div className="max-w-6xl mx-auto flex flex-col lg:flex-row justify-between items-start gap-12 px-6 py-12">

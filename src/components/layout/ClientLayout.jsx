@@ -10,10 +10,12 @@ import { ArrowUp } from "lucide-react";
 import { getListCategory } from '../../redux/categorySlice.js';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import { loadCart } from '../../redux/cartSlice.js';
 
 function ClientLayout() {
     const dispatch = useDispatch();
     const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
+    const userId = useSelector((state) => state.auth.userInfo?.id);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [showScrollTop, setShowScrollTop] = useState(false);
     const location = useLocation();
@@ -26,6 +28,10 @@ function ClientLayout() {
 
         fetchListCategory();
     }, []);
+
+    useEffect(() => {
+        dispatch(loadCart(userId));
+    }, [dispatch, userId]);
 
     const mainRef = useRef(null);
 

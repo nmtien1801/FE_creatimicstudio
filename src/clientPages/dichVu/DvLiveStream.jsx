@@ -1,356 +1,655 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Phone, MapPin, Disc, Music, Sparkles, CheckCircle2, Clock, Zap, Heart } from 'lucide-react';
-import ApiContact from '../../apis/ApiContact';
+import React, { useState } from 'react';
+import {
+    AlertTriangle,
+    ArrowRight,
+    Play,
+    CheckCircle2,
+    RotateCcw
+} from 'lucide-react';
 import { toast } from 'react-toastify';
 
-const hexagonStyle = {
-    clipPath: 'polygon(50% 0%, 93% 25%, 93% 75%, 50% 100%, 7% 75%, 7% 25%)'
-};
+export default function SetupLivestreamPage() {
+    // -------------------------------------------------------------
+    // Multi-step Form State (Tư vấn nhận báo giá theo đúng 3 ảnh)
+    // -------------------------------------------------------------
+    const [step, setStep] = useState(1);
+    const [deviceType, setDeviceType] = useState('Điện thoại');
+    const [phoneNumber, setPhoneNumber] = useState('');
+    const [budgetNote, setBudgetNote] = useState('');
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-const stepColorMap = {
-    cyan: 'bg-cyan-400',
-    slate: 'bg-slate-700',
-    yellow: 'bg-yellow-400',
-    orange: 'bg-orange-400',
-};
-
-const stepBorderMap = {
-    cyan: "border-cyan-400",
-    slate: "border-slate-400",
-    yellow: "border-yellow-400",
-    orange: "border-orange-400",
-};
-
-// Custom Component để bọc và tạo hiệu ứng khi cuộn chuột tới
-const ScrollReveal = ({ children, className = "", animation = "animate-fade-up" }) => {
-    const [isIntersecting, setIsIntersecting] = useState(false);
-    const ref = useRef(null);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setIsIntersecting(true);
-                    observer.unobserve(entry.target);
-                }
-            },
-            { threshold: 0.15, rootMargin: "0px 0px -50px 0px" }
-        );
-
-        if (ref.current) observer.observe(ref.current);
-        return () => observer.disconnect();
-    }, []);
-
-    return (
-        <div
-            ref={ref}
-            className={`${className} transition-all duration-1000 ease-out ${isIntersecting
-                ? "opacity-100 translate-y-0 translate-x-0 scale-100"
-                : animation === "animate-fade-up" ? "opacity-0 translate-y-12"
-                    : animation === "animate-fade-left" ? "opacity-0 translate-x-16"
-                        : animation === "animate-fade-right" ? "opacity-0 -translate-x-16"
-                            : "opacity-0 scale-95"
-                }`}
-        >
-            {children}
-        </div>
-    );
-};
-
-const CMICLandingPage = () => {
-    const [loading, setLoading] = useState(false);
-    const [formData, setFormData] = useState({
-        fullName: '',
-        email: '',
-        phone: ''
-    });
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
-
-    const handleSend = async (e) => {
-        e.preventDefault();
-        try {
-            setLoading(true);
-            const contactData = {
-                name: formData.fullName.trim(),
-                email: formData.email.trim(),
-                message: `Tôi đang quan tâm dịch vụ setup phòng hát livestream. Hãy liên hệ với tôi qua số điện thoại: ${formData.phone}`
-            };
-            await ApiContact.sendContactApi(contactData);
-            toast.success('Đã gửi yêu cầu tư vấn livestream thành công!');
-            setFormData({ fullName: '', email: '', phone: '' });
-        } catch (error) {
-            console.error('Error sending contact:', error);
-            toast.error('Gửi yêu cầu tư vấn livestream thất bại. Vui lòng thử lại.');
-        } finally {
-            setLoading(false);
+    // Chuyển từ Bước 1 sang Bước 2
+    const handleNextStep1 = () => {
+        if (!deviceType) {
+            toast.warning('Vui lòng tick chọn thiết bị livestream!');
+            return;
         }
+        setStep(2);
     };
 
+    // Chuyển từ Bước 2 sang Bước 3
+    const handleNextStep2 = () => {
+        if (!phoneNumber.trim()) {
+            toast.warning('Vui lòng nhập số điện thoại để nhận báo giá!');
+            return;
+        }
+        setStep(3);
+    };
+
+    // Gửi form cuối cùng
+    const handleFinalSubmit = (e) => {
+        e.preventDefault();
+        setIsSubmitted(true);
+        toast.success('Đã gửi thông tin tư vấn thành công! CMIC STUDIO sẽ liên hệ sớm nhất.');
+    };
+
+    // Khảo sát lại từ đầu
+    const handleReset = () => {
+        setStep(1);
+        setDeviceType('Điện thoại');
+        setPhoneNumber('');
+        setBudgetNote('');
+        setIsSubmitted(false);
+    };
+
+    // -------------------------------------------------------------
+    // Danh sách Case study & Thương hiệu
+    // -------------------------------------------------------------
+    const caseStudyRow1 = [
+        "/casestudy/cs1.png", "/casestudy/cs2.png", "/casestudy/cs3.png",
+        "/casestudy/cs4.png", "/casestudy/cs5.png"
+    ];
+
+    const caseStudyRow2 = [
+        "/casestudy/cs6.png", "/casestudy/cs7.png", "/casestudy/cs8.png",
+        "/casestudy/cs9.png", "/casestudy/cs10.png", "/casestudy/cs11.png"
+    ];
+
+    const brands = [
+        { name: "AVANTA", src: "/brands/avanta.png" },
+        { name: "LUMINA", src: "/brands/lumina.png" },
+        { name: "ÁNH DƯƠNG", src: "/brands/anhduong.png" },
+        { name: "MENSPIRE", src: "/brands/menspire.png" },
+        { name: "LUMINELLA", src: "/brands/luminella.png" },
+        { name: "VANGUARD", src: "/brands/vanguard.png" },
+        { name: "SEN AN", src: "/brands/senan.png" },
+        { name: "CHRONOS AURA", src: "/brands/chronos.png" },
+        { name: "GIA DỤNG AN KHANG", src: "/brands/ankhang.png" },
+        { name: "AURELIA LUNA", src: "/brands/aurelia.png" }
+    ];
+
     return (
-        <div className="bg-orange-50 min-h-screen font-sans text-gray-800 pb-12 sm:pb-20 scroll-smooth selection:bg-orange-500 selection:text-white overflow-x-hidden">
+        <div className="w-full bg-white font-sans text-gray-900 overflow-x-hidden">
 
-            {/* SECTION 0: HERO BANNER (Đã sửa co giãn text) */}
-            <section className="relative w-full bg-gradient-to-b from-[#f9f4f0] to-orange-50/30 pt-10 pb-16 sm:pt-16 sm:pb-32 overflow-hidden">
-                <div className="absolute bottom-0 right-0 w-64 h-64 opacity-20 animate-pulse duration-4000"
-                    style={{ backgroundImage: 'radial-gradient(#000 1.5px, transparent 1.5px)', backgroundSize: '20px 20px' }}>
-                </div>
+            {/* ========================================================= */}
+            {/* HERO: ẢNH FULL WIDTH SAU BANNER                           */}
+            {/* ========================================================= */}
+            <div className="w-full">
+                <img
+                    src="/banner-autotune-full.png"
+                    alt="Banner Dịch Vụ AutoTune AI"
+                    className="w-full h-auto object-cover max-h-[500px]"
+                    onError={(e) => {
+                        e.currentTarget.src = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1600&q=80";
+                    }}
+                />
+            </div>
 
-                <div className="absolute bottom-24 right-0 w-[55%] h-20 bg-orange-500 -z-0 rounded-l-full hidden md:block animate-[slideRight_1s_ease-out]"></div>
+            {/* ========================================================= */}
+            {/* 1. HAI GÓI LIVESTREAM VÀ TICKER CHẠY NGANG (Ảnh 1)       */}
+            {/* ========================================================= */}
+            <section className="py-8 bg-white">
+                <div className="max-w-5xl mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
 
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
-                    <div className="grid md:grid-cols-2 items-center gap-6 md:gap-4">
+                        {/* Gói Bán Hàng E-Commerce */}
+                        <div className="rounded-[32px] p-8 text-center bg-white shadow-[0_0_35px_rgba(237,121,47,0.35)] border-4 border-orange-200/70 flex flex-col items-center justify-between">
+                            <div>
+                                <div className="flex justify-center items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-full border-2 border-red-500 p-1 flex items-center justify-center relative">
+                                        <img src="/icons/tiktok-live.png" alt="TikTok Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3046/3046121.png"; }} />
+                                        <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full border-2 border-blue-500 p-1 flex items-center justify-center relative">
+                                        <img src="/icons/facebook-live.png" alt="FB Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/5968/5968764.png"; }} />
+                                        <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full border-2 border-orange-500 p-1 flex items-center justify-center relative">
+                                        <img src="/icons/shopee-live.png" alt="Shopee Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/825/825514.png"; }} />
+                                        <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
+                                    </div>
+                                </div>
 
-                        {/* CỘT TRÁI: TEXT & CONTACT */}
-                        <div className="flex flex-col space-y-3 sm:space-y-4 text-left animate-[fadeInUp_0.8s_ease-out]">
-                            <div className="relative">
-                                <h2 className="text-[#e67e22] text-5xl sm:text-6xl md:text-8xl font-black leading-none mb-1 sm:mb-2 tracking-tighter drop-shadow-sm">
-                                    Dịch vụ
-                                </h2>
-                                <h1 className="text-gray-900 text-2xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight leading-tight">
-                                    SETUP PHÒNG HÁT <br />
-                                    LIVESTREAM
-                                </h1>
-                                <p className="text-gray-600 italic font-semibold text-sm sm:text-base md:text-lg mt-2 sm:mt-4 border-l-4 border-orange-500 pl-3">
-                                    Đảm bảo đúng yêu cầu, chuyên nghiệp
+                                <h3 className="text-lg md:text-xl font-black uppercase text-black mb-3">
+                                    XEM GÓI <span className="text-[#ed792f]">BÁN HÀNG E-COMMERCE</span>
+                                </h3>
+
+                                <p className="text-gray-700 text-sm md:text-base leading-relaxed max-w-sm mx-auto mb-8 font-medium">
+                                    Setup livestream trọn gói dành cho Nhà bán hàng Doanh nghiệp hoặc Cá nhân đang kinh doanh trên các nền tảng số.
                                 </p>
                             </div>
 
-                            <div className="pt-4 sm:pt-6">
-                                <a href="tel:0372672396" className="inline-flex items-center bg-white border-[2px] sm:border-[3px] border-black rounded-xl sm:rounded-2xl px-4 py-2 sm:px-5 sm:py-3 gap-3 sm:gap-4 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] sm:shadow-[5px_5px_0px_0px_rgba(0,0,0,1)] hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] active:translate-x-1 active:translate-y-1 active:shadow-none transition-all cursor-pointer group w-auto self-start">
-                                    <div className="bg-black p-1.5 sm:p-2 rounded-full group-hover:scale-110 transition-transform duration-300">
-                                        <Phone size={16} className="text-white fill-white animate-bounce" />
-                                    </div>
-                                    <span className="text-lg sm:text-2xl font-black text-gray-900 tracking-wider">037.267.2396</span>
-                                </a>
-                            </div>
+                            <a
+                                href="#tu-van-bao-gia"
+                                onClick={() => { setDeviceType('PC'); setStep(1); }}
+                                className="px-10 py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-sm md:text-base rounded-full shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wider uppercase transition-all"
+                            >
+                                BÁO GIÁ
+                            </a>
                         </div>
 
-                        {/* CỘT PHẢI: HEXAGON LAYOUT */}
-                        <div className="relative h-[450px] mt-12 md:mt-0 hidden md:block animate-[fadeInRight_1s_ease-out]">
-                            <div className="absolute top-0 left-20 grid grid-cols-5 gap-2 z-0 opacity-40">
-                                {[...Array(10)].map((_, i) => <div key={i} className="font-bold text-xl hover:text-orange-500 transition-colors duration-200 cursor-default">+</div>)}
-                            </div>
-
-                            <div className="absolute -right-6 -top-38 w-90 h-90 drop-shadow-xl z-10 hover:z-30 hover:scale-105 transition-all duration-500 ease-out group">
-                                <div className="w-full h-full bg-orange-500 p-1.5 shadow-lg group-hover:bg-black transition-colors duration-500" style={hexagonStyle}>
-                                    <div className="w-full h-full bg-white overflow-hidden" style={hexagonStyle}>
-                                        <img src="/dichvu1.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="setup 1" />
+                        {/* Gói Idol Live Studio */}
+                        <div className="rounded-[32px] p-8 text-center bg-white shadow-[0_0_35px_rgba(147,51,234,0.3)] border-4 border-purple-200/70 flex flex-col items-center justify-between">
+                            <div>
+                                <div className="flex justify-center items-center gap-4 mb-6">
+                                    <div className="w-12 h-12 rounded-full border-2 border-red-500 p-1 flex items-center justify-center relative">
+                                        <img src="/icons/tiktok-live.png" alt="TikTok Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3046/3046121.png"; }} />
+                                        <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full border-2 border-blue-500 p-1 flex items-center justify-center relative">
+                                        <img src="/icons/facebook-live.png" alt="FB Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/5968/5968764.png"; }} />
+                                        <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
+                                    </div>
+                                    <div className="w-12 h-12 rounded-full border-2 border-green-500 p-1 flex items-center justify-center relative">
+                                        <img src="/icons/bigo-live.png" alt="Bigo Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/1006/1006771.png"; }} />
+                                        <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
                                     </div>
                                 </div>
+
+                                <h3 className="text-lg md:text-xl font-black uppercase text-black mb-3">
+                                    XEM GÓI <span className="text-[#ed792f]">IDOL LIVE STUDIO</span>
+                                </h3>
+
+                                <p className="text-gray-700 text-sm md:text-base leading-relaxed max-w-sm mx-auto mb-8 font-medium">
+                                    Setup livestream trọn gói dành cho Idol Ca hát muốn phát triển hình ảnh thương hiệu cá nhân trên các nền tảng số.
+                                </p>
                             </div>
 
-                            <div className="absolute left-6 top-[20%] translate-y-1 w-90 h-90 drop-shadow-2xl z-20 hover:scale-105 transition-all duration-500 ease-out group">
-                                <div className="w-full h-full bg-orange-500 p-1.5 shadow-2xl group-hover:bg-black transition-colors duration-500" style={hexagonStyle}>
-                                    <div className="w-full h-full bg-white overflow-hidden" style={hexagonStyle}>
-                                        <img src="/dichvu2.png" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" alt="setup 2" />
-                                    </div>
-                                </div>
-                            </div>
+                            <a
+                                href="#tu-van-bao-gia"
+                                onClick={() => { setDeviceType('Điện thoại'); setStep(1); }}
+                                className="px-10 py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-sm md:text-base rounded-full shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wider uppercase transition-all"
+                            >
+                                BÁO GIÁ
+                            </a>
                         </div>
 
                     </div>
                 </div>
-            </section>
 
-            {/* SECTION 1: GIỚI THIỆU DỊCH VỤ (Đã sửa text responsive) */}
-            <section className="max-w-6xl mx-auto px-4 py-8 sm:py-16">
-                <ScrollReveal animation="animate-scale">
-                    <p className="text-center text-xs sm:text-base md:text-lg mb-8 sm:mb-16 max-w-4xl mx-auto leading-relaxed font-medium bg-white/40 backdrop-blur-sm p-4 sm:p-6 rounded-2xl border border-orange-100 shadow-sm transition-all duration-300 hover:shadow-md">
-                        Chất lượng livestream phụ thuộc trực tiếp vào âm thanh, ánh sáng và không gian. Những vấn đề như
-                        hình ảnh thiếu sáng, âm thanh không ổn định hoặc không gian không phù hợp thường khiến buổi
-                        livestream kém hiệu quả và thiếu chuyên nghiệp. CMIC STUDIO cung cấp dịch vụ setup góc livestream
-                        hát trọn gói, giúp người dùng sẵn sàng lên sóng với chất lượng ổn định ngay từ đầu.
-                    </p>
-                </ScrollReveal>
+                {/* Dòng chữ in đậm chạy ngang vô tận */}
+                <div className="mt-12 py-3 bg-gray-50 border-y border-gray-200 overflow-hidden whitespace-nowrap relative flex">
+                    <style>{`
+                        @keyframes customMarquee {
+                            0% { transform: translateX(0%); }
+                            100% { transform: translateX(-50%); }
+                        }
+                        .run-marquee {
+                            display: inline-flex;
+                            width: max-content;
+                            animation: customMarquee 20s linear infinite;
+                        }
+                        .run-marquee:hover {
+                            animation-play-state: paused;
+                        }
+                    `}</style>
 
-                {/* Grid chuyển từ 1 cột sang 3 cột tùy màn hình */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 pt-4">
-                    <ScrollReveal className="h-full" animation="animate-fade-up">
-                        <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-orange-400 relative shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group h-full text-left">
-                            <div className="bg-orange-500 text-white px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-xl absolute -top-4 sm:-top-5 left-4 sm:left-6 text-xs sm:text-sm font-bold shadow-md group-hover:bg-black transition-colors duration-300">
-                                Giải pháp âm thanh
-                            </div>
-                            <p className="mt-4 sm:mt-6 text-xs sm:text-sm leading-relaxed text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
-                                Hệ thống âm thanh được thiết lập và cân chỉnh phù hợp cho livestream hát, đảm bảo giọng hát rõ ràng, ổn định và hạn chế tối đa các lỗi thường gặp như hú, rè hoặc vỡ tiếng. Thiết bị được lựa chọn dựa trên nhu cầu sử dụng và ngân sách thực tế của khách hàng.
-                            </p>
-                        </div>
-                    </ScrollReveal>
-
-                    <ScrollReveal className="h-full" animation="animate-fade-up">
-                        <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-orange-400 relative shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group h-full text-left">
-                            <div className="bg-orange-500 text-white px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-xl absolute -top-4 sm:-top-5 left-4 sm:left-6 text-xs sm:text-sm font-bold shadow-md group-hover:bg-black transition-colors duration-300">
-                                Hình ảnh và ánh sáng
-                            </div>
-                            <p className="mt-4 sm:mt-6 text-xs sm:text-sm leading-relaxed text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
-                                CMIC STUDIO thiết kế bố cục ánh sáng phù hợp với từng không gian và góc quay, giúp hình ảnh lên sóng rõ nét, cân bằng sáng và nổi bật chủ thể. Người dùng có thể livestream ngay mà không cần xử lý hình ảnh phức tạp.
-                            </p>
-                        </div>
-                    </ScrollReveal>
-
-                    <ScrollReveal className="h-full" animation="animate-fade-up">
-                        <div className="bg-white p-5 sm:p-6 rounded-2xl sm:rounded-3xl border-2 border-orange-400 relative shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300 group h-full text-left">
-                            <div className="bg-orange-500 text-white px-4 py-1.5 sm:px-6 sm:py-2 rounded-lg sm:rounded-xl absolute -top-4 sm:-top-5 left-4 sm:left-6 text-xs sm:text-sm font-bold shadow-md group-hover:bg-black transition-colors duration-300">
-                                Không gian livestream
-                            </div>
-                            <p className="mt-4 sm:mt-6 text-xs sm:text-sm leading-relaxed text-gray-600 group-hover:text-gray-900 transition-colors duration-300">
-                                Không gian được bố trí riêng tư, gọn gàng và phù hợp cho hoạt động livestream hát. Cách sắp xếp tối ưu giúp tạo cảm giác chuyên nghiệp, đồng thời nâng cao trải nghiệm cho cả người livestream và người xem.
-                            </p>
-                        </div>
-                    </ScrollReveal>
+                    <div className="run-marquee font-black text-black text-sm md:text-base tracking-wide uppercase select-none">
+                        <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                    </div>
                 </div>
             </section>
 
-            {/* SECTION 2: QUY TRÌNH SETUP (Tối ưu grid 2 cột trên mobile và co chữ) */}
-            <section className="max-w-5xl mx-auto px-4 py-10 sm:py-20 overflow-hidden">
-                <ScrollReveal>
-                    <h2 className="text-orange-600 text-xl sm:text-3xl font-bold text-center mb-12 sm:mb-20 uppercase tracking-wide drop-shadow-sm">
-                        Quy trình setup hát livestream
+            {/* ========================================================= */}
+            {/* 2. BẠN ĐANG MẤT KHÁCH HÀNG VÌ... (Ảnh 2)                   */}
+            {/* ========================================================= */}
+            <section className="py-14 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-12">
+                        BẠN ĐANG MẤT KHÁCH HÀNG VÌ...
                     </h2>
-                </ScrollReveal>
 
-                {/* Thay đổi từ flex-col sang dạng Grid 2 cột ở mobile để form không bị vỡ dọc */}
-                <div className="relative grid grid-cols-2 md:grid-cols-4 gap-x-3 gap-y-12 md:gap-4 mt-4 sm:mt-10">
-                    <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 border-t-2 border-dashed border-gray-300 -z-0"></div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+                        <div className="border-2 border-red-600 rounded-[28px] p-8 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                            <div className="mb-6">
+                                <AlertTriangle className="w-14 h-14 text-white fill-red-600 stroke-red-600" />
+                            </div>
+                            <p className="text-base text-gray-900 leading-relaxed font-normal">
+                                Ánh sáng mờ, giao diện nhợt nhạt, tổng thể nhìn thiếu chuyên nghiệp.
+                            </p>
+                        </div>
 
-                    {[
-                        { title: "Tiếp nhận nhu cầu & ngân sách", color: "cyan" },
-                        { title: "Tư vấn giải pháp phù hợp", color: "slate" },
-                        { title: "Setup âm thanh - ánh sáng - góc quay", color: "yellow" },
-                        { title: "Hướng dẫn sử dụng & hỗ trợ", color: "orange" }
-                    ].map((step, index) => (
-                        <ScrollReveal key={index} className="w-full" animation="animate-scale">
-                            <div className={`relative z-10 bg-white border-2 ${stepBorderMap[step.color]} rounded-xl sm:rounded-2xl p-3 sm:p-6 w-full shadow-md text-center flex flex-col items-center hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group min-h-[110px] sm:min-h-[160px] justify-center`}>
-                                <div className={`absolute -top-6 sm:-top-10 w-12 h-12 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-white font-black text-sm sm:text-2xl shadow-lg group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 ${stepColorMap[step.color]}`}>
-                                    {index + 1}
-                                </div>
-                                <p className="mt-4 sm:mt-10 text-[11px] sm:text-base font-semibold leading-tight sm:leading-relaxed text-gray-700 group-hover:text-black transition-colors duration-300">
-                                    {step.title}
+                        <div className="border-2 border-red-600 rounded-[28px] p-8 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                            <div className="mb-6">
+                                <AlertTriangle className="w-14 h-14 text-white fill-red-600 stroke-red-600" />
+                            </div>
+                            <p className="text-base text-gray-900 leading-relaxed font-normal">
+                                Âm thanh rè, lẫn nhiều tạp âm, nghe không rõ.
+                            </p>
+                        </div>
+
+                        <div className="border-2 border-red-600 rounded-[28px] p-8 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                            <div className="mb-6">
+                                <AlertTriangle className="w-14 h-14 text-white fill-red-600 stroke-red-600" />
+                            </div>
+                            <p className="text-base text-gray-900 leading-relaxed font-normal">
+                                Tự setup lộn xộn, thiết bị không tương thích khiến phiên live giật lag.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================= */}
+            {/* 3. GIẢI PHÁP TỪ CMIC STUDIO (NHÚNG VIDEO YOUTUBE)         */}
+            {/* ========================================================= */}
+            <section className="py-12 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-10">
+                        GIẢI PHÁP TỪ CMIC STUDIO
+                    </h2>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        {[
+                            {
+                                id: "dQw4w9WgXcQ", // Thay bằng Video ID YouTube 1 (hoặc ID YouTube Shorts)
+                                title: "Bạn cần SETUP LIVESTREAM"
+                            },
+                            {
+                                id: "dQw4w9WgXcQ", // Thay bằng Video ID YouTube 2
+                                title: "Muốn setup hát live CHUYÊN NGHIỆP"
+                            },
+                            {
+                                id: "dQw4w9WgXcQ", // Thay bằng Video ID YouTube 3
+                                title: "Ta còn em.."
+                            }
+                        ].map((item, idx) => (
+                            <div
+                                key={idx}
+                                className="relative aspect-[9/16] rounded-2xl overflow-hidden shadow-xl bg-black border border-gray-200"
+                            >
+                                <iframe
+                                    className="w-full h-full object-cover"
+                                    src={`https://www.youtube.com/embed/${item.id}?rel=0&modestbranding=1`}
+                                    title={item.title}
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowFullScreen
+                                ></iframe>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================= */}
+            {/* 4. BẢNG SO SÁNH GIẢI PHÁP CHI TIẾT (Ảnh 4)                */}
+            {/* ========================================================= */}
+            <section className="py-12 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
+                        <table className="w-full min-w-[760px] text-left border-collapse text-sm md:text-base">
+                            <thead>
+                                <tr className="bg-[#ed792f] text-white">
+                                    <th className="p-4 md:p-5 w-[22%] font-extrabold uppercase text-center border-r border-orange-400">
+                                        HẠNG MỤC
+                                    </th>
+                                    <th className="p-4 md:p-5 w-[39%] font-extrabold uppercase text-center border-r border-orange-400">
+                                        GIẢI PHÁP E-COMMERCE LIVE DÀNH CHO<br />NHÀ BÁN HÀNG - CHỦ SHOP
+                                    </th>
+                                    <th className="p-4 md:p-5 w-[39%] font-extrabold uppercase text-center">
+                                        GIẢI PHÁP IDOL LIVE DÀNH CHO<br />NHÀ SÁNG TẠO NỘI DUNG
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-200 bg-white text-gray-800 leading-relaxed font-normal">
+                                <tr>
+                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                                        Hình ảnh & Ánh sáng
+                                    </td>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
+                                        <p>• Sử dụng hệ thống camera có tốc độ lấy nét tự động cực nhanh để bắt nét ngay lập tức khi người bán đưa sản phẩm sát vào ống kính.</p>
+                                        <p>• Setup hệ thống đèn mô phỏng ánh sáng tự nhiên giúp hiển thị màu sắc và chất liệu sản phẩm chuẩn xác nhất so với thực tế, tránh tình trạng khách hàng hoàn trả vì "màu trên live khác màu nhận được".</p>
+                                    </td>
+                                    <td className="p-4 md:p-5 space-y-2">
+                                        <p>• Sử dụng camera cảm biến lớn kết hợp ống kính khẩu độ mở to để tạo hiệu ứng xóa phông mờ mịt, tôn chủ thể lên như một bộ phim điện ảnh.</p>
+                                        <p>• Hệ thống ánh sáng thiết lập theo chuẩn Studio chuyên nghiệp (Key light, Fill light, Hair light) kết hợp với đèn RGB tạo hiệu ứng màu sắc. Setup này giúp làm mịn da, che hoàn toàn khuyết điểm khuôn mặt, tạo độ nổi khối (3D) cho góc mặt của Idol.</p>
+                                    </td>
+                                </tr>
+
+                                <tr className="bg-gray-50/50">
+                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                                        Không gian & Âm thanh
+                                    </td>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
+                                        <p>• Thiết kế bối cảnh dạng "Showroom thu nhỏ": Tối ưu kệ trưng bày phía sau gọn gàng, có điểm nhấn thương hiệu.</p>
+                                        <p>• Sử dụng Micro định hướng cài áo hoặc treo cao (Boom mic) có khả năng lọc tiếng ồn, tiếng băng keo đóng hàng hay tiếng nhân viên soạn kho xung quanh.</p>
+                                    </td>
+                                    <td className="p-4 md:p-5 space-y-2">
+                                        <p>• Thi công phòng tiêu âm cơ bản để Idol có thể thoải mái ca hát, chơi nhạc cụ với âm lượng lớn mà không bị dội âm (echo) hay ảnh hưởng không gian bên ngoài.</p>
+                                        <p>• Trang bị các thiết bị hát chuyên dụng như Soundcard và Micro có độ nhạy cao.</p>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                                        Thiết bị & Phần mềm phụ trợ
+                                    </td>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
+                                        <p>• Trang bị màn hình phụ ngay dưới camera để người bán vừa nhìn thẳng ống kính tương tác, vừa đọc được bình luận, kịch bản live và kiểm soát số lượng tồn kho theo thời gian thực mà không bị phân tâm.</p>
+                                        <p>• Bố trí phông xanh cho Nhà bán hàng giúp thay đổi background, lên deal dễ dàng chỉ với 1 cú click.</p>
+                                        <p>• Phần mềm làm đẹp tích hợp hiệu ứng trang điểm, đẹp da, chỉnh dáng, kéo dài chân,... giúp Nhà bán hàng tiết kiệm thời gian lên hình đẹp hơn mà vẫn tôn được sản phẩm.</p>
+                                    </td>
+                                    <td className="p-4 md:p-5 space-y-2">
+                                        <p>• Trang bị màn hình phụ ngay dưới camera để Idol vừa hát vừa nhìn thẳng ống kính tương tác, vừa đọc được bình luận, donate của khán giả.</p>
+                                        <p>• Phần mềm làm đẹp tích hợp hiệu ứng trang điểm, đẹp da, chỉnh dáng, kết hợp cùng nhiều hiệu ứng hình ảnh giúp Idol lên hình “xinh lung linh”.</p>
+                                        <p>• Phần mềm Autotune giúp chỉnh giọng hát, tích hợp hiệu ứng PK khi có người donate, người đăng ký mới giúp phiên live không bao giờ nhàm chán.</p>
+                                    </td>
+                                </tr>
+
+                                <tr className="bg-gray-50/50">
+                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                                        Setup tận nơi & Hướng dẫn bàn giao
+                                    </td>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
+                                        <p>• Chuyên viên kỹ thuật trực tiếp đến kho/shop từ khâu khảo sát không gian, tư vấn giải pháp setup phù hợp nhất với tình hình thực tế, cho đến khi hoàn thành quá trình setup.</p>
+                                        <p>• Hướng dẫn sử dụng dàn thiết bị và phần mềm livestream cho nhân sự phụ trách vận hành sau khi lắp đặt.</p>
+                                    </td>
+                                    <td className="p-4 md:p-5 space-y-2">
+                                        <p>• Chuyên viên kỹ thuật trực tiếp đến không gian được yêu cầu để lắp đặt thiết bị và cài đặt phần mềm.</p>
+                                        <p>• Hướng dẫn sử dụng dàn thiết bị và phần mềm livestream cho Idol sau khi lắp đặt.</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================= */}
+            {/* 5. TƯ VẤN NHẬN BÁO GIÁ (MULTI-STEP FORM CHUẨN 3 ẢNH)      */}
+            {/* ========================================================= */}
+            <section id="tu-van-bao-gia" className="py-14 bg-white scroll-mt-6 flex justify-center items-center">
+                <div className="w-full max-w-[620px] px-4">
+
+                    {/* BƯỚC 1: Chọn thiết bị livestream */}
+                    {step === 1 && (
+                        <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
+                            <h2 className="text-2xl sm:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-6">
+                                Bạn muốn livestream bằng thiết bị gì?
+                            </h2>
+
+                            <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
+                                Bạn vui lòng tick chọn ô phù hợp để nhận được báo giá đúng nhất.*
+                            </p>
+
+                            <div className="space-y-4 mb-8">
+                                {[
+                                    "Điện thoại",
+                                    "PC",
+                                    "Tôi muốn tham khảo cả 2"
+                                ].map((item) => {
+                                    const isSelected = deviceType === item;
+                                    return (
+                                        <div
+                                            key={item}
+                                            onClick={() => setDeviceType(item)}
+                                            className={`w-full py-4 px-6 rounded-2xl cursor-pointer transition-all duration-200 text-base sm:text-lg select-none ${isSelected
+                                                    ? "bg-[#feddc7] text-black font-semibold border-2 border-[#e8702a] shadow-inner"
+                                                    : "bg-[#faece0] text-[#6b4731] hover:bg-[#f7dfcf] border-2 border-transparent font-medium"
+                                                }`}
+                                        >
+                                            {item}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleNextStep1}
+                                className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                            >
+                                GỬI NGAY
+                            </button>
+
+                            <p className="text-xs text-gray-500 text-center mt-3">
+                                Tên hồ sơ Canva của bạn sẽ được chia sẻ
+                            </p>
+                        </div>
+                    )}
+
+                    {/* BƯỚC 2: Nhập số điện thoại */}
+                    {step === 2 && (
+                        <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
+                            <h2 className="text-2xl sm:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-6">
+                                CMIC STUDIO có thể liên hệ với bạn bằng cách nào?
+                            </h2>
+
+                            <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
+                                Tiếp theo, bạn chỉ cần nhập SĐT để nhận báo giá!*
+                            </p>
+
+                            <div className="mb-8">
+                                <input
+                                    type="tel"
+                                    autoFocus
+                                    required
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    placeholder="Nhập số điện thoại của bạn..."
+                                    className="w-full py-4 px-5 bg-white border border-[#f5b890] rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-base text-gray-900 transition-all placeholder:text-gray-400"
+                                />
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={handleNextStep2}
+                                className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                            >
+                                GỬI NGAY
+                            </button>
+
+                            <p className="text-xs text-gray-500 text-center mt-3">
+                                Tên hồ sơ Canva của bạn sẽ được chia sẻ. Tuyệt đối không gửi mật khẩu.
+                            </p>
+                        </div>
+                    )}
+
+                    {/* BƯỚC 3: Hiện [HÌNH ẢNH BÁO GIÁ] & Chi phí ngân sách */}
+                    {step === 3 && (
+                        <div className="space-y-4">
+                            <div className="text-center font-extrabold text-black text-lg sm:text-xl uppercase tracking-wider">
+                                [HÌNH ẢNH BÁO GIÁ]
+                            </div>
+
+                            <div className="w-full rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-white">
+                                <img
+                                    src="/pricing/bang-gia-tong-hop.png"
+                                    alt="Báo giá chi tiết"
+                                    className="w-full h-auto object-contain max-h-[420px]"
+                                    onError={(e) => {
+                                        e.currentTarget.src = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&q=80";
+                                    }}
+                                />
+                            </div>
+
+                            <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
+                                <h2 className="text-2xl sm:text-[32px] font-black text-[#e8702a] leading-tight tracking-tight mb-4">
+                                    Chi phí trong báo giá đã phù hợp với ngân sách của bạn chưa?
+                                </h2>
+
+                                <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
+                                    Nếu đã phù hợp với ngân sách, bạn vui lòng bỏ qua câu hỏi này. Đội ngũ của CMIC STUDIO sẽ liên hệ để trao đổi thêm. Nếu chưa, bạn hãy điền ngân sách mà mình mong muốn. Chúng tôi sẽ thiết kế báo giá mới phù hợp với ngân sách của bạn!
                                 </p>
-                            </div>
-                        </ScrollReveal>
-                    ))}
-                </div>
-            </section>
 
-            {/* SECTION 3: TẠI SAO CHỌN CMIC */}
-            <section className="max-w-4xl mx-auto px-4 py-8 sm:py-12">
-                <ScrollReveal>
-                    <h2 className="text-orange-600 text-xl sm:text-3xl font-bold text-center mb-6 sm:mb-12 uppercase tracking-wide">Tại sao chọn CMIC Studio?</h2>
-                </ScrollReveal>
-                <div className="space-y-3 sm:space-y-6">
-                    {[
-                        "Phòng live mẫu thực tế tại TP.HCM – test live trước khi triển khai",
-                        "Giải pháp live trọn gói: ánh sáng – âm thanh – thiết bị đầy đủ",
-                        "Đội ngũ kỹ thuật viên nhiều năm kinh nghiệm, từng setup cho idol live và ca sĩ tại many tỉnh thành"
-                    ].map((text, i) => (
-                        <ScrollReveal key={i} animation={i % 2 === 0 ? "animate-fade-right" : "animate-fade-left"}>
-                            <div className="flex items-center bg-white rounded-full shadow-md p-1 sm:p-1.5 border border-orange-100 hover:border-orange-400 hover:shadow-lg transition-all duration-300 group cursor-default text-left">
-                                <div className="bg-white border-2 border-orange-500 text-black font-black w-8 h-8 sm:w-12 sm:h-12 rounded-full flex items-center justify-center mr-2 sm:mr-4 shadow-md group-hover:bg-orange-500 group-hover:text-white transition-all duration-300 flex-shrink-0 text-xs sm:text-base">
-                                    {i + 1}
-                                </div>
-                                <p className="font-semibold text-xs sm:text-base text-gray-700 group-hover:text-black pr-4 sm:pr-6 transition-colors duration-300 leading-tight">{text}</p>
-                            </div>
-                        </ScrollReveal>
-                    ))}
-                </div>
-            </section>
+                                <form onSubmit={handleFinalSubmit}>
+                                    <div className="mb-8">
+                                        <input
+                                            type="text"
+                                            value={budgetNote}
+                                            onChange={(e) => setBudgetNote(e.target.value)}
+                                            placeholder="Nhập ngân sách mong muốn (ví dụ: 15 triệu, 25 triệu...)"
+                                            className="w-full py-4 px-5 bg-white border border-[#f5b890] rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-base text-gray-900 transition-all placeholder:text-gray-400"
+                                        />
+                                    </div>
 
-            {/* SECTION 4: DỰ ÁN TIÊU BIỂU */}
-            <section className="max-w-6xl mx-auto px-4 py-8 sm:py-16">
-                <ScrollReveal>
-                    <h2 className="text-orange-600 text-xl sm:text-3xl font-bold text-center mb-6 sm:mb-12 uppercase tracking-wide">Một số dự án tiêu biểu</h2>
-                </ScrollReveal>
-                {/* Mobile: 2 cột grid để không bị dài dọc quá mức */}
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-8 border-2 sm:border-4 border-yellow-200 p-3 sm:p-8 rounded-2xl sm:rounded-3xl bg-white shadow-inner">
-                    {[
-                        { src: "/duan1.jpg", alt: "Project 1" },
-                        { src: "/duan2.jpg", alt: "Project 2" },
-                        { src: "/duan3.jpg", alt: "Project 3" }
-                    ].map((img, idx) => (
-                        <ScrollReveal key={idx} animation="animate-scale">
-                            <div className="aspect-[3/4] bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden shadow-md relative group border border-gray-100">
-                                <img src={img.src} alt={img.alt} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" />
-                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-2 sm:p-4">
-                                    <span className="text-white text-[9px] sm:text-xs font-bold uppercase tracking-widest bg-orange-500/90 px-2 py-1 sm:px-3 sm:py-1.5 rounded-md backdrop-blur-sm shadow-md translate-y-2 group-hover:translate-y-0 transition-transform duration-300">Xem Chi Tiết</span>
+                                    {!isSubmitted ? (
+                                        <button
+                                            type="submit"
+                                            className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                        >
+                                            GỬI NGAY
+                                        </button>
+                                    ) : (
+                                        <div className="w-full py-4 bg-green-600 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2 text-base">
+                                            <CheckCircle2 className="w-5 h-5" />
+                                            ĐÃ GỬI THÔNG TIN THÀNH CÔNG!
+                                        </div>
+                                    )}
+
+                                    <p className="text-xs text-gray-500 text-center mt-3">
+                                        Tên hồ sơ Canva của bạn sẽ được chia sẻ. Tuyệt đối không gửi mật khẩu.
+                                    </p>
+                                </form>
+
+                                <div className="text-center mt-6">
+                                    <button
+                                        type="button"
+                                        onClick={handleReset}
+                                        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-black transition-colors"
+                                    >
+                                        <RotateCcw className="w-3.5 h-3.5" /> Khảo sát lại từ đầu
+                                    </button>
                                 </div>
                             </div>
-                        </ScrollReveal>
-                    ))}
+                        </div>
+                    )}
+
                 </div>
             </section>
 
-            {/* SECTION 5: FORM ĐĂNG KÝ */}
-            <section className="max-w-xl mx-auto px-4 sm:px-6 py-10 sm:py-16 bg-white rounded-2xl sm:rounded-3xl border border-orange-100 shadow-xl relative overflow-hidden">
-                <div className="absolute -top-12 -left-12 w-24 h-24 bg-orange-400/10 rounded-full blur-xl"></div>
-                <ScrollReveal>
-                    <h2 className="text-orange-600 text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 uppercase text-center tracking-wide">Đăng ký tư vấn ngay</h2>
-                </ScrollReveal>
-                <form className="space-y-4 sm:space-y-6 text-left relative z-10" onSubmit={handleSend}>
-                    <ScrollReveal className="group">
-                        <label className="block text-xs sm:text-base font-bold mb-1 sm:mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Họ và tên</label>
-                        <input
-                            name="fullName"
-                            type="text"
-                            placeholder="Nhập họ và tên"
-                            value={formData.fullName}
-                            onChange={handleChange}
-                            required
-                            className="w-full p-2.5 sm:p-3.5 text-xs sm:text-sm border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
-                        />
-                    </ScrollReveal>
-                    <ScrollReveal className="group">
-                        <label className="block text-xs sm:text-base font-bold mb-1 sm:mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Email</label>
-                        <input
-                            name="email"
-                            type="email"
-                            placeholder="Nhập địa chỉ email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                            className="w-full p-2.5 sm:p-3.5 text-xs sm:text-sm border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
-                        />
-                    </ScrollReveal>
-                    <ScrollReveal className="group">
-                        <label className="block text-xs sm:text-base font-bold mb-1 sm:mb-2 text-gray-700 group-focus-within:text-orange-500 transition-colors">*Số điện thoại</label>
-                        <input
-                            name="phone"
-                            type="tel"
-                            placeholder="Nhập số điện thoại"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            required
-                            className="w-full p-2.5 sm:p-3.5 text-xs sm:text-sm border-2 border-orange-300 rounded-xl focus:outline-none focus:border-orange-500 focus:ring-4 ring-orange-100 transition-all bg-orange-50/20"
-                        />
-                    </ScrollReveal>
-                    <ScrollReveal>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className={`w-full text-white font-bold py-3 sm:py-4 rounded-xl sm:rounded-2xl transition-all duration-300 shadow-lg text-base sm:text-xl uppercase tracking-wider active:scale-[0.99] ${loading ? 'bg-gray-500 cursor-not-allowed' : 'bg-orange-500 hover:bg-black hover:shadow-orange-200'}`}
+            {/* ========================================================= */}
+            {/* 6. CASE STUDY SETUP LIVESTREAM                            */}
+            {/* ========================================================= */}
+            <section className="py-12 bg-white overflow-hidden">
+                <style>{`
+                    @keyframes scrollLeft {
+                        0% { transform: translateX(0%); }
+                        100% { transform: translateX(-33.333%); }
+                    }
+                    @keyframes scrollRight {
+                        0% { transform: translateX(-33.333%); }
+                        100% { transform: translateX(0%); }
+                    }
+                    .marquee-left {
+                        display: flex;
+                        width: max-content;
+                        animation: scrollLeft 35s linear infinite;
+                    }
+                    .marquee-right {
+                        display: flex;
+                        width: max-content;
+                        animation: scrollRight 35s linear infinite;
+                    }
+                    .marquee-left:hover, .marquee-right:hover {
+                        animation-play-state: paused;
+                    }
+                `}</style>
+
+                <div className="max-w-6xl mx-auto px-4 mb-8 text-center">
+                    <h2 className="text-xl md:text-2xl font-black uppercase text-black tracking-wide leading-tight">
+                        CASE STUDY SETUP LIVESTREAM<br />CMIC STUDIO ĐÃ THỰC HIỆN
+                    </h2>
+                </div>
+
+                <div className="space-y-4">
+                    {/* Hàng 1: Chạy liên tục sang trái */}
+                    <div className="overflow-hidden w-full">
+                        <div className="marquee-left gap-4">
+                            {[...caseStudyRow1, ...caseStudyRow1, ...caseStudyRow1].map((src, i) => (
+                                <div key={i} className="w-60 sm:w-72 aspect-video rounded-xl overflow-hidden shadow-md flex-shrink-0 bg-black">
+                                    <img
+                                        src={src}
+                                        alt="Case Study"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80";
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Hàng 2: Chạy liên tục sang phải */}
+                    <div className="overflow-hidden w-full">
+                        <div className="marquee-right gap-4">
+                            {[...caseStudyRow2, ...caseStudyRow2, ...caseStudyRow2].map((src, i) => (
+                                <div key={i} className="w-48 sm:w-56 aspect-[3/4] rounded-xl overflow-hidden shadow-md flex-shrink-0 bg-black">
+                                    <img
+                                        src={src}
+                                        alt="Case Study"
+                                        className="w-full h-full object-cover"
+                                        onError={(e) => {
+                                            e.currentTarget.src = "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500&q=80";
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ========================================================= */}
+            {/* 7. MỘT SỐ THƯƠNG HIỆU ĐÃ HỢP TÁC                          */}
+            {/* ========================================================= */}
+            <section className="py-12 bg-white">
+                <div className="max-w-6xl mx-auto px-4">
+                    <div className="text-center mb-10">
+                        <h3 className="text-xl md:text-2xl font-black uppercase tracking-wider text-black">
+                            MỘT SỐ THƯƠNG HIỆU ĐÃ HỢP TÁC
+                        </h3>
+                    </div>
+
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 lg:gap-12 items-center justify-items-center">
+                        {brands.map((brand, i) => (
+                            <div
+                                key={i}
+                                className="h-24 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
+                            >
+                                <img
+                                    src={brand.src}
+                                    alt={brand.name}
+                                    className="max-h-full max-w-full object-contain filter contrast-105"
+                                    onError={(e) => {
+                                        e.currentTarget.style.display = "none";
+                                        e.currentTarget.parentElement.innerText = brand.name;
+                                        e.currentTarget.parentElement.className =
+                                            "h-24 w-full flex items-center justify-center text-xs font-bold text-gray-500 uppercase tracking-wider";
+                                    }}
+                                />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-14 text-center">
+                        <a
+                            href="#tu-van-bao-gia"
+                            className="inline-flex items-center gap-3 pl-8 pr-3 py-2.5 bg-[#e8702a] hover:bg-[#d8621d] text-white font-extrabold rounded-full shadow-md transition-all duration-300 hover:shadow-lg uppercase text-sm tracking-wider"
                         >
-                            {loading ? 'ĐANG GỬI...' : 'Gửi Yêu Cầu'}
-                        </button>
-                    </ScrollReveal>
-                </form>
-                <p className="mt-4 sm:mt-6 text-gray-500 italic text-[11px] sm:text-sm text-center">
-                    CMIC STUDIO sẽ liên hệ trong vòng 24h. Thông tin của bạn sẽ được bảo mật.
-                </p>
+                            <span>TƯ VẤN BÁO GIÁ</span>
+                            <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#e8702a] shadow-inner">
+                                <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+                            </div>
+                        </a>
+                    </div>
+                </div>
             </section>
 
-            <style dangerouslySetInnerHTML={{
-                __html: `
-                @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-                @keyframes fadeInRight { from { opacity: 0; transform: translateX(30px); } to { opacity: 1; transform: translateX(0); } }
-                @keyframes slideRight { from { width: 0%; } to { width: 55%; } }
-            `}} />
         </div>
     );
-};
-
-export default CMICLandingPage;
+}
