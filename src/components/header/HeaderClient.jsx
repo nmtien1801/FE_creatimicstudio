@@ -46,8 +46,7 @@ export default function Header({
     { label: "SẢN PHẨM", path: "/san-pham/all/all" },
     { label: "DỊCH VỤ CÀI ĐẶT PHẦN MỀM AUTOTONE", path: "dich-vu/phan-mem-auto-tone" },
     { label: "DỊCH VỤ SETUP LIVESTREAM", path: "dich-vu/set-up-phong-livestream" },
-    { label: "REVIEW CHI TIẾT", path: "tin-tuc" },
-    { label: "AFFILIATE", path: "tuyen-dung" },
+    { label: "REVIEW CHI TIẾT", path: "review-detail" },
   ];
 
   // =========================================================

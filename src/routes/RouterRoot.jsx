@@ -34,6 +34,7 @@ import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
 import PaymentMomoPage from '../clientPages/payment/PaymentMomoPage.jsx'
 import PaymentVietQrPage from '../clientPages/payment/PaymentVietQrPage.jsx'
 import GioHang from '../clientPages/GioHang.jsx'
+import Review from '../clientPages/Review.jsx'
 
 import ChinhSach1 from '../components/chinhsach/Chinhsach1.jsx'
 import ChinhSach2 from '../components/chinhsach/Chinhsach2.jsx'
@@ -93,6 +94,7 @@ function RouterRoot() {
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Navigate to="trang-chu" replace />} />
           <Route path="trang-chu" element={<Home />} />
+          <Route path="review-detail" element={<Review />} />
 
           {/* path route: /product/ */}
           {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}

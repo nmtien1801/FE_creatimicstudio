@@ -373,7 +373,10 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             <section id="tu-van-bao-gia" className="py-14 bg-white scroll-mt-6 flex justify-center items-center">
                 <div className="w-full max-w-[620px] px-4">
-
+                    <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-10">
+                        TƯ VẤN NHẬN BÁO GIÁ
+                    </h2>
+                    
                     {/* BƯỚC 1: Chọn thiết bị livestream */}
                     {step === 1 && (
                         <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
@@ -397,8 +400,8 @@ export default function SetupLivestreamPage() {
                                             key={item}
                                             onClick={() => setDeviceType(item)}
                                             className={`w-full py-4 px-6 rounded-2xl cursor-pointer transition-all duration-200 text-base sm:text-lg select-none ${isSelected
-                                                    ? "bg-[#feddc7] text-black font-semibold border-2 border-[#e8702a] shadow-inner"
-                                                    : "bg-[#faece0] text-[#6b4731] hover:bg-[#f7dfcf] border-2 border-transparent font-medium"
+                                                ? "bg-[#feddc7] text-black font-semibold border-2 border-[#e8702a] shadow-inner"
+                                                : "bg-[#faece0] text-[#6b4731] hover:bg-[#f7dfcf] border-2 border-transparent font-medium"
                                                 }`}
                                         >
                                             {item}
