@@ -13,6 +13,7 @@ import {
     CreditCard,
     Receipt
 } from "lucide-react";
+import ApiOrder from "../../apis/ApiOrder";
 
 export default function OrderSuccessPage() {
     const location = useLocation();
@@ -23,31 +24,39 @@ export default function OrderSuccessPage() {
     const [isLoading, setIsLoading] = useState(true);
 
     // ==========================================
-    // MÔ PHỎNG GỌI API LẤY THÔNG TIN ĐƠN HÀNG
+    // GỌI API LẤY CHI TIẾT ĐƠN HÀNG
     // ==========================================
     useEffect(() => {
-        // Thực tế: const res = await ApiOrder.getOrderById(orderId);
-        const fetchOrder = setTimeout(() => {
-            const mockData = {
-                orderId: orderId || "ORD-202610061738",
-                createdAt: "06/10/2026 17:38",
-                status: location.state?.status || "pending", // 'pending' | 'completed' | 'cancelled'
-                paymentMethod: location.state?.paymentMethod || "bank", // 'cod' | 'bank'
-                totalAmount: location.state?.totalAmount || 3930000,
-                customer: {
-                    fullName: location.state?.fullName || "Nguyễn Văn Anh",
-                    phone: location.state?.phone || "0923456789",
-                    address: location.state?.address || "123 Đường Lê Lợi, Phường Bến Thành, Quận 1, TP.HCM"
+        let isActive = true;
+
+        const fetchOrder = async () => {
+            if (!orderId) {
+                setIsLoading(false);
+                return;
+            }
+
+            try {
+                const response = await ApiOrder.getOrderDetailApi(orderId);
+                if (isActive && response?.EC === 0 && response?.DT) {
+                    setOrderDetail(response.DT);
                 }
-            };
-            setOrderDetail(mockData);
-            setIsLoading(false);
-        }, 500);
+            } catch (error) {
+                console.error("Lỗi lấy thông tin đơn hàng:", error);
+            } finally {
+                if (isActive) {
+                    setIsLoading(false);
+                }
+            }
+        };
 
-        return () => clearTimeout(fetchOrder);
-    }, [orderId, location.state]);
+        fetchOrder();
 
-    const formatCurrency = (val) => new Intl.NumberFormat("vi-VN").format(val) + "đ";
+        return () => {
+            isActive = false;
+        };
+    }, [orderId]);
+
+    const formatCurrency = (val) => new Intl.NumberFormat("vi-VN").format(val || 0) + "đ";
 
     // Hàm render badge trạng thái
     const renderStatusBadge = (status) => {
@@ -55,7 +64,7 @@ export default function OrderSuccessPage() {
             case "completed":
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-                        <CheckCircle2 size={14} /> Đã hoàn tất thanh toán
+                        <CheckCircle2 size={14} /> Đã hoàn tất
                     </span>
                 );
             case "cancelled":
@@ -68,7 +77,7 @@ export default function OrderSuccessPage() {
             default:
                 return (
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
-                        <Clock size={14} /> Chờ xác nhận thanh toán
+                        <Clock size={14} /> Chờ xác nhận
                     </span>
                 );
         }
@@ -85,7 +94,23 @@ export default function OrderSuccessPage() {
         );
     }
 
-    if (!orderDetail) return null;
+    if (!orderDetail) {
+        return (
+            <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center px-4">
+                <div className="max-w-md w-full bg-white border border-slate-200 rounded-2xl p-8 text-center shadow-sm">
+                    <h2 className="text-lg font-bold text-slate-900">Không tìm thấy đơn hàng</h2>
+                    <p className="text-xs text-slate-500 mt-2">Mã đơn hàng không tồn tại hoặc đã bị xóa.</p>
+                    <button
+                        type="button"
+                        onClick={() => navigate("/")}
+                        className="mt-6 px-4 py-2.5 bg-[#14b8a6] hover:bg-[#0d9488] text-white text-xs font-bold rounded-xl transition"
+                    >
+                        Quay lại trang chủ
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-[#f8fafc] py-10 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
@@ -215,7 +240,9 @@ export default function OrderSuccessPage() {
                                     <CalendarDays size={18} className="text-slate-400 mt-0.5 shrink-0" />
                                     <div>
                                         <span className="block text-[11px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Thời gian đặt</span>
-                                        <p className="font-medium text-slate-800">{orderDetail.createdAt}</p>
+                                        <p className="font-medium text-slate-800">
+                                            {orderDetail.createdAt ? new Date(orderDetail.createdAt).toLocaleString("vi-VN") : "—"}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -223,8 +250,8 @@ export default function OrderSuccessPage() {
                                     <MapPin size={18} className="text-slate-400 mt-0.5 shrink-0" />
                                     <div>
                                         <span className="block text-[11px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Địa chỉ giao hàng</span>
-                                        <p className="font-bold text-slate-800 mb-0.5">{orderDetail.customer.fullName} - {orderDetail.customer.phone}</p>
-                                        <p className="text-slate-600 text-xs leading-relaxed">{orderDetail.customer.address}</p>
+                                        <p className="font-bold text-slate-800 mb-0.5">{orderDetail.fullName} - {orderDetail.phone}</p>
+                                        <p className="text-slate-600 text-xs leading-relaxed">{orderDetail.address}</p>
                                     </div>
                                 </div>
                             </div>

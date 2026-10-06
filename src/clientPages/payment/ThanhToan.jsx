@@ -1,6 +1,8 @@
 import React, { useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom"; // Liên kết: Thêm hook điều hướng
-import { useSelector } from "react-redux";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import ApiOrder from "../../apis/ApiOrder";
+import { removePurchasedItems } from "../../redux/cartSlice"; // Kiểm tra nếu file cartSlice có action này, hoặc import action clear giỏ hàng của bạn
 import {
     Check,
     MapPin,
@@ -15,8 +17,10 @@ import {
 
 export default function CheckoutPage() {
     const location = useLocation();
-    const navigate = useNavigate(); // Thêm navigate để dùng trong handleSubmit
-    const reduxCartItems = useSelector((state) => state.cart.items);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const reduxCartItems = useSelector((state) => state.cart?.items || []);
     const [formData, setFormData] = useState({
         fullName: "",
         phone: "",
@@ -26,7 +30,7 @@ export default function CheckoutPage() {
 
     const [paymentMethod, setPaymentMethod] = useState("cod");
     const [agreedPolicy, setAgreedPolicy] = useState(false);
-    
+
     // State quản lý hiển thị popup xác nhận chuyển khoản
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -42,35 +46,40 @@ export default function CheckoutPage() {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Hàm gọi API xử lý đặt hàng thực tế
+    // Hàm gọi API xử lý đặt hàng
     const executeOrder = async () => {
         setIsSubmitting(true);
+
         const orderPayload = {
             fullName: formData.fullName,
             phone: formData.phone,
             address: formData.address,
             notes: formData.note,
             paymentMethod: paymentMethod, // 'cod' | 'bank'
-            items: cartItems,             // Mảng sản phẩm từ giỏ hàng
-            totalAmount: grandTotal,
+            items: cartItems.map((item) => ({
+                productId: item.productId ?? item.id,
+                quantity: item.quantity,
+            })),
         };
 
         try {
-            // Gọi API tạo đơn hàng (ví dụ: ApiOrder.createOrderApi)
-            // const res = await ApiOrder.createOrderApi(orderPayload);
+            const res = await ApiOrder.createOrderApi(orderPayload);
 
-            // Sau khi đặt hàng thành công:
-            // 1. Dọn dẹp giỏ hàng trên trình duyệt
-            localStorage.removeItem("cartItems");
+            if (res?.EC === 0 && res?.DT?.order?.orderId) {
+                // 1. Dọn dẹp giỏ hàng
+                localStorage.removeItem("cartItems");
+                if (typeof removePurchasedItems === "function") {
+                    dispatch(removePurchasedItems(cartItems.map((item) => item.productId ?? item.id)));
+                }
 
-            alert("Đặt hàng thành công!");
-
-            // 2. Điều hướng sang trang hoàn tất đơn hàng hoặc cổng thanh toán
-            // Giả lập ID nếu chưa nối backend
-            const orderId = Date.now();
-            navigate(`/order-status/${orderId}`, { state: orderPayload });
+                // 2. Chuyển hướng sang trang trạng thái đơn hàng kèm mã đơn từ backend
+                navigate(`/order-status/${encodeURIComponent(res.DT.order.orderId)}`);
+            } else {
+                alert(res?.EM || "Không thể tạo đơn hàng, vui lòng thử lại!");
+            }
         } catch (err) {
-            alert("Có lỗi xảy ra khi tạo đơn hàng!");
+            console.error("Lỗi đặt hàng:", err);
+            alert(err.response?.data?.EM || err.response?.data?.message || err.message || "Có lỗi xảy ra khi tạo đơn hàng!");
         } finally {
             setIsSubmitting(false);
             setShowConfirmModal(false);
@@ -81,6 +90,10 @@ export default function CheckoutPage() {
         e.preventDefault();
         if (!formData.fullName || !formData.phone || !formData.address) {
             alert("Vui lòng điền đầy đủ các trường thông tin bắt buộc!");
+            return;
+        }
+        if (cartItems.length === 0) {
+            alert("Giỏ hàng của bạn đang trống!");
             return;
         }
         if (!agreedPolicy) {
@@ -303,8 +316,8 @@ export default function CheckoutPage() {
                                     <label
                                         onClick={() => setPaymentMethod("cod")}
                                         className={`flex items-center gap-3.5 p-3 rounded-xl border cursor-pointer transition ${paymentMethod === "cod"
-                                                ? "border-[#14b8a6] bg-[#f0fdf9]"
-                                                : "border-slate-200 hover:border-slate-300"
+                                            ? "border-[#14b8a6] bg-[#f0fdf9]"
+                                            : "border-slate-200 hover:border-slate-300"
                                             }`}
                                     >
                                         <div className="w-4 h-4 rounded-full border border-teal-500 flex items-center justify-center">
@@ -319,13 +332,12 @@ export default function CheckoutPage() {
                                         </div>
                                     </label>
 
-                                    {/* MỤC CHUYỂN KHOẢN TRƯỚC VÀ HIỂN THỊ ẢNH QR */}
                                     <div>
                                         <label
                                             onClick={() => setPaymentMethod("bank")}
                                             className={`flex items-center gap-3.5 p-3 rounded-xl border cursor-pointer transition ${paymentMethod === "bank"
-                                                    ? "border-[#14b8a6] bg-[#f0fdf9]"
-                                                    : "border-slate-200 hover:border-slate-300"
+                                                ? "border-[#14b8a6] bg-[#f0fdf9]"
+                                                : "border-slate-200 hover:border-slate-300"
                                                 }`}
                                         >
                                             <div className="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center">
@@ -340,10 +352,9 @@ export default function CheckoutPage() {
                                             </div>
                                         </label>
 
-                                        {/* Box hiển thị QR (Chỉ hiện khi paymentMethod === 'bank') */}
                                         {paymentMethod === "bank" && (
                                             <div className="mt-3 flex flex-col items-center justify-center p-4 bg-white border border-[#ccfbf1] rounded-xl shadow-sm animate-fade-in">
-                                                <img 
+                                                <img
                                                     src="/qr.png"
                                                     alt="Mã QR Thanh Toán"
                                                     className="w-48 h-48 object-contain rounded-lg"
@@ -404,10 +415,11 @@ export default function CheckoutPage() {
 
                             <button
                                 type="submit"
+                                disabled={isSubmitting}
                                 className="w-full bg-[#f97316] hover:bg-[#ea580c] active:scale-[0.99] transition-all text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-orange-500/25 flex items-center justify-center gap-2"
                             >
                                 <ShieldCheck size={18} />
-                                <span>Xác nhận đơn hàng</span>
+                                <span>{isSubmitting ? "Đang tạo đơn..." : "Xác nhận đơn hàng"}</span>
                             </button>
 
                             <p className="text-[11px] text-center text-slate-400 mt-3 leading-tight">
@@ -427,11 +439,10 @@ export default function CheckoutPage() {
                 </form>
             </div>
 
-            {/* ================= MODAL XÁC NHẬN CHUYỂN TIỀN ================= */}
+            {/* Modal popup xác nhận chuyển khoản */}
             {showConfirmModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-fade-in">
                     <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl border border-slate-100 relative">
-                        {/* Nút đóng modal */}
                         <button
                             type="button"
                             onClick={() => setShowConfirmModal(false)}

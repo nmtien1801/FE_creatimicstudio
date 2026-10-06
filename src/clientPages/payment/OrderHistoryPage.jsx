@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import ApiOrder from "../../apis/ApiOrder";
+
 import {
     Search,
     Calendar,
@@ -37,81 +39,13 @@ export default function OrderHistoryPage() {
         const fetchOrderHistory = async () => {
             setLoading(true);
             try {
-                // Thực tế bạn gọi API: 
-                // const res = await ApiOrder.getOrderHistoryApi({ userId: userInfo?.id });
-                // if (res && res.EC === 0) setOrders(res.DT);
+                const response = await ApiOrder.getOrderHistoryApi({ userId: userInfo?.id });
+                if (response?.EC === 0) {
+                    setOrders(response.DT);
+                }
 
-                // Dữ liệu mẫu mô phỏng gọi API thành công:
-                setTimeout(() => {
-                    const mockOrders = [
-                        {
-                            orderId: "ORD-1728213600000",
-                            createdAt: "2026-10-06T10:30:00.000Z",
-                            status: "pending",
-                            paymentMethod: "bank",
-                            totalAmount: 3930000,
-                            fullName: "Nguyễn Văn Anh",
-                            phone: "0372672396",
-                            address: "Gò Vấp, TP. Hồ Chí Minh",
-                            items: [
-                                {
-                                    id: 1,
-                                    name: "Bộ Micro Rs200 + Soundcard Icon U solo nhỏ gọn âm thanh chuyên nghiệp",
-                                    price: 3900000,
-                                    quantity: 1,
-                                    image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&auto=format&fit=crop&q=80"
-                                }
-                            ]
-                        },
-                        {
-                            orderId: "ORD-1728127200000",
-                            createdAt: "2026-10-05T14:15:00.000Z",
-                            status: "completed",
-                            paymentMethod: "cod",
-                            totalAmount: 3990000,
-                            fullName: "Nguyễn Văn Anh",
-                            phone: "0372672396",
-                            address: "Quận 1, TP. Hồ Chí Minh",
-                            items: [
-                                {
-                                    id: 2,
-                                    name: "Mic JBL mini karaoke thu âm đa năng",
-                                    price: 3990000,
-                                    quantity: 1,
-                                    image: "https://images.unsplash.com/photo-1520523839898-50712825e317?w=200&auto=format&fit=crop&q=80"
-                                }
-                            ]
-                        },
-                        {
-                            orderId: "ORD-1727781600000",
-                            createdAt: "2026-10-01T09:00:00.000Z",
-                            status: "cancelled",
-                            paymentMethod: "bank",
-                            totalAmount: 7890000,
-                            fullName: "Nguyễn Văn Anh",
-                            phone: "0372672396",
-                            address: "Gò Vấp, TP. Hồ Chí Minh",
-                            items: [
-                                {
-                                    id: 1,
-                                    name: "Bộ Micro Rs200 + Soundcard Icon U solo nhỏ gọn âm thanh chuyên nghiệp",
-                                    price: 3900000,
-                                    quantity: 1,
-                                    image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&auto=format&fit=crop&q=80"
-                                },
-                                {
-                                    id: 2,
-                                    name: "Mic JBL mini karaoke thu âm đa năng",
-                                    price: 3990000,
-                                    quantity: 1,
-                                    image: "https://images.unsplash.com/photo-1520523839898-50712825e317?w=200&auto=format&fit=crop&q=80"
-                                }
-                            ]
-                        }
-                    ];
-                    setOrders(mockOrders);
-                    setLoading(false);
-                }, 500);
+                setOrders(mockOrders);
+                setLoading(false);
             } catch (error) {
                 console.error("Lỗi tải lịch sử đơn hàng:", error);
                 setLoading(false);

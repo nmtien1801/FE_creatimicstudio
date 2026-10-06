@@ -102,6 +102,8 @@ function RouterRoot() {
           <Route path="dich-vu/phan-mem-auto-tone" element={<ServiceTone />} />
           <Route path="gio-hang" element={<GioHang />} />
           <Route path="payment" element={<ThanhToan />} />
+          <Route path="order-history" element={<OrderHistoryPage />} />
+          <Route path="order-status/:id" element={<StatusThanhToan />} />
 
           <Route path="dieu-khoan-dich-vu-va-dieu-kien-giao-dich-chung" element={<ChinhSach1 />} />
           <Route path="cac-phuong-thuc-thanh-toan" element={<ChinhSach2 />} />
@@ -129,8 +131,6 @@ function RouterRoot() {
           {/* route products */}
           <Route path="products/categories" element={<Category />} />        {/* Danh mục chung */}
           <Route path="products/list" element={<ProductManager />} />      {/* Danh sách sản phẩm */}
-          <Route path="order-history" element={<OrderHistoryPage />} />
-          <Route path="order-status/:id" element={<StatusThanhToan />} />
 
           {/* route news */}
           <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}

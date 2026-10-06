@@ -116,7 +116,14 @@ export const removeCartItem = createAsyncThunk(
 const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {},
+  reducers: {
+    purchasedItemsRemoved: (state, action) => {
+      const purchasedIds = new Set(action.payload.map(String));
+      state.items = state.items.filter(
+        (item) => !purchasedIds.has(String(item.id)),
+      );
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loadCart.pending, (state) => {
@@ -141,6 +148,13 @@ const cartSlice = createSlice({
   },
 });
 
+export const removePurchasedItems = (productIds) => (dispatch) => {
+  const purchasedIds = new Set(productIds.map(String));
+  persistGuestCart(
+    readGuestCart().filter((item) => !purchasedIds.has(String(item.id))),
+  );
+  dispatch(cartSlice.actions.purchasedItemsRemoved(productIds));
+};
 export const persistGuestCart = (items) =>
   localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
 export default cartSlice.reducer;

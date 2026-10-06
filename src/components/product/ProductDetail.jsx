@@ -123,9 +123,20 @@ const ProductDetail = () => {
     const handleBuyNow = () => {
         if (!userInfo?.id) {
             toast.error('Vui lòng đăng nhập trước khi thanh toán');
-            navigate('/dang-nhap');
+            navigate('/login');
             return;
         }
+        navigate('/payment', {
+            state: {
+                cartItems: [{
+                    id: String(product.id || id_product),
+                    name: String(product.name || ""),
+                    price: Number(product.price) || 0,
+                    image: typeof product.image === 'string' ? product.image : (selectedImage || ""),
+                    quantity,
+                }],
+            },
+        });
     };
 
 
