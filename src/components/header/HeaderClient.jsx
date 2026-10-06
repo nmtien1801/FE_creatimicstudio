@@ -278,7 +278,7 @@ export default function Header({
               <span className="hidden text-white/30 lg:inline">|</span>
 
               <button
-                onClick={() => navigate("/thanh-toan")}
+                onClick={() => navigate("/order-history")}
                 className="hidden rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200 lg:inline-block"
               >
                 Thanh toán

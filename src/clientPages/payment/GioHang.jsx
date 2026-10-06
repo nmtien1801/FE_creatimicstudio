@@ -1,5 +1,8 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // 1. Import useNavigate
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { removeCartItem, updateCartItem } from "../../redux/cartSlice";
 import {
     Trash2,
     ChevronLeft,
@@ -14,39 +17,22 @@ import {
 } from "lucide-react";
 
 export default function CartPage() {
-    const navigate = useNavigate(); // 2. Khởi tạo hook điều hướng
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart.items);
+    const userId = useSelector((state) => state.auth.userInfo?.id);
 
-    const [cartItems, setCartItems] = useState([
-        {
-            id: 1,
-            name: "Bộ Micro Rs200 + Soundcard Icon U solo nhỏ gọn âm thanh chuyên nghiệp",
-            price: 3900000,
-            quantity: 1,
-            image: "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=200&auto=format&fit=crop&q=80"
-        },
-        {
-            id: 2,
-            name: "Mic JBL mini karaoke thu âm đa năng",
-            price: 3990000,
-            quantity: 1,
-            image: "https://images.unsplash.com/photo-1520523839898-50712825e317?w=200&auto=format&fit=crop&q=80"
-        }
-    ]);
-
-    const updateQuantity = (id, delta) => {
-        setCartItems(prev =>
-            prev.map(item => {
-                if (item.id === id) {
-                    const newQty = item.quantity + delta;
-                    return { ...item, quantity: newQty > 0 ? newQty : 1 };
-                }
-                return item;
-            })
-        );
+    const updateQuantity = (item, delta) => {
+        const quantity = Math.max(1, item.quantity + delta);
+        dispatch(updateCartItem({ item, quantity, userId }))
+            .unwrap()
+            .catch((error) => toast.error(error.message || "Không thể cập nhật giỏ hàng"));
     };
 
-    const removeItem = (id) => {
-        setCartItems(prev => prev.filter(item => item.id !== id));
+    const removeItem = (item) => {
+        dispatch(removeCartItem({ item, userId }))
+            .unwrap()
+            .catch((error) => toast.error(error.message || "Không thể xóa sản phẩm"));
     };
 
     const formatCurrency = (amount) => {
@@ -56,20 +42,17 @@ export default function CartPage() {
     const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const totalItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-    // 3. Hàm xử lý điều hướng
     const handleProceedToCheckout = () => {
         if (cartItems.length === 0) {
             alert("Giỏ hàng của bạn đang trống!");
             return;
         }
-        // Điều hướng sang /payment kèm dữ liệu sản phẩm
         navigate("/payment", { state: { cartItems, subtotal } });
     };
 
     return (
         <div className="min-h-screen bg-[#f8fafc] py-10 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
             <div className="max-w-6xl mx-auto">
-                {/* Header & Stepper giữ nguyên */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-slate-200 mb-8 gap-6">
                     <div>
                         <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
@@ -104,7 +87,6 @@ export default function CartPage() {
                     </div>
                 </div>
 
-                {/* Main Content */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
                     <div className="lg:col-span-8 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-7 flex flex-col justify-between min-h-[500px]">
                         <div>
@@ -141,7 +123,7 @@ export default function CartPage() {
 
                                                 <div className="inline-flex items-center border border-slate-200 rounded-lg mt-3 bg-slate-50/50 p-0.5">
                                                     <button
-                                                        onClick={() => updateQuantity(item.id, -1)}
+                                                        onClick={() => updateQuantity(item, -1)}
                                                         className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-white rounded transition"
                                                     >
                                                         <Minus size={13} strokeWidth={2.5} />
@@ -150,7 +132,7 @@ export default function CartPage() {
                                                         {item.quantity}
                                                     </span>
                                                     <button
-                                                        onClick={() => updateQuantity(item.id, 1)}
+                                                        onClick={() => updateQuantity(item, 1)}
                                                         className="p-1.5 text-slate-500 hover:text-slate-800 hover:bg-white rounded transition"
                                                     >
                                                         <Plus size={13} strokeWidth={2.5} />
@@ -160,7 +142,7 @@ export default function CartPage() {
 
                                             <div className="flex sm:flex-col items-end justify-between w-full sm:w-auto mt-2 sm:mt-0 gap-2">
                                                 <button
-                                                    onClick={() => removeItem(item.id)}
+                                                    onClick={() => removeItem(item)}
                                                     className="text-slate-300 hover:text-red-500 transition-colors p-1"
                                                     title="Xóa sản phẩm"
                                                 >
@@ -198,7 +180,6 @@ export default function CartPage() {
                         </div>
                     </div>
 
-                    {/* Cột Tóm tắt thanh toán */}
                     <div className="lg:col-span-4 bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-7">
                         <div className="flex items-center gap-3.5 pb-6">
                             <div className="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center flex-shrink-0 shadow-sm">
@@ -238,7 +219,6 @@ export default function CartPage() {
                             </div>
                         </div>
 
-                        {/* 4. Nút gọi hàm điều hướng */}
                         <button
                             type="button"
                             onClick={handleProceedToCheckout}

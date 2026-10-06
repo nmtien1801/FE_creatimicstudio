@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import ImageLoader from '../FormFields/ImageLoader';
 import ApiProductImage from "../../apis/ApiProductImage";
 import { loadImage } from '../../utils/constants';
+import { addCartItem } from '../../redux/cartSlice';
 import {
     Star,
     Truck,
@@ -30,7 +31,6 @@ const ProductDetail = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoadingImages, setIsLoadingImages] = useState(false);
     const [quantity, setQuantity] = useState(1);
-    const [showPaymentModal, setShowPaymentModal] = useState(false);
 
     useEffect(() => {
         let fetchDetail = async () => {
@@ -100,8 +100,24 @@ const ProductDetail = () => {
         }
     };
 
-    const handleAddToCart = () => {
-        toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
+    // ==========================================
+    // Lưu vào BE khi đăng nhập, localStorage khi là khách
+    // ==========================================
+    const handleAddToCart = async () => {
+        const cartItem = {
+            id: String(product.id || id_product || ""),
+            name: String(product.name || ""),
+            price: Number(product.price) || 0,
+            image: typeof product.image === 'string' ? product.image : (selectedImage || ""),
+            quantity: quantity,
+        };
+
+        try {
+            await dispatch(addCartItem({ item: cartItem, userId: userInfo?.id })).unwrap();
+            toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
+        } catch (error) {
+            toast.error(error.message || 'Không thể thêm sản phẩm vào giỏ hàng');
+        }
     };
 
     const handleBuyNow = () => {
@@ -110,22 +126,8 @@ const ProductDetail = () => {
             navigate('/dang-nhap');
             return;
         }
-        setShowPaymentModal(true);
     };
 
-    const goToPayment = (type) => {
-        const cleanProduct = {
-            id: String(product.id || id_product || ""),
-            name: String(product.name || ""),
-            price: Number(product.price) || 0,
-            image: typeof product.image === 'string' ? product.image : "",
-            quantity: quantity,
-        };
-
-        const path = type === 'momo' ? '/payment-momo' : '/payment-vietqr';
-        navigate(path, { state: { product: cleanProduct } });
-        setShowPaymentModal(false);
-    };
 
     if (!product || Object.keys(product).length === 0) {
         return (
@@ -138,15 +140,10 @@ const ProductDetail = () => {
     return (
         <div className="bg-[#f5f5f5] min-h-screen py-6 sm:py-8">
             <div className="max-w-[1300px] mx-auto px-4">
-
-                {/* KHỐI LIỀN TOÀN BỘ TRANG SẢN PHẨM */}
                 <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-
-                    {/* PHẦN 1: HÌNH ẢNH & THÔNG TIN MUA HÀNG */}
                     <div className="p-4 sm:p-6 lg:p-8">
                         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10">
 
-                            {/* CỘT TRÁI: ẢNH LỚN & THUMBNAILS (5/12) */}
                             <div className="lg:col-span-5 flex flex-col">
                                 <div className="relative w-full aspect-[4/3] rounded-lg border border-gray-100 flex items-center justify-center p-2 overflow-hidden bg-[#fafafa]">
                                     {selectedImage ? (
@@ -168,7 +165,6 @@ const ProductDetail = () => {
                                         {allImages.length > 0 ? (
                                             allImages.map((img, idx) => {
                                                 const isActive = selectedImage === img.previewUrl;
-
                                                 return (
                                                     <button
                                                         key={img.id || idx}
@@ -197,7 +193,6 @@ const ProductDetail = () => {
                                 </div>
                             </div>
 
-                            {/* CỘT PHẢI: CHI TIẾT & HÀNH ĐỘNG (7/12) */}
                             <div className="lg:col-span-7 flex flex-col">
                                 <div className="flex items-start gap-2.5 mb-3">
                                     <h1 className="text-xl sm:text-2xl font-bold text-gray-800 leading-snug">
@@ -334,7 +329,6 @@ const ProductDetail = () => {
 
                     <div className="h-px bg-gray-100 mx-4 sm:mx-6 lg:mx-8" />
 
-                    {/* PHẦN 2: CHI TIẾT SẢN PHẨM */}
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide border-b border-gray-100 pb-3 mb-5">
                             Chi tiết Sản Phẩm
@@ -349,7 +343,6 @@ const ProductDetail = () => {
 
                     <div className="h-px bg-gray-100 mx-4 sm:mx-6 lg:mx-8" />
 
-                    {/* PHẦN 3: MÔ TẢ SẢN PHẨM */}
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide border-b border-gray-100 pb-3 mb-5">
                             Mô Tả Sản Phẩm
@@ -364,7 +357,6 @@ const ProductDetail = () => {
 
                     <div className="h-px bg-gray-100 mx-4 sm:mx-6 lg:mx-8" />
 
-                    {/* PHẦN 4: ĐÁNH GIÁ KHÁCH HÀNG */}
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide border-b border-gray-100 pb-4 mb-6">
                             ĐÁNH GIÁ KHÁCH HÀNG
@@ -444,65 +436,6 @@ const ProductDetail = () => {
                 </div>
 
             </div>
-
-            {/* MODAL CHỌN PHƯƠNG THỨC THANH TOÁN */}
-            {showPaymentModal && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-                    <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl animate-fade-in-up">
-                        <div className="p-5 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                            <h3 className="text-lg font-black uppercase text-gray-900">
-                                Chọn phương thức thanh toán
-                            </h3>
-                            <button
-                                onClick={() => setShowPaymentModal(false)}
-                                className="text-gray-400 hover:text-gray-600 p-1 rounded-full hover:bg-gray-200"
-                            >
-                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                            </button>
-                        </div>
-
-                        <div className="p-6 space-y-4">
-                            <button
-                                onClick={() => goToPayment('momo')}
-                                className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-pink-500 hover:bg-pink-50/50 transition group"
-                            >
-                                <div className="flex items-center gap-3.5">
-                                    <div className="w-11 h-11 bg-pink-100 rounded-lg flex items-center justify-center font-bold text-pink-600">
-                                        M
-                                    </div>
-                                    <div className="text-left">
-                                        <div className="font-bold text-gray-900">Ví MoMo</div>
-                                        <div className="text-xs text-gray-500">Thanh toán qua ứng dụng MoMo</div>
-                                    </div>
-                                </div>
-                                <div className="text-pink-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <ChevronRight size={20} />
-                                </div>
-                            </button>
-
-                            <button
-                                onClick={() => goToPayment('vietqr')}
-                                className="w-full flex items-center justify-between p-4 border border-gray-200 rounded-xl hover:border-[#ed792f] hover:bg-orange-50/50 transition group"
-                            >
-                                <div className="flex items-center gap-3.5">
-                                    <div className="w-11 h-11 bg-orange-100 rounded-lg flex items-center justify-center font-bold text-[#ed792f]">
-                                        QR
-                                    </div>
-                                    <div className="text-left">
-                                        <div className="font-bold text-gray-900">VietQR / Ngân hàng</div>
-                                        <div className="text-xs text-gray-500">Quét mã QR từ mọi ngân hàng</div>
-                                    </div>
-                                </div>
-                                <div className="text-[#ed792f] opacity-0 group-hover:opacity-100 transition-opacity">
-                                    <ChevronRight size={20} />
-                                </div>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

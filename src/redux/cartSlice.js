@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import ApiCart from "../apis/ApiCart";
 
-const STORAGE_KEY = "guestCart";
+const STORAGE_KEY = "cartItems";
 
 const readGuestCart = () => {
   try {
-    return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    const items = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    return Array.isArray(items) ? items : [];
   } catch {
     return [];
   }
@@ -13,45 +14,102 @@ const readGuestCart = () => {
 
 const initialState = { items: readGuestCart(), isLoading: false };
 
-export const loadCart = createAsyncThunk("cart/loadCart", async (userId) => {
-  if (!userId) return readGuestCart();
+const getServerCart = async () => {
   const response = await ApiCart.getCartApi();
-  return response?.DT || [];
-});
+  if (response?.EC !== 0 || !Array.isArray(response.DT)) {
+    throw new Error(response?.EM || "Không thể tải giỏ hàng");
+  }
+  return response.DT;
+};
+
+export const loadCart = createAsyncThunk(
+  "cart/loadCart",
+  async (userId) => {
+    if (!userId) return readGuestCart();
+
+    let guestItems = readGuestCart();
+    let serverItems = await getServerCart();
+    if (guestItems.length === 0) return serverItems;
+
+    while (guestItems.length > 0) {
+      const guestItem = guestItems[0];
+      const response = await ApiCart.addCartApi(
+        guestItem.id,
+        guestItem.quantity || 1,
+      );
+      if (response?.EC !== 0) {
+        throw new Error(response?.EM || "Không thể đồng bộ giỏ hàng");
+      }
+
+      guestItems = guestItems.slice(1);
+      persistGuestCart(guestItems);
+    }
+
+    serverItems = await getServerCart();
+    return serverItems;
+  },
+);
 
 export const addCartItem = createAsyncThunk(
   "cart/addCartItem",
-  async ({ item, userId }) => {
+  async ({ item, userId }, { getState }) => {
     if (userId) {
-      await ApiCart.addCartApi(item.id, item.quantity || 1);
-      const response = await ApiCart.getCartApi();
-      return response?.DT || [];
+      const response = await ApiCart.addCartApi(item.id, item.quantity || 1);
+      if (response?.EC !== 0) {
+        throw new Error(response?.EM || "Không thể thêm sản phẩm vào giỏ hàng");
+      }
+      return getServerCart();
     }
-    return item;
+    const items = getState().cart.items;
+    const existing = items.find((entry) => entry.id === item.id);
+    const nextItems = existing
+      ? items.map((entry) =>
+          entry.id === item.id
+            ? { ...entry, quantity: entry.quantity + (item.quantity || 1) }
+            : entry,
+        )
+      : [...items, { ...item, quantity: item.quantity || 1 }];
+    persistGuestCart(nextItems);
+    return nextItems;
   },
 );
 
 export const updateCartItem = createAsyncThunk(
   "cart/updateCartItem",
-  async ({ item, quantity, userId }) => {
+  async ({ item, quantity, userId }, { getState }) => {
     if (userId) {
-      await ApiCart.updateCartApi(item.id, quantity);
-      const response = await ApiCart.getCartApi();
-      return response?.DT || [];
+      const response = await ApiCart.updateCartApi(
+        item.cartItemId || item.id,
+        quantity,
+      );
+      if (response?.EC !== 0) {
+        throw new Error(response?.EM || "Không thể cập nhật giỏ hàng");
+      }
+      return getServerCart();
     }
-    return { ...item, quantity };
+    const nextItems = getState().cart.items.map((entry) =>
+      entry.id === item.id ? { ...entry, quantity } : entry,
+    );
+    persistGuestCart(nextItems);
+    return nextItems;
   },
 );
 
 export const removeCartItem = createAsyncThunk(
   "cart/removeCartItem",
-  async ({ item, userId }) => {
+  async ({ item, userId }, { getState }) => {
     if (userId) {
-      await ApiCart.removeCartApi(item.cartItemId || item.id);
-      const response = await ApiCart.getCartApi();
-      return response?.DT || [];
+      const response = await ApiCart.removeCartApi(item.cartItemId || item.id);
+      if (response?.EC !== 0) {
+        throw new Error(response?.EM || "Không thể xóa sản phẩm");
+      }
+      return getServerCart();
     }
-    return item.id;
+    const nextItems = getState().cart.items.filter(
+      (entry) => entry.id !== item.id,
+    );
+    persistGuestCart(nextItems);
+    return nextItems;
   },
 );
 
@@ -72,32 +130,13 @@ const cartSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(addCartItem.fulfilled, (state, action) => {
-        if (Array.isArray(action.payload)) state.items = action.payload;
-        else {
-          const existing = state.items.find(
-            (entry) => entry.id === action.payload.id,
-          );
-          if (existing) existing.quantity += action.payload.quantity || 1;
-          else
-            state.items.push({
-              ...action.payload,
-              quantity: action.payload.quantity || 1,
-            });
-        }
+        state.items = action.payload;
       })
       .addCase(updateCartItem.fulfilled, (state, action) => {
-        if (Array.isArray(action.payload)) state.items = action.payload;
-        else {
-          const entry = state.items.find(
-            (item) => item.id === action.payload.id,
-          );
-          if (entry) entry.quantity = action.payload.quantity;
-        }
+        state.items = action.payload;
       })
       .addCase(removeCartItem.fulfilled, (state, action) => {
-        state.items = Array.isArray(action.payload)
-          ? action.payload
-          : state.items.filter((item) => item.id !== action.payload);
+        state.items = action.payload;
       });
   },
 });

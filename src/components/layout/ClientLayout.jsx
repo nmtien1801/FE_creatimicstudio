@@ -30,7 +30,9 @@ function ClientLayout() {
     }, []);
 
     useEffect(() => {
-        dispatch(loadCart(userId));
+        dispatch(loadCart(userId))
+            .unwrap()
+            .catch((error) => toast.error(error.message || "Không thể tải giỏ hàng"));
     }, [dispatch, userId]);
 
     const mainRef = useRef(null);

@@ -29,11 +29,11 @@ import Home from "../clientPages/TrangChu.jsx";
 import ServiceLive from "../clientPages/dichVu/DvLiveStream.jsx";
 import ServiceTone from "../clientPages/dichVu/DvAutoTone.jsx";
 import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
-import PaymentMomoPage from '../clientPages/payment/PaymentMomoPage.jsx'
-import PaymentVietQrPage from '../clientPages/payment/PaymentVietQrPage.jsx'
-import GioHang from '../clientPages/GioHang.jsx'
-import ThanhToan from '../clientPages/ThanhToan.jsx'
+import GioHang from '../clientPages/payment/GioHang.jsx'
+import ThanhToan from '../clientPages/payment/ThanhToan.jsx'
 import Review from '../clientPages/Review.jsx'
+import OrderHistoryPage from '../clientPages/payment/OrderHistoryPage.jsx'
+import StatusThanhToan from '../clientPages/payment/StatusThanhToan.jsx'
 
 import ChinhSach1 from '../components/chinhsach/Chinhsach1.jsx'
 import ChinhSach2 from '../components/chinhsach/Chinhsach2.jsx'
@@ -100,8 +100,6 @@ function RouterRoot() {
           <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} />
           <Route path="dich-vu/set-up-phong-livestream" element={<ServiceLive />} />
           <Route path="dich-vu/phan-mem-auto-tone" element={<ServiceTone />} />
-          <Route path="payment-momo" element={<PaymentMomoPage />} />
-          <Route path="payment-vietqr" element={<PaymentVietQrPage />} />
           <Route path="gio-hang" element={<GioHang />} />
           <Route path="payment" element={<ThanhToan />} />
 
@@ -131,6 +129,8 @@ function RouterRoot() {
           {/* route products */}
           <Route path="products/categories" element={<Category />} />        {/* Danh mục chung */}
           <Route path="products/list" element={<ProductManager />} />      {/* Danh sách sản phẩm */}
+          <Route path="order-history" element={<OrderHistoryPage />} />
+          <Route path="order-status/:id" element={<StatusThanhToan />} />
 
           {/* route news */}
           <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}

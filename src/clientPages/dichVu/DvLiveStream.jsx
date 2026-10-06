@@ -391,62 +391,120 @@ export default function SetupLivestreamPage() {
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-gray-200 bg-white text-gray-800 leading-relaxed font-normal">
-                                <tr>
-                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                            <tbody className="divide-y divide-gray-200 bg-white text-gray-700 leading-relaxed font-normal text-base md:text-lg">
+                                {/* Hàng 1: Hình ảnh & Ánh sáng */}
+                                <tr className="hover:bg-orange-50/30 transition-colors">
+                                    <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/60 md:bg-transparent">
                                         Hình ảnh & Ánh sáng
                                     </td>
-                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
-                                        <p>• Sử dụng hệ thống camera có tốc độ lấy nét tự động cực nhanh để bắt nét ngay lập tức khi người bán đưa sản phẩm sát vào ống kính.</p>
-                                        <p>• Setup hệ thống đèn mô phỏng ánh sáng tự nhiên giúp hiển thị màu sắc và chất liệu sản phẩm chuẩn xác nhất so với thực tế, tránh tình trạng khách hàng hoàn trả vì "màu trên live khác màu nhận được".</p>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Sử dụng camera có <span className="text-[#ea580c] font-semibold">lấy nét tự động cực nhanh</span>, bắt nét ngay lập tức khi đưa sản phẩm sát vào ống kính.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Hệ thống đèn <span className="text-[#ea580c] font-semibold">chuẩn màu tự nhiên</span>, triệt tiêu tình trạng khách hoàn hàng vì <span className="text-[#ea580c] font-semibold">"màu thực tế khác trên live"</span>.</span>
+                                        </p>
                                     </td>
-                                    <td className="p-4 md:p-5 space-y-2">
-                                        <p>• Sử dụng camera cảm biến lớn kết hợp ống kính khẩu độ mở to để tạo hiệu ứng xóa phông mờ mịt, tôn chủ thể lên như một bộ phim điện ảnh.</p>
-                                        <p>• Hệ thống ánh sáng thiết lập theo chuẩn Studio chuyên nghiệp (Key light, Fill light, Hair light) kết hợp với đèn RGB tạo hiệu ứng màu sắc. Setup này giúp làm mịn da, che hoàn toàn khuyết điểm khuôn mặt, tạo độ nổi khối (3D) cho góc mặt của Idol.</p>
+                                    <td className="p-4 md:p-5 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Camera cảm biến lớn cùng ống kính khẩu độ mở to, tạo hiệu ứng <span className="text-[#ea580c] font-semibold">xóa phông mờ mịt chuẩn điện ảnh</span>.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Ánh sáng chuẩn Studio kết hợp <span className="text-[#ea580c] font-semibold">đèn RGB tạo khối</span>, làm mịn da và tôn thần thái nổi bật cho Idol.</span>
+                                        </p>
                                     </td>
                                 </tr>
 
-                                <tr className="bg-gray-50/50">
-                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                                {/* Hàng 2: Không gian & Âm thanh */}
+                                <tr className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
+                                    <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/80 md:bg-transparent">
                                         Không gian & Âm thanh
                                     </td>
-                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
-                                        <p>• Thiết kế bối cảnh dạng "Showroom thu nhỏ": Tối ưu kệ trưng bày phía sau gọn gàng, có điểm nhấn thương hiệu.</p>
-                                        <p>• Sử dụng Micro định hướng cài áo hoặc treo cao (Boom mic) có khả năng lọc tiếng ồn, tiếng băng keo đóng hàng hay tiếng nhân viên soạn kho xung quanh.</p>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Setup bối cảnh dạng <span className="text-[#ea580c] font-semibold">Showroom thu nhỏ</span>, tối ưu kệ trưng bày gọn gàng và đậm dấu ấn thương hiệu.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Micro lọc ồn thông minh, <span className="text-[#ea580c] font-semibold">triệt tiêu hoàn toàn tạp âm</span> đóng hàng, tiếng kéo băng keo và tiếng ồn xung quanh.</span>
+                                        </p>
                                     </td>
-                                    <td className="p-4 md:p-5 space-y-2">
-                                        <p>• Thi công phòng tiêu âm cơ bản để Idol có thể thoải mái ca hát, chơi nhạc cụ với âm lượng lớn mà không bị dội âm (echo) hay ảnh hưởng không gian bên ngoài.</p>
-                                        <p>• Trang bị các thiết bị hát chuyên dụng như Soundcard và Micro có độ nhạy cao.</p>
+                                    <td className="p-4 md:p-5 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Phòng <span className="text-[#ea580c] font-semibold">tiêu âm chống vang (echo)</span>, giúp Idol thoải mái hát và bung nốt với âm lượng lớn.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Trang bị trọn bộ <span className="text-[#ea580c] font-semibold">Soundcard và Micro độ nhạy cao</span> chuẩn phòng thu biểu diễn.</span>
+                                        </p>
                                     </td>
                                 </tr>
 
-                                <tr>
-                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
+                                {/* Hàng 3: Thiết bị & Phần mềm phụ trợ */}
+                                <tr className="hover:bg-orange-50/30 transition-colors">
+                                    <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/60 md:bg-transparent">
                                         Thiết bị & Phần mềm phụ trợ
                                     </td>
-                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
-                                        <p>• Trang bị màn hình phụ ngay dưới camera để người bán vừa nhìn thẳng ống kính tương tác, vừa đọc được bình luận, kịch bản live và kiểm soát số lượng tồn kho theo thời gian thực mà không bị phân tâm.</p>
-                                        <p>• Bố trí phông xanh cho Nhà bán hàng giúp thay đổi background, lên deal dễ dàng chỉ với 1 cú click.</p>
-                                        <p>• Phần mềm làm đẹp tích hợp hiệu ứng trang điểm, đẹp da, chỉnh dáng, kéo dài chân,... giúp Nhà bán hàng tiết kiệm thời gian lên hình đẹp hơn mà vẫn tôn được sản phẩm.</p>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span><span className="text-[#ea580c] font-semibold">Màn hình nhắc lời/comment</span> đặt ngay dưới lens: Vừa nhìn thẳng người xem vừa theo dõi tồn kho và chốt đơn thời gian thực.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Phông xanh thông minh giúp <span className="text-[#ea580c] font-semibold">thay đổi background và gắn deal flash-sale</span> chỉ với 1 click.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>App làm đẹp tự nhiên: <span className="text-[#ea580c] font-semibold">Tôn dáng - sáng da</span> mà vẫn giữ độ chi tiết trung thực cho chất liệu sản phẩm.</span>
+                                        </p>
                                     </td>
-                                    <td className="p-4 md:p-5 space-y-2">
-                                        <p>• Trang bị màn hình phụ ngay dưới camera để Idol vừa hát vừa nhìn thẳng ống kính tương tác, vừa đọc được bình luận, donate của khán giả.</p>
-                                        <p>• Phần mềm làm đẹp tích hợp hiệu ứng trang điểm, đẹp da, chỉnh dáng, kết hợp cùng nhiều hiệu ứng hình ảnh giúp Idol lên hình “xinh lung linh”.</p>
-                                        <p>• Phần mềm Autotune giúp chỉnh giọng hát, tích hợp hiệu ứng PK khi có người donate, người đăng ký mới giúp phiên live không bao giờ nhàm chán.</p>
+                                    <td className="p-4 md:p-5 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span><span className="text-[#ea580c] font-semibold">Màn hình tương tác cận cảnh</span>: Giữ ánh mắt tương tác tự nhiên với người xem, đọc donate không bị lệch góc nhìn.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Bộ lọc làm đẹp chuyên sâu, hiệu ứng visual bắt mắt giúp hình ảnh luôn <span className="text-[#ea580c] font-semibold">rạng rỡ và cuốn hút</span>.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Tích hợp <span className="text-[#ea580c] font-semibold">Auto-tune tôn giọng</span> cùng hiệu ứng âm thanh cổ vũ, PK kịch tính giữ chân người xem.</span>
+                                        </p>
                                     </td>
                                 </tr>
 
-                                <tr className="bg-gray-50/50">
-                                    <td className="p-4 md:p-5 font-bold text-black align-middle border-r border-gray-200 text-center md:text-left">
-                                        Setup tận nơi & Hướng dẫn bàn giao
+                                {/* Hàng 4: Setup tận nơi & Bàn giao */}
+                                <tr className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
+                                    <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/80 md:bg-transparent">
+                                        Setup tận nơi & Bàn giao
                                     </td>
-                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-2">
-                                        <p>• Chuyên viên kỹ thuật trực tiếp đến kho/shop từ khâu khảo sát không gian, tư vấn giải pháp setup phù hợp nhất với tình hình thực tế, cho đến khi hoàn thành quá trình setup.</p>
-                                        <p>• Hướng dẫn sử dụng dàn thiết bị và phần mềm livestream cho nhân sự phụ trách vận hành sau khi lắp đặt.</p>
+                                    <td className="p-4 md:p-5 border-r border-gray-200 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Kỹ thuật viên <span className="text-[#ea580c] font-semibold">khảo sát trực tiếp tại kho</span>, lên layout tối ưu riêng cho từng ngành hàng.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span><span className="text-[#ea580c] font-semibold">Đào tạo 1-1 tại chỗ</span> cho nhân sự vận hành trơn tru toàn bộ quy trình trước khi bàn giao.</span>
+                                        </p>
                                     </td>
-                                    <td className="p-4 md:p-5 space-y-2">
-                                        <p>• Chuyên viên kỹ thuật trực tiếp đến không gian được yêu cầu để lắp đặt thiết bị và cài đặt phần mềm.</p>
-                                        <p>• Hướng dẫn sử dụng dàn thiết bị và phần mềm livestream cho Idol sau khi lắp đặt.</p>
+                                    <td className="p-4 md:p-5 space-y-3">
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Lắp đặt và cân chỉnh góc máy, âm thanh <span className="text-[#ea580c] font-semibold">tận nơi theo yêu cầu</span>.</span>
+                                        </p>
+                                        <p className="flex items-start gap-2">
+                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
+                                            <span>Hướng dẫn chi tiết cách làm chủ phần mềm và thiết bị để <span className="text-[#ea580c] font-semibold">tự tin bắt đầu phiên live ngay trong ngày</span>.</span>
+                                        </p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -478,7 +536,7 @@ export default function SetupLivestreamPage() {
                             <div className="space-y-4 mb-8">
                                 {[
                                     "Điện thoại",
-                                    "PC",
+                                    "Máy ảnh",
                                     "Tôi muốn tham khảo cả 2"
                                 ].map((item) => {
                                     const isSelected = deviceType === item;

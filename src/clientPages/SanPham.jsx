@@ -33,7 +33,7 @@ const getTitleByCategory = (selectedCategory, subCategory) => {
 const FilterSidebar = ({ filters, onFilterChange }) => {
     return (
         <div className="w-full md:w-64 lg:w-72 flex-shrink-0 p-4 sm:p-6 bg-white rounded-2xl shadow-md md:shadow-xl top-4 self-start overflow-hidden">
-            <h2 className="text-xl md:text-2xl font-black text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-black text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
                 <Filter className="w-5 h-5 text-orange-500" />
                 Bộ Lọc Giá
             </h2>
@@ -183,7 +183,7 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
     return (
         <div className="flex-1 md:pl-4 lg:pl-8">
             <div className="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
-                <h1 className="text-2xl font-black text-gray-900">
+                <h1 className="text-xl font-black text-gray-900">
                     Sản Phẩm
                 </h1>
                 <p className="text-gray-600 font-medium">{products.length} kết quả</p>
