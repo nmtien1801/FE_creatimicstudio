@@ -8,6 +8,41 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
+// Component Biển Cảnh Báo chuẩn theo ảnh mẫu
+function WarningSignIcon({ className = "w-16 h-16" }) {
+    return (
+        <svg
+            viewBox="0 0 100 90"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className={className}
+        >
+            {/* Khung tam giác viền đỏ ngoài */}
+            <path
+                d="M44.8 6.4a6 6 0 0 1 10.4 0l39.5 68.4A6 6 0 0 1 89.5 84H10.5a6 6 0 0 1-5.2-9.2L44.8 6.4z"
+                fill="#FFFFFF"
+                stroke="red"
+                strokeWidth="5"
+                strokeLinejoin="round"
+            />
+            {/* Khối đỏ bên trong */}
+            <path
+                d="M46.5 14.5a4 4 0 0 1 7 0l35 60.5a4 4 0 0 1-3.5 6H15a4 4 0 0 1-3.5-6l35-60.5z"
+                fill="red"
+            />
+            {/* Dấu chấm than trắng: thân */}
+            <path
+                d="M50 32v24"
+                stroke="#FFFFFF"
+                strokeWidth="6"
+                strokeLinecap="round"
+            />
+            {/* Dấu chấm than trắng: chấm tròn */}
+            <circle cx="50" cy="67" r="3.5" fill="#FFFFFF" />
+        </svg>
+    );
+}
+
 export default function SetupLivestreamPage() {
     // -------------------------------------------------------------
     // Multi-step Form State (Tư vấn nhận báo giá theo đúng 3 ảnh)
@@ -56,26 +91,26 @@ export default function SetupLivestreamPage() {
     // Danh sách Case study & Thương hiệu
     // -------------------------------------------------------------
     const caseStudyRow1 = [
-        "/casestudy/cs1.png", "/casestudy/cs2.png", "/casestudy/cs3.png",
-        "/casestudy/cs4.png", "/casestudy/cs5.png"
+        "/dichvulive/cs1.png", "/dichvulive/cs2.png", "/dichvulive/cs3.png",
+        "/dichvulive/cs4.png", "/dichvulive/cs5.png"
     ];
 
     const caseStudyRow2 = [
-        "/casestudy/cs6.png", "/casestudy/cs7.png", "/casestudy/cs8.png",
-        "/casestudy/cs9.png", "/casestudy/cs10.png", "/casestudy/cs11.png"
+        "/dichvulive/cs6.png", "/dichvulive/cs7.png", "/dichvulive/cs8.png",
+        "/dichvulive/cs9.png", "/dichvulive/cs10.png", "/dichvulive/cs11.png", "/dichvulive/cs12.png", "/dichvulive/cs13.png", "/dichvulive/cs14.png"
     ];
 
     const brands = [
-        { name: "AVANTA", src: "/brands/avanta.png" },
-        { name: "LUMINA", src: "/brands/lumina.png" },
-        { name: "ÁNH DƯƠNG", src: "/brands/anhduong.png" },
-        { name: "MENSPIRE", src: "/brands/menspire.png" },
-        { name: "LUMINELLA", src: "/brands/luminella.png" },
-        { name: "VANGUARD", src: "/brands/vanguard.png" },
-        { name: "SEN AN", src: "/brands/senan.png" },
-        { name: "CHRONOS AURA", src: "/brands/chronos.png" },
-        { name: "GIA DỤNG AN KHANG", src: "/brands/ankhang.png" },
-        { name: "AURELIA LUNA", src: "/brands/aurelia.png" }
+        { name: "AVANTA", src: "/thuonghieu/th1.png" },
+        { name: "LUMINA", src: "/thuonghieu/th2.png" },
+        { name: "ÁNH DƯƠNG", src: "/thuonghieu/th3.png" },
+        { name: "MENSPIRE", src: "/thuonghieu/th4.png" },
+        { name: "LUMINELLA", src: "/thuonghieu/th5.png" },
+        { name: "VANGUARD", src: "/thuonghieu/th6.png" },
+        { name: "SEN AN", src: "/thuonghieu/th7.png" },
+        { name: "CHRONOS AURA", src: "/thuonghieu/th8.png" },
+        { name: "GIA DỤNG AN KHANG", src: "/thuonghieu/th9.png" },
+        { name: "AURELIA LUNA", src: "/thuonghieu/th10.png" }
     ];
 
     return (
@@ -84,17 +119,54 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             {/* HERO: ẢNH FULL WIDTH SAU BANNER                           */}
             {/* ========================================================= */}
-            <div className="w-full">
+            <div className="relative w-full overflow-hidden max-h-[500px] flex items-center justify-center">
+                {/* Ảnh nền */}
                 <img
-                    src="/banner-autotune-full.png"
+                    src="/dvlivehero.png"
                     alt="Banner Dịch Vụ AutoTune AI"
-                    className="w-full h-auto object-cover max-h-[500px]"
+                    className="w-full h-full object-cover min-h-[320px] md:min-h-[420px]"
                     onError={(e) => {
-                        e.currentTarget.src = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1600&q=80";
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src =
+                            "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1600&q=80";
                     }}
                 />
-            </div>
 
+                {/* Lớp phủ tối nhẹ tạo độ tương phản cho chữ */}
+                <div className="absolute inset-0 bg-black/40" />
+
+                {/* Khối chữ & Icon nằm chính giữa */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10 select-none">
+                    {/* Biểu tượng phát sóng trực tiếp đỏ */}
+                    <div className="mb-4 text-[#ff3b3b]">
+                        <svg
+                            className="w-12 h-12 md:w-16 md:h-16 inline-block"
+                            viewBox="0 0 24 24"
+                            fill="currentColor"
+                        >
+                            <circle cx="12" cy="12" r="3" />
+                            <path
+                                d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2.2"
+                                strokeLinecap="round"
+                            />
+                        </svg>
+                    </div>
+
+                    {/* Tiêu đề chính */}
+                    <h1 className="text-xl sm:text3xl md:text-4xl font-black uppercase text-white tracking-wide leading-tight drop-shadow-md">
+                        BIẾN MỌI PHIÊN LIVE <br />
+                        THÀNH SÂN KHẤU
+                    </h1>
+
+                    {/* Dòng phụ cam */}
+                    <p className="mt-3 sm:mt-4 text-base sm:text-xl md:text-2xl font-extrabold uppercase text-[#f97316] tracking-wider drop-shadow-sm">
+                        BÙNG NỔ DOANH SỐ &amp; NGHỆ THUẬT
+                    </p>
+                </div>
+            </div>
             {/* ========================================================= */}
             {/* 1. HAI GÓI LIVESTREAM VÀ TICKER CHẠY NGANG (Ảnh 1)       */}
             {/* ========================================================= */}
@@ -115,7 +187,16 @@ export default function SetupLivestreamPage() {
                                         <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
                                     </div>
                                     <div className="w-12 h-12 rounded-full border-2 border-orange-500 p-1 flex items-center justify-center relative">
-                                        <img src="/icons/shopee-live.png" alt="Shopee Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/825/825514.png"; }} />
+                                        <img
+                                            src="/icons/shopee-live.png"
+                                            alt="Shopee Live"
+                                            className="w-full h-full object-contain"
+                                            onError={(e) => {
+                                                e.currentTarget.onerror = null;
+                                                e.currentTarget.src = "https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg";
+                                            }}
+                                        />
+
                                         <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
                                     </div>
                                 </div>
@@ -151,7 +232,11 @@ export default function SetupLivestreamPage() {
                                         <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
                                     </div>
                                     <div className="w-12 h-12 rounded-full border-2 border-green-500 p-1 flex items-center justify-center relative">
-                                        <img src="/icons/bigo-live.png" alt="Bigo Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/1006/1006771.png"; }} />
+                                        <img
+                                            src="/bigo.jpg"
+                                            alt="Bigo Live"
+                                            className="w-full h-full object-contain"
+                                        />
                                         <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
                                     </div>
                                 </div>
@@ -198,7 +283,6 @@ export default function SetupLivestreamPage() {
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                        <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     </div>
                 </div>
             </section>
@@ -213,27 +297,30 @@ export default function SetupLivestreamPage() {
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                        <div className="border-2 border-red-600 rounded-[28px] p-8 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                        {/* Card 1 */}
+                        <div className="border-2 border-[#E11D48] rounded-[28px] p-2 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
                             <div className="mb-6">
-                                <AlertTriangle className="w-14 h-14 text-white fill-red-600 stroke-red-600" />
+                                <WarningSignIcon className="w-16 h-16" />
                             </div>
                             <p className="text-base text-gray-900 leading-relaxed font-normal">
                                 Ánh sáng mờ, giao diện nhợt nhạt, tổng thể nhìn thiếu chuyên nghiệp.
                             </p>
                         </div>
 
-                        <div className="border-2 border-red-600 rounded-[28px] p-8 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                        {/* Card 2 */}
+                        <div className="border-2 border-[#E11D48] rounded-[28px] p-2 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
                             <div className="mb-6">
-                                <AlertTriangle className="w-14 h-14 text-white fill-red-600 stroke-red-600" />
+                                <WarningSignIcon className="w-16 h-16" />
                             </div>
                             <p className="text-base text-gray-900 leading-relaxed font-normal">
                                 Âm thanh rè, lẫn nhiều tạp âm, nghe không rõ.
                             </p>
                         </div>
 
-                        <div className="border-2 border-red-600 rounded-[28px] p-8 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                        {/* Card 3 */}
+                        <div className="border-2 border-[#E11D48] rounded-[28px] p-2 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
                             <div className="mb-6">
-                                <AlertTriangle className="w-14 h-14 text-white fill-red-600 stroke-red-600" />
+                                <WarningSignIcon className="w-16 h-16" />
                             </div>
                             <p className="text-base text-gray-900 leading-relaxed font-normal">
                                 Tự setup lộn xộn, thiết bị không tương thích khiến phiên live giật lag.
@@ -376,7 +463,7 @@ export default function SetupLivestreamPage() {
                     <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-10">
                         TƯ VẤN NHẬN BÁO GIÁ
                     </h2>
-                    
+
                     {/* BƯỚC 1: Chọn thiết bị livestream */}
                     {step === 1 && (
                         <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">

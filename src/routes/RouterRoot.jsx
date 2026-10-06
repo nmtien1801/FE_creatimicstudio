@@ -14,11 +14,9 @@ import Category from "../adminPages/product/Category.jsx";
 import NewsManager from "../adminPages/news/NewsManager.jsx";
 import EmployeeRole from "../adminPages/employee/employees_roles.jsx";
 import NewsDetail from "../adminPages/news/NewsDetail.jsx";
-import RecruitmentManager from "../adminPages/recruitment/RecruitmentManager.jsx";
 import Employee from "../adminPages/employee/employees.jsx";
 import ChangePassWord from "../adminPages/system/ChangePassWord.jsx";
 import ResetPassNV from "../adminPages/system/ResetPassNV.jsx";
-import RecruitmentDetail from "../adminPages/recruitment/RecruitmentDetail.jsx";
 import Account from "../adminPages/system/Account.jsx";
 import Login from "../adminPages/auth/Login.jsx";
 import Register from "../adminPages/auth/Register.jsx";
@@ -34,6 +32,7 @@ import ProductPageHandler from '../components/product/ProductPageHandler.jsx'
 import PaymentMomoPage from '../clientPages/payment/PaymentMomoPage.jsx'
 import PaymentVietQrPage from '../clientPages/payment/PaymentVietQrPage.jsx'
 import GioHang from '../clientPages/GioHang.jsx'
+import ThanhToan from '../clientPages/ThanhToan.jsx'
 import Review from '../clientPages/Review.jsx'
 
 import ChinhSach1 from '../components/chinhsach/Chinhsach1.jsx'
@@ -104,6 +103,7 @@ function RouterRoot() {
           <Route path="payment-momo" element={<PaymentMomoPage />} />
           <Route path="payment-vietqr" element={<PaymentVietQrPage />} />
           <Route path="gio-hang" element={<GioHang />} />
+          <Route path="payment" element={<ThanhToan />} />
 
           <Route path="dieu-khoan-dich-vu-va-dieu-kien-giao-dich-chung" element={<ChinhSach1 />} />
           <Route path="cac-phuong-thuc-thanh-toan" element={<ChinhSach2 />} />

@@ -11,11 +11,19 @@ import ApiProductCategory from '../apis/ApiProductCategory';
 
 // Danh mục icon bar phía trên danh sách sản phẩm
 const quickCategories = [
-    { title: "Loa", img: "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=200&q=80", link: "/loa-kiem-am/12/all" },
-    { title: "Tai nghe", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80", link: "/tai-nghe" },
-    { title: "Box Livestream", img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=200&q=80", link: "/box-livestream" },
-    { title: "Setup Livestream", img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=200&q=80", link: "/setup-livestream" },
-    { title: "Thuê thiết bị", img: "https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=200&q=80", link: "/thue-thiet-bi" },
+    // 5 danh mục hàng trên
+    { title: "Combo thu âm", img: "/trangchu/danhmuc1.png", link: "/combo-thu-am" },
+    { title: "Soundcard & Mixer", img: "/trangchu/danhmuc2.png", link: "/soundcard-mixer" },
+    { title: "Micro", img: "/trangchu/danhmuc3.png", link: "/micro" },
+    { title: "Laptop cài phần mềm", img: "/trangchu/danhmuc4.png", link: "/laptop-cai-phan-mem" },
+    { title: "Phần mềm", img: "/trangchu/danhmuc5.png", link: "/phan-mem" },
+
+    // 5 danh mục hàng dưới
+    { title: "Loa", img: "/trangchu/danhmuc6.png", link: "/loa-kiem-am/12/all" },
+    { title: "Tai nghe", img: "/trangchu/danhmuc7.png", link: "/tai-nghe" },
+    { title: "Box Livestream", img: "/trangchu/danhmuc8.png", link: "/box-livestream" },
+    { title: "Setup Livestream", img: "/trangchu/danhmuc9.png", link: "/setup-livestream" },
+    { title: "Thuê thiết bị", img: "/trangchu/danhmuc10.png", link: "/thue-thiet-bi" },
 ];
 
 const youtubeReviews = [
@@ -57,16 +65,16 @@ const youtubeReviews = [
 ];
 
 const brandPartners = [
-    { name: "AVANTA", src: "/brands/avanta.png" },
-    { name: "LUMINA", src: "/brands/lumina.png" },
-    { name: "ÁNH DƯƠNG", src: "/brands/anhduong.png" },
-    { name: "MENSPIRE", src: "/brands/menspire.png" },
-    { name: "LUMINELLA", src: "/brands/luminella.png" },
-    { name: "VANGUARD", src: "/brands/vanguard.png" },
-    { name: "SEN AN", src: "/brands/senan.png" },
-    { name: "CHRONOS AURA", src: "/brands/chronos.png" },
-    { name: "GIA DỤNG AN KHANG", src: "/brands/ankhang.png" },
-    { name: "AURELIA LUNA", src: "/brands/aurelia.png" },
+    { name: "AVANTA", src: "/thuonghieu/th1.png" },
+    { name: "LUMINA", src: "/thuonghieu/th2.png" },
+    { name: "ÁNH DƯƠNG", src: "/thuonghieu/th3.png" },
+    { name: "MENSPIRE", src: "/thuonghieu/th4.png" },
+    { name: "LUMINELLA", src: "/thuonghieu/th5.png" },
+    { name: "VANGUARD", src: "/thuonghieu/th6.png" },
+    { name: "SEN AN", src: "/thuonghieu/th7.png" },
+    { name: "CHRONOS AURA", src: "/thuonghieu/th8.png" },
+    { name: "GIA DỤNG AN KHANG", src: "/thuonghieu/th9.png" },
+    { name: "AURELIA LUNA", src: "/thuonghieu/th10.png" }
 ];
 
 const ArticleCard = ({ article }) => (
@@ -153,9 +161,10 @@ export default function TrangChu() {
     };
 
     const slides = [
-        { img: '/bannerhome1.png' },
-        { img: '/bannerhome2.png' },
-        { img: '/bannerhome3.png' },
+        { img: '/trangchu/hero1.png' },
+        { img: '/trangchu/hero2.png' },
+        { img: '/trangchu/hero3.png' },
+        { img: '/trangchu/hero4.png' },
     ];
 
     const nextSlide = useCallback(() => {
@@ -231,7 +240,7 @@ export default function TrangChu() {
 
                             {/* 1. HERO SLIDER BANNER */}
                             <section className="w-full">
-                                <div className="relative w-full aspect-[21/9] sm:aspect-[16/7] md:aspect-[3/2] lg:aspect-[16/9] rounded-[2rem] overflow-hidden shadow-xl mx-auto">
+                                <div className="relative w-full aspect-[29/9] overflow-hidden shadow-xl mx-auto">
                                     <div
                                         className="flex h-full transition-transform duration-1000 cubic-bezier(0.4, 0, 0.2, 1)"
                                         style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -273,27 +282,30 @@ export default function TrangChu() {
                                     title="DANH MỤC SẢN PHẨM - DỊCH VỤ"
                                     viewAllLink="/danh-muc"
                                 />
-                                <div className="bg-gray-50/70 p-4 rounded-2xl border border-gray-100">
-                                    <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 md:gap-4 items-center">
-                                        {quickCategories.map((cat, idx) => (
-                                            <a
-                                                key={idx}
-                                                href={cat.link}
-                                                className="group flex flex-col items-center justify-center p-2 rounded-xl hover:bg-white hover:shadow-md transition-all duration-300"
-                                            >
-                                                <div className="w-14 h-14 md:w-16 md:h-16 rounded-xl overflow-hidden bg-white p-1 mb-2 border border-gray-100 shadow-sm group-hover:scale-105 transition-transform">
-                                                    <img
-                                                        src={cat.img}
-                                                        alt={cat.title}
-                                                        className="w-full h-full object-cover rounded-lg"
-                                                    />
-                                                </div>
-                                                <span className="text-xs md:text-sm font-semibold text-gray-800 text-center group-hover:text-[#ed792f] transition-colors line-clamp-1">
+
+                                {/* Grid 5 cột (trên mobile 2 hoặc 3 cột, từ sm/md trở lên là 5 cột) */}
+                                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2 md:gap-3">
+                                    {quickCategories.map((cat, idx) => (
+                                        <a
+                                            key={idx}
+                                            href={cat.link}
+                                            className="group relative block aspect-[4/3] sm:aspect-square overflow-hidden rounded-xl transition-transform duration-300 hover:-translate-y-1"
+                                        >
+                                            {/* 1. Ảnh danh mục (chiếm trọn toàn bộ ô) */}
+                                            <img
+                                                src={cat.img}
+                                                alt={cat.title}
+                                                className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                                            />
+
+                                            {/* 2. Chữ tiêu đề đặt đè lên phía trên ảnh */}
+                                            <div className="absolute top-0 inset-x-0 pt-2.5 px-1 text-center pointer-events-none">
+                                                <span className="text-xs sm:text-sm md:text-[15px] font-medium text-gray-900 line-clamp-1 group-hover:text-[#ed792f] transition-colors">
                                                     {cat.title}
                                                 </span>
-                                            </a>
-                                        ))}
-                                    </div>
+                                            </div>
+                                        </a>
+                                    ))}
                                 </div>
                             </section>
 
@@ -579,12 +591,6 @@ export default function TrangChu() {
                                         src={brand.src}
                                         alt={brand.name}
                                         className="max-h-full max-w-full object-contain filter contrast-105"
-                                        onError={(e) => {
-                                            e.currentTarget.style.display = "none";
-                                            e.currentTarget.parentElement.innerText = brand.name;
-                                            e.currentTarget.parentElement.className =
-                                                "h-24 w-full flex items-center justify-center text-xs font-bold text-gray-500 uppercase tracking-wider";
-                                        }}
                                     />
                                 </div>
                             ))}
