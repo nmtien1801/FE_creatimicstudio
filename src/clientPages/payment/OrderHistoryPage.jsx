@@ -25,6 +25,7 @@ export default function OrderHistoryPage() {
 
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [loadError, setLoadError] = useState("");
 
     // Bộ lọc
     const [statusFilter, setStatusFilter] = useState("all");
@@ -38,16 +39,22 @@ export default function OrderHistoryPage() {
     useEffect(() => {
         const fetchOrderHistory = async () => {
             setLoading(true);
+            setLoadError("");
             try {
                 const response = await ApiOrder.getOrderHistoryApi({ userId: userInfo?.id });
-                if (response?.EC === 0) {
-                    setOrders(response.DT);
+                if (response?.EC !== 0 || !Array.isArray(response.DT)) {
+                    throw new Error(response?.EM || "Không thể tải lịch sử đơn hàng");
                 }
-
-                setOrders(mockOrders);
-                setLoading(false);
+                setOrders(response.DT);
             } catch (error) {
                 console.error("Lỗi tải lịch sử đơn hàng:", error);
+                setLoadError(
+                    error.response?.data?.EM ||
+                    error.response?.data?.message ||
+                    error.message ||
+                    "Không thể tải lịch sử đơn hàng",
+                );
+            } finally {
                 setLoading(false);
             }
         };
@@ -232,6 +239,11 @@ export default function OrderHistoryPage() {
                     <div className="py-20 flex flex-col items-center justify-center bg-white rounded-2xl border border-slate-200">
                         <div className="w-9 h-9 border-4 border-teal-200 border-t-teal-600 rounded-full animate-spin mb-3"></div>
                         <p className="text-xs text-slate-500 font-medium">Đang tải lịch sử đơn hàng...</p>
+                    </div>
+                ) : loadError ? (
+                    <div className="py-16 text-center bg-white rounded-2xl border border-rose-200 shadow-sm p-8">
+                        <h3 className="text-base font-bold text-rose-700">Không thể tải lịch sử đơn hàng</h3>
+                        <p className="text-xs text-slate-500 mt-2">{loadError}</p>
                     </div>
                 ) : filteredOrders.length > 0 ? (
                     <div className="space-y-5">

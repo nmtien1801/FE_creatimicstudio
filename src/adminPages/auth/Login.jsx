@@ -36,7 +36,7 @@ const LoginForm = () => {
 
                 {/* Phần Logo và Tiêu đề */}
                 <div className="mb-6">
-                    <div className="mx-auto w-32 h-32 mb-4">
+                    <div className="mx-auto w-32 h-32 mb-4" onClick={() => navigate('/')}>
                         <img src="/logo.png" alt="HCA Logo" className="w-full h-full object-contain" />
                     </div>
 

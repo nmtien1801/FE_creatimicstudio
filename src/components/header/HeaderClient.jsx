@@ -24,6 +24,7 @@ export default function Header({
 }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const userInfo = useSelector((state) => state.auth?.userInfo);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -431,13 +432,7 @@ export default function Header({
                             left-0
                             top-[calc(100%+8px)]
                             z-[200]
-                            w-[800px]
-                            overflow-hidden
-                            rounded-xl
-                            border
-                            border-gray-200
-                            bg-white
-                            shadow-2xl
+                            w-max
                             animate-[fadeIn_.2s_ease-out]
                           "
                         >
@@ -579,12 +574,20 @@ export default function Header({
                     <User size={18} strokeWidth={2} />
                   </div>
                   <div className="text-left">
-                    <p className="text-[10px] uppercase font-medium text-white/70">
-                      Tài khoản
-                    </p>
-                    <p className="text-xs font-bold leading-tight">
-                      Đăng nhập
-                    </p>
+                    {userInfo?.userName ? (
+                      <p className="text-xs font-bold leading-tight">
+                        {userInfo.userName}
+                      </p>
+                    ) : (
+                      <>
+                        <p className="text-[10px] uppercase font-medium text-white/70">
+                          Tài khoản
+                        </p>
+                        <p className="text-xs font-bold leading-tight">
+                          Đăng nhập
+                        </p>
+                      </>
+                    )}
                   </div>
                 </button>
 

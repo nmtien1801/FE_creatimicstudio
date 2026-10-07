@@ -78,9 +78,17 @@ export default function CartPage() {
                             <span className="text-xs font-medium text-slate-400 mt-1.5">Thanh toán</span>
                         </div>
                         <div className="w-12 sm:w-16 h-[2px] bg-slate-200 -mt-5" />
+
                         <div className="flex flex-col items-center">
                             <div className="w-9 h-9 rounded-full bg-white border border-slate-300 text-slate-400 font-semibold flex items-center justify-center text-sm">
                                 3
+                            </div>
+                            <span className="text-xs font-medium text-slate-400 mt-1.5">Chờ xử lý</span>
+                        </div>
+                        <div className="w-12 sm:w-16 h-[2px] bg-slate-200 -mt-5" />
+                        <div className="flex flex-col items-center">
+                            <div className="w-9 h-9 rounded-full bg-white border border-slate-300 text-slate-400 font-semibold flex items-center justify-center text-sm">
+                                4
                             </div>
                             <span className="text-xs font-medium text-slate-400 mt-1.5">Hoàn tất</span>
                         </div>

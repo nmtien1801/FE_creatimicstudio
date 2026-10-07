@@ -83,6 +83,43 @@ export default function OrderSuccessPage() {
         }
     };
 
+    // Cấu hình nội dung header thẻ thông báo theo trạng thái
+    const getStatusHeaderInfo = (status) => {
+        switch (status) {
+            case "completed":
+                return {
+                    title: "Đơn hàng đã hoàn tất!",
+                    description: "Đơn hàng đã được xử lý và hoàn tất thành công. Cảm ơn bạn đã đồng hành cùng chúng tôi!",
+                    icon: (
+                        <div className="w-16 h-16 bg-[#dcfce7] text-[#10b981] rounded-full flex items-center justify-center mb-4 ring-8 ring-green-50">
+                            <CheckCircle2 size={32} strokeWidth={2.5} />
+                        </div>
+                    )
+                };
+            case "cancelled":
+                return {
+                    title: "Đơn hàng đã bị hủy!",
+                    description: "Đơn hàng này hiện đã bị hủy. Nếu có bất kỳ thắc mắc nào, vui lòng liên hệ bộ phận hỗ trợ.",
+                    icon: (
+                        <div className="w-16 h-16 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-4 ring-8 ring-rose-50">
+                            <XCircle size={32} strokeWidth={2.5} />
+                        </div>
+                    )
+                };
+            case "pending":
+            default:
+                return {
+                    title: "Đặt hàng thành công!",
+                    description: "Đơn hàng của bạn đã được ghi nhận vào hệ thống. Đội ngũ CSKH sẽ sớm liên hệ xác nhận thông tin giao hàng.",
+                    icon: (
+                        <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-full flex items-center justify-center mb-4 ring-8 ring-amber-50">
+                            <Clock size={32} strokeWidth={2.5} />
+                        </div>
+                    )
+                };
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="min-h-screen bg-[#f8fafc] flex items-center justify-center">
@@ -112,6 +149,9 @@ export default function OrderSuccessPage() {
         );
     }
 
+    const isCompleted = orderDetail.status === "completed" || orderDetail.status === "cancelled";
+    const statusHeader = getStatusHeaderInfo(orderDetail.status);
+
     return (
         <div className="min-h-screen bg-[#f8fafc] py-10 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
             <div className="max-w-4xl mx-auto">
@@ -128,25 +168,55 @@ export default function OrderSuccessPage() {
                     </div>
 
                     <div className="flex items-center space-x-3 sm:space-x-4 self-center md:self-auto">
+                        {/* Bước 1: Giỏ hàng */}
                         <div className="flex flex-col items-center">
                             <div className="w-10 h-10 rounded-full bg-[#dcfce7] text-[#10b981] flex items-center justify-center text-sm">
                                 <Check size={18} strokeWidth={2.8} />
                             </div>
                             <span className="text-xs font-semibold text-slate-700 mt-1.5">Giỏ hàng</span>
                         </div>
-                        <div className="w-12 sm:w-16 h-[2px] bg-[#10b981] -mt-5" />
+                        <div className="w-8 sm:w-12 h-[2px] bg-[#10b981] -mt-5" />
+
+                        {/* Bước 2: Thanh toán */}
                         <div className="flex flex-col items-center">
                             <div className="w-10 h-10 rounded-full bg-[#dcfce7] text-[#10b981] flex items-center justify-center text-sm">
                                 <Check size={18} strokeWidth={2.8} />
                             </div>
                             <span className="text-xs font-semibold text-slate-700 mt-1.5">Thanh toán</span>
                         </div>
-                        <div className="w-12 sm:w-16 h-[2px] bg-[#10b981] -mt-5" />
+                        <div className={`w-8 sm:w-12 h-[2px] -mt-5 ${isCompleted ? "bg-[#10b981]" : "bg-slate-200"}`} />
+
+                        {/* Bước 3: Chờ xử lý */}
                         <div className="flex flex-col items-center">
-                            <div className="w-10 h-10 rounded-full bg-[#14b8a6] text-white font-bold flex items-center justify-center ring-4 ring-teal-100 shadow-sm text-sm">
-                                3
-                            </div>
-                            <span className="text-xs font-bold text-slate-900 mt-1.5">Hoàn tất</span>
+                            {isCompleted ? (
+                                <div className="w-10 h-10 rounded-full bg-[#dcfce7] text-[#10b981] flex items-center justify-center text-sm">
+                                    <Check size={18} strokeWidth={2.8} />
+                                </div>
+                            ) : (
+                                <div className="w-10 h-10 rounded-full bg-[#14b8a6] text-white font-bold flex items-center justify-center ring-4 ring-teal-100 shadow-sm text-sm">
+                                    3
+                                </div>
+                            )}
+                            <span className={`text-xs mt-1.5 ${isCompleted ? "font-semibold text-slate-700" : "font-bold text-slate-900"}`}>
+                                Chờ xử lý
+                            </span>
+                        </div>
+                        <div className={`w-8 sm:w-12 h-[2px] -mt-5 ${isCompleted ? "bg-[#10b981]" : "bg-slate-200"}`} />
+
+                        {/* Bước 4: Hoàn tất */}
+                        <div className="flex flex-col items-center">
+                            {isCompleted ? (
+                                <div className="w-10 h-10 rounded-full bg-[#14b8a6] text-white font-bold flex items-center justify-center ring-4 ring-teal-100 shadow-sm text-sm">
+                                    4
+                                </div>
+                            ) : (
+                                <div className="w-10 h-10 rounded-full bg-slate-100 text-slate-400 font-bold flex items-center justify-center text-sm border border-slate-200">
+                                    4
+                                </div>
+                            )}
+                            <span className={`text-xs mt-1.5 ${isCompleted ? "font-bold text-slate-900" : "font-medium text-slate-400"}`}>
+                                Hoàn tất
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -157,12 +227,12 @@ export default function OrderSuccessPage() {
                     <div className="lg:col-span-7 space-y-6">
 
                         <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-6 sm:p-8 text-center flex flex-col items-center">
-                            <div className="w-16 h-16 bg-[#dcfce7] text-[#10b981] rounded-full flex items-center justify-center mb-4 ring-8 ring-green-50">
-                                <CheckCircle2 size={32} strokeWidth={2.5} />
-                            </div>
-                            <h2 className="text-2xl font-black text-slate-900 mb-1.5">Đặt hàng thành công!</h2>
+                            {statusHeader.icon}
+                            <h2 className="text-2xl font-black text-slate-900 mb-1.5">
+                                {statusHeader.title}
+                            </h2>
                             <p className="text-xs sm:text-sm text-slate-500 mb-6 max-w-md">
-                                Đơn hàng của bạn đã được ghi nhận vào hệ thống. Đội ngũ CSKH sẽ sớm liên hệ xác nhận thông tin giao hàng.
+                                {statusHeader.description}
                             </p>
 
                             {/* Card Tóm tắt Trạng thái Đơn hàng */}
@@ -210,22 +280,7 @@ export default function OrderSuccessPage() {
                             </div>
                         </div>
 
-                        {/* Nút điều hướng */}
-                        <div className="flex items-center gap-4">
-                            <button
-                                onClick={() => navigate("/")}
-                                className="flex-1 bg-white border border-slate-200 hover:border-[#14b8a6] hover:bg-[#f0fdf9] text-slate-700 hover:text-[#0d9488] font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
-                            >
-                                <ChevronLeft size={16} />
-                                Tiếp tục mua sắm
-                            </button>
-                            <button
-                                onClick={() => navigate("/order-history")}
-                                className="flex-1 bg-slate-900 hover:bg-slate-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-center text-xs sm:text-sm"
-                            >
-                                Xem lịch sử đơn hàng
-                            </button>
-                        </div>
+                       
                     </div>
 
                     {/* CỘT PHẢI: CHI TIẾT ĐƠN HÀNG (5 CỘT) */}
@@ -272,6 +327,23 @@ export default function OrderSuccessPage() {
                             <a href="tel:0372672396" className="font-black text-slate-900 hover:text-[#f97316] transition">
                                 037.2672.396
                             </a>
+                        </div>
+
+                         {/* Nút điều hướng */}
+                        <div className="flex items-center gap-4">
+                            <button
+                                onClick={() => navigate("/")}
+                                className="flex-1 bg-white border border-slate-200 hover:border-[#14b8a6] hover:bg-[#f0fdf9] text-slate-700 hover:text-[#0d9488] font-bold py-3.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 text-xs sm:text-sm"
+                            >
+                                <ChevronLeft size={16} />
+                                Tiếp tục mua sắm
+                            </button>
+                            <button
+                                onClick={() => navigate("/order-history")}
+                                className="flex-1 bg-[#f97316] hover:bg-[#ea580c] text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all text-center text-xs sm:text-sm"
+                            >
+                                Xem lịch sử đơn hàng
+                            </button>
                         </div>
                     </div>
 

@@ -77,21 +77,35 @@ const brandPartners = [
     { name: "AURELIA LUNA", src: "/thuonghieu/th10.png" }
 ];
 
-const ArticleCard = ({ article }) => (
-    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group cursor-pointer border border-gray-100 flex flex-col">
-        <div className="h-32 sm:h-36 w-full overflow-hidden">
-            <ImageLoader
-                imagePath={article.image}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
-        </div>
-        <div className="p-3">
-            <h3 className="text-xs md:text-sm text-gray-600 line-clamp-2 min-h-[34px] group-hover:text-[#ed792f] transition-colors uppercase italic leading-snug">
-                {article.title}
-            </h3>
-        </div>
-    </div>
-);
+function ArticleCard({ article }) {
+    return (
+        <a
+            href={article.link || `#article-${article.id}`}
+            className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white hover:shadow-sm transition-all"
+        >
+            {/* Ảnh thu nhỏ bên trái */}
+            <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-gray-200">
+                <img
+                    src={article.image || article.img || "/placeholder.jpg"}
+                    alt={article.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+            </div>
+
+            {/* Chữ bên phải */}
+            <div className="flex-1 min-w-0">
+                <h4 className="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#ed792f] line-clamp-2 leading-snug">
+                    {article.title}
+                </h4>
+                {article.date && (
+                    <span className="text-[11px] text-gray-400 mt-1 block">
+                        {article.date}
+                    </span>
+                )}
+            </div>
+        </a>
+    );
+}
 
 const SectionHeader = ({ title, viewAllLink, note }) => (
     <div className="flex items-center justify-between border-b border-gray-100 pb-3 mb-6">
@@ -141,6 +155,7 @@ export default function TrangChu() {
     const [comboLivestream, setComboLivestream] = useState([]);
     const [phuKien, setPhuKien] = useState([]);
     const [soundcard, setSoundcard] = useState([]);
+    const [isHovered, setIsHovered] = useState(false);
 
     const [consultForm, setConsultForm] = useState({ name: '', phone: '', note: '' });
 
@@ -159,6 +174,26 @@ export default function TrangChu() {
             });
         }
     };
+
+    useEffect(() => {
+        if (isHovered) return; // Dừng chạy khi rê chuột vào
+
+        const interval = setInterval(() => {
+            if (toneCarouselRef.current) {
+                const container = toneCarouselRef.current;
+                const step = container.clientWidth * 0.4; // Bước cuộn mỗi lần
+
+                // Nếu đã cuộn gần hết thì quay về đầu
+                if (container.scrollLeft + container.clientWidth >= container.scrollWidth - 10) {
+                    container.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    container.scrollBy({ left: step, behavior: 'smooth' });
+                }
+            }
+        }, 3000); // 3 giây trượt 1 lần
+
+        return () => clearInterval(interval);
+    }, [isHovered]);
 
     const slides = [
         { img: '/trangchu/hero1.png' },
@@ -207,9 +242,9 @@ export default function TrangChu() {
             setSoundcard(resSoundcard.DT);
         }
 
-        let resPhuKienThuAm = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.resPhuKienThuAm);
-        if (resPhuKienThuAm && resPhuKienThuAm.DT) {
-            setPhuKien(resPhuKienThuAm.DT);
+        let resMicro = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.resMicro);
+        if (resMicro && resMicro.DT) {
+            setPhuKien(resMicro.DT);
         }
     };
 
@@ -218,13 +253,11 @@ export default function TrangChu() {
     }, []);
 
     const toneAppImages = [
-        { id: 1, img: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80', title: 'Giao diện Dò Tone v1' },
-        { id: 2, img: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&q=80', title: 'Setup Tone Phòng Thu' },
-        { id: 3, img: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=500&q=80', title: 'Auto Key Nhận Diện' },
-        { id: 4, img: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80', title: 'Plugin Cubase AI' },
-        { id: 5, img: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=500&q=80', title: 'Tinh Chỉnh Giọng Hát' },
-        { id: 6, img: 'https://images.unsplash.com/photo-1545454675-3531b543be5d?w=500&q=80', title: 'Hỗ Trợ Soundcard Đa Dòng' },
-        { id: 7, img: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80', title: 'Cài Đặt Livestream 1 Chạm' }
+        { id: 1, img: '/trangchu/img1.png', title: 'Giao diện Dò Tone v1' },
+        { id: 2, img: '/trangchu/img2.png', title: 'Setup Tone Phòng Thu' },
+        { id: 3, img: '/trangchu/img3.png', title: 'Auto Key Nhận Diện' },
+        { id: 4, img: '/trangchu/img4.png', title: 'Plugin Cubase AI' },
+        { id: 5, img: '/trangchu/img5.png', title: 'Tinh Chỉnh Giọng Hát' },
     ];
 
     return (
@@ -348,7 +381,12 @@ export default function TrangChu() {
                                     viewAllLink="/phan-mem-do-tone"
                                 />
 
-                                <div className="relative group/carousel">
+                                <div
+                                    className="relative group/carousel"
+                                    onMouseEnter={() => setIsHovered(true)}
+                                    onMouseLeave={() => setIsHovered(false)}
+                                >
+                                    {/* Nút lùi (trái) */}
                                     <button
                                         onClick={() => scrollToneCarousel('left')}
                                         className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/95 border border-gray-200 rounded-full shadow-md flex items-center justify-center text-gray-700 hover:text-[#ed792f] hover:scale-110 transition-all opacity-0 group-hover/carousel:opacity-100"
@@ -357,17 +395,18 @@ export default function TrangChu() {
                                         <ChevronLeft className="w-5 h-5" />
                                     </button>
 
+                                    {/* Khung Carousel chứa ảnh */}
                                     <div
                                         ref={toneCarouselRef}
                                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                                        className="flex gap-3 md:gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory py-1 [&::-webkit-scrollbar]:hidden"
+                                        className="flex gap-2 overflow-x-auto scroll-smooth snap-x snap-mandatory py-1 [&::-webkit-scrollbar]:hidden"
                                     >
                                         {toneAppImages.map((item) => (
                                             <div
                                                 key={item.id}
-                                                className="w-[calc(50%-6px)] sm:w-[calc(33.333%-8px)] md:w-[calc(20%-13px)] flex-shrink-0 snap-start group cursor-pointer"
+                                                className="w-[calc(50%-4px)] sm:w-[calc(33.333%-5px)] md:w-[calc(20%-6.5px)] flex-shrink-0 snap-start group cursor-pointer"
                                             >
-                                                <div className="relative aspect-[4/3] rounded-xl overflow-hidden border border-gray-100 shadow-sm bg-gray-50">
+                                                <div className="relative aspect-[2/4] overflow-hidden bg-gray-50">
                                                     <img
                                                         src={item.img}
                                                         alt={item.title}
@@ -381,6 +420,7 @@ export default function TrangChu() {
                                         ))}
                                     </div>
 
+                                    {/* Nút tới (phải) */}
                                     <button
                                         onClick={() => scrollToneCarousel('right')}
                                         className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 w-9 h-9 bg-white/95 border border-gray-200 rounded-full shadow-md flex items-center justify-center text-gray-700 hover:text-[#ed792f] hover:scale-110 transition-all opacity-0 group-hover/carousel:opacity-100"
@@ -390,6 +430,7 @@ export default function TrangChu() {
                                     </button>
                                 </div>
 
+                                {/* Video Review */}
                                 <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center bg-gray-50 rounded-2xl p-6 mt-6 border border-gray-100">
                                     <div className="md:col-span-5 text-center md:text-left space-y-2">
                                         <h3 className="text-lg md:text-xl font-black text-gray-900 uppercase">
@@ -483,9 +524,35 @@ export default function TrangChu() {
                                         Tin tức
                                     </span>
                                 </div>
+
                                 <div className="space-y-3">
                                     {PostList.slice(0, 5).map((article, index) => (
-                                        <ArticleCard key={article.id || index} article={article} />
+                                        <a
+                                            key={article.id || index}
+                                            href={article.link || `#article-${article.id}`}
+                                            className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white hover:shadow-sm transition-all"
+                                        >
+                                            {/* Ảnh nhỏ vuông bên trái */}
+                                            <div className="w-16 h-16 sm:w-20 sm:h-20 shrink-0 rounded-lg overflow-hidden bg-gray-200">
+                                                <img
+                                                    src={article.image || article.img}
+                                                    alt={article.title}
+                                                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                />
+                                            </div>
+
+                                            {/* Tiêu đề & thông tin bên phải */}
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-xs sm:text-sm font-semibold text-gray-800 group-hover:text-[#ed792f] line-clamp-2 leading-snug">
+                                                    {article.title}
+                                                </h4>
+                                                {article.date && (
+                                                    <span className="text-[11px] text-gray-400 mt-1 block">
+                                                        {article.date}
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </a>
                                     ))}
                                 </div>
                             </div>
@@ -585,7 +652,7 @@ export default function TrangChu() {
                             {brandPartners.map((brand, i) => (
                                 <div
                                     key={i}
-                                    className="h-24 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
+                                    className="h-30 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
                                 >
                                     <img
                                         src={brand.src}

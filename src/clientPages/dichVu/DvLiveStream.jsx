@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-    AlertTriangle,
     ArrowRight,
-    Play,
     CheckCircle2,
-    RotateCcw
+    RotateCcw,
+    X
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
@@ -17,7 +16,6 @@ function WarningSignIcon({ className = "w-16 h-16" }) {
             xmlns="http://www.w3.org/2000/svg"
             className={className}
         >
-            {/* Khung tam giác viền đỏ ngoài */}
             <path
                 d="M44.8 6.4a6 6 0 0 1 10.4 0l39.5 68.4A6 6 0 0 1 89.5 84H10.5a6 6 0 0 1-5.2-9.2L44.8 6.4z"
                 fill="#FFFFFF"
@@ -25,19 +23,16 @@ function WarningSignIcon({ className = "w-16 h-16" }) {
                 strokeWidth="5"
                 strokeLinejoin="round"
             />
-            {/* Khối đỏ bên trong */}
             <path
                 d="M46.5 14.5a4 4 0 0 1 7 0l35 60.5a4 4 0 0 1-3.5 6H15a4 4 0 0 1-3.5-6l35-60.5z"
                 fill="red"
             />
-            {/* Dấu chấm than trắng: thân */}
             <path
                 d="M50 32v24"
                 stroke="#FFFFFF"
                 strokeWidth="6"
                 strokeLinecap="round"
             />
-            {/* Dấu chấm than trắng: chấm tròn */}
             <circle cx="50" cy="67" r="3.5" fill="#FFFFFF" />
         </svg>
     );
@@ -45,30 +40,54 @@ function WarningSignIcon({ className = "w-16 h-16" }) {
 
 export default function SetupLivestreamPage() {
     // -------------------------------------------------------------
-    // Multi-step Form State (Tư vấn nhận báo giá theo đúng 3 ảnh)
+    // Multi-step Form State
     // -------------------------------------------------------------
     const [step, setStep] = useState(1);
-    const [deviceType, setDeviceType] = useState('Điện thoại');
+    const [targetType, setTargetType] = useState('Nhà bán hàng e-commerce');
+    const [deviceType, setDeviceType] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [budgetNote, setBudgetNote] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
 
-    // Chuyển từ Bước 1 sang Bước 2
-    const handleNextStep1 = () => {
-        if (!deviceType) {
-            toast.warning('Vui lòng tick chọn thiết bị livestream!');
-            return;
+    // State phục vụ việc click xem full ảnh báo giá
+    const [previewImage, setPreviewImage] = useState(null);
+
+    // Đóng popup khi ấn phím Escape
+    useEffect(() => {
+        const handleKeyDown = (e) => {
+            if (e.key === 'Escape') {
+                setPreviewImage(null);
+            }
+        };
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
+    // Xử lý chọn Ô 1 (Đối tượng) -> Tự động chuyển ngay sang Bước 2 (Chọn thiết bị)
+    const handleSelectTarget = (target) => {
+        setTargetType(target);
+        if (target === 'Nhà bán hàng e-commerce') {
+            setDeviceType('Máy ảnh');
+        } else {
+            setDeviceType('');
         }
         setStep(2);
     };
 
-    // Chuyển từ Bước 2 sang Bước 3
-    const handleNextStep2 = () => {
+    // Xử lý chọn Ô 2 (Thiết bị) -> Tự động chuyển ngay sang Bước 3 (Nhập SĐT)
+    const handleSelectDevice = (device) => {
+        setDeviceType(device);
+        setStep(3);
+    };
+
+    // Xử lý sau khi nhập SĐT -> Chuyển sang Bước 4 (Báo giá & Ngân sách)
+    const handleNextToPrice = (e) => {
+        e?.preventDefault?.();
         if (!phoneNumber.trim()) {
             toast.warning('Vui lòng nhập số điện thoại để nhận báo giá!');
             return;
         }
-        setStep(3);
+        setStep(4);
     };
 
     // Gửi form cuối cùng
@@ -81,15 +100,51 @@ export default function SetupLivestreamPage() {
     // Khảo sát lại từ đầu
     const handleReset = () => {
         setStep(1);
-        setDeviceType('Điện thoại');
+        setTargetType('Nhà bán hàng e-commerce');
+        setDeviceType('');
         setPhoneNumber('');
         setBudgetNote('');
         setIsSubmitted(false);
+        setPreviewImage(null);
     };
 
-    // -------------------------------------------------------------
+    // Lựa chọn ảnh báo giá phù hợp dựa trên đối tượng và thiết bị
+    const getPricingImage = () => {
+        if (targetType === 'Nhà bán hàng e-commerce') {
+            return {
+                title: "BÁO GIÁ GÓI BÁN HÀNG E-COMMERCE (CAMERA MÁY ẢNH)",
+                images: [
+                    "/dichvulive/ecommerce-camera-1.png",
+                    "/dichvulive/ecommerce-camera-2.png",
+                    "/dichvulive/ecommerce-camera-3.png",
+                ]
+            };
+        }
+        if (deviceType === 'Điện thoại') {
+            return {
+                title: "BÁO GIÁ GÓI IDOL LIVE STUDIO (ĐIỆN THOẠI)",
+                images: [
+                    "/dichvulive/idol-phone-1.png",
+                    "/dichvulive/idol-phone-2.png",
+                ]
+            };
+        }
+        if (deviceType === 'Máy ảnh') {
+            return {
+                title: "BÁO GIÁ GÓI IDOL LIVE STUDIO (MÁY ẢNH)",
+                images: [
+                    "/dichvulive/idol-camera-1.png",
+                    "/dichvulive/idol-camera-2.png",
+                ]
+            };
+        }
+        return {
+            title: "BẢNG BÁO GIÁ TỔNG HỢP CMIC STUDIO",
+            images: ["/dichvulive/bang-gia-tong-hop.png"]
+        };
+    };
+
     // Danh sách Case study & Thương hiệu
-    // -------------------------------------------------------------
     const caseStudyRow1 = [
         "/dichvulive/cs1.png", "/dichvulive/cs2.png", "/dichvulive/cs3.png",
         "/dichvulive/cs4.png", "/dichvulive/cs5.png"
@@ -117,27 +172,17 @@ export default function SetupLivestreamPage() {
         <div className="w-full bg-white font-sans text-gray-900 overflow-x-hidden">
 
             {/* ========================================================= */}
-            {/* HERO: ẢNH FULL WIDTH SAU BANNER                           */}
+            {/* HERO: BANNER                                              */}
             {/* ========================================================= */}
             <div className="relative w-full overflow-hidden max-h-[500px] flex items-center justify-center">
-                {/* Ảnh nền */}
                 <img
                     src="/dvlivehero.png"
                     alt="Banner Dịch Vụ AutoTune AI"
                     className="w-full h-full object-cover min-h-[320px] md:min-h-[420px]"
-                    onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src =
-                            "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1600&q=80";
-                    }}
                 />
-
-                {/* Lớp phủ tối nhẹ tạo độ tương phản cho chữ */}
                 <div className="absolute inset-0 bg-black/40" />
 
-                {/* Khối chữ & Icon nằm chính giữa */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10 select-none">
-                    {/* Biểu tượng phát sóng trực tiếp đỏ */}
                     <div className="mb-4 text-[#ff3b3b]">
                         <svg
                             className="w-12 h-12 md:w-16 md:h-16 inline-block"
@@ -155,24 +200,23 @@ export default function SetupLivestreamPage() {
                         </svg>
                     </div>
 
-                    {/* Tiêu đề chính */}
-                    <h1 className="text-xl sm:text3xl md:text-4xl font-black uppercase text-white tracking-wide leading-tight drop-shadow-md">
+                    <h1 className="text-xl sm:text-3xl md:text-4xl font-black uppercase text-white tracking-wide leading-tight drop-shadow-md">
                         BIẾN MỌI PHIÊN LIVE <br />
                         THÀNH SÂN KHẤU
                     </h1>
 
-                    {/* Dòng phụ cam */}
                     <p className="mt-3 sm:mt-4 text-base sm:text-xl md:text-2xl font-extrabold uppercase text-[#f97316] tracking-wider drop-shadow-sm">
                         BÙNG NỔ DOANH SỐ &amp; NGHỆ THUẬT
                     </p>
                 </div>
             </div>
+
             {/* ========================================================= */}
-            {/* 1. HAI GÓI LIVESTREAM VÀ TICKER CHẠY NGANG (Ảnh 1)       */}
+            {/* 1. HAI GÓI LIVESTREAM VÀ TICKER CHẠY NGANG               */}
             {/* ========================================================= */}
             <section className="py-8 bg-white">
                 <div className="max-w-5xl mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 relative -top-[10px] md:-top-[100px]">
 
                         {/* Gói Bán Hàng E-Commerce */}
                         <div className="rounded-[32px] p-8 text-center bg-white shadow-[0_0_35px_rgba(237,121,47,0.35)] border-4 border-orange-200/70 flex flex-col items-center justify-between">
@@ -191,12 +235,7 @@ export default function SetupLivestreamPage() {
                                             src="/icons/shopee-live.png"
                                             alt="Shopee Live"
                                             className="w-full h-full object-contain"
-                                            onError={(e) => {
-                                                e.currentTarget.onerror = null;
-                                                e.currentTarget.src = "https://upload.wikimedia.org/wikipedia/commons/f/fe/Shopee.svg";
-                                            }}
                                         />
-
                                         <span className="absolute -bottom-2 bg-red-600 text-white text-[8px] font-bold px-1 rounded">LIVE</span>
                                     </div>
                                 </div>
@@ -212,7 +251,9 @@ export default function SetupLivestreamPage() {
 
                             <a
                                 href="#tu-van-bao-gia"
-                                onClick={() => { setDeviceType('PC'); setStep(1); }}
+                                onClick={() => {
+                                    handleSelectTarget('Nhà bán hàng e-commerce');
+                                }}
                                 className="px-10 py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-sm md:text-base rounded-full shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wider uppercase transition-all"
                             >
                                 BÁO GIÁ
@@ -252,7 +293,9 @@ export default function SetupLivestreamPage() {
 
                             <a
                                 href="#tu-van-bao-gia"
-                                onClick={() => { setDeviceType('Điện thoại'); setStep(1); }}
+                                onClick={() => {
+                                    handleSelectTarget('Idol Live (ca hát)');
+                                }}
                                 className="px-10 py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-sm md:text-base rounded-full shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wider uppercase transition-all"
                             >
                                 BÁO GIÁ
@@ -262,7 +305,6 @@ export default function SetupLivestreamPage() {
                     </div>
                 </div>
 
-                {/* Dòng chữ in đậm chạy ngang vô tận */}
                 <div className="mt-12 py-3 bg-gray-50 border-y border-gray-200 overflow-hidden whitespace-nowrap relative flex">
                     <style>{`
                         @keyframes customMarquee {
@@ -283,46 +325,44 @@ export default function SetupLivestreamPage() {
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                        <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     </div>
                 </div>
             </section>
 
             {/* ========================================================= */}
-            {/* 2. BẠN ĐANG MẤT KHÁCH HÀNG VÌ... (Ảnh 2)                   */}
+            {/* 2. BẠN ĐANG MẤT KHÁCH HÀNG VÌ...                          */}
             {/* ========================================================= */}
             <section className="py-14 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-12">
+                    <h2 className="text-xl md:text-2xl font-black text-center uppercase tracking-tight text-black mb-12">
                         BẠN ĐANG MẤT KHÁCH HÀNG VÌ...
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-                        {/* Card 1 */}
-                        <div className="border-2 border-[#E11D48] rounded-[28px] p-2 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div className="border-2 border-[#E11D48] rounded-[28px] p-6 text-center flex flex-col items-center justify-center min-h-[260px] bg-rose-50/60 shadow-sm hover:shadow-md transition-all">
                             <div className="mb-6">
                                 <WarningSignIcon className="w-16 h-16" />
                             </div>
-                            <p className="text-base text-gray-900 leading-relaxed font-normal">
+                            <p className="text-base text-gray-900 leading-relaxed font-medium">
                                 Ánh sáng mờ, giao diện nhợt nhạt, tổng thể nhìn thiếu chuyên nghiệp.
                             </p>
                         </div>
 
-                        {/* Card 2 */}
-                        <div className="border-2 border-[#E11D48] rounded-[28px] p-2 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div className="border-2 border-[#E11D48] rounded-[28px] p-6 text-center flex flex-col items-center justify-center min-h-[260px] bg-rose-50/60 shadow-sm hover:shadow-md transition-all">
                             <div className="mb-6">
                                 <WarningSignIcon className="w-16 h-16" />
                             </div>
-                            <p className="text-base text-gray-900 leading-relaxed font-normal">
+                            <p className="text-base text-gray-900 leading-relaxed font-medium">
                                 Âm thanh rè, lẫn nhiều tạp âm, nghe không rõ.
                             </p>
                         </div>
 
-                        {/* Card 3 */}
-                        <div className="border-2 border-[#E11D48] rounded-[28px] p-2 text-center flex flex-col items-center justify-center min-h-[260px] bg-white shadow-sm hover:shadow-md transition-shadow">
+                        <div className="border-2 border-[#E11D48] rounded-[28px] p-6 text-center flex flex-col items-center justify-center min-h-[260px] bg-rose-50/60 shadow-sm hover:shadow-md transition-all">
                             <div className="mb-6">
                                 <WarningSignIcon className="w-16 h-16" />
                             </div>
-                            <p className="text-base text-gray-900 leading-relaxed font-normal">
+                            <p className="text-base text-gray-900 leading-relaxed font-medium">
                                 Tự setup lộn xộn, thiết bị không tương thích khiến phiên live giật lag.
                             </p>
                         </div>
@@ -331,28 +371,19 @@ export default function SetupLivestreamPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* 3. GIẢI PHÁP TỪ CMIC STUDIO (NHÚNG VIDEO YOUTUBE)         */}
+            {/* 3. GIẢI PHÁP TỪ CMIC STUDIO                               */}
             {/* ========================================================= */}
             <section className="py-12 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-10">
+                    <h2 className="text-xl md:text-2xl font-black text-center uppercase tracking-tight text-black mb-10">
                         GIẢI PHÁP TỪ CMIC STUDIO
                     </h2>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {[
-                            {
-                                id: "dQw4w9WgXcQ", // Thay bằng Video ID YouTube 1 (hoặc ID YouTube Shorts)
-                                title: "Bạn cần SETUP LIVESTREAM"
-                            },
-                            {
-                                id: "dQw4w9WgXcQ", // Thay bằng Video ID YouTube 2
-                                title: "Muốn setup hát live CHUYÊN NGHIỆP"
-                            },
-                            {
-                                id: "dQw4w9WgXcQ", // Thay bằng Video ID YouTube 3
-                                title: "Ta còn em.."
-                            }
+                            { id: "i0tMf2k0Tpc", title: "Bạn cần SETUP LIVESTREAM" },
+                            { id: "Lfz_8kEHJKY", title: "Muốn setup hát live CHUYÊN NGHIỆP" },
+                            { id: "c_q4lkbePqc", title: "Ta còn em.." }
                         ].map((item, idx) => (
                             <div
                                 key={idx}
@@ -372,7 +403,7 @@ export default function SetupLivestreamPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* 4. BẢNG SO SÁNH GIẢI PHÁP CHI TIẾT (Ảnh 4)                */}
+            {/* 4. BẢNG SO SÁNH GIẢI PHÁP CHI TIẾT                        */}
             {/* ========================================================= */}
             <section className="py-12 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
@@ -392,7 +423,6 @@ export default function SetupLivestreamPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white text-gray-700 leading-relaxed font-normal text-base md:text-lg">
-                                {/* Hàng 1: Hình ảnh & Ánh sáng */}
                                 <tr className="hover:bg-orange-50/30 transition-colors">
                                     <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/60 md:bg-transparent">
                                         Hình ảnh & Ánh sáng
@@ -419,7 +449,6 @@ export default function SetupLivestreamPage() {
                                     </td>
                                 </tr>
 
-                                {/* Hàng 2: Không gian & Âm thanh */}
                                 <tr className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
                                     <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/80 md:bg-transparent">
                                         Không gian & Âm thanh
@@ -446,7 +475,6 @@ export default function SetupLivestreamPage() {
                                     </td>
                                 </tr>
 
-                                {/* Hàng 3: Thiết bị & Phần mềm phụ trợ */}
                                 <tr className="hover:bg-orange-50/30 transition-colors">
                                     <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/60 md:bg-transparent">
                                         Thiết bị & Phần mềm phụ trợ
@@ -461,8 +489,7 @@ export default function SetupLivestreamPage() {
                                             <span>Phông xanh thông minh giúp <span className="text-[#ea580c] font-semibold">thay đổi background và gắn deal flash-sale</span> chỉ với 1 click.</span>
                                         </p>
                                         <p className="flex items-start gap-2">
-                                            <span className="text-[#ea580c] font-bold mt-1 text-sm">●</span>
-                                            <span>App làm đẹp tự nhiên: <span className="text-[#ea580c] font-semibold">Tôn dáng - sáng da</span> mà vẫn giữ độ chi tiết trung thực cho chất liệu sản phẩm.</span>
+                                            <span className="text-[#ea580c] font-semibold">App làm đẹp tự nhiên</span>: Tôn dáng - sáng da mà vẫn giữ độ chi tiết trung thực cho chất liệu sản phẩm.
                                         </p>
                                     </td>
                                     <td className="p-4 md:p-5 space-y-3">
@@ -481,7 +508,6 @@ export default function SetupLivestreamPage() {
                                     </td>
                                 </tr>
 
-                                {/* Hàng 4: Setup tận nơi & Bàn giao */}
                                 <tr className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
                                     <td className="p-4 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/80 md:bg-transparent">
                                         Setup tận nơi & Bàn giao
@@ -514,36 +540,36 @@ export default function SetupLivestreamPage() {
             </section>
 
             {/* ========================================================= */}
-            {/* 5. TƯ VẤN NHẬN BÁO GIÁ (MULTI-STEP FORM CHUẨN 3 ẢNH)      */}
+            {/* 5. TƯ VẤN NHẬN BÁO GIÁ                                     */}
             {/* ========================================================= */}
             <section id="tu-van-bao-gia" className="py-14 bg-white scroll-mt-6 flex justify-center items-center">
                 <div className="w-full max-w-[620px] px-4">
-                    <h2 className="text-2xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-10">
+                    <h2 className="text-xl md:text-2xl font-black text-center uppercase tracking-tight text-black mb-10">
                         TƯ VẤN NHẬN BÁO GIÁ
                     </h2>
 
-                    {/* BƯỚC 1: Chọn thiết bị livestream */}
+                    {/* BƯỚC 1: Chọn Đối tượng */}
                     {step === 1 && (
                         <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
-                            <h2 className="text-2xl sm:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-6">
-                                Bạn muốn livestream bằng thiết bị gì?
+                            <h2 className="text-xl sm:text-3xl font-black text-[#e8702a] leading-tight tracking-tight mb-6">
+                                Bạn thuộc đối tượng nào sau đây?
                             </h2>
 
-                            <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
+                            <p className="text-sm font-bold text-[#e8702a] leading-relaxed mb-6">
                                 Bạn vui lòng tick chọn ô phù hợp để nhận được báo giá đúng nhất.*
                             </p>
 
                             <div className="space-y-4 mb-8">
                                 {[
-                                    "Điện thoại",
-                                    "Máy ảnh",
-                                    "Tôi muốn tham khảo cả 2"
+                                    "Nhà bán hàng e-commerce",
+                                    "Idol Live (ca hát)",
+                                    "Khác"
                                 ].map((item) => {
-                                    const isSelected = deviceType === item;
+                                    const isSelected = targetType === item;
                                     return (
                                         <div
                                             key={item}
-                                            onClick={() => setDeviceType(item)}
+                                            onClick={() => handleSelectTarget(item)}
                                             className={`w-full py-4 px-6 rounded-2xl cursor-pointer transition-all duration-200 text-base sm:text-lg select-none ${isSelected
                                                 ? "bg-[#feddc7] text-black font-semibold border-2 border-[#e8702a] shadow-inner"
                                                 : "bg-[#faece0] text-[#6b4731] hover:bg-[#f7dfcf] border-2 border-transparent font-medium"
@@ -557,20 +583,75 @@ export default function SetupLivestreamPage() {
 
                             <button
                                 type="button"
-                                onClick={handleNextStep1}
+                                onClick={() => handleSelectTarget(targetType)}
+                                className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                            >
+                                GỬI NGAY
+                            </button>
+                        </div>
+                    )}
+
+                    {/* BƯỚC 2: Chọn Thiết bị */}
+                    {step === 2 && (
+                        <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
+                            <h2 className="text-2xl sm:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-6">
+                                Bạn muốn livestream bằng thiết bị gì?
+                            </h2>
+
+                            <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
+                                Bạn vui lòng tick chọn ô phù hợp để nhận được báo giá đúng nhất.*
+                            </p>
+
+                            <div className="space-y-4 mb-8">
+                                {(targetType === 'Nhà bán hàng e-commerce'
+                                    ? ["Máy ảnh"]
+                                    : ["Điện thoại", "Máy ảnh", "Tôi muốn tham khảo cả 2"]
+                                ).map((item) => {
+                                    const isSelected = deviceType === item;
+                                    return (
+                                        <div
+                                            key={item}
+                                            onClick={() => handleSelectDevice(item)}
+                                            className={`w-full py-4 px-6 rounded-2xl cursor-pointer transition-all duration-200 text-base sm:text-lg select-none ${isSelected
+                                                ? "bg-[#feddc7] text-black font-semibold border-2 border-[#e8702a] shadow-inner"
+                                                : "bg-[#faece0] text-[#6b4731] hover:bg-[#f7dfcf] border-2 border-transparent font-medium"
+                                                }`}
+                                        >
+                                            {item}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    const defaultDev = targetType === 'Nhà bán hàng e-commerce' ? 'Máy ảnh' : deviceType;
+                                    if (!defaultDev) {
+                                        toast.warning("Vui lòng tick chọn thiết bị livestream!");
+                                        return;
+                                    }
+                                    handleSelectDevice(defaultDev);
+                                }}
                                 className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
                             >
                                 GỬI NGAY
                             </button>
 
-                            <p className="text-xs text-gray-500 text-center mt-3">
-                                Tên hồ sơ Canva của bạn sẽ được chia sẻ
-                            </p>
+                            <div className="text-center mt-6">
+                                <button
+                                    type="button"
+                                    onClick={handleReset}
+                                    className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-black transition-colors"
+                                >
+                                    <RotateCcw className="w-3.5 h-3.5" /> Khảo sát lại từ đầu
+                                </button>
+                            </div>
                         </div>
                     )}
 
-                    {/* BƯỚC 2: Nhập số điện thoại */}
-                    {step === 2 && (
+                    {/* BƯỚC 3: Nhập SĐT */}
+                    {step === 3 && (
                         <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
                             <h2 className="text-2xl sm:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-6">
                                 CMIC STUDIO có thể liên hệ với bạn bằng cách nào?
@@ -580,101 +661,115 @@ export default function SetupLivestreamPage() {
                                 Tiếp theo, bạn chỉ cần nhập SĐT để nhận báo giá!*
                             </p>
 
-                            <div className="mb-8">
-                                <input
-                                    type="tel"
-                                    autoFocus
-                                    required
-                                    value={phoneNumber}
-                                    onChange={(e) => setPhoneNumber(e.target.value)}
-                                    placeholder="Nhập số điện thoại của bạn..."
-                                    className="w-full py-4 px-5 bg-white border border-[#f5b890] rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-base text-gray-900 transition-all placeholder:text-gray-400"
-                                />
-                            </div>
+                            <form onSubmit={handleNextToPrice}>
+                                <div className="mb-8">
+                                    <input
+                                        type="tel"
+                                        autoFocus
+                                        required
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        placeholder="Nhập số điện thoại của bạn..."
+                                        className="w-full py-4 px-5 bg-white border border-[#f5b890] rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-base text-gray-900 transition-all placeholder:text-gray-400"
+                                    />
+                                </div>
 
-                            <button
-                                type="button"
-                                onClick={handleNextStep2}
-                                className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
-                            >
-                                GỬI NGAY
-                            </button>
-
-                            <p className="text-xs text-gray-500 text-center mt-3">
-                                Tên hồ sơ Canva của bạn sẽ được chia sẻ. Tuyệt đối không gửi mật khẩu.
-                            </p>
+                                <button
+                                    type="submit"
+                                    className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                >
+                                    GỬI NGAY
+                                </button>
+                            </form>
                         </div>
                     )}
 
-                    {/* BƯỚC 3: Hiện [HÌNH ẢNH BÁO GIÁ] & Chi phí ngân sách */}
-                    {step === 3 && (
-                        <div className="space-y-4">
-                            <div className="text-center font-extrabold text-black text-lg sm:text-xl uppercase tracking-wider">
-                                [HÌNH ẢNH BÁO GIÁ]
-                            </div>
+                    {/* BƯỚC 4: Hiện Báo Giá Tương Ứng & Ô Ngân Sách */}
+                    {step === 4 && (() => {
+                        const pricing = getPricingImage();
+                        return (
+                            <div className="space-y-6">
+                                {/* Khối Danh Sách Ảnh Báo Giá */}
+                                <div className="rounded-3xl border border-orange-200 bg-white p-4 sm:p-6 shadow-sm text-center">
+                                    <span className="inline-block px-4 py-1.5 rounded-full bg-orange-100 text-[#e8702a] font-extrabold text-xs sm:text-sm uppercase tracking-wider mb-4">
+                                        {pricing.title}
+                                    </span>
 
-                            <div className="w-full rounded-2xl overflow-hidden shadow-sm border border-gray-200 bg-white">
-                                <img
-                                    src="/pricing/bang-gia-tong-hop.png"
-                                    alt="Báo giá chi tiết"
-                                    className="w-full h-auto object-contain max-h-[420px]"
-                                    onError={(e) => {
-                                        e.currentTarget.src = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1200&q=80";
-                                    }}
-                                />
-                            </div>
-
-                            <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
-                                <h2 className="text-2xl sm:text-[32px] font-black text-[#e8702a] leading-tight tracking-tight mb-4">
-                                    Chi phí trong báo giá đã phù hợp với ngân sách của bạn chưa?
-                                </h2>
-
-                                <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
-                                    Nếu đã phù hợp với ngân sách, bạn vui lòng bỏ qua câu hỏi này. Đội ngũ của CMIC STUDIO sẽ liên hệ để trao đổi thêm. Nếu chưa, bạn hãy điền ngân sách mà mình mong muốn. Chúng tôi sẽ thiết kế báo giá mới phù hợp với ngân sách của bạn!
-                                </p>
-
-                                <form onSubmit={handleFinalSubmit}>
-                                    <div className="mb-8">
-                                        <input
-                                            type="text"
-                                            value={budgetNote}
-                                            onChange={(e) => setBudgetNote(e.target.value)}
-                                            placeholder="Nhập ngân sách mong muốn (ví dụ: 15 triệu, 25 triệu...)"
-                                            className="w-full py-4 px-5 bg-white border border-[#f5b890] rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-base text-gray-900 transition-all placeholder:text-gray-400"
-                                        />
-                                    </div>
-
-                                    {!isSubmitted ? (
-                                        <button
-                                            type="submit"
-                                            className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
-                                        >
-                                            GỬI NGAY
-                                        </button>
-                                    ) : (
-                                        <div className="w-full py-4 bg-green-600 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2 text-base">
-                                            <CheckCircle2 className="w-5 h-5" />
-                                            ĐÃ GỬI THÔNG TIN THÀNH CÔNG!
-                                        </div>
-                                    )}
-
-                                    <p className="text-xs text-gray-500 text-center mt-3">
-                                        Tên hồ sơ Canva của bạn sẽ được chia sẻ. Tuyệt đối không gửi mật khẩu.
-                                    </p>
-                                </form>
-
-                                <div className="text-center mt-6">
-                                    <button
-                                        type="button"
-                                        onClick={handleReset}
-                                        className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-black transition-colors"
+                                    <div
+                                        className={`w-screen relative left-1/2 -translate-x-1/2 px-4 md:px-12 grid gap-4 md:gap-6 ${pricing.images.length === 3
+                                                ? "grid-cols-1 md:grid-cols-3"
+                                                : "grid-cols-1 md:grid-cols-2"
+                                            }`}
                                     >
-                                        <RotateCcw className="w-3.5 h-3.5" /> Khảo sát lại từ đầu
-                                    </button>
+                                        {pricing.images.map((imgSrc, idx) => (
+                                            <div
+                                                key={idx}
+                                                onClick={() => setPreviewImage(imgSrc)}
+                                                className="w-full rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm flex items-center justify-center p-2 cursor-zoom-in group transition-all"
+                                                title="Click để phóng to xem chi tiết"
+                                            >
+                                                <img
+                                                    src={imgSrc}
+                                                    alt={`${pricing.title} - Trang ${idx + 1}`}
+                                                    className="w-full h-auto object-contain mx-auto block group-hover:scale-[1.02] transition-transform duration-300"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <p className="text-xs text-gray-400 mt-3 italic">
+                                        (Click vào từng ảnh để phóng to toàn màn hình)
+                                    </p>
+                                </div>
+
+                                {/* Khối Ô Khảo Sát Ngân Sách Cuối Cùng */}
+                                <div className="rounded-[36px] border-[3px] border-[#e8702a] bg-[#fffcf7] p-8 sm:p-12 shadow-sm transition-all duration-300">
+                                    <h2 className="text-2xl sm:text-[32px] font-black text-[#e8702a] leading-tight tracking-tight mb-4">
+                                        Chi phí trong báo giá đã phù hợp với ngân sách của bạn chưa?
+                                    </h2>
+
+                                    <p className="text-sm sm:text-base font-bold text-[#e8702a] leading-relaxed mb-6">
+                                        Nếu đã phù hợp với ngân sách, bạn vui lòng bỏ qua câu hỏi này. Đội ngũ của CMIC STUDIO sẽ liên hệ để trao đổi thêm. Nếu chưa, bạn hãy điền ngân sách mà mình mong muốn. Chúng tôi sẽ thiết kế báo giá mới phù hợp với ngân sách của bạn!
+                                    </p>
+
+                                    <form onSubmit={handleFinalSubmit}>
+                                        <div className="mb-8">
+                                            <input
+                                                type="text"
+                                                value={budgetNote}
+                                                onChange={(e) => setBudgetNote(e.target.value)}
+                                                placeholder="Nhập ngân sách mong muốn (ví dụ: 15 triệu, 25 triệu...)"
+                                                className="w-full py-4 px-5 bg-white border border-[#f5b890] rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-base text-gray-900 transition-all placeholder:text-gray-400"
+                                            />
+                                        </div>
+
+                                        {!isSubmitted ? (
+                                            <button
+                                                type="submit"
+                                                className="w-full py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-lg rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                            >
+                                                GỬI NGAY
+                                            </button>
+                                        ) : (
+                                            <div className="w-full py-4 bg-green-600 text-white font-bold rounded-2xl text-center flex items-center justify-center gap-2 text-base">
+                                                <CheckCircle2 className="w-5 h-5" />
+                                                ĐÃ GỬI THÔNG TIN THÀNH CÔNG!
+                                            </div>
+                                        )}
+                                    </form>
+
+                                    <div className="text-center mt-6">
+                                        <button
+                                            type="button"
+                                            onClick={handleReset}
+                                            className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-black transition-colors"
+                                        >
+                                            <RotateCcw className="w-3.5 h-3.5" /> Khảo sát lại từ đầu
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    )}
+                        );
+                    })()}
 
                 </div>
             </section>
@@ -714,7 +809,6 @@ export default function SetupLivestreamPage() {
                 </div>
 
                 <div className="space-y-4">
-                    {/* Hàng 1: Chạy liên tục sang trái */}
                     <div className="overflow-hidden w-full">
                         <div className="marquee-left gap-4">
                             {[...caseStudyRow1, ...caseStudyRow1, ...caseStudyRow1].map((src, i) => (
@@ -732,7 +826,6 @@ export default function SetupLivestreamPage() {
                         </div>
                     </div>
 
-                    {/* Hàng 2: Chạy liên tục sang phải */}
                     <div className="overflow-hidden w-full">
                         <div className="marquee-right gap-4">
                             {[...caseStudyRow2, ...caseStudyRow2, ...caseStudyRow2].map((src, i) => (
@@ -767,18 +860,12 @@ export default function SetupLivestreamPage() {
                         {brands.map((brand, i) => (
                             <div
                                 key={i}
-                                className="h-24 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
+                                className="h-30 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
                             >
                                 <img
                                     src={brand.src}
                                     alt={brand.name}
                                     className="max-h-full max-w-full object-contain filter contrast-105"
-                                    onError={(e) => {
-                                        e.currentTarget.style.display = "none";
-                                        e.currentTarget.parentElement.innerText = brand.name;
-                                        e.currentTarget.parentElement.className =
-                                            "h-24 w-full flex items-center justify-center text-xs font-bold text-gray-500 uppercase tracking-wider";
-                                    }}
                                 />
                             </div>
                         ))}
@@ -797,6 +884,38 @@ export default function SetupLivestreamPage() {
                     </div>
                 </div>
             </section>
+
+            {/* ========================================================= */}
+            {/* MODAL LIGHTBOX: PHÓNG TO TOÀN MÀN HÌNH KHI BẤM VÀO ẢNH   */}
+            {/* ========================================================= */}
+            {previewImage && (
+                <div
+                    className="fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 transition-opacity duration-300"
+                    onClick={() => setPreviewImage(null)}
+                >
+                    {/* Nút đóng góc phải */}
+                    <button
+                        type="button"
+                        onClick={() => setPreviewImage(null)}
+                        className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/90 hover:text-white bg-white/10 hover:bg-white/25 p-2 sm:p-3 rounded-full transition-all cursor-pointer z-50 shadow-md"
+                        title="Đóng (Esc)"
+                    >
+                        <X className="w-6 h-6 sm:w-7 sm:h-7 stroke-[2.5]" />
+                    </button>
+
+                    {/* Vùng hiển thị ảnh Full */}
+                    <div
+                        className="relative max-w-6xl max-h-[92vh] flex items-center justify-center select-none"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <img
+                            src={previewImage}
+                            alt="Ảnh báo giá chi tiết"
+                            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl"
+                        />
+                    </div>
+                </div>
+            )}
 
         </div>
     );

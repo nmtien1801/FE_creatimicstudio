@@ -148,6 +148,15 @@ export default function CheckoutPage() {
                             <div className="w-9 h-9 rounded-full bg-white border border-slate-300 text-slate-400 font-semibold flex items-center justify-center text-sm">
                                 3
                             </div>
+                            <span className="text-xs font-medium text-slate-400 mt-1.5">Chờ xử lý</span>
+                        </div>
+
+                        <div className="w-12 sm:w-16 h-[2px] bg-slate-200 -mt-5" />
+
+                        <div className="flex flex-col items-center">
+                            <div className="w-9 h-9 rounded-full bg-white border border-slate-300 text-slate-400 font-semibold flex items-center justify-center text-sm">
+                                4
+                            </div>
                             <span className="text-xs font-medium text-slate-400 mt-1.5">Hoàn tất</span>
                         </div>
                     </div>
@@ -285,6 +294,13 @@ export default function CheckoutPage() {
                             </div>
                         </div>
 
+                        <div className="flex items-center justify-center gap-2 text-xs py-2 text-slate-500">
+                            <PhoneCall size={16} className="text-[#f97316]" />
+                            <span>Cần hỗ trợ nhanh?</span>
+                            <a href="tel:0372672396" className="font-black text-slate-900 hover:text-[#f97316] transition">
+                                037.2672.396
+                            </a>
+                        </div>
                     </div>
 
                     <div className="lg:col-span-4 space-y-4">
@@ -427,13 +443,6 @@ export default function CheckoutPage() {
                             </p>
                         </div>
 
-                        <div className="flex items-center justify-center gap-2 text-xs py-2 text-slate-500">
-                            <PhoneCall size={16} className="text-[#f97316]" />
-                            <span>Cần hỗ trợ nhanh?</span>
-                            <a href="tel:0372672396" className="font-black text-slate-900 hover:text-[#f97316] transition">
-                                037.2672.396
-                            </a>
-                        </div>
                     </div>
 
                 </form>

@@ -34,12 +34,12 @@ export default function AutoTuneLandingPage() {
 
     // 1. Dữ liệu Giải pháp dành cho ai (Ảnh 2)
     const targetAudiences = [
-        { title: "Người thích hát karaoke tại nhà", img: "https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=500&q=80" },
-        { title: "Người không rành công nghệ", img: "https://images.unsplash.com/photo-1544717305-2782549b5136?w=500&q=80" },
-        { title: "Người mới bắt đầu thu âm", img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&q=80" },
-        { title: "Người sử dụng laptop để hát karaoke", img: "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=500&q=80" },
-        { title: "Người lớn tuổi muốn có một phần mềm hát đơn giản, dễ thao tác", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&q=80" },
-        { title: "Người đã có soundcard và micro nhưng chưa cài AutoTune", img: "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80" }
+        { title: "Người thích hát karaoke tại nhà", img: "/dichvutune/1.png" },
+        { title: "Người không rành công nghệ", img: "/dichvutune/2.png" },
+        { title: "Người mới bắt đầu thu âm", img: "/dichvutune/3.png" },
+        { title: "Người sử dụng laptop để hát karaoke", img: "/dichvutune/4.png" },
+        { title: "Người lớn tuổi muốn có một phần mềm hát đơn giản, dễ thao tác", img: "/dichvutune/5.png" },
+        { title: "Người đã có soundcard và micro nhưng chưa cài AutoTune", img: "/dichvutune/6.png" }
     ];
 
     // 2. Dữ liệu Tính năng nổi bật (Ảnh 3)
@@ -88,13 +88,13 @@ export default function AutoTuneLandingPage() {
     ];
 
     // 3. Feedback hình ảnh thực tế (Ảnh 4)
-    const feedbackTop = ["/feedback/fb1.png", "/feedback/fb2.png", "/feedback/fb3.png"];
+    const feedbackTop = ["/dichvutune/img1.png", "/dichvutune/img2.png", "/dichvutune/img3.png"];
     const feedbackBottom = [
-        "/feedback/setup1.png",
-        "/feedback/setup2.png",
-        "/feedback/setup3.png",
-        "/feedback/setup4.png",
-        "/feedback/setup5.png"
+        "/dichvutune/img4.png",
+        "/dichvutune/img5.png",
+        "/dichvutune/img6.png",
+        "/dichvutune/img7.png",
+        "/dichvutune/img8.png"
     ];
 
     // 4. Quy trình 5 bước (Ảnh 5)
@@ -248,15 +248,42 @@ export default function AutoTuneLandingPage() {
         <div className="w-full bg-white font-sans text-gray-900">
 
             {/* ẢNH FULL WIDTH SAU BANNER */}
-            <div className="w-full">
+            <div className="w-full relative group">
                 <img
-                    src="/banner-autotune-full.png"
+                    src="/dichvutune/hero.png"
                     alt="Banner Dịch Vụ AutoTune AI"
                     className="w-full h-auto object-cover max-h-[500px]"
-                    onError={(e) => {
-                        e.currentTarget.src = "https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=1600&q=80";
-                    }}
                 />
+
+                {/* Nút Liên hệ: Mobile -> iPad (md:) -> Máy tính (lg:) */}
+                <a
+                    href="tel:0372672396"
+                    className="absolute bottom-6 right-9 md:bottom-12 md:right-24 lg:bottom-18 lg:right-50 bg-white hover:bg-gray-100 text-[#FF6600] font-bold py-0.5 pl-2 pr-0.5 md:py-1.5 md:pl-4 md:pr-1.5 lg:py-2 lg:pl-6 lg:pr-2 rounded-full shadow-md md:shadow-lg flex items-center gap-1 md:gap-2 lg:gap-3 transition-transform duration-300 hover:scale-105 z-10"
+                >
+                    {/* Phần chữ bên trái */}
+                    <div className="flex flex-col text-center leading-none">
+                        <span className="text-[8px] md:text-xs lg:text-[15px] font-extrabold tracking-tight md:tracking-normal lg:tracking-wider scale-95 md:scale-100">
+                            LIÊN HỆ NGAY
+                        </span>
+                        <span className="text-[7px] md:text-[10px] lg:text-sm font-bold scale-95 md:scale-100 mt-0.5 md:mt-0">
+                            037.2672.396
+                        </span>
+                    </div>
+
+                    {/* Vòng tròn cam chứa mũi tên bên phải */}
+                    <div className="bg-[#FF6600] text-white rounded-full w-4 h-4 md:w-8 md:h-8 lg:w-11 lg:h-11 flex items-center justify-center shrink-0 shadow-inner">
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="3"
+                            stroke="currentColor"
+                            className="w-2.5 h-2.5 md:w-4 md:h-4 lg:w-6 lg:h-6"
+                        >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </div>
+                </a>
             </div>
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-20">
@@ -312,15 +339,20 @@ export default function AutoTuneLandingPage() {
                         GIẢI PHÁP AUTOTUNE AI TOÀN DIỆN TỪ CMIC STUDIO DÀNH CHO AI?
                     </h2>
 
-                    <div className="bg-gradient-to-b from-[#ed792f] via-[#f28e46] to-[#f4741f] rounded-2xl p-6 md:p-10 shadow-lg">
-                        <p className="text-center text-black text-sm md:text-base max-w-3xl mx-auto mb-8">
+                    <div
+                        style={{
+                            background: 'radial-gradient(circle at center, #FFE699 0%, #FDAE4B 45%, #F27A24 85%, #E66610 100%)'
+                        }}
+                        className="rounded-2xl p-6 md:p-10 shadow-lg"
+                    >
+                        <p className="text-center text-gray-950 font-medium text-sm md:text-base max-w-3xl mx-auto mb-8">
                             Thay vì phải biết nhạc lý, tìm tone bài hát hoặc tự điều chỉnh nhiều thông số trong phần mềm, bạn có thể sử dụng tính năng dò tone tự động để thiết lập nhanh hơn
                         </p>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                             {targetAudiences.map((item, idx) => (
-                                <div key={idx} className="bg-white overflow-hidden shadow-md flex flex-col group">
-                                    <div className="h-48 w-full overflow-hidden bg-gray-100">
+                                <div key={idx} className="bg-white overflow-hidden shadow-md flex flex-col group rounded-xl">
+                                    <div className="w-full aspect-square overflow-hidden bg-gray-100">
                                         <img
                                             src={item.img}
                                             alt={item.title}
@@ -341,36 +373,62 @@ export default function AutoTuneLandingPage() {
                 {/* ============================================================== */}
                 {/* 3. MỘT SỐ TÍNH NĂNG NỔI BẬT CỦA AUTOTUNE AI (Ảnh 3)            */}
                 {/* ============================================================== */}
-                <section>
-                    <h2 className="text-xl md:text-2xl font-black uppercase text-black mb-8 tracking-wide">
-                        MỘT SỐ TÍNH NĂNG NỔI BẬT CỦA AUTOTUNE AI
-                    </h2>
+                <section className="pb-12 bg-white overflow-hidden">
+                    <div className="max-w-6xl mx-auto px-4">
+                        <h2 className="text-xl md:text-2xl font-black uppercase text-black mb-10 tracking-wide text-center">
+                            MỘT SỐ TÍNH NĂNG NỔI BẬT CỦA AUTOTUNE AI
+                        </h2>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {features.map((feat, idx) => (
-                            <div
-                                key={idx}
-                                className="relative rounded-t-[100px] rounded-b-3xl bg-[#141212] border border-orange-950/40 p-5 pt-8 text-white flex flex-col items-center shadow-xl overflow-hidden"
-                            >
-                                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-orange-900/30 via-transparent to-transparent pointer-events-none"></div>
+                        {/* Bỏ khoảng cách (gap-0), các cột đứng sát cạnh nhau thành 1 dải liền */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 items-stretch">
+                            {features.map((feat, idx) => {
+                                const isEven = idx % 2 === 0;
 
-                                {/* Header badge màu cam */}
-                                <div className="w-full min-h-[72px] bg-gradient-to-r from-[#e8702a] to-[#f48d48] rounded-2xl flex items-center justify-center px-4 py-3 text-center mb-6 shadow-md z-10">
-                                    <h3 className="text-xs md:text-sm text-black leading-tight">
-                                        {feat.title}
-                                    </h3>
-                                </div>
+                                return (
+                                    <div
+                                        key={idx}
+                                        // Dính sát mép, so le vòm trên (cột 1 & 3) và vòm dưới (cột 2 & 4)
+                                        className={`relative bg-[#0d0909] text-white flex flex-col items-center border-y border-orange-950/60 p-5 sm:p-6 ${idx === 0 ? "border-l border-orange-950/60" : ""
+                                            } ${idx === features.length - 1 ? "border-r border-orange-950/60" : "border-r border-orange-900/30"
+                                            } ${isEven
+                                                ? "rounded-t-[80px] rounded-b-none pt-10 pb-12"
+                                                : "rounded-t-none rounded-b-[80px] pt-8 pb-16"
+                                            }`}
+                                    >
+                                        {/* Họa tiết mạng lưới tổ ong công nghệ màu cam chìm */}
+                                        <div
+                                            className="absolute inset-0 opacity-30 pointer-events-none"
+                                            style={{
+                                                backgroundImage: `radial-gradient(circle at 50% 50%, rgba(234, 88, 12, 0.25) 0%, transparent 70%), radial-gradient(rgba(249, 115, 22, 0.15) 1px, transparent 1px)`,
+                                                backgroundSize: '100% 100%, 18px 18px'
+                                            }}
+                                        />
 
-                                {/* Nội dung mô tả */}
-                                <div className="w-full text-xs text-gray-300 space-y-3 leading-relaxed z-10 flex-1">
-                                    {feat.desc.map((d, dIdx) => (
-                                        <p key={dIdx} className={d.startsWith('•') ? "pl-2 font-medium text-white" : ""}>
-                                            {d}
-                                        </p>
-                                    ))}
-                                </div>
-                            </div>
-                        ))}
+                                        {/* Ánh sáng glow đỏ viền dưới/trên */}
+                                        <div className="absolute inset-0 bg-gradient-to-b from-orange-600/5 via-transparent to-red-950/30 pointer-events-none" />
+
+                                        {/* Header badge màu cam bo tròn góc */}
+                                        <div className="w-full min-h-[76px] bg-gradient-to-r from-[#ea580c] to-[#f97316] rounded-[22px] flex items-center justify-center px-4 py-3 text-center mb-6 shadow-md z-10">
+                                            <h3 className="text-xs sm:text-sm font-bold text-black leading-snug">
+                                                {feat.title}
+                                            </h3>
+                                        </div>
+
+                                        {/* Nội dung mô tả */}
+                                        <div className="w-full text-xs sm:text-[13px] text-gray-300 space-y-3.5 leading-relaxed z-10 flex-1">
+                                            {feat.desc.map((d, dIdx) => (
+                                                <p
+                                                    key={dIdx}
+                                                    className={d.startsWith('•') ? "pl-2 font-semibold text-white" : ""}
+                                                >
+                                                    {d}
+                                                </p>
+                                            ))}
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 </section>
 
@@ -379,9 +437,12 @@ export default function AutoTuneLandingPage() {
                 {/* ============================================================== */}
                 <section className="space-y-6">
                     {/* Hàng trên: 3 hình feedback đứng im */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
                         {feedbackTop.map((src, i) => (
-                            <div key={i} className="rounded-2xl overflow-hidden border border-gray-100 shadow-md">
+                            <div
+                                key={i}
+                                className="rounded-none aspect-square overflow-hidden border border-gray-100 shadow-sm"
+                            >
                                 <img
                                     src={src}
                                     alt={`Feedback ${i + 1}`}
@@ -398,10 +459,13 @@ export default function AutoTuneLandingPage() {
                     <div
                         ref={carouselRef}
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-                        className="flex gap-4 overflow-x-auto scroll-smooth py-2 [&::-webkit-scrollbar]:hidden"
+                        className="flex gap-2 overflow-x-auto scroll-smooth py-2 [&::-webkit-scrollbar]:hidden"
                     >
                         {feedbackBottom.map((src, i) => (
-                            <div key={i} className="w-64 sm:w-80 flex-shrink-0 rounded-xl overflow-hidden shadow-md border border-gray-200 aspect-[4/3] bg-black">
+                            <div
+                                key={i}
+                                className="w-[calc(50%-4px)] sm:w-[calc(33.333%-6px)] lg:w-[calc(25%-6px)] shrink-0 rounded-none overflow-hidden border border-gray-200 aspect-[3/4] bg-black"
+                            >
                                 <img
                                     src={src}
                                     alt={`Setup thực tế ${i + 1}`}
@@ -474,10 +538,10 @@ export default function AutoTuneLandingPage() {
                     {/* Lưới 4 ảnh: góc vuông hoàn toàn (rounded-none), khe hở hẹp chuẩn mẫu */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 items-stretch">
                         {[
-                            { id: 1, src: "/pricing/goi-win-600k.png", alt: "Gói Window 600.000 VNĐ" },
-                            { id: 2, src: "/pricing/goi-win-1300k.png", alt: "Gói Window 1.300.000 VNĐ" },
-                            { id: 3, src: "/pricing/goi-mac-1200k.png", alt: "Gói macOS 1.200.000 VNĐ" },
-                            { id: 4, src: "/pricing/goi-mac-3000k.png", alt: "Gói macOS 3.000.000 VNĐ" },
+                            { id: 1, src: "/dichvutune/7.png", alt: "Gói Window 600.000 VNĐ" },
+                            { id: 2, src: "/dichvutune/8.png", alt: "Gói Window 1.300.000 VNĐ" },
+                            { id: 3, src: "/dichvutune/9.png", alt: "Gói macOS 1.200.000 VNĐ" },
+                            { id: 4, src: "/dichvutune/10.png", alt: "Gói macOS 3.000.000 VNĐ" },
                         ].map((item) => (
                             <div
                                 key={item.id}
@@ -621,11 +685,11 @@ export default function AutoTuneLandingPage() {
                                         className="flex items-start gap-2.5 cursor-pointer select-none group"
                                     >
                                         <svg
-                                            className={`w-5 h-5 md:w-6 md:h-6 text-black fill-black flex-shrink-0 mt-0.5 transition-transform duration-200 ${isOpen ? "rotate-90" : "rotate-0"
+                                            className={`w-4 h-4 md:w-5 md:h-5 text-black fill-current flex-shrink-0 mt-0.5 transition-transform duration-200 ${isOpen ? "rotate-90" : "rotate-0"
                                                 }`}
                                             viewBox="0 0 24 24"
                                         >
-                                            <path d="M5.5 4l7.5 8-7.5 8h3l7.5-8-7.5-8h-3zm6 0l7.5 8-7.5 8h3l7.5-8-7.5-8h-3z" />
+                                            <path d="M8 5v14l11-7z" />
                                         </svg>
                                         <h3 className="text-base md:text-lg font-bold text-black group-hover:text-[#ed792f] transition-colors leading-snug">
                                             {faq.q}

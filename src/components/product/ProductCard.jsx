@@ -1,15 +1,50 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Heart } from 'lucide-react';
+import { toast } from 'react-toastify';
 import ImageLoader from "../../components/FormFields/ImageLoader";
 import { slug } from '../../utils/constants.js';
+import { addCartItem } from '../../redux/cartSlice';
 
 export default function ProductCard({ product, isTopSeller = false }) {
-    const [isWishlisted, setIsWishlisted] = useState(false);
+    const dispatch = useDispatch();
+    const { userInfo } = useSelector((state) => state.auth || {});
+
+    // Lấy danh sách sản phẩm trong giỏ hàng từ Redux (kiểm tra cả cartItems hoặc items)
+    const cartItems = useSelector((state) => state.cart?.cartItems || state.cart?.items || []);
 
     const catId = product.category_id || product.categoryId || 'all';
     const prodId = product.id;
     const productUrl = `/${slug(product.name)}/${catId}/${prodId}`;
+
+    // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa (được lưu trong Redux/LocalStorage nên reload vẫn giữ)
+    const isInCart = cartItems.some((item) => String(item.id) === String(product.id));
+
+    const handleAddToCart = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (isInCart) {
+            toast.info("Sản phẩm đã có trong giỏ hàng!");
+            return;
+        }
+
+        const cartItem = {
+            id: String(product.id || ""),
+            name: String(product.name || ""),
+            price: Number(product.price) || 0,
+            image: typeof product.image === 'string' ? product.image : "",
+            quantity: 1,
+        };
+
+        try {
+            await dispatch(addCartItem({ item: cartItem, userId: userInfo?.id })).unwrap();
+            toast.success("Đã thêm sản phẩm vào giỏ hàng");
+        } catch (error) {
+            toast.error(error.message || 'Không thể thêm sản phẩm vào giỏ hàng');
+        }
+    };
 
     return (
         <Link
@@ -18,7 +53,6 @@ export default function ProductCard({ product, isTopSeller = false }) {
         >
             <div className="relative overflow-hidden h-40 sm:h-44 bg-gray-50 flex flex-col items-center justify-center p-2 w-full max-w-full box-border">
 
-                {/* ImageLoader: Thêm class w-full h-full để nó tuân thủ kích thước của khung cha */}
                 <ImageLoader
                     imagePath={product.image}
                     className="w-full h-full max-w-full max-h-full object-contain group-hover:scale-105 transition-transform duration-700 block"
@@ -30,15 +64,13 @@ export default function ProductCard({ product, isTopSeller = false }) {
                     -25%
                 </div>
 
+                {/* Nút tim: Luôn hiển thị và sáng đỏ nếu isInCart = true */}
                 <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setIsWishlisted(!isWishlisted);
-                    }}
-                    className="absolute bottom-2 right-2 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-110 shadow-lg w-9 h-9"
+                    onClick={handleAddToCart}
+                    className={`absolute bottom-2 right-2 bg-white/95 backdrop-blur-sm rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 shadow-lg w-9 h-9 ${isInCart ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                        }`}
                 >
-                    <Heart className={`w-4 h-4 transition-colors ${isWishlisted ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
+                    <Heart className={`w-4 h-4 transition-colors ${isInCart ? 'fill-red-500 text-red-500' : 'text-gray-600'}`} />
                 </button>
             </div>
 
@@ -49,7 +81,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
 
                 <div className="flex flex-wrap items-center gap-x-2 gap-y-2 mb-2 w-full">
                     <div className="flex flex-col min-w-fit">
-                        <span className="text-[11px] sm:text-[13px] text-gray-900 whitespace-nowrap text-orange-600">
+                        <span className="text-[11px] sm:text-[13px] whitespace-nowrap text-orange-600">
                             {Number(product.price).toLocaleString('vi-VN')} VNĐ
                         </span>
                         <span className="text-orange-600 line-through text-[10px] sm:text-[11px] font-medium whitespace-nowrap">
