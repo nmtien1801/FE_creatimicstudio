@@ -21,6 +21,8 @@ import Account from "../adminPages/system/Account.jsx";
 import Login from "../adminPages/auth/Login.jsx";
 import Register from "../adminPages/auth/Register.jsx";
 import UserCutVideoManager from "../adminPages/userCutVideo/UserCutVideoManager.jsx";
+import OrderManager from "../adminPages/order/OrderManager.jsx";
+import SalesReportPage from "../adminPages/order/SalesReportPage.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { GetAccount } from "../redux/authSlice";
 import Cookies from "js-cookie";
@@ -142,6 +144,10 @@ function RouterRoot() {
 
           {/* route user cut video */}
           <Route path="user-cut-video/manager" element={<UserCutVideoManager />} />
+
+          {/* route hr manager orders */}
+          <Route path="manager/orders" element={<OrderManager />} />
+          <Route path="manager/revenue" element={<SalesReportPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" replace />} />

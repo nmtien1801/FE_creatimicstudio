@@ -79,18 +79,27 @@ export default function ProductCard({ product, isTopSeller = false }) {
                     {product.name}
                 </h3>
 
-                <div className="flex flex-wrap items-center gap-x-2 gap-y-2 mb-2 w-full">
-                    <div className="flex flex-col min-w-fit">
-                        <span className="text-[11px] sm:text-[13px] whitespace-nowrap text-orange-600">
-                            {Number(product.price).toLocaleString('vi-VN')} VNĐ
+                <div className="flex flex-col gap-1 mb-2 w-full min-w-0">
+                    {/* Hàng trên: Giá bán chính + Giá gốc gạch ngang bên cạnh */}
+                    <div className="flex items-baseline gap-1.5 min-w-0">
+                        <span className="text-xs sm:text-sm md:text-base font-bold text-orange-600 whitespace-nowrap inline-flex items-baseline scale-75 sm:scale-90 md:scale-100 origin-left">
+                            <span>{Number(product.price).toLocaleString('vi-VN')}</span>
+                            <span className="inline-block translate-y-[2px] text-[0.85em] underline">đ</span>
                         </span>
-                        <span className="text-orange-600 line-through text-[10px] sm:text-[11px] font-medium whitespace-nowrap">
-                            {(Number(product.price || 0) * 1.25).toLocaleString('vi-VN')} VNĐ
+                        <span className="text-gray-400 line-through text-[9px] sm:text-[11px] font-medium whitespace-nowrap inline-flex items-baseline">
+                            <span>{(Number(product.price || 0) * 1.25).toLocaleString('vi-VN')}</span>
+                            <span className="inline-block translate-y-[1.5px] text-[0.85em] no-underline">đ</span>
                         </span>
                     </div>
 
-                    <div className="bg-green-50 border border-green-100 rounded-full flex items-center shadow-sm transition-colors hover:bg-green-100 w-fit px-2.5 py-1 sm:ml-auto">
-                        <span className="text-[9px] uppercase tracking-wider text-green-600 font-bold mr-1">210 đã bán</span>
+                    {/* Hàng dưới: Địa chỉ (bên trái) + Lượt bán (bên phải) */}
+                    <div className="flex items-center justify-between text-[10px] sm:text-xs  w-full min-w-0 pt-2">
+                        <span className="truncate pr-2 text-gray-500">
+                            {"TP. Hồ Chí Minh"}
+                        </span>
+                        <span className="whitespace-nowrap shrink-0 font-bold ">
+                            Đã bán {product.sold || "210"}
+                        </span>
                     </div>
                 </div>
             </div>

@@ -12,6 +12,14 @@ const ApiOrder = {
   // 3. Lấy lịch sử đơn hàng (Có thể truyền userId qua params nếu cần)
   getOrderHistoryApi: (params) => 
     ApiManager.get("/order/history", { params }),
+
+  // 4. Lấy toàn bộ đơn hàng cho trang quản trị
+  getAllOrdersApi: () =>
+    ApiManager.get("/order/manager"),
+
+  // 5. Cập nhật trạng thái đơn hàng
+  updateOrderStatusApi: (orderId, status) =>
+    ApiManager.patch(`/order/${encodeURIComponent(orderId)}/status`, { status }),
 };
 
 export default ApiOrder;

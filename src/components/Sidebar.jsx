@@ -4,10 +4,9 @@ import {
   Settings,
   Package,
   Newspaper,
-  Briefcase,
+  ShoppingBag,
   ChevronDown,
   User,
-
   Calendar,
   X,
 } from 'lucide-react';
@@ -30,7 +29,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       icon: Settings,
       items: [
         { label: 'Trang chủ', path: '/trang-chu' },
-        { label: 'Lịch sử đơn hàng', path: '/order-history' },
+        userInfo.role === 'client' && { label: 'Lịch sử đơn hàng', path: '/order-history' },
         { label: 'Đổi mật khẩu', path: '/profile/change-password' },
         userInfo.role === 'admin' && { label: 'Làm mới mật khẩu NV', path: '/profile/change-password-staff' },
         { label: 'Thông tin tài khoản', path: '/profile/info' },
@@ -61,6 +60,15 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       items: [
         { label: 'Danh sách tài khoản', path: '/hr/employees' },
         // { label: 'Phân quyền hệ thống', path: '/hr/roles' },
+      ]
+    },
+    userInfo.role === 'admin' && {
+      id: 'orders',
+      label: 'Quản lý đơn hàng',
+      icon: ShoppingBag,
+      items: [
+        { label: 'Danh sách đơn hàng', path: '/manager/orders' },
+        { label: 'Báo cáo doanh thu', path: '/manager/revenue' },
       ]
     }
   ].filter(Boolean);

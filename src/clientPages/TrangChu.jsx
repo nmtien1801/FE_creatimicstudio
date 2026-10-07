@@ -633,26 +633,26 @@ export default function TrangChu() {
                     </div>
 
                     {/* ===================== KHỐI DƯỚI TOÀN TRANG (FULL WIDTH): SETUP LIVESTREAM TRỌN GÓI ===================== */}
-                    <section className="w-full pt-8 pb-4 border-t border-gray-100">
+                    <section className="w-full pt-6 md:pt-8 pb-4 border-t border-gray-100">
                         {/* Tiêu đề góc trái: thanh dọc màu cam + text */}
-                        <div className="flex items-center space-x-2 text-base md:text-lg font-bold text-black uppercase tracking-wide">
-                            <span className="w-1.5 h-6 bg-[#ed792f] inline-block rounded-sm"></span>
+                        <div className="flex items-center space-x-2 text-sm sm:text-base md:text-lg font-bold text-black uppercase tracking-wide">
+                            <span className="w-1.5 h-5 sm:h-6 bg-[#ed792f] inline-block rounded-sm"></span>
                             <span>SETUP LIVESTREAM TRỌN GÓI</span>
                         </div>
 
                         {/* Tiêu đề giữa */}
-                        <div className="text-center mt-6 mb-10">
-                            <h3 className="text-lg md:text-xl font-bold uppercase tracking-wider text-black">
+                        <div className="text-center mt-4 sm:mt-6 mb-6 md:mb-10">
+                            <h3 className="text-base sm:text-lg md:text-xl font-bold uppercase tracking-wider text-black">
                                 THƯƠNG HIỆU ĐÃ HỢP TÁC
                             </h3>
                         </div>
 
-                        {/* Lưới 10 Logo: 5 cột x 2 hàng không viền hộp */}
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 lg:gap-12 items-center justify-items-center">
+                        {/* Mobile/App: grid-cols-4 (3 dòng) | Web (md:): grid-cols-5 (2 dòng chuẩn 10 logo) */}
+                        <div className="grid grid-cols-4 md:grid-cols-5 gap-3 sm:gap-6 md:gap-8 lg:gap-10 items-center justify-items-center">
                             {brandPartners.map((brand, i) => (
                                 <div
                                     key={i}
-                                    className="h-30 w-full flex items-center justify-center p-2 hover:scale-105 transition-transform duration-300"
+                                    className="h-12 sm:h-16 md:h-20 lg:h-24 w-full flex items-center justify-center p-1 sm:p-2 hover:scale-105 transition-transform duration-300"
                                 >
                                     <img
                                         src={brand.src}
@@ -664,14 +664,14 @@ export default function TrangChu() {
                         </div>
 
                         {/* Nút Tư Vấn Báo Giá */}
-                        <div className="mt-12 text-center">
+                        <div className="mt-8 md:mt-12 text-center">
                             <a
                                 href="#form-tu-van"
-                                className="inline-flex items-center gap-3 pl-8 pr-3 py-2.5 bg-[#e8702a] hover:bg-[#d8621d] text-white font-extrabold rounded-full shadow-md transition-all duration-300 hover:shadow-lg uppercase text-sm tracking-wider"
+                                className="inline-flex items-center gap-2 md:gap-3 pl-6 pr-2 py-2 md:pl-8 md:pr-3 md:py-2.5 bg-[#e8702a] hover:bg-[#d8621d] text-white font-extrabold rounded-full shadow-sm md:shadow-md transition-all duration-300 hover:shadow-lg uppercase text-xs md:text-sm tracking-wider"
                             >
                                 <span>TƯ VẤN BÁO GIÁ</span>
-                                <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center text-[#e8702a] shadow-inner">
-                                    <ArrowRight className="w-5 h-5 stroke-[2.5]" />
+                                <div className="w-6 h-6 md:w-8 md:h-8 bg-white rounded-full flex items-center justify-center text-[#e8702a] shadow-inner">
+                                    <ArrowRight className="w-4 h-4 md:w-5 md:h-5 stroke-[2.5]" />
                                 </div>
                             </a>
                         </div>

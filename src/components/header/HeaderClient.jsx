@@ -45,7 +45,7 @@ export default function Header({
   const menuItems = [
     { label: "TRANG CHỦ", path: "/trang-chu" },
     { label: "SẢN PHẨM", path: "/san-pham/all/all" },
-    { label: "DỊCH VỤ CÀI ĐẶT PHẦN MỀM AUTOTONE", path: "dich-vu/phan-mem-auto-tone" },
+    { label: "DỊCH VỤ CÀI ĐẶT PHẦN MỀM AUTOTUNE", path: "dich-vu/phan-mem-auto-tone" },
     { label: "DỊCH VỤ SETUP LIVESTREAM", path: "dich-vu/set-up-phong-livestream" },
     { label: "REVIEW CHI TIẾT", path: "review-detail" },
   ];
@@ -454,16 +454,20 @@ export default function Header({
                         items-center
                         justify-center
                         rounded-r-lg
-                        bg-neutral-900
+                        border-l
+                        border-gray-200
+                        bg-white
+                        text-gray-600
                         transition-all
                         duration-200
-                        hover:bg-black
+                        hover:bg-gray-50
+                        hover:text-black
                       "
                     >
                       <Search
-                        size={20}
+                        size={22}
                         strokeWidth={2.2}
-                        className="text-white transition-transform duration-200 group-hover:scale-110"
+                        className="transition-transform duration-200 group-hover:scale-110"
                       />
                     </button>
                   </div>
