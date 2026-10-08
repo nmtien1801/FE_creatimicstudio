@@ -98,7 +98,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
                             {"TP. Hồ Chí Minh"}
                         </span>
                         <span className="whitespace-nowrap shrink-0 font-bold ">
-                            Đã bán {product.sold || "210"}
+                            Đã bán {Number(product.sold) || 0}
                         </span>
                     </div>
                 </div>

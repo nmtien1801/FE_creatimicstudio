@@ -257,7 +257,9 @@ export default function AutoTuneLandingPage() {
 
                 {/* Nút Liên hệ: Mobile -> iPad (md:) -> Máy tính (lg:) */}
                 <a
-                    href="tel:0372672396"
+                    href="https://zalo.me/0372672396"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="absolute bottom-4 right-4 md:bottom-8 md:right-12 lg:bottom-12 lg:right-24 bg-white hover:bg-gray-100 text-[#FF6600] font-bold py-1 pl-3 pr-1 md:py-1.5 md:pl-5 md:pr-1.5 lg:py-2 lg:pl-6 lg:pr-2 rounded-full shadow-md md:shadow-lg flex items-center gap-1.5 md:gap-2.5 transition-transform duration-300 hover:scale-105 z-10"
                 >
                     {/* Phần chữ bên trái */}

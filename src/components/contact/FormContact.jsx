@@ -1,55 +1,59 @@
 import React, { useState } from 'react';
 import ApiContact from "../../apis/ApiContact";
-import { toast } from 'react-toastify'
+import { toast } from 'react-toastify';
 
-const CustomInput = ({ name, placeholder, required = true, type = 'text', value, onChange }) => (
-    <input
-        type={type}
-        name={name}
-        placeholder={placeholder}
-        value={value}
-        onChange={onChange}
-        required={required}
-        className=" bg-white w-full px-4 py-3 border border-gray-900 focus:outline-none focus:ring-2 focus:ring-black transition duration-200 text-base placeholder-gray-500"
-    />
-);
-
-const ContactForm = () => {
+const ContactForm = ({ onSubmitSuccess }) => {
     const [loading, setLoading] = useState(false);
 
-    // State để quản lý dữ liệu form
+    // Đổi 'content' thành 'note' cho đồng bộ với thẻ textarea
     const [formData, setFormData] = useState({
         fullName: '',
         email: '',
         phone: '',
-        content: ''
+        note: ''
     });
 
     const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value
+        }));
     };
 
-    const handleSend = async (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Kiểm tra định dạng email nếu có nhập
+        if (formData.email.trim()) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(formData.email.trim())) {
+                toast.error('Địa chỉ email không đúng định dạng!');
+                return;
+            }
+        }
+
         try {
             setLoading(true);
             const contactData = {
                 name: formData.fullName,
                 email: formData.email,
-                message: formData.content + ` .Tôi đang quan tâm đến sản phẩm của bạn.Hãy liên hệ tới số điện thoại: ` + formData.phone,
+                message: formData.note + ` .Tôi đang quan tâm đến sản phẩm của bạn. Hãy liên hệ tới số điện thoại: ` + formData.phone,
             };
+
             await ApiContact.sendContactApi(contactData);
             toast.success('Đã gửi thông tin liên hệ thành công!');
+
+            if (onSubmitSuccess) {
+                onSubmitSuccess(formData);
+            }
 
             // Reset form sau khi gửi thành công
             setFormData({
                 fullName: '',
                 email: '',
                 phone: '',
-                content: ''
+                note: ''
             });
         } catch (error) {
             console.error('Error sending contact:', error);
@@ -60,55 +64,88 @@ const ContactForm = () => {
     };
 
     return (
-        <div className="space-y-4">
-            <h2 className="text-xl font-bold text-orange-800 uppercase">Liên hệ với chúng tôi</h2>
+        <div
+            id="form-tu-van"
+            className="bg-white border-2 border-[#ed792f] rounded-2xl p-5 shadow-sm"
+        >
+            <h3 className="text-2xl font-bold text-[#ed792f] text-center mb-5">
+                Bạn cần tư vấn?
+            </h3>
+            <form onSubmit={handleSubmit} className="space-y-3">
+                {/* Tên (bắt buộc) */}
+                <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                        Tên*
+                    </label>
+                    <input
+                        type="text"
+                        name="fullName"
+                        required
+                        placeholder="Nhập họ và tên"
+                        value={formData.fullName}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
+                    />
+                </div>
 
-            <form onSubmit={handleSend} className="space-y-4">
-                <CustomInput
-                    name="fullName"
-                    placeholder="Họ và tên"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                />
-                <CustomInput
-                    name="email"
-                    placeholder="Email (không bắt buộc)"
-                    required={false}
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                />
-                <CustomInput
-                    name="phone"
-                    placeholder="Số điện thoại"
-                    type="tel"
-                    value={formData.phone}
-                    onChange={handleChange}
-                />
-                <textarea
-                    name="content"
-                    placeholder="Nội dung"
-                    rows="5"
-                    value={formData.content}
-                    onChange={handleChange}
-                    required
-                    className="bg-white w-full px-4 py-3 border border-gray-900 focus:outline-none focus:ring-2 focus:ring-black transition duration-200 text-base resize-none"
-                ></textarea>
+                {/* SĐT (bắt buộc) */}
+                <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                        SĐT*
+                    </label>
+                    <input
+                        type="tel"
+                        name="phone"
+                        required
+                        placeholder="Nhập số điện thoại"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
+                    />
+                </div>
+
+                {/* Email (không bắt buộc) */}
+                <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                        Email <span className="font-normal text-gray-400 text-[11px]">(không bắt buộc)</span>
+                    </label>
+                    <input
+                        type="email"
+                        name="email"
+                        placeholder="Nhập địa chỉ email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
+                    />
+                </div>
+
+                {/* Lời nhắn */}
+                <div>
+                    <label className="block text-xs font-bold text-gray-700 mb-1">
+                        Để lại lời nhắn
+                    </label>
+                    <textarea
+                        rows="3"
+                        name="note"
+                        placeholder="Nội dung cần hỗ trợ..."
+                        value={formData.note}
+                        onChange={handleChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f] resize-none"
+                    ></textarea>
+                </div>
 
                 <button
                     type="submit"
                     disabled={loading}
-                    className={`
-                        px-8 py-3 text-lg font-bold transition duration-300 cursor-pointer
-                        ${loading
-                                            ? "bg-gray-500 cursor-not-allowed"
-                                            : "bg-black hover:bg-gray-800"
-                                        }
-                        text-white
-                    `}
+                    className={`w-full py-2.5 font-bold text-sm rounded-xl shadow-md transition-colors text-white 
+                        ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#ed792f] hover:bg-[#d8681e]'}`}
                 >
-                    {loading ? "ĐANG GỬI..." : "GỬI"}
+                    {loading ? 'Đang gửi...' : 'Gửi đi'}
                 </button>
+
+                <p className="text-[10px] text-gray-400 text-center leading-relaxed">
+                    Thông tin của bạn sẽ được bảo mật. Tuyệt đối không gửi mật khẩu.
+                </p>
             </form>
         </div>
     );

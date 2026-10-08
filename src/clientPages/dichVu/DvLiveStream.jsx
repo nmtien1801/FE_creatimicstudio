@@ -220,87 +220,117 @@ export default function SetupLivestreamPage() {
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[25%] w-full max-w-5xl px-2 sm:px-4 grid grid-cols-2 gap-2 sm:gap-4 md:gap-8 lg:gap-12 z-20">
 
                         {/* Gói Bán Hàng E-Commerce */}
-                        <div className="rounded-xl sm:rounded-2xl md:rounded-[32px] p-2.5 sm:p-4 md:p-8 text-center bg-white shadow-[0_0_15px_rgba(237,121,47,0.2)] md:shadow-[0_0_35px_rgba(237,121,47,0.35)] border md:border-4 border-orange-200/70 flex flex-col items-center justify-between">
-                            <div>
-                                <div className="flex justify-center items-center gap-1.5 sm:gap-3 md:gap-4 mb-2 sm:mb-4 md:mb-6">
-                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-red-500 p-0.5 sm:p-1 flex items-center justify-center relative">
-                                        <img src="/icons/tiktok-live.png" alt="TikTok Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3046/3046121.png"; }} />
-                                        <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                        <div className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
+                            {/* Quầng sáng lớn tỏa rộng phía sau */}
+                            <div className="absolute -inset-1.5 sm:-inset-2 md:-inset-3 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 rounded-2xl sm:rounded-3xl md:rounded-[38px] blur-md sm:blur-lg md:blur-xl opacity-80"></div>
+
+                            {/* VIỀN NGOÀI: loè mờ */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 rounded-2xl sm:rounded-3xl md:rounded-[36px] blur-[2px] sm:blur-[3px] md:blur-[4px]"></div>
+
+                            {/* Dải trắng giữa 2 viền: mờ nhẹ */}
+                            <div className="absolute inset-[3px] sm:inset-[4px] md:inset-[6px] bg-white rounded-[13px] sm:rounded-[21px] md:rounded-[31px] blur-[1.5px] sm:blur-[2px] md:blur-[3px] opacity-90"></div>
+
+                            {/* VIỀN TRONG: loè mờ */}
+                            <div className="absolute inset-[5px] sm:inset-[7px] md:inset-[10px] bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 rounded-xl sm:rounded-2xl md:rounded-[27px] blur-[2px] sm:blur-[3px] md:blur-[4px]"></div>
+
+                            {/* Khung nền trắng chứa nội dung (giữ nét) */}
+                            <div className="relative z-10 w-full h-full rounded-[9px] sm:rounded-[13px] md:rounded-[22px] p-2.5 sm:p-4 md:p-8 text-center bg-white flex flex-col items-center justify-between shadow-[inset_0_0_10px_rgba(237,121,47,0.35),inset_0_0_20px_rgba(168,85,247,0.25)]">
+                                <div>
+                                    <div className="flex justify-center items-center gap-1.5 sm:gap-3 md:gap-4 mb-2 sm:mb-4 md:mb-6">
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-red-500 p-0.5 sm:p-1 flex items-center justify-center relative">
+                                            <img src="/icons/tiktok-live.png" alt="TikTok Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3046/3046121.png"; }} />
+                                            <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                                        </div>
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-blue-500 p-0.5 sm:p-1 flex items-center justify-center relative">
+                                            <img src="/icons/facebook-live.png" alt="FB Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/5968/5968764.png"; }} />
+                                            <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                                        </div>
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-orange-500 p-0.5 sm:p-1 flex items-center justify-center relative">
+                                            <img
+                                                src="/shopee-live.jpg"
+                                                alt="Shopee Live"
+                                                className="w-full h-full object-contain"
+                                            />
+                                            <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                                        </div>
                                     </div>
-                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-blue-500 p-0.5 sm:p-1 flex items-center justify-center relative">
-                                        <img src="/icons/facebook-live.png" alt="FB Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/5968/5968764.png"; }} />
-                                        <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
-                                    </div>
-                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-orange-500 p-0.5 sm:p-1 flex items-center justify-center relative">
-                                        <img
-                                            src="/icons/shopee-live.png"
-                                            alt="Shopee Live"
-                                            className="w-full h-full object-contain"
-                                        />
-                                        <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
-                                    </div>
+
+                                    <h3 className="text-[10px] sm:text-sm md:text-xl font-black uppercase text-black mb-1 sm:mb-2 md:mb-3 leading-tight">
+                                        XEM GÓI <span className="text-[#ed792f]">BÁN HÀNG E-COMMERCE</span>
+                                    </h3>
+
+                                    <p className="text-gray-700 text-[8px] sm:text-xs md:text-base leading-snug sm:leading-relaxed max-w-sm mx-auto mb-2.5 sm:mb-6 md:mb-8 font-medium line-clamp-3 sm:line-clamp-none">
+                                        Setup livestream trọn gói dành cho Nhà bán hàng Doanh nghiệp hoặc Cá nhân đang kinh doanh trên các nền tảng số.
+                                    </p>
                                 </div>
 
-                                <h3 className="text-[10px] sm:text-sm md:text-xl font-black uppercase text-black mb-1 sm:mb-2 md:mb-3 leading-tight">
-                                    XEM GÓI <span className="text-[#ed792f]">E-COMMERCE</span>
-                                </h3>
-
-                                <p className="text-gray-700 text-[8px] sm:text-xs md:text-base leading-snug sm:leading-relaxed max-w-sm mx-auto mb-2.5 sm:mb-6 md:mb-8 font-medium line-clamp-3 sm:line-clamp-none">
-                                    Setup livestream trọn gói dành cho Nhà bán hàng Doanh nghiệp hoặc Cá nhân đang kinh doanh trên các nền tảng số.
-                                </p>
+                                <a
+                                    href="#tu-van-bao-gia"
+                                    onClick={() => {
+                                        handleSelectTarget('Nhà bán hàng e-commerce');
+                                    }}
+                                    className="px-3 py-1 sm:px-6 sm:py-2 md:px-10 md:py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-[9px] sm:text-xs md:text-base rounded-full shadow-[0_3px_10px_rgba(237,121,47,0.3)] md:shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wide uppercase transition-all"
+                                >
+                                    BÁO GIÁ
+                                </a>
                             </div>
-
-                            <a
-                                href="#tu-van-bao-gia"
-                                onClick={() => {
-                                    handleSelectTarget('Nhà bán hàng e-commerce');
-                                }}
-                                className="px-3 py-1 sm:px-6 sm:py-2 md:px-10 md:py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-[9px] sm:text-xs md:text-base rounded-full shadow-[0_3px_10px_rgba(237,121,47,0.3)] md:shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wide uppercase transition-all"
-                            >
-                                BÁO GIÁ
-                            </a>
                         </div>
 
                         {/* Gói Idol Live Studio */}
-                        <div className="rounded-xl sm:rounded-2xl md:rounded-[32px] p-2.5 sm:p-4 md:p-8 text-center bg-white shadow-[0_0_15px_rgba(147,51,234,0.15)] md:shadow-[0_0_35px_rgba(147,51,234,0.3)] border md:border-4 border-purple-200/70 flex flex-col items-center justify-between">
-                            <div>
-                                <div className="flex justify-center items-center gap-1.5 sm:gap-3 md:gap-4 mb-2 sm:mb-4 md:mb-6">
-                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-red-500 p-0.5 sm:p-1 flex items-center justify-center relative">
-                                        <img src="/icons/tiktok-live.png" alt="TikTok Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3046/3046121.png"; }} />
-                                        <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                        <div className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
+                            {/* Quầng sáng lớn tỏa rộng phía sau */}
+                            <div className="absolute -inset-1.5 sm:-inset-2 md:-inset-3 bg-gradient-to-r from-purple-600 via-red-500 to-orange-500 rounded-2xl sm:rounded-3xl md:rounded-[38px] blur-md sm:blur-lg md:blur-xl opacity-80"></div>
+
+                            {/* VIỀN NGOÀI: loè mờ */}
+                            <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-red-500 to-orange-500 rounded-2xl sm:rounded-3xl md:rounded-[36px] blur-[2px] sm:blur-[3px] md:blur-[4px]"></div>
+
+                            {/* Dải trắng giữa 2 viền: mờ nhẹ */}
+                            <div className="absolute inset-[3px] sm:inset-[4px] md:inset-[6px] bg-white rounded-[13px] sm:rounded-[21px] md:rounded-[31px] blur-[1.5px] sm:blur-[2px] md:blur-[3px] opacity-90"></div>
+
+                            {/* VIỀN TRONG: loè mờ */}
+                            <div className="absolute inset-[5px] sm:inset-[7px] md:inset-[10px] bg-gradient-to-r from-purple-600 via-red-500 to-orange-500 rounded-xl sm:rounded-2xl md:rounded-[27px] blur-[2px] sm:blur-[3px] md:blur-[4px]"></div>
+
+                            {/* Khung nền trắng chứa nội dung (giữ nét) */}
+                            <div className="relative z-10 w-full h-full rounded-[9px] sm:rounded-[13px] md:rounded-[22px] p-2.5 sm:p-4 md:p-8 text-center bg-white flex flex-col items-center justify-between shadow-[inset_0_0_10px_rgba(168,85,247,0.35),inset_0_0_20px_rgba(237,121,47,0.25)]">
+                                <div>
+                                    <div className="flex justify-center items-center gap-1.5 sm:gap-3 md:gap-4 mb-2 sm:mb-4 md:mb-6">
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-red-500 p-0.5 sm:p-1 flex items-center justify-center relative">
+                                            <img src="/icons/tiktok-live.png" alt="TikTok Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/3046/3046121.png"; }} />
+                                            <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                                        </div>
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-blue-500 p-0.5 sm:p-1 flex items-center justify-center relative">
+                                            <img src="/icons/facebook-live.png" alt="FB Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/5968/5968764.png"; }} />
+                                            <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                                        </div>
+                                        <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-green-500 p-0.5 sm:p-1 flex items-center justify-center relative">
+                                            <img
+                                                src="/bigo.jpg"
+                                                alt="Bigo Live"
+                                                className="w-full h-full object-contain"
+                                            />
+                                            <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
+                                        </div>
                                     </div>
-                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-blue-500 p-0.5 sm:p-1 flex items-center justify-center relative">
-                                        <img src="/icons/facebook-live.png" alt="FB Live" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "https://cdn-icons-png.flaticon.com/512/5968/5968764.png"; }} />
-                                        <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
-                                    </div>
-                                    <div className="w-6 h-6 sm:w-8 sm:h-8 md:w-12 md:h-12 rounded-full border border-green-500 p-0.5 sm:p-1 flex items-center justify-center relative">
-                                        <img
-                                            src="/bigo.jpg"
-                                            alt="Bigo Live"
-                                            className="w-full h-full object-contain"
-                                        />
-                                        <span className="absolute -bottom-1 bg-red-600 text-white text-[5px] sm:text-[6px] md:text-[8px] font-bold px-0.5 rounded leading-none">LIVE</span>
-                                    </div>
+
+                                    <h3 className="text-[10px] sm:text-sm md:text-xl font-black uppercase text-black mb-1 sm:mb-2 md:mb-3 leading-tight">
+                                        XEM GÓI <span className="text-[#ed792f]">IDOL LIVE STUDIO</span>
+                                    </h3>
+
+                                    <p className="text-gray-700 text-[8px] sm:text-xs md:text-base leading-snug sm:leading-relaxed max-w-sm mx-auto mb-2.5 sm:mb-6 md:mb-8 font-medium line-clamp-3 sm:line-clamp-none">
+                                        Setup livestream trọn gói dành cho Idol Ca hát muốn phát triển hình ảnh thương hiệu cá nhân trên các nền tảng số.
+                                    </p>
                                 </div>
 
-                                <h3 className="text-[10px] sm:text-sm md:text-xl font-black uppercase text-black mb-1 sm:mb-2 md:mb-3 leading-tight">
-                                    XEM GÓI <span className="text-[#ed792f]">IDOL LIVE</span>
-                                </h3>
-
-                                <p className="text-gray-700 text-[8px] sm:text-xs md:text-base leading-snug sm:leading-relaxed max-w-sm mx-auto mb-2.5 sm:mb-6 md:mb-8 font-medium line-clamp-3 sm:line-clamp-none">
-                                    Setup livestream trọn gói dành cho Idol Ca hát muốn phát triển hình ảnh thương hiệu cá nhân trên các nền tảng số.
-                                </p>
+                                <a
+                                    href="#tu-van-bao-gia"
+                                    onClick={() => {
+                                        handleSelectTarget('Idol Live (ca hát)');
+                                    }}
+                                    className="px-3 py-1 sm:px-6 sm:py-2 md:px-10 md:py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-[9px] sm:text-xs md:text-base rounded-full shadow-[0_3px_10px_rgba(237,121,47,0.3)] md:shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wide uppercase transition-all"
+                                >
+                                    BÁO GIÁ
+                                </a>
                             </div>
-
-                            <a
-                                href="#tu-van-bao-gia"
-                                onClick={() => {
-                                    handleSelectTarget('Idol Live (ca hát)');
-                                }}
-                                className="px-3 py-1 sm:px-6 sm:py-2 md:px-10 md:py-3 bg-gradient-to-r from-[#ed792f] to-[#e66311] hover:brightness-105 text-white font-black text-[9px] sm:text-xs md:text-base rounded-full shadow-[0_3px_10px_rgba(237,121,47,0.3)] md:shadow-[0_6px_20px_rgba(237,121,47,0.4)] tracking-wide uppercase transition-all"
-                            >
-                                BÁO GIÁ
-                            </a>
                         </div>
 
                     </div>

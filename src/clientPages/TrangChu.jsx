@@ -8,6 +8,7 @@ import ImageLoader from '../components/FormFields/ImageLoader';
 import { getListProductDropdown } from '../redux/productSlice';
 import { typeCategory_obligatory } from '../utils/constants.js';
 import ApiProductCategory from '../apis/ApiProductCategory';
+import ContactForm from '../components/contact/FormContact.jsx';
 
 // Danh mục icon bar phía trên danh sách sản phẩm
 const quickCategories = [
@@ -157,8 +158,6 @@ export default function TrangChu() {
     const [soundcard, setSoundcard] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
 
-    const [consultForm, setConsultForm] = useState({ name: '', phone: '', note: '' });
-
     // ID video YouTube review
     const reviewYoutubeId = "dQw4w9WgXcQ";
 
@@ -210,16 +209,6 @@ export default function TrangChu() {
         const interval = setInterval(nextSlide, 5000);
         return () => clearInterval(interval);
     }, [nextSlide]);
-
-    const handleFormSubmit = (e) => {
-        e.preventDefault();
-        if (!consultForm.name || !consultForm.phone) {
-            toast.error('Vui lòng nhập tên và số điện thoại!');
-            return;
-        }
-        toast.success('Gửi thông tin tư vấn thành công!');
-        setConsultForm({ name: '', phone: '', note: '' });
-    };
 
     const fetchList = async () => {
         let resPost = await dispatch(getListPost({ page: 1, limit: 5 })).unwrap();
@@ -558,76 +547,37 @@ export default function TrangChu() {
                             </div>
 
                             {/* 3. BANNER CỘT PHẢI */}
-                            <div className="w-full rounded-2xl overflow-hidden shadow-md cursor-pointer group bg-gray-50">
+                            <div className="w-full aspect-[3/4] rounded-2xl shadow-xl relative overflow-hidden group cursor-pointer">
                                 <img
                                     src="/BannerBộLivestream.png"
-                                    alt="Banner Thành Viên"
-                                    className="w-full min-h-[480px] aspect-[3/4] object-cover group-hover:scale-105 transition-transform duration-500"
+                                    alt="Combo livestream"
+                                    className="absolute inset-0 w-full h-full object-cover"
+                                    loading="lazy"
                                 />
+
+                                {/* Overlay */}
+                                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+
+                                {/* Content */}
+                                <div className="relative z-10 flex items-center justify-center h-full text-center text-white p-6">
+                                    <div>
+                                        <div className="text-2xl font-black mb-4 leading-tight">
+                                            Combo Livestream Chất Lượng Cao
+                                        </div>
+                                        <div className="text-sm opacity-90 mb-6">
+                                            Khuyến mãi đặc biệt
+                                        </div>
+                                        <div className="inline-flex items-center gap-2 text-sm font-bold bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full group-hover:bg-white/30 transition-all"
+                                            onClick={() => navigate('/combo-livestream-thu-am/1/all')}
+                                        >
+                                            Xem ngay →
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             {/* 4. FORM "BẠN CẦN TƯ VẤN?" */}
-                            <div
-                                id="form-tu-van"
-                                className="bg-white border-2 border-purple-400 rounded-2xl p-5 shadow-sm"
-                            >
-                                <h3 className="text-2xl font-bold text-[#ed792f] text-center mb-5">
-                                    Bạn cần tư vấn?
-                                </h3>
-                                <form onSubmit={handleFormSubmit} className="space-y-3">
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-700 mb-1">
-                                            Tên*
-                                        </label>
-                                        <input
-                                            type="text"
-                                            required
-                                            placeholder="Nhập họ và tên"
-                                            value={consultForm.name}
-                                            onChange={(e) => setConsultForm({ ...consultForm, name: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-700 mb-1">
-                                            SĐT*
-                                        </label>
-                                        <input
-                                            type="tel"
-                                            required
-                                            placeholder="Nhập số điện thoại"
-                                            value={consultForm.phone}
-                                            onChange={(e) => setConsultForm({ ...consultForm, phone: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
-                                        />
-                                    </div>
-
-                                    <div>
-                                        <label className="block text-xs font-bold text-gray-700 mb-1">
-                                            Để lại lời nhắn
-                                        </label>
-                                        <textarea
-                                            rows="3"
-                                            placeholder="Nội dung cần hỗ trợ..."
-                                            value={consultForm.note}
-                                            onChange={(e) => setConsultForm({ ...consultForm, note: e.target.value })}
-                                            className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f] resize-none"
-                                        ></textarea>
-                                    </div>
-
-                                    <button
-                                        type="submit"
-                                        className="w-full py-2.5 bg-[#ed792f] hover:bg-[#d8681e] text-white font-bold text-sm rounded-xl shadow-md transition-colors"
-                                    >
-                                        Gửi đi
-                                    </button>
-
-                                    <p className="text-[10px] text-gray-400 text-center leading-relaxed">
-                                        Thông tin của bạn sẽ được bảo mật. Tuyệt đối không gửi mật khẩu.
-                                    </p>
-                                </form>
-                            </div>
+                            <ContactForm />
 
                         </aside>
                     </div>

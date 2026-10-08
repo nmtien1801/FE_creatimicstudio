@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import ApiProduct from '../../apis/ApiProduct';
+import ApiReview from '../../apis/ApiReview';
 import { toast } from 'react-toastify';
 import ImageLoader from '../FormFields/ImageLoader';
 import ApiProductImage from "../../apis/ApiProductImage";
@@ -15,10 +16,54 @@ import {
     Plus,
     ShoppingCart,
     ChevronRight,
-    ThumbsUp,
-    MoreVertical,
     User
 } from 'lucide-react';
+
+// Hàm tự động nhận diện và chuyển đổi link YouTube thành khung video <iframe>
+const parseYouTubeEmbed = (htmlContent, defaultText = '<p>Đang cập nhật nội dung...</p>') => {
+    if (!htmlContent) return defaultText;
+
+    // 1. Chuyển đổi định dạng thẻ oembed (nếu dùng CKEditor)
+    let formatted = htmlContent.replace(
+        /<oembed[^>]*url=["'](?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})[^"']*["'][^>]*><\/oembed>/gi,
+        (_, videoId) => `
+            <div class="my-6 flex justify-center w-full">
+                <div class="aspect-video w-full max-w-xl overflow-hidden rounded-lg shadow-sm">
+                    <iframe
+                        class="w-full h-full border-0"
+                        src="https://www.youtube.com/embed/${videoId}"
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+            </div>
+        `
+    );
+
+    // 2. Chuyển đổi link YouTube nằm trong thẻ <a> hoặc văn bản thường
+    const youtubeRegex = /(?:<p>\s*)?(?:<a[^>]*href=["'])?(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|shorts\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[^\s<>"']*)?(?:["'][^>]*>.*?<\/a>)?(?:\s*<\/p>)?/gi;
+
+    formatted = formatted.replace(youtubeRegex, (match, videoId) => {
+        if (match.includes('src=') || match.includes('<iframe')) return match;
+
+        return `
+            <div class="my-6 flex justify-center w-full">
+                <div class="aspect-video w-full max-w-xl overflow-hidden rounded-lg shadow-sm">
+                    <iframe
+                        class="w-full h-full border-0"
+                        src="https://www.youtube.com/embed/${videoId}"
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen
+                    ></iframe>
+                </div>
+            </div>
+        `;
+    });
+
+    return formatted;
+};
 
 const ProductDetail = () => {
     const { id_product } = useParams();
@@ -31,6 +76,26 @@ const ProductDetail = () => {
     const [selectedImage, setSelectedImage] = useState(null);
     const [isLoadingImages, setIsLoadingImages] = useState(false);
     const [quantity, setQuantity] = useState(1);
+    const [reviews, setReviews] = useState([]);
+    const [reviewSummary, setReviewSummary] = useState({ averageRating: 0, totalReviews: 0 });
+    const [reviewsPage, setReviewsPage] = useState(1);
+    const [reviewEligibility, setReviewEligibility] = useState(null);
+    const [reviewEligibilityLoading, setReviewEligibilityLoading] = useState(true);
+    const [reviewRating, setReviewRating] = useState(5);
+    const [reviewComment, setReviewComment] = useState("");
+    const [reviewsLoading, setReviewsLoading] = useState(true);
+    const [reviewsMoreLoading, setReviewsMoreLoading] = useState(false);
+    const [reviewSaving, setReviewSaving] = useState(false);
+    const [reviewsError, setReviewsError] = useState("");
+
+    // Tối ưu xử lý HTML nội dung với useMemo
+    const parsedDetail = useMemo(() => {
+        return parseYouTubeEmbed(product.detail, '<p>Đang cập nhật chi tiết sản phẩm...</p>');
+    }, [product.detail]);
+
+    const parsedDescription = useMemo(() => {
+        return parseYouTubeEmbed(product.description, '<p>Đang cập nhật mô tả sản phẩm...</p>');
+    }, [product.description]);
 
     useEffect(() => {
         let fetchDetail = async () => {
@@ -92,6 +157,137 @@ const ProductDetail = () => {
         }
     }, [id_product, dispatch]);
 
+    useEffect(() => {
+        let isActive = true;
+
+        const fetchReviews = async () => {
+            setReviewsLoading(true);
+            setReviewsError("");
+            try {
+                const response = await ApiReview.getProductReviewsApi(id_product, { page: 1, limit: 20 });
+                if (response?.EC !== 0 || !response?.DT) {
+                    throw new Error(response?.EM || "Không thể tải đánh giá sản phẩm.");
+                }
+                if (isActive) {
+                    setReviews(response.DT.reviews || []);
+                    setReviewSummary(response.DT.summary || { averageRating: 0, totalReviews: 0 });
+                    setReviewsPage(1);
+                }
+            } catch (error) {
+                console.error("Lỗi tải đánh giá sản phẩm:", error);
+                if (isActive) {
+                    setReviewsError(error.response?.data?.EM || error.message || "Không thể tải đánh giá sản phẩm.");
+                }
+            } finally {
+                if (isActive) setReviewsLoading(false);
+            }
+        };
+
+        const fetchEligibility = async () => {
+            if (!userInfo?.id) {
+                setReviewEligibility(null);
+                setReviewEligibilityLoading(false);
+                return;
+            }
+
+            setReviewEligibilityLoading(true);
+            try {
+                const response = await ApiReview.getReviewEligibilityApi(id_product);
+                if (isActive && response?.EC === 0) {
+                    setReviewEligibility(response.DT);
+                    if (response.DT.review) {
+                        setReviewRating(response.DT.review.rating);
+                        setReviewComment(response.DT.review.comment);
+                    } else {
+                        setReviewRating(5);
+                        setReviewComment("");
+                    }
+                }
+            } catch (error) {
+                console.error("Lỗi kiểm tra điều kiện đánh giá:", error);
+                if (isActive) {
+                    setReviewEligibility({ canReview: false, error: error.response?.data?.EM || error.message });
+                }
+            } finally {
+                if (isActive) setReviewEligibilityLoading(false);
+            }
+        };
+
+        if (id_product) {
+            fetchReviews();
+            fetchEligibility();
+        }
+
+        return () => {
+            isActive = false;
+        };
+    }, [id_product, userInfo?.id]);
+
+    const handleSubmitReview = async (event) => {
+        event.preventDefault();
+        if (!reviewEligibility?.canReview) return;
+
+        setReviewSaving(true);
+        try {
+            const response = await ApiReview.saveProductReviewApi(id_product, {
+                rating: reviewRating,
+                comment: reviewComment,
+            });
+            if (response?.EC !== 0 || !response?.DT) {
+                throw new Error(response?.EM || "Không thể gửi đánh giá.");
+            }
+
+            setReviewEligibility((current) => ({ ...current, review: response.DT }));
+            toast.success(response.EM);
+            try {
+                const reviewsResponse = await ApiReview.getProductReviewsApi(id_product, { page: 1, limit: 20 });
+                if (reviewsResponse?.EC === 0 && reviewsResponse.DT) {
+                    setReviews(reviewsResponse.DT.reviews || []);
+                    setReviewSummary(reviewsResponse.DT.summary || { averageRating: 0, totalReviews: 0 });
+                    setReviewsPage(1);
+                    setReviewsError("");
+                } else {
+                    throw new Error(reviewsResponse?.EM || "Không thể làm mới danh sách đánh giá.");
+                }
+            } catch (refreshError) {
+                console.error("Đánh giá đã lưu nhưng tải lại danh sách thất bại:", refreshError);
+                toast.warning("Đánh giá đã lưu, nhưng chưa thể làm mới danh sách.");
+            }
+        } catch (error) {
+            console.error("Lỗi gửi đánh giá sản phẩm:", error);
+            toast.error(error.response?.data?.EM || error.message || "Không thể gửi đánh giá.");
+        } finally {
+            setReviewSaving(false);
+        }
+    };
+
+    const handleLoadMoreReviews = async () => {
+        const nextPage = reviewsPage + 1;
+        setReviewsMoreLoading(true);
+        try {
+            const response = await ApiReview.getProductReviewsApi(id_product, {
+                page: nextPage,
+                limit: 20,
+            });
+            if (response?.EC !== 0 || !response?.DT) {
+                throw new Error(response?.EM || "Không thể tải thêm đánh giá.");
+            }
+            setReviews((currentReviews) => [
+                ...currentReviews,
+                ...response.DT.reviews.filter(
+                    (review) => !currentReviews.some((currentReview) => currentReview.id === review.id),
+                ),
+            ]);
+            setReviewSummary(response.DT.summary || reviewSummary);
+            setReviewsPage(nextPage);
+        } catch (error) {
+            console.error("Lỗi tải thêm đánh giá:", error);
+            toast.error(error.response?.data?.EM || error.message || "Không thể tải thêm đánh giá.");
+        } finally {
+            setReviewsMoreLoading(false);
+        }
+    };
+
     const handleQuantityChange = (type) => {
         if (type === 'dec') {
             setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
@@ -138,7 +334,6 @@ const ProductDetail = () => {
             },
         });
     };
-
 
     if (!product || Object.keys(product).length === 0) {
         return (
@@ -214,22 +409,26 @@ const ProductDetail = () => {
                                 <div className="flex items-center gap-4 text-sm pb-4 border-b border-gray-100">
                                     <div className="flex items-center gap-1">
                                         <span className="font-bold text-[#ed792f] text-base underline decoration-solid">
-                                            4.8
+                                            {Number(reviewSummary.averageRating || 0).toFixed(1)}
                                         </span>
                                         <div className="flex text-amber-400">
                                             {[...Array(5)].map((_, i) => (
-                                                <Star key={i} size={14} fill="currentColor" />
+                                                <Star
+                                                    key={i}
+                                                    size={14}
+                                                    fill={i < Math.round(reviewSummary.averageRating || 0) ? "currentColor" : "none"}
+                                                />
                                             ))}
                                         </div>
                                     </div>
                                     <div className="h-4 w-px bg-gray-200" />
                                     <div className="flex items-center gap-1 text-gray-600">
-                                        <span className="font-bold text-gray-800 underline">295</span>
+                                        <span className="font-bold text-gray-800 underline">{reviewSummary.totalReviews}</span>
                                         <span>Đánh Giá</span>
                                     </div>
                                     <div className="h-4 w-px bg-gray-200" />
                                     <div className="text-gray-500">
-                                        Đã bán <span className="font-semibold text-gray-800">1.2k</span>
+                                        Đã bán <span className="font-semibold text-gray-800">{Number(product.sold) || 0}</span>
                                     </div>
                                 </div>
 
@@ -338,8 +537,7 @@ const ProductDetail = () => {
                         </div>
                     </div>
 
-                    <div className="h-px bg-gray-100 mx-4 sm:mx-6 lg:mx-8" />
-
+                    {/* Chi tiết Sản Phẩm (Hỗ trợ nhúng video YouTube) */}
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide border-b border-gray-100 pb-3 mb-5">
                             Chi tiết Sản Phẩm
@@ -347,13 +545,12 @@ const ProductDetail = () => {
                         <div
                             className="prose max-w-none text-gray-700 leading-relaxed"
                             dangerouslySetInnerHTML={{
-                                __html: product.detail || '<p>Đang cập nhật chi tiết sản phẩm...</p>',
+                                __html: parsedDetail,
                             }}
                         />
                     </div>
 
-                    <div className="h-px bg-gray-100 mx-4 sm:mx-6 lg:mx-8" />
-
+                    {/* Mô Tả Sản Phẩm (Hỗ trợ nhúng video YouTube) */}
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide border-b border-gray-100 pb-3 mb-5">
                             Mô Tả Sản Phẩm
@@ -361,87 +558,115 @@ const ProductDetail = () => {
                         <div
                             className="prose max-w-none text-gray-700 leading-relaxed"
                             dangerouslySetInnerHTML={{
-                                __html: product.description || '<p>Đang cập nhật mô tả sản phẩm...</p>',
+                                __html: parsedDescription,
                             }}
                         />
                     </div>
-
-                    <div className="h-px bg-gray-100 mx-4 sm:mx-6 lg:mx-8" />
 
                     <div className="p-4 sm:p-6 lg:p-8">
                         <h2 className="text-lg font-bold text-gray-800 uppercase tracking-wide border-b border-gray-100 pb-4 mb-6">
                             ĐÁNH GIÁ KHÁCH HÀNG
                         </h2>
 
-                        <div className="space-y-6">
-                            <div className="flex items-start gap-4">
-                                <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center shrink-0 border border-gray-200 text-gray-400">
-                                    <User size={22} />
-                                </div>
-
-                                <div className="flex-1 min-w-0">
-                                    <div className="text-sm font-medium text-gray-800">
-                                        s*****1
-                                    </div>
-
-                                    <div className="flex items-center gap-0.5 text-[#ed792f] my-1">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star key={i} size={14} fill="currentColor" />
-                                        ))}
-                                    </div>
-
-                                    <div className="text-xs text-gray-400 mb-3">
-                                        2025-05-28 17:03 | Phân loại hàng: {product.maSP || "43 Inch"}
-                                    </div>
-
-                                    <div className="space-y-1 text-sm text-gray-600 mb-3">
-                                        <div>
-                                            <span className="text-gray-400">Đúng với mô tả: </span>
-                                            <span className="text-gray-800 font-medium">Okay</span>
-                                        </div>
-                                        <div>
-                                            <span className="text-gray-400">Tính năng nổi bật: </span>
-                                            <span className="text-gray-800 font-medium">Đẹp</span>
-                                        </div>
-                                        <div>
-                                            <span className="text-gray-400">Chất lượng sản phẩm: </span>
-                                            <span className="text-gray-800 font-medium">Tốt</span>
-                                        </div>
-                                    </div>
-
-                                    <p className="text-sm text-gray-800 leading-relaxed mb-3">
-                                        Shop giao hàng nhanh, đóng gói cẩn thận, được biết shop là chính hãng, nhiệt tình lắp đặt, mua hàng ở shop rất an tâm, giá cực tốt, chất lượng sản phẩm rất okay, ủng hộ shop.
-                                    </p>
-
-                                    <div className="mb-4">
-                                        <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-md border border-gray-200 overflow-hidden bg-gray-50 inline-block p-1">
-                                            <img
-                                                src={product.image ? (selectedImage || product.image) : "https://via.placeholder.com/150"}
-                                                alt="Review feedback"
-                                                className="w-full h-full object-cover rounded"
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="flex items-center justify-between text-xs text-gray-500">
+                        {reviewEligibility?.canReview && (
+                            <form onSubmit={handleSubmitReview} className="mb-8 rounded-xl border border-orange-100 bg-orange-50/50 p-4 sm:p-5">
+                                <h3 className="font-semibold text-gray-800">
+                                    {reviewEligibility.review ? "Cập nhật đánh giá của bạn" : "Chia sẻ trải nghiệm sản phẩm"}
+                                </h3>
+                                <div className="mt-3 flex items-center gap-1" aria-label={`Đánh giá ${reviewRating} trên 5 sao`}>
+                                    {[1, 2, 3, 4, 5].map((rating) => (
                                         <button
+                                            key={rating}
                                             type="button"
-                                            className="flex items-center gap-1.5 hover:text-[#ed792f] transition text-gray-500"
+                                            onClick={() => setReviewRating(rating)}
+                                            aria-label={`${rating} sao`}
+                                            className="p-0.5 text-amber-500"
                                         >
-                                            <ThumbsUp size={14} />
-                                            <span>9</span>
+                                            <Star size={22} fill={rating <= reviewRating ? "currentColor" : "none"} />
                                         </button>
-
-                                        <button
-                                            type="button"
-                                            className="text-gray-400 hover:text-gray-600 p-1"
-                                        >
-                                            <MoreVertical size={16} />
-                                        </button>
-                                    </div>
+                                    ))}
                                 </div>
+                                <textarea
+                                    value={reviewComment}
+                                    onChange={(event) => setReviewComment(event.target.value)}
+                                    maxLength={2000}
+                                    required
+                                    rows={4}
+                                    placeholder="Nhập nhận xét của bạn về sản phẩm..."
+                                    className="mt-3 w-full resize-y rounded-lg border border-gray-200 bg-white p-3 text-sm outline-none focus:border-orange-400 focus:ring-2 focus:ring-orange-100"
+                                />
+                                <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+                                    <span className="text-xs text-gray-500">{reviewComment.length}/2000 ký tự</span>
+                                    <button
+                                        type="submit"
+                                        disabled={reviewSaving || !reviewComment.trim()}
+                                        className="rounded-lg bg-[#ed792f] px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#d86620] disabled:cursor-not-allowed disabled:opacity-60"
+                                    >
+                                        {reviewSaving ? "Đang gửi..." : reviewEligibility.review ? "Lưu đánh giá" : "Gửi đánh giá"}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
+
+                        {!reviewEligibilityLoading && !reviewEligibility?.canReview && (
+                            <p className="mb-6 rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-600">
+                                {!userInfo?.id
+                                    ? "Đăng nhập và hoàn tất đơn hàng có sản phẩm này để gửi đánh giá."
+                                    : "Bạn có thể đánh giá sản phẩm sau khi đơn hàng chứa sản phẩm này được hoàn tất."}
+                            </p>
+                        )}
+
+                        {reviewsLoading ? (
+                            <p className="py-6 text-center text-sm text-gray-500">Đang tải đánh giá...</p>
+                        ) : reviewsError ? (
+                            <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-700">
+                                {reviewsError}
                             </div>
-                        </div>
+                        ) : reviews.length === 0 ? (
+                            <p className="py-6 text-center text-sm text-gray-500">Chưa có đánh giá nào cho sản phẩm này.</p>
+                        ) : (
+                            <div className="divide-y divide-gray-100">
+                                {reviews.map((review) => (
+                                    <article key={review.id} className="flex gap-3 py-5 first:pt-0">
+                                        <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-gray-100 text-gray-400">
+                                            {review.user?.image
+                                                ? <img src={review.user.image} alt="" className="h-full w-full object-cover" />
+                                                : <User size={20} />}
+                                        </div>
+                                        <div className="min-w-0 flex-1">
+                                            <p className="text-sm font-semibold text-gray-800">
+                                                {review.user?.userName || "Khách hàng"}
+                                            </p>
+                                            <div className="my-1 flex items-center gap-0.5 text-amber-500">
+                                                {[1, 2, 3, 4, 5].map((rating) => (
+                                                    <Star
+                                                        key={rating}
+                                                        size={14}
+                                                        fill={rating <= review.rating ? "currentColor" : "none"}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <time className="text-xs text-gray-400">
+                                                {new Date(review.createdAt).toLocaleString("vi-VN")}
+                                            </time>
+                                            <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
+                                                {review.comment}
+                                            </p>
+                                        </div>
+                                    </article>
+                                ))}
+                            </div>
+                        )}
+                        {!reviewsLoading && !reviewsError && reviews.length < reviewSummary.totalReviews && (
+                            <button
+                                type="button"
+                                onClick={handleLoadMoreReviews}
+                                disabled={reviewsMoreLoading}
+                                className="mt-4 rounded-lg border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 disabled:cursor-not-allowed disabled:opacity-60"
+                            >
+                                {reviewsMoreLoading ? "Đang tải..." : "Xem thêm đánh giá"}
+                            </button>
+                        )}
                     </div>
 
                 </div>
