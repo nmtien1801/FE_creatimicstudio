@@ -30,38 +30,38 @@ const quickCategories = [
 const youtubeReviews = [
     {
         id: '1',
-        title: 'Hướng dẫn cài đặt trọn bộ Micro và Soundcard Livestream',
-        thumbnail: 'https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=500&q=80',
-        url: 'https://youtube.com',
-        duration: '12:45'
+        title: 'Hướng Dẫn Lắp Đặt Bộ Soundcard Icon Upod Pro và Mic K200',
+        thumbnail: 'https://img.youtube.com/vi/DMBHmkSspLA/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=DMBHmkSspLA',
+        duration: '05:22'
     },
     {
         id: '2',
-        title: 'Review chi tiết Soundcard thu âm chuyên nghiệp 2026',
-        thumbnail: 'https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=500&q=80',
-        url: 'https://youtube.com',
-        duration: '08:20'
+        title: 'Hướng Dẫn Lắp Đặt Bộ Soundcard Focusrite Solo Gen 4 Và Micro AT2020',
+        thumbnail: 'https://img.youtube.com/vi/lfr7wekSFn8/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=lfr7wekSFn8',
+        duration: '03:40'
     },
     {
         id: '3',
-        title: 'Top 3 Combo thu âm dành cho người mới bắt đầu',
-        thumbnail: 'https://images.unsplash.com/photo-1545127398-14699f92334b?w=500&q=80',
-        url: 'https://youtube.com',
-        duration: '15:10'
+        title: 'Hướng Dẫn Lắp Đặt Hát Live Combo Icon Pro - AKG P120',
+        thumbnail: 'https://img.youtube.com/vi/HiD0yz4jqZw/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=HiD0yz4jqZw&t=72s',
+        duration: '04:49'
     },
     {
         id: '4',
-        title: 'Test chất âm Micro kiểm âm thực tế trong phòng kín',
-        thumbnail: 'https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=500&q=80',
-        url: 'https://youtube.com',
-        duration: '06:40'
+        title: 'Bộ Hát Livestream Tại Nhà: M-Audio Solo + Micro KL250',
+        thumbnail: 'https://img.youtube.com/vi/qTrNRpNqkx4/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=qTrNRpNqkx4&t=13s',
+        duration: '05:09'
     },
     {
         id: '5',
-        title: 'Kinh nghiệm setup góc livestream chuẩn studio tại nhà',
-        thumbnail: 'https://images.unsplash.com/photo-1589903308904-1010c2294adc?w=500&q=80',
-        url: 'https://youtube.com',
-        duration: '10:15'
+        title: 'Mixer AMX06 Kết Hợp Mic SM8b Gen 2',
+        thumbnail: 'https://img.youtube.com/vi/CtHR3ypBJmI/hqdefault.jpg',
+        url: 'https://www.youtube.com/watch?v=CtHR3ypBJmI&t=1s',
+        duration: '04:33'
     }
 ];
 
@@ -157,9 +157,6 @@ export default function TrangChu() {
     const [phuKien, setPhuKien] = useState([]);
     const [soundcard, setSoundcard] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
-
-    // ID video YouTube review
-    const reviewYoutubeId = "dQw4w9WgXcQ";
 
     const toneCarouselRef = useRef(null);
 
@@ -433,7 +430,7 @@ export default function TrangChu() {
                                         <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg bg-black">
                                             <iframe
                                                 className="w-full h-full object-cover"
-                                                src={`https://www.youtube.com/embed/${reviewYoutubeId}?rel=0`}
+                                                src={`https://www.youtube.com/embed/vRFUoQ2Qo2g?rel=0`}
                                                 title="Video Review"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                 allowFullScreen

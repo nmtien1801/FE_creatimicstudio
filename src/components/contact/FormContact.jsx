@@ -37,12 +37,13 @@ const ContactForm = ({ onSubmitSuccess }) => {
             setLoading(true);
             const contactData = {
                 name: formData.fullName,
+                phone: formData.phone,
                 email: formData.email,
                 message: formData.note + ` .Tôi đang quan tâm đến sản phẩm của bạn. Hãy liên hệ tới số điện thoại: ` + formData.phone,
             };
 
             await ApiContact.sendContactApi(contactData);
-            toast.success('Đã gửi thông tin liên hệ thành công!');
+            toast.success('Đã gửi thông tin liên hệ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.');
 
             if (onSubmitSuccess) {
                 onSubmitSuccess(formData);

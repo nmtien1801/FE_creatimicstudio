@@ -7,7 +7,7 @@ import {
   X,
   ShoppingCart,
   User,
-  ArrowRight,
+  CreditCard,
   Headphones,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
@@ -33,7 +33,10 @@ export default function Header({
 
   const { ProductDropdown } = useSelector((state) => state.product);
   const cartItems = useSelector((state) => state.cart.items);
-  const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 0), 0);
+  const cartCount = cartItems.reduce(
+    (total, item) => total + (item.quantity || 0),
+    0
+  );
 
   const searchRef = useRef(null);
   const megaRef = useRef(null);
@@ -45,9 +48,15 @@ export default function Header({
   const menuItems = [
     { label: "TRANG CHỦ", path: "/trang-chu" },
     { label: "SẢN PHẨM", path: "/san-pham/all/all" },
-    { label: "DỊCH VỤ CÀI ĐẶT PHẦN MỀM AUTOTUNE", path: "dich-vu/phan-mem-auto-tone" },
-    { label: "DỊCH VỤ SETUP LIVESTREAM", path: "dich-vu/set-up-phong-livestream" },
-    { label: "REVIEW CHI TIẾT", path: "review-detail" },
+    {
+      label: "DỊCH VỤ CÀI ĐẶT PHẦN MỀM AUTOTUNE",
+      path: "/dich-vu/phan-mem-auto-tone",
+    },
+    {
+      label: "DỊCH VỤ SETUP LIVESTREAM",
+      path: "/dich-vu/set-up-phong-livestream",
+    },
+    { label: "REVIEW CHI TIẾT", path: "/review-detail" },
   ];
 
   // =========================================================
@@ -64,17 +73,11 @@ export default function Header({
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        searchRef.current &&
-        !searchRef.current.contains(e.target)
-      ) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
         setShowSuggestions(false);
       }
 
-      if (
-        megaRef.current &&
-        !megaRef.current.contains(e.target)
-      ) {
+      if (megaRef.current && !megaRef.current.contains(e.target)) {
         setIsMegaOpen(false);
       }
     };
@@ -82,10 +85,7 @@ export default function Header({
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      document.removeEventListener(
-        "mousedown",
-        handleClickOutside
-      );
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -102,25 +102,17 @@ export default function Header({
     const query = searchQuery.toLowerCase().trim();
 
     const exactMatch = ProductDropdown?.find((p) => {
-      const matchMaSP =
-        p.maSP?.toLowerCase() === query;
-
-      const matchName =
-        p.name?.toLowerCase() === query;
-
+      const matchMaSP = p.maSP?.toLowerCase() === query;
+      const matchName = p.name?.toLowerCase() === query;
       return matchMaSP || matchName;
     });
 
     if (exactMatch) {
-      navigate(
-        `/${slug(exactMatch.name)}/all/${exactMatch.id}`
-      );
+      navigate(`/${slug(exactMatch.name)}/all/${exactMatch.id}`);
     } else {
       const matchedProducts =
         ProductDropdown?.filter((item) =>
-          item.name
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase())
+          item.name?.toLowerCase().includes(searchQuery.toLowerCase())
         ) || [];
 
       dispatch(setSearchResults(matchedProducts));
@@ -141,9 +133,16 @@ export default function Header({
     setShowSuggestions(false);
     setHighlightedIndex(-1);
 
-    navigate(
-      `/${slug(item.name)}/all/${item.id}`
-    );
+    navigate(`/${slug(item.name)}/all/${item.id}`);
+  };
+
+  // =========================================================
+  // ĐIỀU HƯỚNG TRONG DRAWER MOBILE (điều hướng + đóng drawer)
+  // =========================================================
+
+  const goFromDrawer = (path) => {
+    navigate(path);
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -204,13 +203,11 @@ export default function Header({
           HEADER
       ===================================================== */}
       <header className="sticky top-0 z-[100] w-full bg-[#ed792f] shadow-lg">
-
         {/* ===================================================
-            TOP BAR: CÂN ĐỐI 3 PHẦN
+            TOP BAR
         =================================================== */}
         <div className="border-b border-black/10 bg-[#e46a1e]/90 backdrop-blur-sm">
-          <div className="flex h-[38px] items-center justify-between px-4 sm:px-6 lg:px-8 text-[12px] text-white">
-
+          <div className="flex h-[38px] items-center justify-between px-4 text-[12px] text-white sm:px-6 lg:px-8">
             {/* BÊN TRÁI: SĐT & HỖ TRỢ 24/7 */}
             <div className="flex shrink-0 items-center gap-3">
               <a
@@ -233,15 +230,14 @@ export default function Header({
               </div>
             </div>
 
-            {/* Ở GIỮA: BADGE + TEXT CHẠY TRONG KHUNG GIỚI HẠN */}
+            {/* Ở GIỮA: TEXT CHẠY */}
             <div className="mx-2 flex min-w-0 flex-1 items-center justify-center gap-2.5">
-              {/* Khung giới hạn chạy chữ có hiệu ứng mask 2 bên */}
-              <div className="marquee-viewport h-full max-w-[280px] sm:max-w-[340px] md:max-w-[420px] flex-1">
+              <div className="marquee-viewport h-full max-w-[280px] flex-1 sm:max-w-[340px] md:max-w-[420px]">
                 <div className="ticker-ltr flex items-center gap-1.5 text-white drop-shadow-sm">
                   <span className="font-medium text-white/95">
                     Đăng ký khách hàng thân thiết
                   </span>
-                  <span className="text-yellow-300 font-bold">•</span>
+                  <span className="font-bold text-yellow-300">•</span>
                   <span className="font-bold text-yellow-200">
                     Nhận ngay ưu đãi cực khủng
                   </span>
@@ -249,25 +245,44 @@ export default function Header({
               </div>
             </div>
 
-            {/* BÊN PHẢI: CÁC NÚT ĐIỀU HƯỚNG CỐ ĐỊNH */}
+            {/* BÊN PHẢI: ĐIỀU HƯỚNG */}
             <div className="flex shrink-0 items-center gap-1 font-medium sm:gap-2">
-              <button
-                onClick={() => navigate("/register")}
-                className="rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200"
-              >
-                Đăng ký
-              </button>
+              {userInfo?.userName ? (
+                <div
+                  className="group flex cursor-pointer items-center gap-2 rounded px-2 py-1 transition-colors hover:bg-white/10 md:hidden"
+                  onClick={() => navigate("/profile/info")}
+                >
+                  {/* Avatar tròn chứa icon */}
+                  <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-white/15 transition-transform group-hover:scale-105">
+                    <User size={11} strokeWidth={2} />
+                  </div>
 
-              <span className="text-white/30">|</span>
+                  {/* Tên người dùng hiển thị bên cạnh */}
+                  <p className="max-w-[120px] truncate text-xs font-bold leading-tight transition-colors group-hover:text-yellow-200 sm:max-w-[160px]">
+                    {userInfo?.userName}
+                  </p>
+                </div>
+              ) : (
+                <>
+                  <button
+                    onClick={() => navigate("/register")}
+                    className="rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200"
+                  >
+                    Đăng ký
+                  </button>
 
-              <button
-                onClick={() => navigate("/login")}
-                className="rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200"
-              >
-                Đăng nhập
-              </button>
+                  <span className="text-white/30">|</span>
 
-              <span className="hidden text-white/30 md:inline">|</span>
+                  <button
+                    onClick={() => navigate("/login")}
+                    className="rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200"
+                  >
+                    Đăng nhập
+                  </button>
+
+                  <span className="hidden text-white/30 md:inline">|</span>
+                </>
+              )}
 
               <button
                 onClick={() => navigate("/gio-hang")}
@@ -276,36 +291,45 @@ export default function Header({
                 Giỏ hàng
               </button>
 
-              <span className="hidden text-white/30 lg:inline">|</span>
+              {userInfo?.userName ? (
+                <>
+                  <span className="text-white/30 md:inline">|</span>
 
-              <button
-                onClick={() => navigate("/order-history")}
-                className="hidden rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200 lg:inline-block"
-              >
-                Thanh toán
-              </button>
+                  <button
+                    onClick={() => navigate("/order-history")}
+                    className=" rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200 md:inline-block"
+                  >
+                    Thanh toán
+                  </button>
+                </>
+              ) : (
+                <>
+
+                </>
+              )}
             </div>
-
           </div>
         </div>
 
         {/* ===================================================
             MAIN HEADER
+            - Mobile: hàng 1 = logo + giỏ hàng + menu, hàng 2 = tìm kiếm
+            - md trở lên: 1 hàng như cũ
         =================================================== */}
         <div className="bg-[#ed792f]">
           <div className="px-4 sm:px-6 lg:px-8">
-            <div className="flex min-h-[92px] items-center justify-between gap-4">
-
-              {/* 1. CỘT TRÁI: LOGO (Cố định width để cân đối hai bên) */}
-              <div className="flex w-[190px] shrink-0 items-center">
+            <div className="flex min-h-[60px] items-center justify-between gap-2 py-2 sm:gap-3 md:min-h-[92px] md:gap-4 md:py-0">
+              {/* 1. LOGO */}
+              <div className="flex w-auto shrink-0 items-center md:w-[190px]">
                 <NavLink to="/trang-chu" className="group block">
                   <img
                     src="/logo.png"
                     alt="CMIC Studio"
                     className="
-                      h-[70px]
+                      h-[28px] max-w-[72px]
+                      sm:h-[34px] sm:max-w-[90px]
+                      md:h-[70px] md:max-w-[170px]
                       w-auto
-                      max-w-[170px]
                       object-contain
                       transition-transform
                       duration-300
@@ -315,13 +339,14 @@ export default function Header({
                 </NavLink>
               </div>
 
-              {/* 2. CỘT GIỮA: THANH TÌM KIẾM (Căn giữa tuyệt đối trục ngang) */}
-              <div className="flex min-w-0 flex-1 items-center justify-center px-2">
+              {/* 2. THANH TÌM KIẾM */}
+              <div className="flex min-w-0 flex-1 items-center justify-center md:px-2">
                 <div ref={searchRef} className="relative w-full max-w-4xl">
                   <div
                     className="
                       flex
-                      h-[46px]
+                      h-[38px]
+                      md:h-[46px]
                       w-full
                       overflow-visible
                       rounded-lg
@@ -343,7 +368,8 @@ export default function Header({
                         min-w-0
                         flex-1
                         bg-transparent
-                        px-4
+                        px-3
+                        md:px-4
                         text-[13px]
                         text-gray-800
                         outline-none
@@ -368,10 +394,7 @@ export default function Header({
                               ? prev + 1
                               : prev
                           );
-                        } else if (
-                          e.key === "ArrowUp" &&
-                          highlightedIndex > 0
-                        ) {
+                        } else if (e.key === "ArrowUp" && highlightedIndex > 0) {
                           e.preventDefault();
                           setHighlightedIndex((prev) => prev - 1);
                         } else if (e.key === "Enter") {
@@ -393,7 +416,10 @@ export default function Header({
                     />
 
                     {/* Button Danh Mục */}
-                    <div ref={megaRef} className="relative hidden h-full md:block">
+                    <div
+                      ref={megaRef}
+                      className="relative hidden h-full md:block"
+                    >
                       <button
                         type="button"
                         onClick={() => setIsMegaOpen(!isMegaOpen)}
@@ -445,11 +471,13 @@ export default function Header({
                     <button
                       type="button"
                       onClick={handleSearch}
+                      aria-label="Tìm kiếm"
                       className="
                         group
                         flex
                         h-full
-                        w-[52px]
+                        w-[40px]
+                        md:w-[52px]
                         shrink-0
                         items-center
                         justify-center
@@ -481,7 +509,8 @@ export default function Header({
                           absolute
                           left-0
                           right-0
-                          top-[54px]
+                          top-[46px]
+                          md:top-[54px]
                           z-[300]
                           max-h-[430px]
                           overflow-y-auto
@@ -556,7 +585,7 @@ export default function Header({
                 </div>
               </div>
 
-              {/* 3. CỘT PHẢI: TÀI KHOẢN & GIỎ HÀNG (Cố định width w-[190px] bằng với cột logo) */}
+              {/* 3. CỘT PHẢI (DESKTOP ≥ lg): TÀI KHOẢN & GIỎ HÀNG */}
               <div className="hidden w-[190px] shrink-0 items-center justify-end gap-2 lg:flex">
                 {/* Đăng nhập */}
                 <button
@@ -584,7 +613,7 @@ export default function Header({
                       </p>
                     ) : (
                       <>
-                        <p className="text-[10px] uppercase font-medium text-white/70">
+                        <p className="text-[10px] font-medium uppercase text-white/70">
                           Tài khoản
                         </p>
                         <p className="text-xs font-bold leading-tight">
@@ -598,6 +627,7 @@ export default function Header({
                 {/* Giỏ hàng */}
                 <button
                   onClick={() => navigate("/gio-hang")}
+                  aria-label="Giỏ hàng"
                   className="
                     group
                     relative
@@ -641,25 +671,29 @@ export default function Header({
                 </button>
               </div>
 
-              {/* NÚT MENU MOBILE */}
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="
-                  ml-auto
-                  rounded-lg
-                  border
-                  border-white/20
-                  bg-white/10
-                  p-2.5
-                  text-white
-                  transition-all
-                  hover:bg-white/20
-                  md:hidden
-                "
-              >
-                {isMobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
-              </button>
+              {/* 4. GIỎ HÀNG + MENU (MOBILE & TABLET < lg) */}
+              <div className="flex shrink-0 items-center gap-1.5 lg:hidden">
+                <button
+                  onClick={() => navigate("/gio-hang")}
+                  aria-label="Giỏ hàng"
+                  className="relative flex h-9 w-9 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white transition-all hover:bg-white/20 md:h-10 md:w-10"
+                >
+                  <ShoppingCart size={20} strokeWidth={2} />
+                  {cartCount > 0 && (
+                    <span className="absolute -right-1.5 -top-1.5 flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-[#c62828] px-1 text-[10px] font-black text-white shadow-md">
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
 
+                <button
+                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                  aria-label="Menu"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-white/20 bg-white/10 text-white transition-all hover:bg-white/20 md:hidden"
+                >
+                  {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -715,7 +749,6 @@ export default function Header({
             </div>
           </div>
         </nav>
-
       </header>
 
       {/* =====================================================
@@ -727,7 +760,7 @@ export default function Header({
           onClick={() => setIsMobileMenuOpen(false)}
         >
           <div
-            className="fixed right-0 top-0 flex h-full w-[290px] flex-col bg-white shadow-2xl animate-[slideInRight_.25s_ease-out]"
+            className="fixed right-0 top-0 flex h-full w-[290px] max-w-[85vw] animate-[slideInRight_.25s_ease-out] flex-col bg-white shadow-2xl"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-center justify-between border-b border-gray-100 bg-[#ed792f] px-5 py-4 text-white">
@@ -739,6 +772,7 @@ export default function Header({
               </div>
               <button
                 onClick={() => setIsMobileMenuOpen(false)}
+                aria-label="Đóng menu"
                 className="rounded-full bg-white/15 p-2 text-white transition-all hover:bg-white/25"
               >
                 <X size={18} />
@@ -746,6 +780,7 @@ export default function Header({
             </div>
 
             <nav className="flex-1 overflow-y-auto p-4">
+              {/* Menu chính */}
               <div className="space-y-1">
                 {menuItems.map((item) => (
                   <NavLink
@@ -771,6 +806,33 @@ export default function Header({
                 ))}
               </div>
 
+              {/* Giỏ hàng / Thanh toán / Tài khoản */}
+              <div className="mt-4 space-y-1 border-t border-gray-100 pt-4">
+                <button
+                  onClick={() => goFromDrawer("/gio-hang")}
+                  className="flex w-full items-center justify-between rounded-lg px-4 py-3 text-sm font-bold text-gray-700 transition-all hover:bg-gray-50"
+                >
+                  <span className="flex items-center gap-2">
+                    <ShoppingCart size={16} className="text-[#ed792f]" />
+                    Giỏ hàng
+                  </span>
+                  {cartCount > 0 && (
+                    <span className="rounded-full bg-[#c62828] px-2 py-0.5 text-[10px] font-black text-white">
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  onClick={() => goFromDrawer("/order-history")}
+                  className="flex w-full items-center gap-2 rounded-lg px-4 py-3 text-sm font-bold text-gray-700 transition-all hover:bg-gray-50"
+                >
+                  <CreditCard size={16} className="text-[#ed792f]" />
+                  Thanh toán
+                </button>
+              </div>
+
+              {/* Hotline */}
               <div className="mt-6 rounded-xl bg-orange-50 p-4">
                 <p className="mb-1 text-xs font-bold text-[#ed792f]">
                   HOTLINE HỖ TRỢ

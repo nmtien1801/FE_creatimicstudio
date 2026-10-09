@@ -324,7 +324,7 @@ export default function AutoTuneLandingPage() {
                         <div className="w-full aspect-video rounded-2xl md:rounded-3xl border-2 border-black overflow-hidden flex items-center justify-center p-1.5 md:p-2 bg-black shadow-md md:shadow-lg">
                             <iframe
                                 className="w-full h-full rounded-xl md:rounded-2xl"
-                                src="https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0"
+                                src="https://www.youtube.com/embed/tcj5IR2g6YQ?rel=0"
                                 title="YouTube video"
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen

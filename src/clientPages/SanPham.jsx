@@ -29,28 +29,25 @@ const getTitleByCategory = (selectedCategory, subCategory) => {
     return selectedCategory;
 };
 
-// ================= FilterSidebar: BỘ LỌC GIÁ RESPONSIVE (FIX TRÀN) =================
+// ================= FilterSidebar: BỘ LỌC GIÁ RESPONSIVE (TỐI ƯU SIZE MOBILE) =================
 const FilterSidebar = ({ filters, onFilterChange }) => {
     return (
-        <div className="w-full md:w-64 lg:w-72 flex-shrink-0 p-4 sm:p-6 bg-white rounded-2xl shadow-md md:shadow-xl top-4 self-start overflow-hidden">
-            <h2 className="text-xl font-black text-gray-800 mb-4 md:mb-6 flex items-center gap-2">
-                <Filter className="w-5 h-5 text-orange-500" />
+        <div className="w-full md:w-56 lg:w-64 flex-shrink-0 p-3 sm:p-5 md:p-6 bg-white rounded-xl sm:rounded-2xl shadow-sm md:shadow-md top-4 self-start overflow-hidden">
+            {/* Header: giảm từ text-xl xuống text-sm/base trên mobile */}
+            <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 mb-3 md:mb-5 flex items-center gap-1.5 sm:gap-2">
+                <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
                 Bộ Lọc Giá
             </h2>
 
             {/* Price Filter */}
-            <div className="border-b border-gray-100 pb-2 md:pb-6 w-full">
-                {/* 
-                  - Mobile: Cuộn ngang mượt mà, ẩn thanh cuộn (flex flex-nowrap overflow-x-auto scrollbar-none)
-                  - Desktop: Hiện dạng danh sách cột đứng dọc (md:flex-col md:overflow-visible md:space-y-3)
-                */}
-                <div className="flex flex-nowrap overflow-x-auto md:flex-col gap-3 pb-3 md:pb-0 scrollbar-none snap-x md:space-y-3">
+            <div className="border-b border-gray-100 pb-1 md:pb-6 w-full">
+                <div className="flex flex-nowrap overflow-x-auto md:flex-col gap-1.5 sm:gap-2 md:gap-3 pb-2 md:pb-0 scrollbar-none snap-x">
                     {priceRanges.map(range => {
                         const isChecked = filters.priceRange === range.value;
                         return (
                             <label
                                 key={range.value}
-                                className={`flex items-center space-x-2 sm:space-x-3 cursor-pointer group p-2.5 px-4 md:p-0 rounded-xl transition-all border md:border-none snap-center flex-shrink-0
+                                className={`flex items-center space-x-1.5 sm:space-x-2 md:space-x-3 cursor-pointer group py-1.5 px-3 sm:py-2 sm:px-3.5 md:p-0 rounded-lg sm:rounded-xl transition-all border md:border-none snap-center flex-shrink-0
                                     ${isChecked
                                         ? 'bg-orange-50 border-orange-500 md:bg-transparent'
                                         : 'bg-gray-50 border-gray-200 md:bg-transparent'
@@ -62,9 +59,10 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
                                     value={range.value}
                                     checked={isChecked}
                                     onChange={() => onFilterChange('priceRange', range.value)}
-                                    className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500 cursor-pointer"
+                                    className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500 cursor-pointer"
                                 />
-                                <span className={`text-sm md:text-base font-semibold transition-colors whitespace-nowrap
+                                {/* Font chữ: text-xs trên mobile, text-sm trên tablet, text-[15px] trên desktop */}
+                                <span className={`text-xs sm:text-sm md:text-[15px] font-medium sm:font-semibold transition-colors whitespace-nowrap
                                     ${isChecked ? 'text-orange-600 font-bold' : 'text-gray-600 group-hover:text-gray-800'}`}>
                                     {range.label}
                                 </span>
@@ -77,24 +75,20 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
     );
 };
 
-// ================= CategoryTopMenu: BỘ LỌC CATEGORY =================
+// ================= CategoryTopMenu: BỘ LỌC CATEGORY (TỐI ƯU SIZE MOBILE) =================
 const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSubClick }) => {
     return (
-        <div className="mb-10 w-full overflow-hidden">
-            {/* 
-              - flex-nowrap: Bắt buộc tất cả nút nằm trên 1 dòng duy nhất
-              - overflow-x-auto: Tự động cho phép trượt/cuộn ngang khi vượt quá màn hình
-              - scrollbar-none: Ẩn thanh cuộn xấu xí
-            */}
-            <div className="flex flex-nowrap items-center overflow-x-auto gap-3 md:gap-4 pb-4 px-2 scrollbar-none snap-x">
+        <div className="mb-6 sm:mb-8 md:mb-10 w-full overflow-hidden">
+            {/* Thu hẹp khoảng cách gap và lề padding của dải ngang trên mobile */}
+            <div className="flex flex-nowrap items-center overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2.5 sm:pb-3 md:pb-4 px-1 sm:px-2 scrollbar-none snap-x">
 
                 <div className="snap-center flex-shrink-0">
                     <button
                         onClick={() => onCategoryClick('all')}
-                        className={`px-5 py-2.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-base md:text-lg font-bold transition whitespace-nowrap
+                        className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap
                             ${selectedCategory === 'all'
-                                ? 'bg-orange-500 text-white shadow-lg'
-                                : 'bg-white shadow hover:bg-orange-50'}
+                                ? 'bg-orange-500 text-white shadow-md'
+                                : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}
                         `}
                     >
                         Tất cả
@@ -108,10 +102,10 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSu
                     >
                         <button
                             onClick={() => onCategoryClick(cat)}
-                            className={`px-5 py-2.5 md:px-6 md:py-3 rounded-xl md:rounded-2xl text-base font-bold transition whitespace-nowrap
+                            className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap
                                 ${selectedCategory === String(cat.id)
-                                    ? 'bg-orange-500 text-white shadow-lg'
-                                    : 'bg-white shadow hover:bg-orange-50'}
+                                    ? 'bg-orange-500 text-white shadow-md'
+                                    : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}
                             `}
                         >
                             {cat.name}
@@ -120,20 +114,20 @@ const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSu
                         {/* Dropdown Menu */}
                         {cat.children && cat.children.length > 0 && (
                             <div className="hidden md:block">
-                                <div className="absolute left-0 right-0 top-full h-4"></div>
+                                <div className="absolute left-0 right-0 top-full h-3"></div>
 
                                 <div
                                     className="absolute left-1/2 -translate-x-1/2 top-full mt-1
                                         hidden group-hover:block
-                                        bg-white shadow-xl rounded-2xl
-                                        min-w-[220px] z-50 py-2 border border-gray-100"
+                                        bg-white shadow-xl rounded-xl
+                                        min-w-[200px] z-50 py-1.5 border border-gray-100"
                                 >
                                     {cat.children.map(sub => (
                                         <button
                                             key={sub.name}
                                             onClick={() => onSubClick(cat, sub)}
-                                            className="block w-full text-left px-5 py-2.5
-                                                text-sm font-medium
+                                            className="block w-full text-left px-4 py-2
+                                                text-xs sm:text-sm font-medium
                                                 hover:bg-orange-50 text-gray-700 transition-colors"
                                         >
                                             {sub.name}
