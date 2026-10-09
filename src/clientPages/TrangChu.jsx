@@ -228,9 +228,9 @@ export default function TrangChu() {
             setSoundcard(resSoundcard.DT);
         }
 
-        let resMicro = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.resMicro);
-        if (resMicro && resMicro.DT) {
-            setPhuKien(resMicro.DT);
+        let micro = await ApiProductCategory.getProductsByCategory(typeCategory_obligatory.micro);
+        if (micro && micro.DT) {
+            setPhuKien(micro.DT);
         }
     };
 
