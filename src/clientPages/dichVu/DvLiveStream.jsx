@@ -168,6 +168,21 @@ export default function SetupLivestreamPage() {
         { name: "AURELIA LUNA", src: "/thuonghieu/th10.png" }
     ];
 
+    const formatCurrency = (val) => {
+        if (!val) return '';
+        // Lọc bỏ tất cả ký tự không phải số
+        const cleanNumber = val.replace(/\D/g, '');
+        if (!cleanNumber) return '';
+        // Thêm dấu phẩy phân cách hàng nghìn
+        return Number(cleanNumber).toLocaleString('en-US');
+    };
+
+    const handleBudgetChange = (e) => {
+        const rawVal = e.target.value;
+        const formatted = formatCurrency(rawVal);
+        setBudgetNote(formatted);
+    };
+
     return (
         <div className="w-full bg-white font-sans text-gray-900 overflow-x-hidden">
 
@@ -178,8 +193,13 @@ export default function SetupLivestreamPage() {
                 <img
                     src="/dvlivehero.png"
                     alt="Banner Dịch Vụ AutoTune AI"
-                    className="w-full h-full object-cover min-h-[240px] sm:min-h-[320px] md:min-h-[420px]"
+                    className="w-full h-auto object-cover max-h-[300px] sm:max-h-[400px] lg:max-h-[500px]"
                 />
+                <div className="absolute inset-0 bg-black/40" />
+
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10 select-none">
+                    {/* Nội dung text giữ nguyên */}
+                </div>
                 <div className="absolute inset-0 bg-black/40" />
 
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10 select-none">
@@ -214,10 +234,10 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             {/* 1. HAI GÓI LIVESTREAM VÀ TICKER CHẠY NGANG               */}
             {/* ========================================================= */}
-            <section className="relative bg-white pt-24 sm:pt-28 md:pt-48 pb-6 md:pb-8">
+            <section className="relative bg-white pt-40 sm:pt-28 md:pt-48 pb-6 md:pb-8">
                 <div className="max-w-5xl mx-auto px-2 sm:px-4">
                     {/* Mobile giữ nguyên -translate-y-1/2, web (md:) chỉnh -translate-y-[25%] để xích xuống dưới */}
-                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[25%] w-full max-w-5xl px-2 sm:px-4 grid grid-cols-2 gap-2 sm:gap-4 md:gap-8 lg:gap-12 z-20">
+                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[-10%] sm:-translate-y-[25%] w-full max-w-5xl px-2 sm:px-4 grid grid-cols-2 gap-2 sm:gap-4 md:gap-8 lg:gap-12 z-20">
 
                         {/* Gói Bán Hàng E-Commerce */}
                         <div className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
@@ -766,9 +786,10 @@ export default function SetupLivestreamPage() {
                                         <div className="mb-6 md:mb-8">
                                             <input
                                                 type="text"
+                                                inputMode="numeric"
                                                 value={budgetNote}
-                                                onChange={(e) => setBudgetNote(e.target.value)}
-                                                placeholder="Nhập ngân sách mong muốn (ví dụ: 15 triệu, 25 triệu...)"
+                                                onChange={handleBudgetChange}
+                                                placeholder="Nhập ngân sách (ví dụ: 15,000,000 VNĐ)"
                                                 className="w-full py-3 sm:py-4 px-4 sm:px-5 bg-white border border-[#f5b890] rounded-xl sm:rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-sm sm:text-base text-gray-900 transition-all placeholder:text-gray-400"
                                             />
                                         </div>

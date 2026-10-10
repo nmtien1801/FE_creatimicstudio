@@ -14,6 +14,7 @@ import {
     AlertCircle,
     X
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function CheckoutPage() {
     const location = useLocation();
@@ -64,7 +65,6 @@ export default function CheckoutPage() {
 
         try {
             const res = await ApiOrder.createOrderApi(orderPayload);
-
             if (res?.EC === 0 && res?.DT?.order?.orderId) {
                 // 1. Dọn dẹp giỏ hàng
                 localStorage.removeItem("cartItems");
@@ -73,7 +73,8 @@ export default function CheckoutPage() {
                 }
 
                 // 2. Chuyển hướng sang trang trạng thái đơn hàng kèm mã đơn từ backend
-                navigate(`/order-status/${encodeURIComponent(res.DT.order.orderId)}`);
+                navigate(`/`);
+                toast.success("Chúng tôi đã nhận được thông tin đặt hàng của Quý khách. Đội ngũ bán hàng sẽ liên hệ để trao đổi với Quý khách trong thời gian sớm nhất!");
             } else {
                 alert(res?.EM || "Không thể tạo đơn hàng, vui lòng thử lại!");
             }

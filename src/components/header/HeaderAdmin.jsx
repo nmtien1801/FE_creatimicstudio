@@ -26,7 +26,7 @@ export default function Header({ toggleSidebar }) {
 
     const handleLogout = async () => {
         dispatch(logout());
-        navigate('/login');
+        navigate('/');
     }
 
     return (

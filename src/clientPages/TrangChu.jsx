@@ -138,7 +138,7 @@ const ProductGridSection = ({ title, products = [], viewAllLink, limit = 10 }) =
     return (
         <section className="mb-10">
             <SectionHeader title={title} viewAllLink={viewAllLink} />
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
                 {displayProducts.map((product) => (
                     <ProductCard key={product.id} product={product} />
                 ))}

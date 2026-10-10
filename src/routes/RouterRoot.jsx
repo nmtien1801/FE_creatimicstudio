@@ -99,7 +99,7 @@ function RouterRoot() {
 
           {/* path route: /product/ */}
           {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
-          <Route path="/:name/:id_category/:id_product" element={<ProductPageHandler />} />
+          <Route path=":name/:id_category/:id_product" element={<ProductPageHandler />} />
           <Route path="dich-vu/set-up-phong-livestream" element={<ServiceLive />} />
           <Route path="dich-vu/phan-mem-auto-tone" element={<ServiceTone />} />
           <Route path="gio-hang" element={<GioHang />} />

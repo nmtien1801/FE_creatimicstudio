@@ -180,7 +180,7 @@ export default function AutoTuneLandingPage() {
         {
             q: "1. Hình thức cài đặt dịch vụ Autotune AI tại CMIC STUDIO như thế nào?",
             a: (
-                <div className="space-y-3 md:space-y-4 text-gray-700 leading-relaxed text-xs sm:text-sm md:text-base">
+                <div className="space-y-3 md:space-y-4 text-gray-700 leading-relaxed text-[14px] sm:text-[16px] md:text-[18px]">
                     <p className="font-semibold text-black">CMIC STUDIO hỗ trợ khách hàng cài đặt online hoặc trực tiếp.</p>
                     <div>
                         <p className="font-bold text-gray-900 mb-1">A. Với hình thức cài đặt từ xa:</p>
@@ -296,7 +296,7 @@ export default function AutoTuneLandingPage() {
                 <section className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
                     <div className="md:col-span-6 space-y-4 md:space-y-6">
                         <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black leading-snug md:leading-tight tracking-tight uppercase">
-                            BẠN MUỐN HÁT HAY HƠN<br className="hidden sm:block" />NHƯNG...
+                            BẠN MUỐN HÁT HAY HƠN NHƯNG...
                         </h2>
                         <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
                             <div className="flex items-start space-x-2 md:space-x-3">
@@ -347,7 +347,7 @@ export default function AutoTuneLandingPage() {
                         }}
                         className="rounded-xl md:rounded-2xl p-4 sm:p-6 md:p-10 shadow-md md:shadow-lg"
                     >
-                        <p className="text-center text-gray-950 font-medium text-xs sm:text-sm md:text-base max-w-3xl mx-auto mb-6 md:mb-8">
+                        <p className="text-center text-gray-950 font-medium text-lg sm:text-lg md:text-lg max-w-3xl mx-auto mb-6 md:mb-8">
                             Thay vì phải biết nhạc lý, tìm tone bài hát hoặc tự điều chỉnh nhiều thông số trong phần mềm, bạn có thể sử dụng tính năng dò tone tự động để thiết lập nhanh hơn
                         </p>
 
@@ -406,12 +406,12 @@ export default function AutoTuneLandingPage() {
                                         <div className="absolute inset-0 bg-gradient-to-b from-orange-600/5 via-transparent to-red-950/30 pointer-events-none" />
 
                                         <div className="w-full min-h-[60px] md:min-h-[76px] bg-gradient-to-r from-[#ea580c] to-[#f97316] rounded-[16px] md:rounded-[22px] flex items-center justify-center px-3 md:px-4 py-2 md:py-3 text-center mb-4 md:mb-6 shadow-md z-10">
-                                            <h3 className="text-[11px] sm:text-xs md:text-sm font-bold text-black leading-snug">
+                                            <h3 className="text-[16px] sm:text-[18px] md:text-[20px] font-bold text-black leading-snug">
                                                 {feat.title}
                                             </h3>
                                         </div>
 
-                                        <div className="w-full text-[10px] sm:text-xs md:text-[13px] text-gray-300 space-y-2.5 md:space-y-3.5 leading-relaxed md:leading-relaxed z-10 flex-1 px-1">
+                                        <div className="w-full text-[16px] sm:text-[18px] md:text-[20px] text-gray-300 space-y-2.5 md:space-y-3.5 leading-relaxed md:leading-relaxed z-10 flex-1 px-1">
                                             {feat.desc.map((d, dIdx) => (
                                                 <p
                                                     key={dIdx}
@@ -502,10 +502,10 @@ export default function AutoTuneLandingPage() {
                                     <div className="absolute left-0 top-[2px] md:top-[3px] w-3.5 h-3.5 md:w-4 md:h-4 bg-white border-[2.5px] md:border-[3px] border-black rounded-[2px] z-10"></div>
 
                                     <div>
-                                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-black leading-snug">
+                                        <h3 className="text-[16px] sm:text-[18px] md:text-[20px] font-bold text-black leading-snug">
                                             {step.step}
                                         </h3>
-                                        <p className="text-[11px] sm:text-xs md:text-base text-gray-800 mt-1 md:mt-2 leading-relaxed md:leading-relaxed font-normal">
+                                        <p className="text-[14px] sm:text-[16px] md:text-[18px] text-gray-800 mt-1 md:mt-2 leading-relaxed md:leading-relaxed font-normal">
                                             {step.desc}
                                         </p>
                                     </div>
@@ -577,15 +577,15 @@ export default function AutoTuneLandingPage() {
                                         >
                                             <path d="M8 5v14l11-7z" />
                                         </svg>
-                                        <h3 className="text-sm sm:text-base md:text-lg font-bold text-black group-hover:text-[#ed792f] transition-colors leading-snug">
+                                        <h3 className="text-[16px] sm:text-[18px] md:text-[20px] font-bold text-black group-hover:text-[#ed792f] transition-colors leading-snug">
                                             {faq.q}
                                         </h3>
                                     </div>
 
                                     {isOpen && (
-                                        <div className="animate-fadeIn pl-5 sm:pl-6 md:pl-8">
+                                        <p className="animate-fadeIn pl-5 sm:pl-6 md:pl-8">
                                             {faq.a}
-                                        </div>
+                                        </p>
                                     )}
                                 </div>
                             );

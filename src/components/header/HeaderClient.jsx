@@ -291,22 +291,14 @@ export default function Header({
                 Giỏ hàng
               </button>
 
-              {userInfo?.userName ? (
-                <>
-                  <span className="text-white/30 md:inline">|</span>
+              <span className="hidden text-white/30 md:inline">|</span>
 
-                  <button
-                    onClick={() => navigate("/order-history")}
-                    className=" rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200 md:inline-block"
-                  >
-                    Thanh toán
-                  </button>
-                </>
-              ) : (
-                <>
-
-                </>
-              )}
+              <button
+                onClick={() => navigate("/order-history")}
+                className="hidden rounded px-2 py-0.5 transition-colors hover:bg-black/15 hover:text-yellow-200 md:inline-block"
+              >
+                Thanh toán
+              </button>
             </div>
           </div>
         </div>

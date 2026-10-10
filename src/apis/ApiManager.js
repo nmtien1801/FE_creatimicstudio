@@ -5,6 +5,18 @@ import axiosRetry from "axios-retry";
 import { useSelector } from "react-redux";
 
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+const isPublicPath = (path) => {
+  const publicStaticPaths = ["/", "/login", "/register", "/forgot-password", "/trang-chu", "/gio-hang"];
+  if (publicStaticPaths.includes(path)) return true;
+
+  // Cho phép trang chi tiết sản phẩm /:name/:id_category/:id_product
+  if (/^\/[^/]+\/[^/]+\/[^/]+\/?$/.test(path)) return true;
+
+  // Cho phép trang xem trạng thái đơn hàng /order-status/:orderId
+  if (path.startsWith("/order-status/")) return true;
+
+  return false;
+};
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -55,10 +67,9 @@ api.interceptors.response.use(
     switch (status) {
       case 401: {
         const path = window.location.pathname;
-        const publicPaths = ["/", "/login", "/register", "/forgot-password"];
 
         // ✅ Nếu đang ở trang public, bỏ qua
-        if (publicPaths.includes(path)) {
+        if (isPublicPath(path)) {
           return Promise.reject(error);
         }
 
@@ -89,7 +100,10 @@ api.interceptors.response.use(
           return api.request(config);
         } catch (e) {
           Cookies.remove("fr");
-          window.location.href = "/login";
+          localStorage.removeItem("userInfo");
+          if (!isPublicPath(window.location.pathname)) {
+            window.location.href = "/login";
+          }
           return Promise.reject(error);
         }
       }
