@@ -252,7 +252,7 @@ export default function TrangChu() {
                 <div className="max-w-[1520px] mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-12">
 
                     {/* BỐ CỤC 2 CỘT: TRÁI & PHẢI */}
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                         {/* ===================== CỘT TRÁI ===================== */}
                         <div className="lg:col-span-8 xl:col-span-9 space-y-8">
@@ -443,7 +443,7 @@ export default function TrangChu() {
                         </div>
 
                         {/* ===================== CỘT PHẢI ===================== */}
-                        <aside className="lg:col-span-4 xl:col-span-3 space-y-6">
+                        <aside className="lg:col-span-4 xl:col-span-3 space-y-6 h-full relative">
 
                             {/* 1. REVIEW CHI TIẾT (5 Video YouTube) */}
                             <div className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm">
@@ -574,7 +574,9 @@ export default function TrangChu() {
                             </div>
 
                             {/* 4. FORM "BẠN CẦN TƯ VẤN?" */}
-                            <ContactForm />
+                            <div className="sticky top-24 z-10 pb-6">
+                                <ContactForm />
+                            </div>
 
                         </aside>
                     </div>
