@@ -239,11 +239,11 @@ export default function TrangChu() {
     }, []);
 
     const toneAppImages = [
-        { id: 1, img: '/trangchu/img1.png', title: 'Giao diện Dò Tone v1' },
-        { id: 2, img: '/trangchu/img2.png', title: 'Setup Tone Phòng Thu' },
-        { id: 3, img: '/trangchu/img3.png', title: 'Auto Key Nhận Diện' },
-        { id: 4, img: '/trangchu/img4.png', title: 'Plugin Cubase AI' },
-        { id: 5, img: '/trangchu/img5.png', title: 'Tinh Chỉnh Giọng Hát' },
+        { id: 1, img: '/trangchu/img1.png' },
+        { id: 2, img: '/trangchu/img2.png' },
+        { id: 3, img: '/trangchu/img3.png' },
+        { id: 4, img: '/trangchu/img4.png' },
+        { id: 5, img: '/trangchu/img5.png' },
     ];
 
     return (
@@ -395,13 +395,10 @@ export default function TrangChu() {
                                                 <div className="relative aspect-[2/4] overflow-hidden bg-gray-50">
                                                     <img
                                                         src={item.img}
-                                                        alt={item.title}
+                                                        alt="Tone App"
                                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                                     />
                                                 </div>
-                                                <h4 className="mt-2 text-xs font-semibold text-gray-800 line-clamp-1 group-hover:text-[#ed792f] transition-colors text-center">
-                                                    {item.title}
-                                                </h4>
                                             </div>
                                         ))}
                                     </div>

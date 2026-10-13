@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Filter, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard.jsx';
 import { getListCategory } from '../redux/categorySlice.js';
@@ -17,29 +17,15 @@ const priceRanges = [
     { value: 'over8m', label: 'Trên 8.000.000₫', min: 8000000, max: Infinity },
 ];
 
-const getTitleByCategory = (selectedCategory, subCategory) => {
-    if (selectedCategory === 'all') {
-        return '';
-    }
-
-    if (subCategory && subCategory !== 'all') {
-        return subCategory;
-    }
-
-    return selectedCategory;
-};
-
-// ================= FilterSidebar: BỘ LỌC GIÁ RESPONSIVE (TỐI ƯU SIZE MOBILE) =================
+// ================= FilterSidebar: BỘ LỌC GIÁ =================
 const FilterSidebar = ({ filters, onFilterChange }) => {
     return (
         <div className="w-full md:w-56 lg:w-64 flex-shrink-0 p-3 sm:p-5 md:p-6 bg-white rounded-xl sm:rounded-2xl shadow-sm md:shadow-md top-4 self-start overflow-hidden">
-            {/* Header: giảm từ text-xl xuống text-sm/base trên mobile */}
             <h2 className="text-sm sm:text-base md:text-lg font-bold text-gray-800 mb-3 md:mb-5 flex items-center gap-1.5 sm:gap-2">
                 <Filter className="w-4 h-4 sm:w-5 sm:h-5 text-orange-500" />
                 Bộ Lọc Giá
             </h2>
 
-            {/* Price Filter */}
             <div className="border-b border-gray-100 pb-1 md:pb-6 w-full">
                 <div className="flex flex-nowrap overflow-x-auto md:flex-col gap-1.5 sm:gap-2 md:gap-3 pb-2 md:pb-0 scrollbar-none snap-x">
                     {priceRanges.map(range => {
@@ -61,7 +47,6 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
                                     onChange={() => onFilterChange('priceRange', range.value)}
                                     className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-500 bg-gray-100 border-gray-300 focus:ring-orange-500 cursor-pointer"
                                 />
-                                {/* Font chữ: text-xs trên mobile, text-sm trên tablet, text-[15px] trên desktop */}
                                 <span className={`text-xs sm:text-sm md:text-[15px] font-medium sm:font-semibold transition-colors whitespace-nowrap
                                     ${isChecked ? 'text-orange-600 font-bold' : 'text-gray-600 group-hover:text-gray-800'}`}>
                                     {range.label}
@@ -75,78 +60,136 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
     );
 };
 
-// ================= CategoryTopMenu: BỘ LỌC CATEGORY (TỐI ƯU SIZE MOBILE) =================
-const CategoryTopMenu = ({ categoryList, selectedCategory, onCategoryClick, onSubClick }) => {
-    return (
-        <div className="mb-6 sm:mb-8 md:mb-10 w-full overflow-hidden">
-            {/* Thu hẹp khoảng cách gap và lề padding của dải ngang trên mobile */}
-            <div className="flex flex-nowrap items-center overflow-x-auto gap-2 sm:gap-3 md:gap-4 pb-2.5 sm:pb-3 md:pb-4 px-1 sm:px-2 scrollbar-none snap-x">
+// ================= CategoryTopMenu: HỖ TRỢ SUB-CATEGORY CẢ DESKTOP & MOBILE =================
+const CategoryTopMenu = ({
+    categoryList,
+    selectedCategory,
+    selectedSubCategory,
+    onCategoryClick,
+    onSubClick
+}) => {
+    // Danh mục cha đang active -> render dải subcategory (pills) bên dưới
+    const currentActiveCat = useMemo(() => {
+        return categoryList.find(cat => String(cat.id) === String(selectedCategory));
+    }, [categoryList, selectedCategory]);
 
-                <div className="snap-center flex-shrink-0">
+    return (
+        // relative + z-20: cả menu nằm trên FilterSidebar và ProductsList
+        <div className="mb-6 sm:mb-8 md:mb-10 w-full relative z-20">
+            {/* Thanh danh mục chính (Cấp 1)
+                - Đã đổi thành flex-wrap để tự động ngắt dòng khi hết chỗ trên mọi thiết bị */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 pb-2.5 sm:pb-3 md:pb-4 px-1 sm:px-2">
+                <div className="flex-shrink-0">
                     <button
                         onClick={() => onCategoryClick('all')}
                         className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap
                             ${selectedCategory === 'all'
                                 ? 'bg-orange-500 text-white shadow-md'
-                                : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}
-                        `}
+                                : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}`}
                     >
                         Tất cả
                     </button>
                 </div>
 
-                {categoryList.map(cat => (
-                    <div
-                        key={cat.name}
-                        className="relative group snap-center flex-shrink-0"
-                    >
-                        <button
-                            onClick={() => onCategoryClick(cat)}
-                            className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap
-                                ${selectedCategory === String(cat.id)
-                                    ? 'bg-orange-500 text-white shadow-md'
-                                    : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}
-                            `}
+                {categoryList.map(cat => {
+                    const isCatActive = String(selectedCategory) === String(cat.id);
+                    const hasChildren = cat.children && cat.children.length > 0;
+
+                    return (
+                        <div
+                            key={cat.id || cat.name}
+                            className="relative group flex-shrink-0 md:hover:z-50"
                         >
-                            {cat.name}
-                        </button>
+                            <button
+                                onClick={() => onCategoryClick(cat)}
+                                className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap flex items-center gap-1
+                                    ${isCatActive
+                                        ? 'bg-orange-500 text-white shadow-md'
+                                        : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}`}
+                            >
+                                <span>{cat.name}</span>
+                                {hasChildren && (
+                                    <ChevronDown className={`w-3.5 h-3.5 transition-transform group-hover:rotate-180 ${isCatActive ? 'text-white' : 'text-gray-400'}`} />
+                                )}
+                            </button>
 
-                        {/* Dropdown Menu */}
-                        {cat.children && cat.children.length > 0 && (
-                            <div className="hidden md:block">
-                                <div className="absolute left-0 right-0 top-full h-3"></div>
-
-                                <div
-                                    className="absolute left-1/2 -translate-x-1/2 top-full mt-1
-                                        hidden group-hover:block
-                                        bg-white shadow-xl rounded-xl
-                                        min-w-[200px] z-50 py-1.5 border border-gray-100"
-                                >
-                                    {cat.children.map(sub => (
+                            {/* Dropdown Menu Desktop khi Hover */}
+                            {hasChildren && (
+                                <div className="hidden md:block">
+                                    <div className="absolute left-0 right-0 top-full h-2"></div>
+                                    <div className="absolute left-0 top-full mt-1 hidden group-hover:block bg-white shadow-xl rounded-xl min-w-[200px] z-[100] py-1.5 border border-gray-100">
                                         <button
-                                            key={sub.name}
-                                            onClick={() => onSubClick(cat, sub)}
-                                            className="block w-full text-left px-4 py-2
-                                                text-xs sm:text-sm font-medium
-                                                hover:bg-orange-50 text-gray-700 transition-colors"
+                                            onClick={() => onCategoryClick(cat)}
+                                            className={`block w-full text-left px-4 py-2 text-xs sm:text-sm font-semibold transition-colors
+                                                ${isCatActive && selectedSubCategory === 'all'
+                                                    ? 'bg-orange-100 text-orange-600 font-bold'
+                                                    : 'text-gray-700 hover:bg-orange-50'}`}
                                         >
-                                            {sub.name}
+                                            Tất cả {cat.name}
                                         </button>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
-                ))}
 
+                                        {cat.children.map(sub => {
+                                            const isSubActive = isCatActive && String(selectedSubCategory) === String(sub.id);
+                                            return (
+                                                <button
+                                                    key={sub.id || sub.name}
+                                                    onClick={() => onSubClick(cat, sub)}
+                                                    className={`block w-full text-left px-4 py-2 text-xs sm:text-sm transition-colors
+                                                        ${isSubActive
+                                                            ? 'bg-orange-100 text-orange-600 font-bold'
+                                                            : 'text-gray-700 hover:bg-orange-50 font-medium'}`}
+                                                >
+                                                    {sub.name}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    );
+                })}
             </div>
+
+            {/* Dải danh mục con cấp 2 (hiển thị khi danh mục cha đang được chọn)
+                - Tương tự, đã đổi thành flex-wrap để ngắt dòng */}
+            {currentActiveCat && currentActiveCat.children && currentActiveCat.children.length > 0 && (
+                <div className="mt-2.5 pt-2.5 border-t border-gray-200/60 flex flex-wrap items-center gap-2 px-1">
+                    <span className="text-xs text-gray-400 font-medium whitespace-nowrap mr-1 mb-1">Nhóm con:</span>
+                    <button
+                        onClick={() => onCategoryClick(currentActiveCat)}
+                        className={`px-3 py-1 mb-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all border
+                            ${selectedSubCategory === 'all'
+                                ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
+                                : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'}`}
+                    >
+                        Tất cả
+                    </button>
+
+                    {currentActiveCat.children.map(sub => {
+                        const isSubActive = String(selectedSubCategory) === String(sub.id);
+                        return (
+                            <button
+                                key={sub.id || sub.name}
+                                onClick={() => onSubClick(currentActiveCat, sub)}
+                                className={`px-3 py-1 mb-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all border
+                                    ${isSubActive
+                                        ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
+                                        : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'}`}
+                            >
+                                {sub.name}
+                            </button>
+                        );
+                    })}
+                </div>
+            )}
         </div>
     );
 };
 
-// ================= ProductsList: SHOW SẢN PHẨM TỬ CATEGORY VÀ GIÁ + PHÂN TRANG =================
+// ================= ProductsList: SHOW SẢN PHẨM =================
 const getPaginationRange = (currentPage, totalPages) => {
-    const delta = 2; // Số lượng trang hiển thị ở 2 bên trang hiện tại
+    const delta = 2;
     const range = [];
     const rangeWithDots = [];
     let l;
@@ -172,32 +215,24 @@ const getPaginationRange = (currentPage, totalPages) => {
     return rangeWithDots;
 };
 
-const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading }) => {
-
+const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading, activeTitle }) => {
     return (
         <div className="flex-1 md:pl-4 lg:pl-8">
             <div className="mb-6 pb-4 border-b border-gray-200 flex justify-between items-center">
                 <h1 className="text-xl font-black text-gray-900">
-                    Sản Phẩm
+                    {activeTitle ? `Sản Phẩm - ${activeTitle}` : 'Tất Cả Sản Phẩm'}
                 </h1>
                 <p className="text-gray-600 font-medium">{products.length} kết quả</p>
             </div>
 
-            {/* GRID + OVERLAY */}
             {products.length > 0 ? (
                 <div className="relative">
-
-                    {/* GRID */}
-                    <div
-                        className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2
-            ${loading ? 'opacity-40 pointer-events-none' : ''}`}
-                    >
+                    <div className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 ${loading ? 'opacity-40 pointer-events-none' : ''}`}>
                         {products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
 
-                    {/* OVERLAY LOADING */}
                     {loading && (
                         <div className="absolute inset-0 flex items-center justify-center bg-white/60">
                             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
@@ -208,15 +243,13 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
                 !loading && (
                     <div className="text-center p-12 bg-white rounded-xl shadow-inner mt-10">
                         <h3 className="text-xl font-bold text-gray-700">Không tìm thấy sản phẩm nào</h3>
-                        <p className="text-gray-500 mt-2">Vui lòng thử điều chỉnh bộ lọc của bạn.</p>
+                        <p className="text-gray-500 mt-2">Vui lòng thử chọn danh mục khác hoặc điều chỉnh mức giá.</p>
                     </div>
                 )
             )}
 
-
             {totalPages > 1 && (
                 <div className="flex justify-center items-center space-x-1 sm:space-x-2 mt-10 flex-wrap gap-y-2">
-                    {/* Nút Quay lại */}
                     <button
                         onClick={() => onPageChange(currentPage - 1)}
                         disabled={currentPage === 1}
@@ -225,14 +258,10 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
                         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-700" />
                     </button>
 
-                    {/* Danh sách số trang đã được rút gọn */}
                     {getPaginationRange(currentPage, totalPages).map((page, index) => {
                         if (page === '...') {
                             return (
-                                <span
-                                    key={`dots-${index}`}
-                                    className="px-2 py-1 sm:px-4 sm:py-2 text-gray-500 font-bold"
-                                >
+                                <span key={`dots-${index}`} className="px-2 py-1 sm:px-4 sm:py-2 text-gray-500 font-bold">
                                     ...
                                 </span>
                             );
@@ -243,17 +272,15 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
                                 key={`page-${page}`}
                                 onClick={() => onPageChange(page)}
                                 className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base font-bold rounded-lg transition-all
-                        ${currentPage === page
+                                    ${currentPage === page
                                         ? 'bg-orange-600 text-white shadow-md'
-                                        : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'
-                                    }`}
+                                        : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'}`}
                             >
                                 {page}
                             </button>
                         );
                     })}
 
-                    {/* Nút Tiếp theo */}
                     <button
                         onClick={() => onPageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
@@ -271,8 +298,8 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
 export default function SanPham() {
     const dispatch = useDispatch();
     const [searchParams] = useSearchParams();
-    const { CategoryList, CategoryTotal } = useSelector((state) => state.category);
-    const { searchResults, isSearching } = useSelector((state) => state.product);
+    const { CategoryList } = useSelector((state) => state.category);
+    const { searchResults } = useSelector((state) => state.product);
     const { id_category: urlCategoryId, id_product: urlSubCategoryId } = useParams();
     const navigate = useNavigate();
 
@@ -285,48 +312,51 @@ export default function SanPham() {
     const [loading, setLoading] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(searchParams.get('search') === 'true');
 
-    // Tính selectedCategory từ URL params
-    const selectedCategory = useMemo(() => {
-        return urlCategoryId || 'all';
-    }, [urlCategoryId]);
+    const selectedCategory = useMemo(() => urlCategoryId || 'all', [urlCategoryId]);
+    const selectedSubCategory = useMemo(() => urlSubCategoryId || 'all', [urlSubCategoryId]);
 
-    // Tính subCategory từ URL params
-    const subCategory = useMemo(() => {
-        if (urlSubCategoryId === 'all' || !urlSubCategoryId) return 'all';
-        const category = CategoryList.find(cat => cat.id === urlCategoryId);
-        if (category) {
-            const sub = category.children.find(child => child.id === urlSubCategoryId);
-            return sub ? sub.name : 'all';
+    // Tìm tên danh mục để gắn tiêu đề động
+    const currentTitle = useMemo(() => {
+        if (selectedCategory === 'all') return '';
+        const parent = CategoryList?.find(c => String(c.id) === String(selectedCategory));
+        if (!parent) return '';
+        if (selectedSubCategory && selectedSubCategory !== 'all') {
+            const sub = parent.children?.find(s => String(s.id) === String(selectedSubCategory));
+            return sub ? `${parent.name} > ${sub.name}` : parent.name;
         }
-        return 'all';
-    }, [urlSubCategoryId, urlCategoryId, CategoryList]);
+        return parent.name;
+    }, [selectedCategory, selectedSubCategory, CategoryList]);
 
-    // ================================================ INIT DATA ===========================================
     const fetchListCategory = async () => {
-        let res = await dispatch(getListCategory({ page: 1, limit: 20 })).unwrap();
+        try {
+            await dispatch(getListCategory({ page: 1, limit: 100 })).unwrap();
+        } catch (err) {
+            console.error('Lỗi lấy categories:', err);
+        }
     };
 
     const fetchProducts = async (page = 1) => {
         setLoading(true);
         try {
-            // Nếu ở chế độ tìm kiếm, sử dụng searchResults từ Redux
             if (isSearchMode && searchResults && searchResults.length > 0) {
                 setProducts(searchResults);
                 setTotalPages(1);
                 setCurrentPage(1);
             } else {
-                // Ngược lại, gọi API bình thường
-                let categoryId = urlCategoryId || 'all';
+                // Ưu tiên subCategory nếu có, nếu không thì lấy category cha
+                let categoryId = 'all';
                 if (urlSubCategoryId && urlSubCategoryId !== 'all') {
                     categoryId = urlSubCategoryId;
+                } else if (urlCategoryId && urlCategoryId !== 'all') {
+                    categoryId = urlCategoryId;
                 }
 
                 const priceProduct = filters.priceRange;
                 const res = await ApiProduct.filterProductApi(page, 9, categoryId, priceProduct);
 
-                setProducts(res.DT.products || []);
-                setTotalPages(Math.ceil(res.DT.total / res.DT.limit));
-                setCurrentPage(res.DT.page);
+                setProducts(res.DT?.products || []);
+                setTotalPages(Math.ceil((res.DT?.total || 0) / (res.DT?.limit || 9)));
+                setCurrentPage(res.DT?.page || 1);
             }
         } catch (error) {
             console.error(error);
@@ -341,22 +371,16 @@ export default function SanPham() {
     }, []);
 
     useEffect(() => {
-        if (searchParams.get('search') === 'true') {
-            setIsSearchMode(true);
-            fetchProducts(1);
-        } else {
-            setIsSearchMode(false);
-            if (CategoryList.length > 0 && urlCategoryId !== undefined) {
-                fetchProducts(1);
-            }
-        }
-    }, [urlCategoryId, urlSubCategoryId, filters.priceRange, CategoryList, searchParams, searchResults]);
-    // ============================================= ACTION ================================================
+        const isSearch = searchParams.get('search') === 'true';
+        setIsSearchMode(isSearch);
+        fetchProducts(1);
+    }, [urlCategoryId, urlSubCategoryId, filters.priceRange, searchParams, searchResults]);
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
     };
 
+    // Click danh mục cha -> reset subCategory về 'all'
     const handleCategoryClick = (cat) => {
         if (cat === 'all') {
             navigate('/san-pham/all/all');
@@ -365,18 +389,17 @@ export default function SanPham() {
         }
     };
 
+    // Click danh mục con -> URL: /:slug-con/:id-cha/:id-con
     const handleSubClick = (cat, sub) => {
-        navigate(`/${slug(sub.name)}/${sub.id}/all`);
+        navigate(`/${slug(sub.name)}/${cat.id}/${sub.id}`);
     };
 
     const handlePageChange = (page) => {
-        setLoading(true);   // bật loading trước
         fetchProducts(page);
     };
 
     return (
         <div className="min-h-screen bg-gray-50 p-4 sm:p-8 lg:p-12 font-sans">
-            {/* Thông báo chế độ tìm kiếm */}
             {isSearchMode && (
                 <div className="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-lg flex items-center justify-between">
                     <div className="flex items-center gap-3">
@@ -398,29 +421,28 @@ export default function SanPham() {
                 </div>
             )}
 
-            {/* Top category menu */}
             {!isSearchMode && (
                 <CategoryTopMenu
-                    categoryList={CategoryList}
+                    categoryList={CategoryList || []}
                     selectedCategory={selectedCategory}
+                    selectedSubCategory={selectedSubCategory}
                     onCategoryClick={handleCategoryClick}
                     onSubClick={handleSubClick}
                 />
             )}
 
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8">
-                {/* Sidebar - ẩn khi ở chế độ tìm kiếm */}
                 {!isSearchMode && (
                     <FilterSidebar filters={filters} onFilterChange={handleFilterChange} />
                 )}
 
-                {/* Product list */}
                 <ProductsList
                     products={products}
                     currentPage={currentPage}
                     totalPages={totalPages}
                     onPageChange={handlePageChange}
                     loading={loading}
+                    activeTitle={currentTitle}
                 />
             </div>
         </div>

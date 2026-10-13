@@ -51,7 +51,7 @@ export default function ProductCard({ product, isTopSeller = false }) {
             to={productUrl}
             className="group block bg-white rounded-2xl overflow-hidden transition-all duration-500 cursor-pointer shadow-lg hover:shadow-2xl hover:-translate-y-2 w-full max-w-full min-w-0 box-border"
         >
-            <div className="relative overflow-hidden h-40 sm:h-44 bg-gray-50 flex flex-col items-center justify-center p-2 w-full max-w-full box-border">
+            <div className="relative overflow-hidden h-40 sm:h-44 bg-gray-50 flex flex-col items-center justify-center w-full max-w-full box-border">
 
                 <ImageLoader
                     imagePath={product.image}
