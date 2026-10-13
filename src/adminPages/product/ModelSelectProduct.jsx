@@ -225,7 +225,6 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                                 <div className="text-sm font-medium text-gray-800 truncate" title={sub.name}>
                                                     {sub.name}
                                                 </div>
-                                                <div className="text-xs text-gray-500 mt-0.5">{sub.detail}</div>
                                             </div>
                                             <button
                                                 onClick={() => handleAddProduct(sub)}

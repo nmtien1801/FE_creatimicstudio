@@ -62,22 +62,32 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
 
 // ================= CategoryTopMenu: HỖ TRỢ SUB-CATEGORY CẢ DESKTOP & MOBILE =================
 const CategoryTopMenu = ({
-    categoryList,
+    categoryList = [],
     selectedCategory,
     selectedSubCategory,
     onCategoryClick,
     onSubClick
 }) => {
-    // Danh mục cha đang active -> render dải subcategory (pills) bên dưới
+    // 1. Chỉ lấy danh mục cha có status = true và danh mục con bên trong cũng có status = true
+    const activeCategories = useMemo(() => {
+        if (!Array.isArray(categoryList)) return [];
+
+        return categoryList
+            .filter(cat => cat.status === true || cat.status === 1)
+            .map(cat => ({
+                ...cat,
+                children: (cat.children || []).filter(sub => sub.status === true || sub.status === 1)
+            }));
+    }, [categoryList]);
+
+    // 2. Tìm danh mục cha đang active từ danh sách đã lọc
     const currentActiveCat = useMemo(() => {
-        return categoryList.find(cat => String(cat.id) === String(selectedCategory));
-    }, [categoryList, selectedCategory]);
+        return activeCategories.find(cat => String(cat.id) === String(selectedCategory));
+    }, [activeCategories, selectedCategory]);
 
     return (
-        // relative + z-20: cả menu nằm trên FilterSidebar và ProductsList
         <div className="mb-6 sm:mb-8 md:mb-10 w-full relative z-20">
-            {/* Thanh danh mục chính (Cấp 1)
-                - Đã đổi thành flex-wrap để tự động ngắt dòng khi hết chỗ trên mọi thiết bị */}
+            {/* Thanh danh mục chính (Cấp 1) */}
             <div className="flex flex-wrap items-center gap-2 sm:gap-3 md:gap-4 pb-2.5 sm:pb-3 md:pb-4 px-1 sm:px-2">
                 <div className="flex-shrink-0">
                     <button
@@ -91,7 +101,7 @@ const CategoryTopMenu = ({
                     </button>
                 </div>
 
-                {categoryList.map(cat => {
+                {activeCategories.map(cat => {
                     const isCatActive = String(selectedCategory) === String(cat.id);
                     const hasChildren = cat.children && cat.children.length > 0;
 
@@ -151,8 +161,7 @@ const CategoryTopMenu = ({
                 })}
             </div>
 
-            {/* Dải danh mục con cấp 2 (hiển thị khi danh mục cha đang được chọn)
-                - Tương tự, đã đổi thành flex-wrap để ngắt dòng */}
+            {/* Dải danh mục con cấp 2 (chỉ hiện các subcategory có status = true) */}
             {currentActiveCat && currentActiveCat.children && currentActiveCat.children.length > 0 && (
                 <div className="mt-2.5 pt-2.5 border-t border-gray-200/60 flex flex-wrap items-center gap-2 px-1">
                     <span className="text-xs text-gray-400 font-medium whitespace-nowrap mr-1 mb-1">Nhóm con:</span>
