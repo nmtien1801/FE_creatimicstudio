@@ -261,7 +261,6 @@ export default function ModelSelectProduct({ visible, onClose, form }) {
                                         <div key={sub.id} className="flex items-center justify-between p-3 bg-white border-l-4 border-l-teal-500 border border-gray-100 rounded-r shadow-sm mb-1">
                                             <div className="flex-1 pr-2 min-w-0">
                                                 <div className="text-sm font-medium text-gray-800 truncate" title={sub.name}>{sub.name}</div>
-                                                <div className="text-xs text-gray-500 mt-0.5">{sub.code}</div>
                                             </div>
                                             <button
                                                 onClick={() => handleRemoveProduct(sub)}
