@@ -427,7 +427,7 @@ export default function TrangChu() {
                                         <div className="relative aspect-video rounded-xl overflow-hidden shadow-lg bg-black">
                                             <iframe
                                                 className="w-full h-full object-cover"
-                                                src={`https://www.youtube.com/embed/vRFUoQ2Qo2g?rel=0`}
+                                                src={`https://www.youtube.com/embed/tcj5IR2g6YQ?rel=0`}
                                                 title="Video Review"
                                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                                 allowFullScreen

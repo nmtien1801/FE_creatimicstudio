@@ -109,7 +109,7 @@ export default function Footer() {
                             <div className="flex items-center justify-start">
                                 <Mail className="w-5 h-5 text-orange-950 flex-shrink-0 mr-3" />
                                 <p>
-                                    <strong className="font-bold">Email:</strong> contact@creatimichub.vn
+                                    <strong className="font-bold">Email:</strong> contact@cmicagency.vn
                                 </p>
                             </div>
                             <div className="flex items-start justify-start">

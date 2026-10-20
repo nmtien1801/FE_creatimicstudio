@@ -6,6 +6,7 @@ import {
     X
 } from 'lucide-react';
 import { toast } from 'react-toastify';
+import PhoneOtpField from '../../components/PhoneOtpField';
 
 // Component Biển Cảnh Báo chuẩn theo ảnh mẫu
 function WarningSignIcon({ className = "w-12 h-12 md:w-16 md:h-16" }) {
@@ -46,6 +47,7 @@ export default function SetupLivestreamPage() {
     const [targetType, setTargetType] = useState('Nhà bán hàng e-commerce');
     const [deviceType, setDeviceType] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
+    const [phoneVerified, setPhoneVerified] = useState(false);
     const [budgetNote, setBudgetNote] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -87,12 +89,21 @@ export default function SetupLivestreamPage() {
             toast.warning('Vui lòng nhập số điện thoại để nhận báo giá!');
             return;
         }
+        if (!phoneVerified) {
+            toast.warning('Vui lòng xác thực số điện thoại trước khi tiếp tục!');
+            return;
+        }
         setStep(4);
     };
 
     // Gửi form cuối cùng
     const handleFinalSubmit = (e) => {
         e.preventDefault();
+        if (!phoneVerified) {
+            toast.warning('Vui lòng xác thực số điện thoại trước khi gửi!');
+            setStep(3);
+            return;
+        }
         setIsSubmitted(true);
         toast.success('Đã gửi thông tin tư vấn thành công! CMIC STUDIO sẽ liên hệ sớm nhất.');
     };
@@ -103,6 +114,7 @@ export default function SetupLivestreamPage() {
         setTargetType('Nhà bán hàng e-commerce');
         setDeviceType('');
         setPhoneNumber('');
+        setPhoneVerified(false);
         setBudgetNote('');
         setIsSubmitted(false);
         setPreviewImage(null);
@@ -195,40 +207,6 @@ export default function SetupLivestreamPage() {
                     alt="Banner Dịch Vụ AutoTune AI"
                     className="w-full h-auto object-cover max-h-[300px] sm:max-h-[400px] lg:max-h-[500px]"
                 />
-                <div className="absolute inset-0 bg-black/40" />
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10 select-none">
-                    {/* Nội dung text giữ nguyên */}
-                </div>
-                <div className="absolute inset-0 bg-black/40" />
-
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10 select-none">
-                    <div className="mb-2 md:mb-4 text-[#ff3b3b]">
-                        <svg
-                            className="w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 inline-block"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                        >
-                            <circle cx="12" cy="12" r="3" />
-                            <path
-                                d="M16.24 7.76a6 6 0 0 1 0 8.49m-8.48-.01a6 6 0 0 1 0-8.49m11.31-2.82a10 10 0 0 1 0 14.14m-14.14 0a10 10 0 0 1 0-14.14"
-                                fill="none"
-                                stroke="currentColor"
-                                strokeWidth="2.2"
-                                strokeLinecap="round"
-                            />
-                        </svg>
-                    </div>
-
-                    <h1 className="text-lg sm:text-2xl md:text-4xl font-black uppercase text-white tracking-wide leading-tight drop-shadow-md">
-                        BIẾN MỌI PHIÊN LIVE <br />
-                        THÀNH SÂN KHẤU
-                    </h1>
-
-                    <p className="mt-2 sm:mt-3 md:mt-4 text-xs sm:text-lg md:text-2xl font-extrabold uppercase text-[#f97316] tracking-wider drop-shadow-sm">
-                        BÙNG NỔ DOANH SỐ &amp; NGHỆ THUẬT
-                    </p>
-                </div>
             </div>
 
             {/* ========================================================= */}
@@ -714,22 +692,21 @@ export default function SetupLivestreamPage() {
 
                             <form onSubmit={handleNextToPrice}>
                                 <div className="mb-6 md:mb-8">
-                                    <input
-                                        type="tel"
-                                        autoFocus
-                                        required
-                                        value={phoneNumber}
-                                        onChange={(e) => setPhoneNumber(e.target.value)}
-                                        placeholder="Nhập số điện thoại của bạn..."
-                                        className="w-full py-3 sm:py-4 px-4 sm:px-5 bg-white border border-[#f5b890] rounded-xl sm:rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-sm sm:text-base text-gray-900 transition-all placeholder:text-gray-400"
+                                    <PhoneOtpField
+                                        variant="livestream"
+                                        phoneNumber={phoneNumber}
+                                        verified={phoneVerified}
+                                        onPhoneNumberChange={setPhoneNumber}
+                                        onVerifiedChange={setPhoneVerified}
                                     />
                                 </div>
 
                                 <button
                                     type="submit"
-                                    className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                    disabled={!phoneVerified}
+                                    className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
                                 >
-                                    GỬI NGAY
+                                    {phoneVerified ? 'TIẾP TỤC' : 'XÁC THỰC SĐT ĐỂ TIẾP TỤC'}
                                 </button>
                             </form>
                         </div>
@@ -797,7 +774,8 @@ export default function SetupLivestreamPage() {
                                         {!isSubmitted ? (
                                             <button
                                                 type="submit"
-                                                className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                                disabled={!phoneVerified}
+                                                className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
                                             >
                                                 GỬI NGAY
                                             </button>

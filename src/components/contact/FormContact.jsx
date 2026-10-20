@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import ApiContact from "../../apis/ApiContact";
 import { toast } from 'react-toastify';
+import PhoneOtpField from "../PhoneOtpField";
 
 const ContactForm = ({ onSubmitSuccess }) => {
     const [loading, setLoading] = useState(false);
+    const [phoneVerified, setPhoneVerified] = useState(false);
 
     // Đổi 'content' thành 'note' cho đồng bộ với thẻ textarea
     const [formData, setFormData] = useState({
@@ -23,6 +25,11 @@ const ContactForm = ({ onSubmitSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!phoneVerified) {
+            toast.warning('Vui lòng xác thực số điện thoại trước khi gửi.');
+            return;
+        }
 
         // Kiểm tra định dạng email nếu có nhập
         if (formData.email.trim()) {
@@ -56,6 +63,7 @@ const ContactForm = ({ onSubmitSuccess }) => {
                 phone: '',
                 note: ''
             });
+            setPhoneVerified(false);
         } catch (error) {
             console.error('Error sending contact:', error);
             toast.error('Gửi thông tin liên hệ thất bại. Vui lòng thử lại.');
@@ -89,21 +97,14 @@ const ContactForm = ({ onSubmitSuccess }) => {
                     />
                 </div>
 
-                {/* SĐT (bắt buộc) */}
-                <div>
-                    <label className="block text-xs font-bold text-gray-700 mb-1">
-                        SĐT*
-                    </label>
-                    <input
-                        type="tel"
-                        name="phone"
-                        required
-                        placeholder="Nhập số điện thoại"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-[#ed792f]"
-                    />
-                </div>
+                <PhoneOtpField
+                    phoneNumber={formData.phone}
+                    verified={phoneVerified}
+                    onPhoneNumberChange={(phone) =>
+                        setFormData((prev) => ({ ...prev, phone }))
+                    }
+                    onVerifiedChange={setPhoneVerified}
+                />
 
                 {/* Email (không bắt buộc) */}
                 <div>
@@ -137,11 +138,11 @@ const ContactForm = ({ onSubmitSuccess }) => {
 
                 <button
                     type="submit"
-                    disabled={loading}
+                    disabled={loading || !phoneVerified}
                     className={`w-full py-2.5 font-bold text-sm rounded-xl shadow-md transition-colors text-white 
-                        ${loading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#ed792f] hover:bg-[#d8681e]'}`}
+                        ${loading || !phoneVerified ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#ed792f] hover:bg-[#d8681e]'}`}
                 >
-                    {loading ? 'Đang gửi...' : 'Gửi đi'}
+                    {loading ? 'Đang gửi...' : phoneVerified ? 'Gửi đi' : 'Xác thực SĐT để gửi'}
                 </button>
 
                 <p className="text-[10px] text-gray-400 text-center leading-relaxed">
