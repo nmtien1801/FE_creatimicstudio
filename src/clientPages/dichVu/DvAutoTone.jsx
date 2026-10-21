@@ -8,6 +8,85 @@ import {
     ChevronRight
 } from 'lucide-react';
 
+// =============================================================
+// Hiệu ứng xuất hiện mượt khi cuộn chuột (scroll reveal)
+// =============================================================
+const revealStyles = `
+    .reveal-hidden { opacity: 0; }
+    .reveal-in {
+        animation-duration: 0.85s;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        animation-fill-mode: backwards;
+    }
+    .reveal-up    { animation-name: revealUp; }
+    .reveal-left  { animation-name: revealLeft; }
+    .reveal-right { animation-name: revealRight; }
+    .reveal-zoom  { animation-name: revealZoom; }
+    .reveal-fade  { animation-name: revealFade; }
+
+    @keyframes revealUp {
+        from { opacity: 0; transform: translate3d(0, 36px, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealLeft {
+        from { opacity: 0; transform: translate3d(-48px, 0, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealRight {
+        from { opacity: 0; transform: translate3d(48px, 0, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealZoom {
+        from { opacity: 0; transform: scale(0.92); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes revealFade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal-in { animation: none !important; }
+        .reveal-hidden { opacity: 1; }
+    }
+`;
+
+function Reveal({ as: Tag = 'div', variant = 'up', delay = 0, className = '', children, style, ...rest }) {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        if (typeof IntersectionObserver === 'undefined') {
+            setVisible(true);
+            return;
+        }
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <Tag
+            ref={ref}
+            className={`${className} ${visible ? `reveal-in reveal-${variant}` : 'reveal-hidden'}`}
+            style={visible && delay ? { ...style, animationDelay: `${delay}ms` } : style}
+            {...rest}
+        >
+            {children}
+        </Tag>
+    );
+}
+
 export default function AutoTuneLandingPage() {
     // Accordion State cho FAQ (chọn mở mặc định câu 1)
     const [openFaq, setOpenFaq] = useState(0);
@@ -246,9 +325,11 @@ export default function AutoTuneLandingPage() {
 
     return (
         <div className="w-full bg-white font-sans text-gray-900">
+            <style>{revealStyles}</style>
+
 
             {/* ẢNH FULL WIDTH SAU BANNER */}
-            <div className="w-full relative group">
+            <Reveal variant="fade" className="w-full relative group">
                 <img
                     src="/dichvutune/hero.png"
                     alt="Banner Dịch Vụ AutoTune AI"
@@ -286,7 +367,7 @@ export default function AutoTuneLandingPage() {
                         </svg>
                     </div>
                 </a>
-            </div>
+            </Reveal>
 
             <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 md:py-12 space-y-12 md:space-y-20 lg:space-y-24">
 
@@ -295,32 +376,32 @@ export default function AutoTuneLandingPage() {
                 {/* ============================================================== */}
                 <section className="grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
                     <div className="md:col-span-6 space-y-4 md:space-y-6">
-                        <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black leading-snug md:leading-tight tracking-tight uppercase">
+                        <Reveal as="h2" variant="left" className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black leading-snug md:leading-tight tracking-tight uppercase">
                             BẠN MUỐN HÁT HAY HƠN NHƯNG...
-                        </h2>
+                        </Reveal>
                         <div className="space-y-3 md:space-y-4 pt-1 md:pt-2">
-                            <div className="flex items-start space-x-2 md:space-x-3">
+                            <Reveal variant="left" delay={150} className="flex items-start space-x-2 md:space-x-3">
                                 <XCircle className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-red-600 flex-shrink-0 fill-red-600" color="white" />
                                 <span className="text-sm sm:text-base md:text-lg font-medium text-gray-800">
                                     Giọng hát bị phô, lệch tone
                                 </span>
-                            </div>
-                            <div className="flex items-start space-x-2 md:space-x-3">
+                            </Reveal>
+                            <Reveal variant="left" delay={270} className="flex items-start space-x-2 md:space-x-3">
                                 <XCircle className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-red-600 flex-shrink-0 fill-red-600" color="white" />
                                 <span className="text-sm sm:text-base md:text-lg font-medium text-gray-800">
                                     Không biết sử dụng phần mềm để chỉnh sao cho hay
                                 </span>
-                            </div>
-                            <div className="flex items-start space-x-2 md:space-x-3">
+                            </Reveal>
+                            <Reveal variant="left" delay={390} className="flex items-start space-x-2 md:space-x-3">
                                 <XCircle className="w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 text-red-600 flex-shrink-0 fill-red-600" color="white" />
                                 <span className="text-sm sm:text-base md:text-lg font-medium text-gray-800">
                                     Không tìm được beat nhạc có cao độ phù hợp
                                 </span>
-                            </div>
+                            </Reveal>
                         </div>
                     </div>
 
-                    <div className="md:col-span-6 mt-4 md:mt-0">
+                    <Reveal variant="right" delay={150} className="md:col-span-6 mt-4 md:mt-0">
                         <div className="w-full aspect-video rounded-2xl md:rounded-3xl border-2 border-black overflow-hidden flex items-center justify-center p-1.5 md:p-2 bg-black shadow-md md:shadow-lg">
                             <iframe
                                 className="w-full h-full rounded-xl md:rounded-2xl"
@@ -330,18 +411,18 @@ export default function AutoTuneLandingPage() {
                                 allowFullScreen
                             ></iframe>
                         </div>
-                    </div>
+                    </Reveal>
                 </section>
 
                 {/* ============================================================== */}
                 {/* 2. GIẢI PHÁP AUTOTUNE AI TOÀN DIỆN... (Ảnh 2)                  */}
                 {/* ============================================================== */}
                 <section>
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-4 md:mb-6 tracking-wide text-center md:text-left">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-4 md:mb-6 tracking-wide text-center md:text-left">
                         GIẢI PHÁP AUTOTUNE AI TOÀN DIỆN TỪ CMIC STUDIO DÀNH CHO AI?
-                    </h2>
+                    </Reveal>
 
-                    <div
+                    <Reveal variant="up" delay={100}
                         style={{
                             background: 'radial-gradient(circle at center, #FFE699 0%, #FDAE4B 45%, #F27A24 85%, #E66610 100%)'
                         }}
@@ -353,7 +434,7 @@ export default function AutoTuneLandingPage() {
 
                         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
                             {targetAudiences.map((item, idx) => (
-                                <div key={idx} className="bg-white overflow-hidden shadow-sm md:shadow-md flex flex-col group rounded-lg md:rounded-xl">
+                                <Reveal variant="zoom" delay={(idx % 3) * 100} key={idx} className="bg-white overflow-hidden shadow-sm md:shadow-md flex flex-col group rounded-lg md:rounded-xl">
                                     <div className="w-full aspect-square overflow-hidden bg-gray-100">
                                         <img
                                             src={item.img}
@@ -366,10 +447,10 @@ export default function AutoTuneLandingPage() {
                                             {item.title}
                                         </p>
                                     </div>
-                                </div>
+                                </Reveal>
                             ))}
                         </div>
-                    </div>
+                    </Reveal>
                 </section>
 
                 {/* ============================================================== */}
@@ -377,16 +458,16 @@ export default function AutoTuneLandingPage() {
                 {/* ============================================================== */}
                 <section className="pb-8 md:pb-12 bg-white overflow-hidden">
                     <div className="max-w-6xl mx-auto">
-                        <h2 className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-6 md:mb-10 tracking-wide text-center px-4">
+                        <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-6 md:mb-10 tracking-wide text-center px-4">
                             MỘT SỐ TÍNH NĂNG NỔI BẬT CỦA AUTOTUNE AI
-                        </h2>
+                        </Reveal>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 items-stretch">
                             {features.map((feat, idx) => {
                                 const isEven = idx % 2 === 0;
 
                                 return (
-                                    <div
+                                    <Reveal variant="up" delay={idx * 120}
                                         key={idx}
                                         className={`relative bg-[#0d0909] text-white flex flex-col items-center border-y border-orange-950/60 p-4 sm:p-5 md:p-6 ${idx === 0 ? "border-l border-orange-950/60" : ""
                                             } ${idx === features.length - 1 ? "border-r border-orange-950/60" : "border-r border-orange-900/30"
@@ -421,7 +502,7 @@ export default function AutoTuneLandingPage() {
                                                 </p>
                                             ))}
                                         </div>
-                                    </div>
+                                    </Reveal>
                                 );
                             })}
                         </div>
@@ -434,7 +515,7 @@ export default function AutoTuneLandingPage() {
                 <section className="space-y-4 md:space-y-6">
                     <div className="grid grid-cols-3 gap-1.5 md:gap-3">
                         {feedbackTop.map((src, i) => (
-                            <div
+                            <Reveal variant="zoom" delay={i * 120}
                                 key={i}
                                 className="rounded-none aspect-square overflow-hidden shadow-sm border border-gray-100/50 bg-black"
                             >
@@ -446,10 +527,11 @@ export default function AutoTuneLandingPage() {
                                         e.currentTarget.src = "https://images.unsplash.com/photo-1544717305-2782549b5136?w=600&q=80";
                                     }}
                                 />
-                            </div>
+                            </Reveal>
                         ))}
                     </div>
 
+                    <Reveal variant="up" delay={150}>
                     <div
                         ref={carouselRef}
                         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
@@ -471,8 +553,9 @@ export default function AutoTuneLandingPage() {
                             </div>
                         ))}
                     </div>
+                    </Reveal>
 
-                    <div className="pt-4 md:pt-6 text-center">
+                    <Reveal variant="up" className="pt-4 md:pt-6 text-center">
                         <a
                             href="#bang-gia"
                             className="inline-flex items-center gap-2 md:gap-3 px-6 md:px-8 py-2 md:py-3 bg-white hover:bg-orange-50 text-black border-2 border-[#e8702a] font-extrabold rounded-full shadow-sm md:shadow-md transition-all duration-300 uppercase text-xs md:text-sm tracking-wide md:tracking-wider"
@@ -482,23 +565,23 @@ export default function AutoTuneLandingPage() {
                                 <ArrowRight className="w-3 h-3 md:w-4 md:h-4 stroke-[2.5]" />
                             </div>
                         </a>
-                    </div>
+                    </Reveal>
                 </section>
 
                 {/* ============================================================== */}
                 {/* 5. QUY TRÌNH CÀI ĐẶT AUTOTUNE AI                               */}
                 {/* ============================================================== */}
                 <section className="py-4 md:py-6">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-6 md:mb-8 tracking-wide text-center md:text-left">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-6 md:mb-8 tracking-wide text-center md:text-left">
                         QUY TRÌNH CÀI ĐẶT AUTOTUNE AI
-                    </h2>
+                    </Reveal>
 
                     <div className="relative">
                         <div className="absolute left-[7px] md:left-[7px] top-2 md:top-3 bottom-6 md:bottom-8 w-[2px] bg-black"></div>
 
                         <div className="space-y-4 md:space-y-6">
                             {processSteps.map((step, idx) => (
-                                <div key={idx} className="relative flex items-start pl-6 md:pl-8 group">
+                                <Reveal variant="left" delay={idx * 120} key={idx} className="relative flex items-start pl-6 md:pl-8 group">
                                     <div className="absolute left-0 top-[2px] md:top-[3px] w-3.5 h-3.5 md:w-4 md:h-4 bg-white border-[2.5px] md:border-[3px] border-black rounded-[2px] z-10"></div>
 
                                     <div>
@@ -509,7 +592,7 @@ export default function AutoTuneLandingPage() {
                                             {step.desc}
                                         </p>
                                     </div>
-                                </div>
+                                </Reveal>
                             ))}
                         </div>
                     </div>
@@ -519,9 +602,9 @@ export default function AutoTuneLandingPage() {
                 {/* 6. BẢNG GIÁ CÀI AUTOTUNE AI                                    */}
                 {/* ============================================================== */}
                 <section id="bang-gia" className="scroll-mt-6">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-6 md:mb-8 tracking-wide text-center md:text-left">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-6 md:mb-8 tracking-wide text-center md:text-left">
                         BẢNG GIÁ CÀI AUTOTUNE AI
-                    </h2>
+                    </Reveal>
 
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-5 items-stretch">
                         {[
@@ -530,7 +613,7 @@ export default function AutoTuneLandingPage() {
                             { id: 3, src: "/dichvutune/9.png", alt: "Gói macOS 1.200.000 VNĐ" },
                             { id: 4, src: "/dichvutune/10.png", alt: "Gói macOS 3.000.000 VNĐ" },
                         ].map((item) => (
-                            <div
+                            <Reveal variant="up" delay={(item.id - 1) * 120}
                                 key={item.id}
                                 className="w-full h-full rounded-none overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group hover:-translate-y-1 bg-white border border-gray-100"
                             >
@@ -548,7 +631,7 @@ export default function AutoTuneLandingPage() {
                                         }}
                                     />
                                 </a>
-                            </div>
+                            </Reveal>
                         ))}
                     </div>
                 </section>
@@ -557,15 +640,15 @@ export default function AutoTuneLandingPage() {
                 {/* 7. NHỮNG CÂU HỎI THƯỜNG GẶP                                     */}
                 {/* ============================================================== */}
                 <section className="space-y-4 md:space-y-6 pb-10">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-4 md:mb-8 tracking-wide text-center md:text-left">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black mb-4 md:mb-8 tracking-wide text-center md:text-left">
                         NHỮNG CÂU HỎI THƯỜNG GẶP
-                    </h2>
+                    </Reveal>
 
                     <div className="space-y-3 md:space-y-6">
                         {faqList.map((faq, idx) => {
                             const isOpen = openFaq === idx;
                             return (
-                                <div key={idx} className="space-y-2 md:space-y-3">
+                                <Reveal variant="up" delay={idx * 100} key={idx} className="space-y-2 md:space-y-3">
                                     <div
                                         onClick={() => toggleFaq(idx)}
                                         className="flex items-start gap-2 cursor-pointer select-none group"
@@ -587,7 +670,7 @@ export default function AutoTuneLandingPage() {
                                             {faq.a}
                                         </p>
                                     )}
-                                </div>
+                                </Reveal>
                             );
                         })}
                     </div>

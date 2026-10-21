@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'; // Thêm useEffect
+import React, { useState, useEffect, useMemo, useRef } from 'react'; // Thêm useEffect
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react';
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,8 +8,87 @@ import ImageLoader from '../components/FormFields/ImageLoader';
 import { slug } from '../utils/constants.js';
 // url: /tin-tuc/:slug/:id
 
-const NewsCard = ({ news }) => (
-    <NavLink to={`/tin-tuc/${slug(news.title)}/${news.id}`} className="block">
+// =============================================================
+// Hiệu ứng xuất hiện mượt khi cuộn chuột (scroll reveal)
+// =============================================================
+const revealStyles = `
+    .reveal-hidden { opacity: 0; }
+    .reveal-in {
+        animation-duration: 0.85s;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        animation-fill-mode: backwards;
+    }
+    .reveal-up    { animation-name: revealUp; }
+    .reveal-left  { animation-name: revealLeft; }
+    .reveal-right { animation-name: revealRight; }
+    .reveal-zoom  { animation-name: revealZoom; }
+    .reveal-fade  { animation-name: revealFade; }
+
+    @keyframes revealUp {
+        from { opacity: 0; transform: translate3d(0, 36px, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealLeft {
+        from { opacity: 0; transform: translate3d(-48px, 0, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealRight {
+        from { opacity: 0; transform: translate3d(48px, 0, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealZoom {
+        from { opacity: 0; transform: scale(0.92); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes revealFade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal-in { animation: none !important; }
+        .reveal-hidden { opacity: 1; }
+    }
+`;
+
+const Reveal = ({ as: Tag = 'div', variant = 'up', delay = 0, className = '', children, style, ...rest }) => {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        if (typeof IntersectionObserver === 'undefined') {
+            setVisible(true);
+            return;
+        }
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <Tag
+            ref={ref}
+            className={`${className} ${visible ? `reveal-in reveal-${variant}` : 'reveal-hidden'}`}
+            style={visible && delay ? { ...style, animationDelay: `${delay}ms` } : style}
+            {...rest}
+        >
+            {children}
+        </Tag>
+    );
+};
+
+const NewsCard = ({ news, index = 0 }) => (
+    <Reveal as={NavLink} variant="up" delay={(index % 4) * 100} to={`/tin-tuc/${slug(news.title)}/${news.id}`} className="block">
         <div className="bg-white border border-gray-200 rounded-lg overflow-hidden shadow hover:shadow-lg transition-shadow duration-300 h-full flex flex-col cursor-pointer">
             {/* Image placeholder */}
             <div className="w-full h-40 bg-gray-300 flex items-center justify-center text-gray-500">
@@ -25,7 +104,7 @@ const NewsCard = ({ news }) => (
                 </p>
             </div>
         </div>
-    </NavLink>
+    </Reveal>
 );
 
 // Component Pagination
@@ -52,7 +131,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
     const pages = Array.from({ length: (endPage - startPage) + 1 }, (_, i) => startPage + i);
 
     return (
-        <div className="flex flex-col gap-6 mt-10">
+        <Reveal variant="up" className="flex flex-col gap-6 mt-10">
             {/* Phần phân trang */}
             <div className="flex items-center justify-center gap-2 flex-wrap">
                 {/* Nút Previous */}
@@ -101,7 +180,7 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
                     <ChevronRight className="w-5 h-5 text-gray-700" />
                 </button>
             </div>
-        </div>
+        </Reveal>
     );
 };
 
@@ -175,11 +254,12 @@ const Review = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
+            <style>{revealStyles}</style>
             <main className="max-w-0xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
 
-                <h1 className="text-3xl md:text-4xl font-black mb-12 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
+                <Reveal as="h1" variant="up" className="text-3xl md:text-4xl font-black mb-12 bg-gradient-to-r from-orange-600 to-pink-600 bg-clip-text text-transparent">
                     Bài viết
-                </h1>
+                </Reveal>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
 
@@ -187,8 +267,8 @@ const Review = () => {
                     <div className="lg:col-span-3">
                         {/* Grid News - 4 cột trên màn hình lớn */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                            {filteredNews.map((news) => (
-                                <NewsCard key={news.id} news={news} />
+                            {filteredNews.map((news, index) => (
+                                <NewsCard key={news.id} news={news} index={index} />
                             ))}
                         </div>
 
@@ -207,12 +287,12 @@ const Review = () => {
                     <div className="lg:col-span-1 space-y-8">
 
                         {/* 2. Thanh tìm kiếm trong Sidebar (Ẩn đi ở màn hình nhỏ, hiển thị từ màn hình lớn trở lên) */}
-                        <div className="hidden lg:block">
+                        <Reveal variant="right" delay={100} className="hidden lg:block">
                             <SearchBar search={search} setSearch={setSearch} />
-                        </div>
+                        </Reveal>
 
                         {/* Banner Dọc */}
-                        <div className="w-full aspect-[3/4] rounded-2xl shadow-xl relative overflow-hidden group cursor-pointer">
+                        <Reveal variant="right" delay={250} className="w-full aspect-[3/4] rounded-2xl shadow-xl relative overflow-hidden group cursor-pointer">
                             <img
                                 src="/BannerBộLivestream.png"
                                 alt="Combo livestream"
@@ -239,7 +319,7 @@ const Review = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </Reveal>
 
                     </div>
                 </div>

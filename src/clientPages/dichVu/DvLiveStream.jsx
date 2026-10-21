@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     ArrowRight,
     CheckCircle2,
@@ -38,6 +38,87 @@ function WarningSignIcon({ className = "w-12 h-12 md:w-16 md:h-16" }) {
         </svg>
     );
 }
+
+// =============================================================
+// Hiệu ứng xuất hiện mượt khi cuộn chuột (scroll reveal)
+// =============================================================
+const revealStyles = `
+    .reveal-hidden { opacity: 0; }
+    .reveal-in {
+        animation-duration: 0.85s;
+        animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+        animation-fill-mode: backwards;
+    }
+    .reveal-fast { animation-duration: 0.3s; }
+    .reveal-up    { animation-name: revealUp; }
+    .reveal-left  { animation-name: revealLeft; }
+    .reveal-right { animation-name: revealRight; }
+    .reveal-zoom  { animation-name: revealZoom; }
+    .reveal-fade  { animation-name: revealFade; }
+
+    @keyframes revealUp {
+        from { opacity: 0; transform: translate3d(0, 36px, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealLeft {
+        from { opacity: 0; transform: translate3d(-48px, 0, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealRight {
+        from { opacity: 0; transform: translate3d(48px, 0, 0); }
+        to   { opacity: 1; transform: translate3d(0, 0, 0); }
+    }
+    @keyframes revealZoom {
+        from { opacity: 0; transform: scale(0.92); }
+        to   { opacity: 1; transform: scale(1); }
+    }
+    @keyframes revealFade {
+        from { opacity: 0; }
+        to   { opacity: 1; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .reveal-in { animation: none !important; }
+        .reveal-hidden { opacity: 1; }
+    }
+`;
+
+function Reveal({ as: Tag = 'div', variant = 'up', delay = 0, className = '', children, style, ...rest }) {
+    const ref = useRef(null);
+    const [visible, setVisible] = useState(false);
+
+    useEffect(() => {
+        const el = ref.current;
+        if (!el) return;
+        if (typeof IntersectionObserver === 'undefined') {
+            setVisible(true);
+            return;
+        }
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                if (entry.isIntersecting) {
+                    setVisible(true);
+                    observer.disconnect();
+                }
+            },
+            { threshold: 0, rootMargin: '0px 0px -8% 0px' }
+        );
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, []);
+
+    return (
+        <Tag
+            ref={ref}
+            className={`${className} ${visible ? `reveal-in reveal-${variant}` : 'reveal-hidden'}`}
+            style={visible && delay ? { ...style, animationDelay: `${delay}ms` } : style}
+            {...rest}
+        >
+            {children}
+        </Tag>
+    );
+}
+
 
 export default function SetupLivestreamPage() {
     // -------------------------------------------------------------
@@ -205,17 +286,19 @@ export default function SetupLivestreamPage() {
 
     return (
         <div className="w-full bg-white font-sans text-gray-900 overflow-x-hidden">
+            <style>{revealStyles}</style>
+
 
             {/* ========================================================= */}
             {/* HERO: BANNER                                              */}
             {/* ========================================================= */}
-            <div className="relative w-full overflow-hidden max-h-[300px] sm:max-h-[400px] md:max-h-[500px] flex items-center justify-center">
+            <Reveal variant="fade" className="relative w-full overflow-hidden max-h-[300px] sm:max-h-[400px] md:max-h-[500px] flex items-center justify-center">
                 <img
                     src="/dvlivehero.png"
                     alt="Banner Dịch Vụ AutoTune AI"
                     className="w-full h-auto object-cover max-h-[300px] sm:max-h-[400px] lg:max-h-[500px]"
                 />
-            </div>
+            </Reveal>
 
             {/* ========================================================= */}
             {/* 1. HAI GÓI LIVESTREAM VÀ TICKER CHẠY NGANG               */}
@@ -226,7 +309,7 @@ export default function SetupLivestreamPage() {
                     <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[-10%] sm:-translate-y-[25%] w-full max-w-5xl px-2 sm:px-4 grid grid-cols-2 gap-2 sm:gap-4 md:gap-8 lg:gap-12 z-20">
 
                         {/* Gói Bán Hàng E-Commerce */}
-                        <div className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
+                        <Reveal variant="left" delay={100} className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
                             {/* Quầng sáng lớn tỏa rộng phía sau */}
                             <div className="absolute -inset-1.5 sm:-inset-2 md:-inset-3 bg-gradient-to-r from-orange-500 via-red-500 to-purple-600 rounded-2xl sm:rounded-3xl md:rounded-[38px] blur-md sm:blur-lg md:blur-xl opacity-80"></div>
 
@@ -280,10 +363,10 @@ export default function SetupLivestreamPage() {
                                     BÁO GIÁ
                                 </a>
                             </div>
-                        </div>
+                        </Reveal>
 
                         {/* Gói Idol Live Studio */}
-                        <div className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
+                        <Reveal variant="right" delay={250} className="relative z-10 w-full p-[9px] sm:p-[12px] md:p-[16px]">
                             {/* Quầng sáng lớn tỏa rộng phía sau */}
                             <div className="absolute -inset-1.5 sm:-inset-2 md:-inset-3 bg-gradient-to-r from-purple-600 via-red-500 to-orange-500 rounded-2xl sm:rounded-3xl md:rounded-[38px] blur-md sm:blur-lg md:blur-xl opacity-80"></div>
 
@@ -337,12 +420,12 @@ export default function SetupLivestreamPage() {
                                     BÁO GIÁ
                                 </a>
                             </div>
-                        </div>
+                        </Reveal>
 
                     </div>
                 </div>
 
-                <div className="mt-8 md:mt-30 py-2 md:py-3 bg-gray-50 border-y border-gray-200 overflow-hidden whitespace-nowrap relative flex">
+                <Reveal variant="up" className="mt-8 md:mt-30 py-2 md:py-3 bg-gray-50 border-y border-gray-200 overflow-hidden whitespace-nowrap relative flex">
                     <style>{`
             @keyframes customMarquee {
                 0% { transform: translateX(0%); }
@@ -364,7 +447,7 @@ export default function SetupLivestreamPage() {
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                         <span>+150 Phòng Live bàn giao &nbsp;|&nbsp; Hỗ trợ 24/7 &nbsp;|&nbsp; Bảo hành 1 đổi 1 &nbsp;|&nbsp; Setup toàn quốc &nbsp;|&nbsp; 037.2672.396 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
                     </div>
-                </div>
+                </Reveal>
             </section>
 
             {/* ========================================================= */}
@@ -372,37 +455,37 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             <section className="py-4 md:py-14 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h2 className="text-lg sm:text-xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-6 md:mb-12">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-6 md:mb-12">
                         BẠN ĐANG MẤT KHÁCH HÀNG VÌ...
-                    </h2>
+                    </Reveal>
 
                     <div className="grid grid-cols-3 gap-1.5 sm:gap-4 lg:gap-6">
-                        <div className="border border-[#E11D48] md:border-2 rounded-xl sm:rounded-2xl md:rounded-[24px] p-2 sm:p-4 md:p-5 text-center flex flex-col items-center justify-center min-h-[110px] sm:min-h-[160px] md:min-h-[210px] bg-rose-50/60 shadow-xs hover:shadow-sm transition-all">
+                        <Reveal variant="up" delay={0} className="border border-[#E11D48] md:border-2 rounded-xl sm:rounded-2xl md:rounded-[24px] p-2 sm:p-4 md:p-5 text-center flex flex-col items-center justify-center min-h-[110px] sm:min-h-[160px] md:min-h-[210px] bg-rose-50/60 shadow-xs hover:shadow-sm transition-all">
                             <div className="mb-1.5 sm:mb-3 md:mb-4">
                                 <WarningSignIcon className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12" />
                             </div>
                             <p className="text-[10px] sm:text-xs md:text-base text-gray-900 leading-tight sm:leading-relaxed font-medium">
                                 Ánh sáng mờ, giao diện nhợt nhạt, tổng thể nhìn thiếu chuyên nghiệp.
                             </p>
-                        </div>
+                        </Reveal>
 
-                        <div className="border border-[#E11D48] md:border-2 rounded-xl sm:rounded-2xl md:rounded-[24px] p-2 sm:p-4 md:p-5 text-center flex flex-col items-center justify-center min-h-[110px] sm:min-h-[160px] md:min-h-[210px] bg-rose-50/60 shadow-xs hover:shadow-sm transition-all">
+                        <Reveal variant="up" delay={130} className="border border-[#E11D48] md:border-2 rounded-xl sm:rounded-2xl md:rounded-[24px] p-2 sm:p-4 md:p-5 text-center flex flex-col items-center justify-center min-h-[110px] sm:min-h-[160px] md:min-h-[210px] bg-rose-50/60 shadow-xs hover:shadow-sm transition-all">
                             <div className="mb-1.5 sm:mb-3 md:mb-4">
                                 <WarningSignIcon className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12" />
                             </div>
                             <p className="text-[10px] sm:text-xs md:text-base text-gray-900 leading-tight sm:leading-relaxed font-medium">
                                 Âm thanh rè, lẫn nhiều tạp âm, nghe không rõ.
                             </p>
-                        </div>
+                        </Reveal>
 
-                        <div className="border border-[#E11D48] md:border-2 rounded-xl sm:rounded-2xl md:rounded-[24px] p-2 sm:p-4 md:p-5 text-center flex flex-col items-center justify-center min-h-[110px] sm:min-h-[160px] md:min-h-[210px] bg-rose-50/60 shadow-xs hover:shadow-sm transition-all">
+                        <Reveal variant="up" delay={260} className="border border-[#E11D48] md:border-2 rounded-xl sm:rounded-2xl md:rounded-[24px] p-2 sm:p-4 md:p-5 text-center flex flex-col items-center justify-center min-h-[110px] sm:min-h-[160px] md:min-h-[210px] bg-rose-50/60 shadow-xs hover:shadow-sm transition-all">
                             <div className="mb-1.5 sm:mb-3 md:mb-4">
                                 <WarningSignIcon className="w-6 h-6 sm:w-10 sm:h-10 md:w-12 md:h-12" />
                             </div>
                             <p className="text-[10px] sm:text-xs md:text-base text-gray-900 leading-tight sm:leading-relaxed font-medium">
                                 Tự setup lộn xộn, thiết bị không tương thích khiến phiên live giật lag.
                             </p>
-                        </div>
+                        </Reveal>
                     </div>
                 </div>
             </section>
@@ -412,9 +495,9 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             <section className="py-8 md:py-12 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <h2 className="text-lg sm:text-xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-6 md:mb-10">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-3xl font-black text-center uppercase tracking-tight text-black mb-6 md:mb-10">
                         GIẢI PHÁP TỪ CMIC STUDIO
-                    </h2>
+                    </Reveal>
 
                     <div className="grid grid-cols-3 gap-1.5 sm:gap-4 md:gap-6">
                         {[
@@ -422,7 +505,7 @@ export default function SetupLivestreamPage() {
                             { id: "Lfz_8kEHJKY", title: "Muốn setup hát live CHUYÊN NGHIỆP" },
                             { id: "c_q4lkbePqc", title: "Ta còn em.." }
                         ].map((item, idx) => (
-                            <div
+                            <Reveal variant="up" delay={idx * 150}
                                 key={idx}
                                 className="relative aspect-[9/16] rounded-lg sm:rounded-xl md:rounded-2xl overflow-hidden shadow-sm md:shadow-xl bg-black border border-gray-200"
                             >
@@ -433,7 +516,7 @@ export default function SetupLivestreamPage() {
                                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                                     allowFullScreen
                                 ></iframe>
-                            </div>
+                            </Reveal>
                         ))}
                     </div>
                 </div>
@@ -444,7 +527,7 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             <section className="py-8 md:py-12 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
+                    <Reveal variant="up" className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
                         <table className="w-full min-w-[700px] text-left border-collapse text-xs md:text-base">
                             <thead>
                                 <tr className="bg-[#ed792f] text-white">
@@ -460,7 +543,7 @@ export default function SetupLivestreamPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-200 bg-white text-gray-700 leading-relaxed font-normal text-xs md:text-lg">
-                                <tr className="hover:bg-orange-50/30 transition-colors">
+                                <Reveal as="tr" variant="up" delay={0} className="hover:bg-orange-50/30 transition-colors">
                                     <td className="p-3 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/60 md:bg-transparent">
                                         Hình ảnh & Ánh sáng
                                     </td>
@@ -484,9 +567,9 @@ export default function SetupLivestreamPage() {
                                             <span>Ánh sáng chuẩn Studio kết hợp <span className="text-[#ea580c] font-semibold">đèn RGB tạo khối</span>, làm mịn da và tôn thần thái nổi bật cho Idol.</span>
                                         </p>
                                     </td>
-                                </tr>
+                                </Reveal>
 
-                                <tr className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
+                                <Reveal as="tr" variant="up" delay={110} className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
                                     <td className="p-3 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/80 md:bg-transparent">
                                         Không gian & Âm thanh
                                     </td>
@@ -510,9 +593,9 @@ export default function SetupLivestreamPage() {
                                             <span>Trang bị trọn bộ <span className="text-[#ea580c] font-semibold">Soundcard và Micro độ nhạy cao</span> chuẩn phòng thu biểu diễn.</span>
                                         </p>
                                     </td>
-                                </tr>
+                                </Reveal>
 
-                                <tr className="hover:bg-orange-50/30 transition-colors">
+                                <Reveal as="tr" variant="up" delay={220} className="hover:bg-orange-50/30 transition-colors">
                                     <td className="p-3 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/60 md:bg-transparent">
                                         Thiết bị & Phần mềm phụ trợ
                                     </td>
@@ -543,9 +626,9 @@ export default function SetupLivestreamPage() {
                                             <span>Tích hợp <span className="text-[#ea580c] font-semibold">Auto-tune tôn giọng</span> cùng hiệu ứng âm thanh cổ vũ, PK kịch tính giữ chân người xem.</span>
                                         </p>
                                     </td>
-                                </tr>
+                                </Reveal>
 
-                                <tr className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
+                                <Reveal as="tr" variant="up" delay={330} className="bg-gray-50/40 hover:bg-orange-50/30 transition-colors">
                                     <td className="p-3 md:p-5 font-bold text-gray-900 align-middle border-r border-gray-200 text-center md:text-left bg-gray-50/80 md:bg-transparent">
                                         Setup tận nơi & Bàn giao
                                     </td>
@@ -569,10 +652,10 @@ export default function SetupLivestreamPage() {
                                             <span>Hướng dẫn chi tiết cách làm chủ phần mềm và thiết bị để <span className="text-[#ea580c] font-semibold">tự tin bắt đầu phiên live ngay trong ngày</span>.</span>
                                         </p>
                                     </td>
-                                </tr>
+                                </Reveal>
                             </tbody>
                         </table>
-                    </div>
+                    </Reveal>
                 </div>
             </section>
 
@@ -581,13 +664,13 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             <section id="tu-van-bao-gia" className="py-8 md:py-14 bg-white scroll-mt-6 flex justify-center items-center">
                 <div className="w-full max-w-[620px] px-4">
-                    <h2 className="text-lg sm:text-xl md:text-2xl font-black text-center uppercase tracking-tight text-black mb-6 md:mb-10">
+                    <Reveal as="h2" variant="up" className="text-lg sm:text-xl md:text-2xl font-black text-center uppercase tracking-tight text-black mb-6 md:mb-10">
                         TƯ VẤN NHẬN BÁO GIÁ
-                    </h2>
+                    </Reveal>
 
                     {/* BƯỚC 1: Chọn Đối tượng */}
                     {step === 1 && (
-                        <div className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
+                        <Reveal variant="up" className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
                             <h2 className="text-lg sm:text-2xl md:text-[30px] font-black text-[#e8702a] leading-tight tracking-tight mb-4 md:mb-6">
                                 Bạn thuộc đối tượng nào sau đây?
                             </h2>
@@ -625,12 +708,12 @@ export default function SetupLivestreamPage() {
                             >
                                 GỬI NGAY
                             </button>
-                        </div>
+                        </Reveal>
                     )}
 
                     {/* BƯỚC 2: Chọn Thiết bị */}
                     {step === 2 && (
-                        <div className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
+                        <Reveal variant="up" className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
                             <h2 className="text-lg sm:text-2xl md:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-4 md:mb-6">
                                 Bạn muốn livestream bằng thiết bị gì?
                             </h2>
@@ -684,12 +767,12 @@ export default function SetupLivestreamPage() {
                                     <RotateCcw className="w-3.5 h-3.5" /> Khảo sát lại từ đầu
                                 </button>
                             </div>
-                        </div>
+                        </Reveal>
                     )}
 
                     {/* BƯỚC 3: Nhập SĐT */}
                     {step === 3 && (
-                        <div className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
+                        <Reveal variant="up" className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
                             <h2 className="text-lg sm:text-2xl md:text-[34px] font-black text-[#e8702a] leading-tight tracking-tight mb-4 md:mb-6">
                                 CMIC STUDIO có thể liên hệ với bạn bằng cách nào?
                             </h2>
@@ -718,7 +801,7 @@ export default function SetupLivestreamPage() {
                                     GỬI NGAY
                                 </button>
                             </form>
-                        </div>
+                        </Reveal>
                     )}
 
                     {/* BƯỚC 4: Hiện Báo Giá Tương Ứng & Ô Ngân Sách */}
@@ -727,7 +810,7 @@ export default function SetupLivestreamPage() {
                         return (
                             <div className="space-y-4 md:space-y-6">
                                 {/* Khối Danh Sách Ảnh Báo Giá */}
-                                <div className="rounded-2xl md:rounded-3xl border border-orange-200 bg-white p-3 sm:p-4 md:p-6 shadow-sm text-center">
+                                <Reveal variant="up" className="rounded-2xl md:rounded-3xl border border-orange-200 bg-white p-3 sm:p-4 md:p-6 shadow-sm text-center">
                                     <span className="inline-block px-3 py-1 md:px-4 md:py-1.5 rounded-full bg-orange-100 text-[#e8702a] font-extrabold text-[10px] sm:text-xs md:text-sm uppercase tracking-wider mb-3 md:mb-4">
                                         {pricing.title}
                                     </span>
@@ -739,7 +822,7 @@ export default function SetupLivestreamPage() {
                                             }`}
                                     >
                                         {pricing.images.map((imgSrc, idx) => (
-                                            <div
+                                            <Reveal variant="zoom" delay={150 + idx * 120}
                                                 key={idx}
                                                 onClick={() => setPreviewImage(imgSrc)}
                                                 className="w-full rounded-xl md:rounded-2xl overflow-hidden bg-slate-50 border border-slate-100 shadow-sm flex items-center justify-center p-1.5 md:p-2 cursor-zoom-in group transition-all"
@@ -750,16 +833,16 @@ export default function SetupLivestreamPage() {
                                                     alt={`${pricing.title} - Trang ${idx + 1}`}
                                                     className="w-full h-auto object-contain mx-auto block group-hover:scale-[1.02] transition-transform duration-300"
                                                 />
-                                            </div>
+                                            </Reveal>
                                         ))}
                                     </div>
                                     <p className="text-[10px] sm:text-xs text-gray-400 mt-2 md:mt-3 italic">
                                         (Click vào từng ảnh để phóng to toàn màn hình)
                                     </p>
-                                </div>
+                                </Reveal>
 
                                 {/* Khối Ô Khảo Sát Ngân Sách Cuối Cùng */}
-                                <div className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
+                                <Reveal variant="up" delay={100} className="rounded-2xl sm:rounded-[36px] border-2 sm:border-[3px] border-[#e8702a] bg-[#fffcf7] p-5 sm:p-8 md:p-12 shadow-sm transition-all duration-300">
                                     <h2 className="text-lg sm:text-2xl md:text-[32px] font-black text-[#e8702a] leading-tight tracking-tight mb-3 md:mb-4">
                                         Chi phí trong báo giá đã phù hợp với ngân sách của bạn chưa?
                                     </h2>
@@ -804,7 +887,7 @@ export default function SetupLivestreamPage() {
                                             <RotateCcw className="w-3.5 h-3.5" /> Khảo sát lại từ đầu
                                         </button>
                                     </div>
-                                </div>
+                                </Reveal>
                             </div>
                         );
                     })()}
@@ -840,14 +923,14 @@ export default function SetupLivestreamPage() {
                     }
                 `}</style>
 
-                <div className="max-w-6xl mx-auto px-4 mb-4 md:mb-8 text-center">
+                <Reveal variant="up" className="max-w-6xl mx-auto px-4 mb-4 md:mb-8 text-center">
                     <h2 className="text-lg sm:text-xl md:text-2xl font-black uppercase text-black tracking-wide leading-tight">
                         CASE STUDY SETUP LIVESTREAM<br />CMIC STUDIO ĐÃ THỰC HIỆN
                     </h2>
-                </div>
+                </Reveal>
 
                 <div className="space-y-3 md:space-y-4">
-                    <div className="overflow-hidden w-full">
+                    <Reveal variant="fade" className="overflow-hidden w-full">
                         <div className="marquee-left gap-3 md:gap-4">
                             {[...caseStudyRow1, ...caseStudyRow1, ...caseStudyRow1].map((src, i) => (
                                 <div key={i} className="w-40 sm:w-60 md:w-72 aspect-video rounded-lg md:rounded-xl overflow-hidden shadow-sm md:shadow-md flex-shrink-0 bg-black">
@@ -862,9 +945,9 @@ export default function SetupLivestreamPage() {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </Reveal>
 
-                    <div className="overflow-hidden w-full">
+                    <Reveal variant="fade" delay={150} className="overflow-hidden w-full">
                         <div className="marquee-right gap-3 md:gap-4">
                             {[...caseStudyRow2, ...caseStudyRow2, ...caseStudyRow2].map((src, i) => (
                                 <div key={i} className="w-32 sm:w-48 md:w-56 aspect-[3/4] rounded-lg md:rounded-xl overflow-hidden shadow-sm md:shadow-md flex-shrink-0 bg-black">
@@ -879,7 +962,7 @@ export default function SetupLivestreamPage() {
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </Reveal>
                 </div>
             </section>
 
@@ -888,16 +971,16 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             <section className="py-8 md:py-12 bg-white">
                 <div className="max-w-6xl mx-auto px-4">
-                    <div className="text-center mb-6 md:mb-10">
+                    <Reveal variant="up" className="text-center mb-6 md:mb-10">
                         <h3 className="text-base sm:text-xl md:text-2xl font-black uppercase tracking-wider text-black">
                             MỘT SỐ THƯƠNG HIỆU ĐÃ HỢP TÁC
                         </h3>
-                    </div>
+                    </Reveal>
 
                     {/* Mobile/App: grid-cols-4 (3 dòng) | Web (md:): grid-cols-5 (2 dòng chuẩn 10 logo) */}
                     <div className="grid grid-cols-4 md:grid-cols-5 gap-3 sm:gap-6 md:gap-8 lg:gap-10 items-center justify-items-center">
                         {brands.map((brand, i) => (
-                            <div
+                            <Reveal variant="zoom" delay={(i % 5) * 80}
                                 key={i}
                                 className="h-12 sm:h-16 md:h-20 lg:h-24 w-full flex items-center justify-center p-1 sm:p-2 hover:scale-105 transition-transform duration-300"
                             >
@@ -906,11 +989,11 @@ export default function SetupLivestreamPage() {
                                     alt={brand.name}
                                     className="max-h-full max-w-full object-contain filter contrast-105"
                                 />
-                            </div>
+                            </Reveal>
                         ))}
                     </div>
 
-                    <div className="mt-8 md:mt-14 text-center">
+                    <Reveal variant="up" delay={100} className="mt-8 md:mt-14 text-center">
                         <a
                             href="#tu-van-bao-gia"
                             className="inline-flex items-center gap-2 md:gap-3 pl-6 pr-2 py-2 md:pl-8 md:pr-3 md:py-2.5 bg-[#e8702a] hover:bg-[#d8621d] text-white font-extrabold rounded-full shadow-sm md:shadow-md transition-all duration-300 hover:shadow-lg uppercase text-xs md:text-sm tracking-wider"
@@ -920,7 +1003,7 @@ export default function SetupLivestreamPage() {
                                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 stroke-[2.5]" />
                             </div>
                         </a>
-                    </div>
+                    </Reveal>
                 </div>
             </section>
 
@@ -929,7 +1012,7 @@ export default function SetupLivestreamPage() {
             {/* ========================================================= */}
             {previewImage && (
                 <div
-                    className="fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 transition-opacity duration-300"
+                    className="reveal-in reveal-fade reveal-fast fixed inset-0 z-[999999] bg-black/90 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 transition-opacity duration-300"
                     onClick={() => setPreviewImage(null)}
                 >
                     {/* Nút đóng góc phải */}
@@ -944,7 +1027,7 @@ export default function SetupLivestreamPage() {
 
                     {/* Vùng hiển thị ảnh Full */}
                     <div
-                        className="relative z-[1000000] max-w-6xl max-h-[92vh] flex items-center justify-center select-none"
+                        className="reveal-in reveal-zoom reveal-fast relative z-[1000000] max-w-6xl max-h-[92vh] flex items-center justify-center select-none"
                         onClick={(e) => e.stopPropagation()}
                     >
                         <img
