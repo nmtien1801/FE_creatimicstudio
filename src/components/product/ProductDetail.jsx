@@ -176,7 +176,7 @@ const ProductDetail = () => {
             } catch (error) {
                 console.error("Lỗi tải đánh giá sản phẩm:", error);
                 if (isActive) {
-                    setReviewsError(error.response?.data?.EM || error.message || "Không thể tải đánh giá sản phẩm.");
+                    setReviewsError("Không thể tải đánh giá sản phẩm.");
                 }
             } finally {
                 if (isActive) setReviewsLoading(false);
