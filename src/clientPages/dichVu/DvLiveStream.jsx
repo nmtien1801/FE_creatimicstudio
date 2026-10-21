@@ -6,7 +6,7 @@ import {
     X
 } from 'lucide-react';
 import { toast } from 'react-toastify';
-import PhoneOtpField from '../../components/PhoneOtpField';
+import ApiContact from "../../apis/ApiContact";
 
 // Component Biển Cảnh Báo chuẩn theo ảnh mẫu
 function WarningSignIcon({ className = "w-12 h-12 md:w-16 md:h-16" }) {
@@ -47,7 +47,6 @@ export default function SetupLivestreamPage() {
     const [targetType, setTargetType] = useState('Nhà bán hàng e-commerce');
     const [deviceType, setDeviceType] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
-    const [phoneVerified, setPhoneVerified] = useState(false);
     const [budgetNote, setBudgetNote] = useState('');
     const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -82,28 +81,38 @@ export default function SetupLivestreamPage() {
         setStep(3);
     };
 
-    // Xử lý sau khi nhập SĐT -> Chuyển sang Bước 4 (Báo giá & Ngân sách)
-    const handleNextToPrice = (e) => {
+    // Xử lý sau khi nhập SĐT -> Gọi API rồi Chuyển sang Bước 4 (Báo giá & Ngân sách)
+    const handleNextToPrice = async (e) => {
         e?.preventDefault?.();
         if (!phoneNumber.trim()) {
             toast.warning('Vui lòng nhập số điện thoại để nhận báo giá!');
             return;
         }
-        if (!phoneVerified) {
-            toast.warning('Vui lòng xác thực số điện thoại trước khi tiếp tục!');
-            return;
+
+        try {
+            // Chuẩn bị dữ liệu gửi đi (bạn có thể điều chỉnh key cho khớp với backend)
+            const payload = {
+                name: "khách hàng quan tâm dịch vụ Livestream",
+                phone: phoneNumber,
+                email: "",
+                message: `Tôi đang quan tâm đến loại hình ${targetType} và sản phẩm tôi muốn tư vấn là ${deviceType}. Hãy liên hệ tới số điện thoại: ` + phoneNumber,
+            };
+
+            // Gọi API
+            let res = await ApiContact.sendContactApi(payload);
+
+            // Chỉ chuyển sang bước 4 khi gửi API thành công
+            setStep(4);
+
+        } catch (error) {
+            console.error("Lỗi gửi liên hệ:", error);
+            toast.error('Có lỗi xảy ra khi gửi thông tin. Vui lòng thử lại!');
         }
-        setStep(4);
     };
 
     // Gửi form cuối cùng
     const handleFinalSubmit = (e) => {
         e.preventDefault();
-        if (!phoneVerified) {
-            toast.warning('Vui lòng xác thực số điện thoại trước khi gửi!');
-            setStep(3);
-            return;
-        }
         setIsSubmitted(true);
         toast.success('Đã gửi thông tin tư vấn thành công! CMIC STUDIO sẽ liên hệ sớm nhất.');
     };
@@ -114,7 +123,6 @@ export default function SetupLivestreamPage() {
         setTargetType('Nhà bán hàng e-commerce');
         setDeviceType('');
         setPhoneNumber('');
-        setPhoneVerified(false);
         setBudgetNote('');
         setIsSubmitted(false);
         setPreviewImage(null);
@@ -692,21 +700,22 @@ export default function SetupLivestreamPage() {
 
                             <form onSubmit={handleNextToPrice}>
                                 <div className="mb-6 md:mb-8">
-                                    <PhoneOtpField
-                                        variant="livestream"
-                                        phoneNumber={phoneNumber}
-                                        verified={phoneVerified}
-                                        onPhoneNumberChange={setPhoneNumber}
-                                        onVerifiedChange={setPhoneVerified}
+                                    <input
+                                        type="tel"
+                                        autoFocus
+                                        required
+                                        value={phoneNumber}
+                                        onChange={(e) => setPhoneNumber(e.target.value)}
+                                        placeholder="Nhập số điện thoại của bạn..."
+                                        className="w-full py-3 sm:py-4 px-4 sm:px-5 bg-white border border-[#f5b890] rounded-xl sm:rounded-2xl outline-none focus:border-[#e8702a] focus:ring-2 focus:ring-orange-200 text-sm sm:text-base text-gray-900 transition-all placeholder:text-gray-400"
                                     />
                                 </div>
 
                                 <button
                                     type="submit"
-                                    disabled={!phoneVerified}
-                                    className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                    className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
                                 >
-                                    {phoneVerified ? 'TIẾP TỤC' : 'XÁC THỰC SĐT ĐỂ TIẾP TỤC'}
+                                    GỬI NGAY
                                 </button>
                             </form>
                         </div>
@@ -774,8 +783,7 @@ export default function SetupLivestreamPage() {
                                         {!isSubmitted ? (
                                             <button
                                                 type="submit"
-                                                disabled={!phoneVerified}
-                                                className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] disabled:bg-gray-400 disabled:cursor-not-allowed active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
+                                                className="w-full py-3 sm:py-4 bg-[#e8702a] hover:bg-[#d4621e] active:scale-[0.99] text-white font-black text-base sm:text-lg rounded-xl sm:rounded-2xl shadow-md uppercase tracking-wider transition-all duration-200 cursor-pointer"
                                             >
                                                 GỬI NGAY
                                             </button>

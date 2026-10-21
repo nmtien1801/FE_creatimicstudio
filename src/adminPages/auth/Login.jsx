@@ -20,7 +20,7 @@ const LoginForm = () => {
         if (username && password) {
             let res = await dispatch(Login(body));
             
-            if (res && res.payload && res.payload.EC === 0) {
+            if (res.payload.EC === 0) {
                 navigate('/profile/info');
             }else{
                 toast.error(res.payload.EM);
