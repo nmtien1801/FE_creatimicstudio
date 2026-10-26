@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+/* Đảm bảo nội dung rich-text co giãn chuẩn trên mobile */
+.prose {
+    max-width: 100% !important;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    word-break: break-word;
+}
+
+.prose * {
+    max-width: 100% !important;
+    box-sizing: border-box;
+}
+
+.prose table {
+    display: block;
+    width: 100% !important;
+    overflow-x: auto;
+}
+
+.prose img {
+    height: auto !important;
+    max-width: 100% !important;
+}
+
+.prose pre, .prose p, .prose span {
+    white-space: pre-wrap !important; /* Tránh tình trạng dính white-space: nowrap từ CKEditor */
+}

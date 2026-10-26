@@ -543,7 +543,7 @@ const ProductDetail = () => {
                             Chi tiết Sản Phẩm
                         </h2>
                         <div
-                            className="prose max-w-none text-gray-700 leading-relaxed"
+                            className="prose max-w-none w-full min-w-0 text-gray-700 leading-relaxed break-words overflow-hidden [word-break:break-word]"
                             dangerouslySetInnerHTML={{
                                 __html: parsedDetail,
                             }}
@@ -556,7 +556,7 @@ const ProductDetail = () => {
                             Mô Tả Sản Phẩm
                         </h2>
                         <div
-                            className="prose max-w-none text-gray-700 leading-relaxed"
+                            className="prose max-w-none w-full min-w-0 text-gray-700 leading-relaxed break-words overflow-hidden [word-break:break-word]"
                             dangerouslySetInnerHTML={{
                                 __html: parsedDescription,
                             }}
