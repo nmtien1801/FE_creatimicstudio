@@ -125,6 +125,19 @@ const slug = (text) => {
   );
 };
 
+const isValidPhoneNumber = (phone) => {
+  if (!phone || typeof phone !== "string") return false;
+
+  // Xóa khoảng trắng, dấu gạch ngang hoặc dấu chấm nếu khách nhập
+  const cleanPhone = phone.replace(/[\s.-]/g, "");
+
+  // Regex kiểm tra số điện thoại VN 10 chữ số
+  const phoneRegex =
+    /^(0|\+84|84)(3[2-9]|5[25689]|7[06-9]|8[1-9]|9[0-9])[0-9]{7}$/;
+
+  return phoneRegex.test(cleanPhone);
+};
+
 export {
   TypeUserIDCons,
   typeCategory_obligatory,
@@ -138,4 +151,5 @@ export {
   arrayBufferToUrl,
   formatToInputDate,
   slug,
+  isValidPhoneNumber,
 };

@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ApiContact from "../../apis/ApiContact";
+import { isValidPhoneNumber } from '../../utils/constants.js';
 
 // Component Biển Cảnh Báo chuẩn theo ảnh mẫu
 function WarningSignIcon({ className = "w-12 h-12 md:w-16 md:h-16" }) {
@@ -171,16 +172,10 @@ export default function SetupLivestreamPage() {
         }
 
         try {
-            // Chuẩn bị dữ liệu gửi đi (bạn có thể điều chỉnh key cho khớp với backend)
-            const payload = {
-                name: "khách hàng quan tâm dịch vụ Livestream",
-                phone: phoneNumber,
-                email: "",
-                message: `Tôi đang quan tâm đến loại hình ${targetType} và sản phẩm tôi muốn tư vấn là ${deviceType}. Hãy liên hệ tới số điện thoại: ` + phoneNumber,
-            };
-
-            // Gọi API
-            let res = await ApiContact.sendContactApi(payload);
+            if (!isValidPhoneNumber(phoneNumber.trim())) {
+                toast.warning('Số điện thoại không hợp lệ!');
+                return;
+            }
 
             // Chỉ chuyển sang bước 4 khi gửi API thành công
             setStep(4);
@@ -192,8 +187,19 @@ export default function SetupLivestreamPage() {
     };
 
     // Gửi form cuối cùng
-    const handleFinalSubmit = (e) => {
+    const handleFinalSubmit = async (e) => {
         e.preventDefault();
+        // Chuẩn bị dữ liệu gửi đi (bạn có thể điều chỉnh key cho khớp với backend)
+        const payload = {
+            name: "khách hàng quan tâm dịch vụ Livestream",
+            phone: phoneNumber,
+            email: "",
+            message: `Tôi đang quan tâm đến loại hình ${targetType} và sản phẩm tôi muốn tư vấn là ${deviceType}. Hãy liên hệ tới số điện thoại: ` + phoneNumber,
+        };
+
+        // Gọi API
+        let res = await ApiContact.sendContactApi(payload);
+
         setIsSubmitted(true);
         toast.success('Đã gửi thông tin tư vấn thành công! CMIC STUDIO sẽ liên hệ sớm nhất.');
     };

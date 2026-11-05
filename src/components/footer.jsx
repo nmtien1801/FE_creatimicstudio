@@ -51,6 +51,7 @@ export default function Footer() {
             setLoading(true);
             const contactData = {
                 name: "client",
+                phone: 0,
                 email: email,
                 message: `Tôi đang quan tâm đến sản phẩm của bạn. Hãy liên hệ với tôi sớm nhất có thể!`,
             };
