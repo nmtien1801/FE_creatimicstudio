@@ -8,6 +8,7 @@ import {
 import { toast } from 'react-toastify';
 import ApiContact from "../../apis/ApiContact";
 import { isValidPhoneNumber } from '../../utils/constants.js';
+import ApiMapCrm from "../../apis/ApiMapCrm";
 
 // Component Biển Cảnh Báo chuẩn theo ảnh mẫu
 function WarningSignIcon({ className = "w-12 h-12 md:w-16 md:h-16" }) {
@@ -190,15 +191,39 @@ export default function SetupLivestreamPage() {
     const handleFinalSubmit = async (e) => {
         e.preventDefault();
         // Chuẩn bị dữ liệu gửi đi (bạn có thể điều chỉnh key cho khớp với backend)
-        const payload = {
+        const contactData = {
             name: "khách hàng quan tâm dịch vụ Livestream",
             phone: phoneNumber,
             email: "",
             message: `Tôi đang quan tâm đến loại hình ${targetType} và sản phẩm tôi muốn tư vấn là ${deviceType}. Hãy liên hệ tới số điện thoại: ` + phoneNumber,
         };
 
-        // Gọi API
-        let res = await ApiContact.sendContactApi(payload);
+        // gửi crm
+        let data = await ApiMapCrm.searchCustomerByPhoneOrEmailApi(contactData.phone, contactData.email);
+        if (data && Array.isArray(data.DT) && data.DT.length > 0) {
+            const customer = data.DT[0];
+            const customerId = Number(customer.id);
+
+            let res = await ApiMapCrm.createPurchaseHistory(customerId, {
+                issue: contactData.message
+            });
+        } else {
+            const customerResponse = await ApiMapCrm.createCustomer({
+                fullName: contactData.name,
+                phone: contactData.phone,
+                email: contactData.email,
+                ecosystem: 'CMIC_STUDIO'
+            });
+            const customerResult = customerResponse?.DT || customerResponse;
+            if (customerResult?.id) {
+                await ApiMapCrm.createPurchaseHistory(customerResult.id, {
+                    issue: contactData.message
+                });
+            }
+        }
+
+        // gửi thông báo đến lark và gửi email
+        let res = await ApiContact.sendContactApi(contactData);
 
         setIsSubmitted(true);
         toast.success('Đã gửi thông tin tư vấn thành công! CMIC STUDIO sẽ liên hệ sớm nhất.');

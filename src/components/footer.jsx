@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import ApiContact from "../apis/ApiContact";
 import { toast } from 'react-toastify'
+import ApiMapCrm from "../apis/ApiMapCrm";
 
 // ================= ServiceCommitment: ĐÃ SỬA SANG CĂN TRÁI =================
 const ServiceCommitment = ({ icon: Icon, title, description }) => (
@@ -55,6 +56,32 @@ export default function Footer() {
                 email: email,
                 message: `Tôi đang quan tâm đến sản phẩm của bạn. Hãy liên hệ với tôi sớm nhất có thể!`,
             };
+
+            // gửi crm
+            let data = await ApiMapCrm.searchCustomerByPhoneOrEmailApi(contactData.phone, contactData.email);
+            if (data && Array.isArray(data.DT) && data.DT.length > 0) {
+                const customer = data.DT[0];
+                const customerId = Number(customer.id);
+
+                let res = await ApiMapCrm.createPurchaseHistory(customerId, {
+                    issue: contactData.message
+                });
+            } else {
+                const customerResponse = await ApiMapCrm.createCustomer({
+                    fullName: contactData.name,
+                    phone: contactData.phone,
+                    email: contactData.email,
+                    ecosystem: 'CMIC_STUDIO'
+                });
+                const customerResult = customerResponse?.DT || customerResponse;
+                if (customerResult?.id) {
+                    await ApiMapCrm.createPurchaseHistory(customerResult.id, {
+                        issue: contactData.message
+                    });
+                }
+            }
+
+            // gửi thông báo đến lark và gửi email
             let res = await ApiContact.sendContactApi(contactData);
             toast.success('Đã gửi thông tin liên hệ thành công!');
             setEmail('');

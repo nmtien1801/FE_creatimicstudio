@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import ApiContact from "../../apis/ApiContact";
+import ApiMapCrm from "../../apis/ApiMapCrm";
 import { toast } from 'react-toastify';
 
 const ContactForm = ({ onSubmitSuccess }) => {
@@ -42,6 +43,31 @@ const ContactForm = ({ onSubmitSuccess }) => {
                 message: formData.note + ` .Tôi đang quan tâm đến sản phẩm của bạn. Hãy liên hệ tới số điện thoại: ` + formData.phone,
             };
 
+            // gửi crm
+            let data = await ApiMapCrm.searchCustomerByPhoneOrEmailApi(contactData.phone, contactData.email);
+            if (data && Array.isArray(data.DT) && data.DT.length > 0) {
+                const customer = data.DT[0];
+                const customerId = Number(customer.id);
+
+                let res = await ApiMapCrm.createPurchaseHistory(customerId, {
+                    issue: contactData.message
+                });
+            } else {
+                const customerResponse = await ApiMapCrm.createCustomer({
+                    fullName: formData.fullName,
+                    phone: formData.phone,
+                    email: formData.email,
+                    ecosystem: 'CMIC_STUDIO'
+                });
+                const customerResult = customerResponse?.DT || customerResponse;
+                if (customerResult?.id) {
+                    await ApiMapCrm.createPurchaseHistory(customerResult.id, {
+                        issue: contactData.message
+                    });
+                }
+            }
+
+            // gửi thông báo đến lark và gửi email
             await ApiContact.sendContactApi(contactData);
             toast.success('Đã gửi thông tin liên hệ thành công! Chúng tôi sẽ liên hệ với bạn sớm nhất có thể.');
 
