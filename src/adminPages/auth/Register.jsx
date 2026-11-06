@@ -64,10 +64,10 @@ const RegisterForm = () => {
         <form onSubmit={handleSubmit}>
           {/* Username */}
           <div className="mb-4 text-left">
-            <label className="block text-gray-700 text-sm mb-1">Username *</label>
+            <label className="block text-gray-700 text-sm mb-1">Tên đăng nhập *</label>
             <input
               type="text"
-              placeholder="Enter your username"
+              placeholder="Nhập tên đăng nhập của bạn"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -80,7 +80,7 @@ const RegisterForm = () => {
             <label className="block text-gray-700 text-sm mb-1">Email *</label>
             <input
               type="email"
-              placeholder="Enter your email"
+              placeholder="Nhập email của bạn"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -90,10 +90,10 @@ const RegisterForm = () => {
 
           {/* Phone */}
           <div className="mb-4 text-left">
-            <label className="block text-gray-700 text-sm mb-1">Phone *</label>
+            <label className="block text-gray-700 text-sm mb-1">Số điện thoại *</label>
             <input
               type="text"
-              placeholder="Enter your phone"
+              placeholder="Nhập số điện thoại của bạn"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
@@ -103,10 +103,10 @@ const RegisterForm = () => {
 
           {/* Address */}
           <div className="mb-4 text-left">
-            <label className="block text-gray-700 text-sm mb-1">Address</label>
+            <label className="block text-gray-700 text-sm mb-1">Địa chỉ *</label>
             <input
               type="text"
-              placeholder="Enter your address"
+              placeholder="Nhập địa chỉ của bạn"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
@@ -115,10 +115,10 @@ const RegisterForm = () => {
 
           {/* Password */}
           <div className="mb-4 text-left relative">
-            <label className="block text-gray-700 text-sm mb-1">Password *</label>
+            <label className="block text-gray-700 text-sm mb-1">Mật khẩu *</label>
             <input
               type={showPassword ? "text" : "password"}
-              placeholder="Enter your password"
+              placeholder="Nhập mật khẩu"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm pr-10"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -134,10 +134,10 @@ const RegisterForm = () => {
 
           {/* Confirm Password */}
           <div className="mb-6 text-left relative">
-            <label className="block text-gray-700 text-sm mb-1">Confirm Password *</label>
+            <label className="block text-gray-700 text-sm mb-1">Xác nhận mật khẩu *</label>
             <input
               type={showConfirmPassword ? "text" : "password"}
-              placeholder="Re-enter your password"
+              placeholder="Nhập lại mật khẩu"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm pr-10"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}

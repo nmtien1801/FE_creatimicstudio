@@ -39,7 +39,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         { label: 'Thông tin tài khoản', path: '/profile/info' },
       ].filter(Boolean)
     },
-    {
+    userInfo?.role !== 'client' && {
       id: 'products',
       label: 'Sản phẩm',
       icon: Package,
@@ -48,7 +48,8 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         { label: 'Danh sách sản phẩm', path: '/products/list' },
       ]
     },
-    {
+
+    userInfo?.role !== 'client' && {
       id: 'post',
       label: 'Bài viết',
       icon: Newspaper,
@@ -57,6 +58,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
         { label: 'Danh sách bài viết', path: '/news/manager' },
       ]
     },
+
     userInfo?.role === 'admin' && {
       id: 'hr',
       label: 'Quản lý tài khoản',

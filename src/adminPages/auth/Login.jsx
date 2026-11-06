@@ -20,7 +20,7 @@ const LoginForm = () => {
         if (username && password) {
             let res = await dispatch(Login(body));
             
-            if (res.payload.EC === 0) {
+            if (res && res.payload.EC === 0) {
                 navigate('/profile/info');
             }else{
                 toast.error(res.payload.EM);
@@ -54,7 +54,7 @@ const LoginForm = () => {
                     <div className="mb-4">
                         <input
                             type="text"
-                            placeholder="Email or phone"
+                            placeholder="nhập email hoặc số điện thoại"
                             className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-500 text-sm"
                             required
                             // 3. Kết nối trạng thái và sự kiện onChange
@@ -67,7 +67,7 @@ const LoginForm = () => {
                     <div className="mb-6">
                         <input
                             type="password"
-                            placeholder="Password"
+                            placeholder="nhập mật khẩu của bạn"
                             className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-500 text-sm"
                             required
                             // 3. Kết nối trạng thái và sự kiện onChange

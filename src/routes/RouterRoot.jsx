@@ -53,8 +53,6 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  if (userInfo.role === "client") return <Navigate to="/profile/info" replace />;
-
   return children;
 };
 

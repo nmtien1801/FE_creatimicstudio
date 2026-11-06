@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { UpdateProfile } from '../../redux/authSlice';
@@ -16,6 +16,17 @@ export default function UserInfoForm() {
     phone: userInfo.phone || '',
     address: userInfo.address || ''
   });
+  console.log('ssssssss ', userInfo);
+
+  useEffect(() => {
+    setFormData({
+      email: userInfo.email || '',
+      userName: userInfo.userName || '',
+      role: userInfo.role || '',
+      phone: userInfo.phone || '',
+      address: userInfo.address || ''
+    });
+  }, [userInfo]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
