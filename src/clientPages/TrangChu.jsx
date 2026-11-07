@@ -59,18 +59,18 @@ function RevealOnScroll({ children, className = "", delay = 0, duration = 700 })
 // Danh mục icon bar phía trên danh sách sản phẩm
 const quickCategories = [
     // 5 danh mục hàng trên
-    { title: "Combo thu âm", img: "/trangchu/danhmuc1.png", link: "/combo-thu-am" },
-    { title: "Soundcard & Mixer", img: "/trangchu/danhmuc2.png", link: "/soundcard-mixer" },
-    { title: "Micro", img: "/trangchu/danhmuc3.png", link: "/micro" },
-    { title: "Laptop cài phần mềm", img: "/trangchu/danhmuc4.png", link: "/laptop-cai-phan-mem" },
-    { title: "Phần mềm", img: "/trangchu/danhmuc5.png", link: "/phan-mem" },
+    { title: "Combo thu âm", img: "/trangchu/danhmuc1.png", link: "/combo-thu-am/29/all" },
+    { title: "Soundcard & Mixer", img: "/trangchu/danhmuc2.png", link: "/soundcard-mixer/14/all" },
+    { title: "Micro", img: "/trangchu/danhmuc3.png", link: "/micro/13/all" },
+    { title: "Laptop cài phần mềm", img: "/trangchu/danhmuc4.png", link: "/laptop/12/all" },
+    { title: "Phần mềm", img: "/trangchu/danhmuc5.png", link: "/dich-vu/phan-mem-auto-tone" },
 
     // 5 danh mục hàng dưới
-    { title: "Loa", img: "/trangchu/danhmuc6.png", link: "/loa-kiem-am/12/all" },
-    { title: "Tai nghe", img: "/trangchu/danhmuc7.png", link: "/tai-nghe" },
-    { title: "Box Livestream", img: "/trangchu/danhmuc8.png", link: "/box-livestream" },
-    { title: "Setup Livestream", img: "/trangchu/danhmuc9.png", link: "/setup-livestream" },
-    { title: "Thuê thiết bị", img: "/trangchu/danhmuc10.png", link: "/thue-thiet-bi" },
+    { title: "Loa", img: "/trangchu/danhmuc6.png", link: "/oa/9/all" },
+    { title: "Tai nghe", img: "/trangchu/danhmuc7.png", link: "/tai-nghe/10/all" },
+    { title: "Box Livestream", img: "/trangchu/danhmuc8.png", link: "/box-livestream/11/all" },
+    { title: "Setup Livestream", img: "/trangchu/danhmuc9.png", link: "/dich-vu/set-up-phong-livestream" },
+    { title: "Thuê thiết bị", img: "/trangchu/danhmuc10.png", link: "/#" },
 ];
 
 const youtubeReviews = [
