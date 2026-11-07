@@ -16,7 +16,6 @@ export default function UserInfoForm() {
     phone: userInfo.phone || '',
     address: userInfo.address || ''
   });
-  console.log('ssssssss ', userInfo);
 
   useEffect(() => {
     setFormData({

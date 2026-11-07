@@ -109,7 +109,6 @@ export default function CheckoutPage() {
                     email: contactData.email,
                     ecosystem: 'CMIC_STUDIO'
                 });
-                console.log('ssssssss ', customerResponse);
                 const customerResult = customerResponse?.DT || customerResponse;
                 if (customerResult?.id) {
                     await ApiMapCrm.createPurchaseHistory(customerResult.id, {
