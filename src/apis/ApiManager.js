@@ -9,6 +9,9 @@ const isPublicPath = (path) => {
   const publicStaticPaths = ["/", "/login", "/register", "/forgot-password", "/trang-chu", "/gio-hang"];
   if (publicStaticPaths.includes(path)) return true;
 
+  // Cho phép trang chi tiết sản phẩm có URL riêng theo ID.
+  if (/^\/san-pham\/[^/]+\/?$/.test(path)) return true;
+
   // Cho phép trang chi tiết sản phẩm /:name/:id_category/:id_product
   if (/^\/[^/]+\/[^/]+\/[^/]+\/?$/.test(path)) return true;
 

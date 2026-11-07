@@ -18,7 +18,7 @@ const MegaMenu = ({ categories }) => {
   // Hàm điều hướng đến sản phẩm
   const handleNavigateToProduct = (cat, product, e) => {
     e.stopPropagation();
-    navigate(`/${slug(product.name)}/${cat.id}/${product.id}`);
+    navigate(`/san-pham/${product.id}`);
   };
 
   // Hàm điều hướng đến danh mục

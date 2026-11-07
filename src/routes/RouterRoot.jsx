@@ -36,6 +36,7 @@ import ThanhToan from '../clientPages/payment/ThanhToan.jsx'
 import Review from '../clientPages/Review.jsx'
 import OrderHistoryPage from '../clientPages/payment/OrderHistoryPage.jsx'
 import StatusThanhToan from '../clientPages/payment/StatusThanhToan.jsx'
+import ProductDetail from '../components/product/ProductDetail.jsx'
 
 import ChinhSach1 from '../components/chinhsach/Chinhsach1.jsx'
 import ChinhSach2 from '../components/chinhsach/Chinhsach2.jsx'
@@ -96,8 +97,8 @@ function RouterRoot() {
           <Route path="review-detail" element={<Review />} />
 
           {/* path route: /product/ */}
-          {/* <Route path="/product/:id_category/:id_product" element={<ProductPageHandler />} />  */}
-          <Route path=":name/:id_category/:id_product" element={<ProductPageHandler />} />
+          <Route path="san-pham/:id_product" element={<ProductDetail />} />
+          <Route path=":name/*" element={<ProductPageHandler />} />
           <Route path="dich-vu/set-up-phong-livestream" element={<ServiceLive />} />
           <Route path="dich-vu/phan-mem-auto-tone" element={<ServiceTone />} />
           <Route path="gio-hang" element={<GioHang />} />

@@ -87,6 +87,8 @@ const ProductDetail = () => {
     const [reviewsMoreLoading, setReviewsMoreLoading] = useState(false);
     const [reviewSaving, setReviewSaving] = useState(false);
     const [reviewsError, setReviewsError] = useState("");
+    const [isLoadingProduct, setIsLoadingProduct] = useState(true);
+    const [productError, setProductError] = useState("");
 
     // Tối ưu xử lý HTML nội dung với useMemo
     const parsedDetail = useMemo(() => {
@@ -98,19 +100,34 @@ const ProductDetail = () => {
     }, [product.description]);
 
     useEffect(() => {
-        let fetchDetail = async () => {
-            let res = await ApiProduct.getProductByIdApi(id_product);
-            if (res && res.DT) {
-                setProduct(res.DT);
+        let isActive = true;
+
+        const fetchDetail = async () => {
+            setIsLoadingProduct(true);
+            setProductError("");
+            setProduct({});
+            setAllImages([]);
+            setSelectedImage(null);
+
+            try {
+                const res = await ApiProduct.getProductByIdApi(id_product);
+                if (!isActive) return;
+
+                if (!res?.DT || res?.EC === -1) {
+                    throw new Error(res?.EM || "Không tìm thấy sản phẩm.");
+                }
 
                 let mainPreviewUrl = res.DT.image;
                 if (res.DT.image) {
                     try {
                         mainPreviewUrl = await loadImage(res.DT.image);
-                    } catch (e) {
+                    } catch {
                         mainPreviewUrl = res.DT.image;
                     }
                 }
+                if (!isActive) return;
+
+                setProduct(res.DT);
                 setSelectedImage(mainPreviewUrl);
 
                 const list = [];
@@ -124,14 +141,14 @@ const ProductDetail = () => {
 
                 setIsLoadingImages(true);
                 try {
-                    let imageRes = await ApiProductImage.getProductImagesByProductIdApi(id_product);
-                    if (imageRes && imageRes.DT && Array.isArray(imageRes.DT)) {
+                    const imageRes = await ApiProductImage.getProductImagesByProductIdApi(id_product);
+                    if (imageRes?.DT && Array.isArray(imageRes.DT)) {
                         const imagesWithPreview = await Promise.all(
                             imageRes.DT.map(async (img) => {
                                 try {
                                     const previewUrl = await loadImage(img.image);
                                     return { ...img, raw: img.image, previewUrl };
-                                } catch (error) {
+                                } catch {
                                     return { ...img, raw: img.image, previewUrl: img.image };
                                 }
                             })
@@ -146,15 +163,32 @@ const ProductDetail = () => {
                 } catch (error) {
                     console.error('Error loading product images:', error);
                 } finally {
-                    setAllImages(list);
-                    setIsLoadingImages(false);
+                    if (isActive) {
+                        setAllImages(list);
+                        setIsLoadingImages(false);
+                    }
                 }
+            } catch (error) {
+                console.error('Error loading product detail:', error);
+                if (isActive) {
+                    setProduct({});
+                    setProductError(error.response?.data?.EM || error.message || "Không thể tải sản phẩm.");
+                }
+            } finally {
+                if (isActive) setIsLoadingProduct(false);
             }
         };
 
         if (id_product) {
             fetchDetail();
+        } else {
+            setIsLoadingProduct(false);
+            setProductError("Thiếu mã sản phẩm.");
         }
+
+        return () => {
+            isActive = false;
+        };
     }, [id_product, dispatch]);
 
     useEffect(() => {
@@ -335,10 +369,18 @@ const ProductDetail = () => {
         });
     };
 
-    if (!product || Object.keys(product).length === 0) {
+    if (isLoadingProduct) {
         return (
             <div className="flex items-center justify-center min-h-[500px]">
                 <p className="text-base text-gray-500 font-medium">Đang tải chi tiết sản phẩm...</p>
+            </div>
+        );
+    }
+
+    if (!product || Object.keys(product).length === 0) {
+        return (
+            <div className="flex items-center justify-center min-h-[500px]">
+                <p className="text-base text-red-500 font-medium">{productError || "Không tìm thấy sản phẩm."}</p>
             </div>
         );
     }

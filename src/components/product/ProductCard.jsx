@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Heart } from 'lucide-react';
 import { toast } from 'react-toastify';
 import ImageLoader from "../../components/FormFields/ImageLoader";
-import { slug } from '../../utils/constants.js';
 import { addCartItem } from '../../redux/cartSlice';
 
 export default function ProductCard({ product, isTopSeller = false }) {
@@ -14,9 +13,8 @@ export default function ProductCard({ product, isTopSeller = false }) {
     // Lấy danh sách sản phẩm trong giỏ hàng từ Redux (kiểm tra cả cartItems hoặc items)
     const cartItems = useSelector((state) => state.cart?.cartItems || state.cart?.items || []);
 
-    const catId = product.category_id || product.categoryId || 'all';
     const prodId = product.id;
-    const productUrl = `/${slug(product.name)}/${catId}/${prodId}`;
+    const productUrl = `/san-pham/${prodId}`;
 
     // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa (được lưu trong Redux/LocalStorage nên reload vẫn giữ)
     const isInCart = cartItems.some((item) => String(item.id) === String(product.id));

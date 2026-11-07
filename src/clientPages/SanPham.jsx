@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { Filter, ChevronLeft, ChevronRight, ChevronDown } from 'lucide-react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard.jsx';
 import { getListCategory } from '../redux/categorySlice.js';
 import { useDispatch, useSelector } from 'react-redux';
@@ -9,7 +9,7 @@ import { clearSearchResults } from '../redux/productSlice.js';
 import ApiProduct from '../apis/ApiProduct.js';
 import { slug } from '../utils/constants.js';
 
-// Component hiệu ứng xuất hiện và transition mượt mà khi lăn chuột cuộn trang
+// Component hiệu ứng cuộn trang
 function RevealOnScroll({ children, className = "", delay = 0, duration = 600 }) {
     const [isVisible, setIsVisible] = useState(false);
     const domRef = useRef(null);
@@ -22,10 +22,7 @@ function RevealOnScroll({ children, className = "", delay = 0, duration = 600 })
                     if (domRef.current) observer.unobserve(domRef.current);
                 }
             },
-            {
-                threshold: 0.05,
-                rootMargin: '0px 0px -30px 0px'
-            }
+            { threshold: 0.05, rootMargin: '0px 0px -30px 0px' }
         );
 
         const current = domRef.current;
@@ -81,10 +78,7 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
                                 <label
                                     key={range.value}
                                     className={`flex items-center space-x-1.5 sm:space-x-2 md:space-x-3 cursor-pointer group py-1.5 px-3 sm:py-2 sm:px-3.5 md:p-0 rounded-lg sm:rounded-xl transition-all border md:border-none snap-center flex-shrink-0
-                                        ${isChecked
-                                            ? 'bg-orange-50 border-orange-500 md:bg-transparent'
-                                            : 'bg-gray-50 border-gray-200 md:bg-transparent'
-                                        }`}
+                                        ${isChecked ? 'bg-orange-50 border-orange-500 md:bg-transparent' : 'bg-gray-50 border-gray-200 md:bg-transparent'}`}
                                 >
                                     <input
                                         type="radio"
@@ -108,30 +102,32 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
     );
 };
 
-// ================= CategoryTopMenu: HỖ TRỢ SUB-CATEGORY CẢ DESKTOP & MOBILE =================
+// ================= CategoryTopMenu: ĐIỀU HƯỚNG URL ĐA CẤP =================
 const CategoryTopMenu = ({
     categoryList = [],
-    selectedCategory,
-    selectedSubCategory,
+    activeIds = [], // Mảng các ID đang chọn từ URL: [id_cha, id_con, id_chau...]
     onCategoryClick,
     onSubClick
 }) => {
-    // 1. Chỉ lấy danh mục cha có status = true và danh mục con bên trong cũng có status = true
+    // 1. Chỉ lấy danh mục CẤP GỐC (parentId === null) cho thanh trên cùng
     const activeCategories = useMemo(() => {
         if (!Array.isArray(categoryList)) return [];
 
         return categoryList
-            .filter(cat => cat.status === true || cat.status === 1)
+            .filter(cat => (cat.status === true || cat.status === 1) && (!cat.parentId && !cat.parent_id))
             .map(cat => ({
                 ...cat,
                 children: (cat.children || []).filter(sub => sub.status === true || sub.status === 1)
             }));
     }, [categoryList]);
 
-    // 2. Tìm danh mục cha đang active từ danh sách đã lọc
+    // Tìm danh mục cha (Cấp 1) đang active theo id đầu tiên trong URL
     const currentActiveCat = useMemo(() => {
-        return activeCategories.find(cat => String(cat.id) === String(selectedCategory));
-    }, [activeCategories, selectedCategory]);
+        if (!activeIds[0] || activeIds[0] === 'all') return null;
+        return activeCategories.find(cat => String(cat.id) === String(activeIds[0]));
+    }, [activeCategories, activeIds]);
+
+    const isAllSelected = activeIds.length === 0 || activeIds[0] === 'all';
 
     return (
         <RevealOnScroll duration={500} className="mb-6 sm:mb-8 md:mb-10 w-full relative z-20">
@@ -141,7 +137,7 @@ const CategoryTopMenu = ({
                     <button
                         onClick={() => onCategoryClick('all')}
                         className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap
-                            ${selectedCategory === 'all'
+                            ${isAllSelected
                                 ? 'bg-orange-500 text-white shadow-md'
                                 : 'bg-white shadow-sm hover:bg-orange-50 text-gray-700'}`}
                     >
@@ -150,14 +146,11 @@ const CategoryTopMenu = ({
                 </div>
 
                 {activeCategories.map(cat => {
-                    const isCatActive = String(selectedCategory) === String(cat.id);
+                    const isCatActive = String(activeIds[0]) === String(cat.id);
                     const hasChildren = cat.children && cat.children.length > 0;
 
                     return (
-                        <div
-                            key={cat.id || cat.name}
-                            className="relative group flex-shrink-0 md:hover:z-50"
-                        >
+                        <div key={cat.id} className="relative group flex-shrink-0 md:hover:z-50">
                             <button
                                 onClick={() => onCategoryClick(cat)}
                                 className={`px-3 py-1.5 sm:px-4 sm:py-2 md:px-5 md:py-2.5 rounded-lg sm:rounded-xl md:rounded-2xl text-xs sm:text-sm md:text-base font-semibold md:font-bold transition whitespace-nowrap flex items-center gap-1
@@ -179,7 +172,7 @@ const CategoryTopMenu = ({
                                         <button
                                             onClick={() => onCategoryClick(cat)}
                                             className={`block w-full text-left px-4 py-2 text-xs sm:text-sm font-semibold transition-colors
-                                                ${isCatActive && selectedSubCategory === 'all'
+                                                ${isCatActive && (!activeIds[1] || activeIds[1] === 'all')
                                                     ? 'bg-orange-100 text-orange-600 font-bold'
                                                     : 'text-gray-700 hover:bg-orange-50'}`}
                                         >
@@ -187,10 +180,10 @@ const CategoryTopMenu = ({
                                         </button>
 
                                         {cat.children.map(sub => {
-                                            const isSubActive = isCatActive && String(selectedSubCategory) === String(sub.id);
+                                            const isSubActive = isCatActive && String(activeIds[1]) === String(sub.id);
                                             return (
                                                 <button
-                                                    key={sub.id || sub.name}
+                                                    key={sub.id}
                                                     onClick={() => onSubClick(cat, sub)}
                                                     className={`block w-full text-left px-4 py-2 text-xs sm:text-sm transition-colors
                                                         ${isSubActive
@@ -208,43 +201,11 @@ const CategoryTopMenu = ({
                     );
                 })}
             </div>
-
-            {/* Dải danh mục con cấp 2 (chỉ hiện các subcategory có status = true) */}
-            {currentActiveCat && currentActiveCat.children && currentActiveCat.children.length > 0 && (
-                <div className="mt-2.5 pt-2.5 border-t border-gray-200/60 flex flex-wrap items-center gap-2 px-1">
-                    <span className="text-xs text-gray-400 font-medium whitespace-nowrap mr-1 mb-1">Nhóm con:</span>
-                    <button
-                        onClick={() => onCategoryClick(currentActiveCat)}
-                        className={`px-3 py-1 mb-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all border
-                            ${selectedSubCategory === 'all'
-                                ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'}`}
-                    >
-                        Tất cả
-                    </button>
-
-                    {currentActiveCat.children.map(sub => {
-                        const isSubActive = String(selectedSubCategory) === String(sub.id);
-                        return (
-                            <button
-                                key={sub.id || sub.name}
-                                onClick={() => onSubClick(currentActiveCat, sub)}
-                                className={`px-3 py-1 mb-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all border
-                                    ${isSubActive
-                                        ? 'bg-orange-600 text-white border-orange-600 shadow-sm'
-                                        : 'bg-white text-gray-600 border-gray-200 hover:border-orange-300'}`}
-                            >
-                                {sub.name}
-                            </button>
-                        );
-                    })}
-                </div>
-            )}
         </RevealOnScroll>
     );
 };
 
-// ================= ProductsList: SHOW SẢN PHẨM =================
+// ================= ProductsList: HIỂN THỊ DANH SÁCH =================
 const getPaginationRange = (currentPage, totalPages) => {
     const delta = 2;
     const range = [];
@@ -259,16 +220,12 @@ const getPaginationRange = (currentPage, totalPages) => {
 
     for (let i of range) {
         if (l) {
-            if (i - l === 2) {
-                rangeWithDots.push(l + 1);
-            } else if (i - l > 2) {
-                rangeWithDots.push('...');
-            }
+            if (i - l === 2) rangeWithDots.push(l + 1);
+            else if (i - l > 2) rangeWithDots.push('...');
         }
         rangeWithDots.push(i);
         l = i;
     }
-
     return rangeWithDots;
 };
 
@@ -288,11 +245,7 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
                 <div className="relative">
                     <div className={`grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-4 ${loading ? 'opacity-40 pointer-events-none' : ''}`}>
                         {products.map((product, index) => (
-                            <RevealOnScroll 
-                                key={product.id} 
-                                delay={(index % 4) * 60} 
-                                duration={500}
-                            >
+                            <RevealOnScroll key={product.id} delay={(index % 4) * 60} duration={500}>
                                 <ProductCard product={product} />
                             </RevealOnScroll>
                         ))}
@@ -329,20 +282,15 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
                         {getPaginationRange(currentPage, totalPages).map((page, index) => {
                             if (page === '...') {
                                 return (
-                                    <span key={`dots-${index}`} className="px-2 py-1 sm:px-4 sm:py-2 text-gray-500 font-bold">
-                                        ...
-                                    </span>
+                                    <span key={`dots-${index}`} className="px-2 py-1 sm:px-4 sm:py-2 text-gray-500 font-bold">...</span>
                                 );
                             }
-
                             return (
                                 <button
                                     key={`page-${page}`}
                                     onClick={() => onPageChange(page)}
                                     className={`px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base font-bold rounded-lg transition-all
-                                        ${currentPage === page
-                                            ? 'bg-orange-600 text-white shadow-md'
-                                            : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'}`}
+                                        ${currentPage === page ? 'bg-orange-600 text-white shadow-md' : 'bg-white text-gray-700 hover:bg-orange-100 border border-gray-300'}`}
                                 >
                                     {page}
                                 </button>
@@ -367,34 +315,60 @@ const ProductsList = ({ products, currentPage, totalPages, onPageChange, loading
 export default function SanPham() {
     const dispatch = useDispatch();
     const [searchParams] = useSearchParams();
-    const { CategoryList } = useSelector((state) => state.category);
-    const { searchResults } = useSelector((state) => state.product);
-    const { id_category: urlCategoryId, id_product: urlSubCategoryId } = useParams();
+    const location = useLocation();
     const navigate = useNavigate();
 
-    const [filters, setFilters] = useState({
-        priceRange: 'all',
-    });
+    const { CategoryList } = useSelector((state) => state.category);
+    const { searchResults } = useSelector((state) => state.product);
+
+    const [filters, setFilters] = useState({ priceRange: 'all' });
     const [products, setProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [loading, setLoading] = useState(false);
     const [isSearchMode, setIsSearchMode] = useState(searchParams.get('search') === 'true');
 
-    const selectedCategory = useMemo(() => urlCategoryId || 'all', [urlCategoryId]);
-    const selectedSubCategory = useMemo(() => urlSubCategoryId || 'all', [urlSubCategoryId]);
-
-    // Tìm tên danh mục để gắn tiêu đề động
-    const currentTitle = useMemo(() => {
-        if (selectedCategory === 'all') return '';
-        const parent = CategoryList?.find(c => String(c.id) === String(selectedCategory));
-        if (!parent) return '';
-        if (selectedSubCategory && selectedSubCategory !== 'all') {
-            const sub = parent.children?.find(s => String(s.id) === String(selectedSubCategory));
-            return sub ? `${parent.name} > ${sub.name}` : parent.name;
+    // 1. Phân tích URL: /name/idcha/idcon/idchau...
+    // segments[0] là name/slug, các phần tử từ index 1 trở đi là các ID danh mục
+    const { activeIds, targetCategoryId } = useMemo(() => {
+        const segments = location.pathname.split('/').filter(Boolean);
+        
+        // Nếu URL là /tat-ca/all/all hoặc trang chủ /san-pham
+        if (segments.length <= 1 || segments[0] === 'tat-ca' || segments[0] === 'san-pham') {
+            return { activeIds: [], targetCategoryId: 'all' };
         }
-        return parent.name;
-    }, [selectedCategory, selectedSubCategory, CategoryList]);
+
+        const ids = segments.slice(1); // Lấy các ID sau name: ['9', '7']
+        
+        // ID thực tế cần lọc sản phẩm là ID cuối cùng khác 'all'
+        let targetId = 'all';
+        for (let i = ids.length - 1; i >= 0; i--) {
+            if (ids[i] && ids[i] !== 'all') {
+                targetId = ids[i];
+                break;
+            }
+        }
+
+        return { activeIds: ids, targetCategoryId: targetId };
+    }, [location.pathname]);
+
+    // 2. Tìm tên danh mục hiển thị tiêu đề
+    const currentTitle = useMemo(() => {
+        if (targetCategoryId === 'all') return '';
+        
+        const findCatName = (list, id) => {
+            for (const item of list) {
+                if (String(item.id) === String(id)) return item.name;
+                if (item.children && item.children.length > 0) {
+                    const found = findCatName(item.children, id);
+                    if (found) return found;
+                }
+            }
+            return '';
+        };
+
+        return findCatName(CategoryList || [], targetCategoryId);
+    }, [targetCategoryId, CategoryList]);
 
     const fetchListCategory = async () => {
         try {
@@ -412,16 +386,9 @@ export default function SanPham() {
                 setTotalPages(1);
                 setCurrentPage(1);
             } else {
-                // Ưu tiên subCategory nếu có, nếu không thì lấy category cha
-                let categoryId = 'all';
-                if (urlSubCategoryId && urlSubCategoryId !== 'all') {
-                    categoryId = urlSubCategoryId;
-                } else if (urlCategoryId && urlCategoryId !== 'all') {
-                    categoryId = urlCategoryId;
-                }
-
-                const priceProduct = filters.priceRange;
-                const res = await ApiProduct.filterProductApi(page, 9, categoryId, priceProduct);
+                // Gọi API backend với ID cuối cùng (ví dụ id của 'con' = 7, hoặc 'mic' = 9)
+                // Backend getFilteredProducts đã có hàm đệ quy tự động lấy tiếp các sản phẩm của cấp con/cháu
+                const res = await ApiProduct.filterProductApi(page, 9, targetCategoryId, filters.priceRange);
 
                 setProducts(res.DT?.products || []);
                 setTotalPages(Math.ceil((res.DT?.total || 0) / (res.DT?.limit || 9)));
@@ -443,24 +410,25 @@ export default function SanPham() {
         const isSearch = searchParams.get('search') === 'true';
         setIsSearchMode(isSearch);
         fetchProducts(1);
-    }, [urlCategoryId, urlSubCategoryId, filters.priceRange, searchParams, searchResults]);
+    }, [targetCategoryId, filters.priceRange, searchParams, searchResults]);
 
     const handleFilterChange = (key, value) => {
         setFilters(prev => ({ ...prev, [key]: value }));
     };
 
-    // Click danh mục cha -> reset subCategory về 'all'
+    // Click danh mục cha -> /:slug-cha/:idcha/all
     const handleCategoryClick = (cat) => {
         if (cat === 'all') {
-            navigate('/san-pham/all/all');
+            navigate('/tat-ca/all/all');
         } else {
             navigate(`/${slug(cat.name)}/${cat.id}/all`);
         }
     };
 
-    // Click danh mục con -> URL: /:slug-con/:id-cha/:id-con
-    const handleSubClick = (cat, sub) => {
-        navigate(`/${slug(sub.name)}/${cat.id}/${sub.id}`);
+    // Click danh mục con -> /:slug-con/:idcha/:idcon...
+    const handleSubClick = (parentCat, subCat) => {
+        // Tạo đường dẫn chuẩn: /slug-con/idcha/idcon
+        navigate(`/${slug(subCat.name)}/${parentCat.id}/${subCat.id}`);
     };
 
     const handlePageChange = (page) => {
@@ -482,7 +450,7 @@ export default function SanPham() {
                         <button
                             onClick={() => {
                                 dispatch(clearSearchResults());
-                                navigate('/san-pham/all/all');
+                                navigate('/tat-ca/all/all');
                             }}
                             className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium text-sm"
                         >
@@ -495,8 +463,7 @@ export default function SanPham() {
             {!isSearchMode && (
                 <CategoryTopMenu
                     categoryList={CategoryList || []}
-                    selectedCategory={selectedCategory}
-                    selectedSubCategory={selectedSubCategory}
+                    activeIds={activeIds}
                     onCategoryClick={handleCategoryClick}
                     onSubClick={handleSubClick}
                 />
