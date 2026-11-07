@@ -45,11 +45,10 @@ function RevealOnScroll({ children, className = "", delay = 0, duration = 700 })
                 transitionDuration: `${duration}ms`,
                 transitionTimingFunction: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
             }}
-            className={`transition-all transform will-change-transform will-change-opacity ${
-                isVisible 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-8 scale-[0.985]'
-            } ${className}`}
+            className={`transition-all transform will-change-transform will-change-opacity ${isVisible
+                ? 'opacity-100 translate-y-0 scale-100'
+                : 'opacity-0 translate-y-8 scale-[0.985]'
+                } ${className}`}
         >
             {children}
         </div>
@@ -203,6 +202,7 @@ export default function TrangChu() {
     const [phuKien, setPhuKien] = useState([]);
     const [soundcard, setSoundcard] = useState([]);
     const [isHovered, setIsHovered] = useState(false);
+    console.log('sssssss ', PostList);
 
     const toneCarouselRef = useRef(null);
 
@@ -567,7 +567,7 @@ export default function TrangChu() {
                                         {PostList.slice(0, 5).map((article, index) => (
                                             <a
                                                 key={article.id || index}
-                                                href={article.link || `#article-${article.id}`}
+                                                href={`/tin-tuc/${article.title}/${article.id}`}
                                                 className="flex items-center gap-3 group p-1.5 rounded-lg hover:bg-white hover:shadow-sm transition-all"
                                             >
                                                 {/* Ảnh nhỏ vuông bên trái */}

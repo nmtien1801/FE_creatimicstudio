@@ -37,6 +37,7 @@ import Review from '../clientPages/Review.jsx'
 import OrderHistoryPage from '../clientPages/payment/OrderHistoryPage.jsx'
 import StatusThanhToan from '../clientPages/payment/StatusThanhToan.jsx'
 import ProductDetail from '../components/product/ProductDetail.jsx'
+import PostDetail from '../components/post/postDetail.jsx'
 
 import ChinhSach1 from '../components/chinhsach/Chinhsach1.jsx'
 import ChinhSach2 from '../components/chinhsach/Chinhsach2.jsx'
@@ -104,6 +105,8 @@ function RouterRoot() {
           <Route path="gio-hang" element={<GioHang />} />
           <Route path="payment" element={<ThanhToan />} />
           <Route path="order-status/:orderId" element={<StatusThanhToan />} />
+
+          <Route path="/tin-tuc/:title/:id" element={<PostDetail />} />
 
           <Route path="dieu-khoan-dich-vu-va-dieu-kien-giao-dich-chung" element={<ChinhSach1 />} />
           <Route path="cac-phuong-thuc-thanh-toan" element={<ChinhSach2 />} />
