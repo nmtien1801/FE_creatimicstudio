@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ApiOrder from "../../apis/ApiOrder";
+import ApiMapCrm from "../../apis/ApiMapCrm";
+import ApiContact from "../../apis/ApiContact";
 import { removePurchasedItems } from "../../redux/cartSlice"; // Kiểm tra nếu file cartSlice có action này, hoặc import action clear giỏ hàng của bạn
 import {
     Check,
@@ -78,6 +80,46 @@ export default function CheckoutPage() {
             } else {
                 alert(res?.EM || "Không thể tạo đơn hàng, vui lòng thử lại!");
             }
+
+            const contactData = {
+                name: orderPayload.fullName,
+                phone: orderPayload.phone,
+                email: "",
+                message: `Tôi đã mụa sản phẩm của bạn với mã đơn hàng là ${res.DT.order.orderId}. Hãy liên hệ tới số điện thoại: ` + orderPayload.phone +
+                    `. địa chỉ giao hàng: ` + orderPayload.address +
+                    `. ghi chú: ` + orderPayload.note +
+                    `. Tổng tiền: ` + formatCurrency(grandTotal) +
+                    `. Phương thức thanh toán: ` + (paymentMethod === "cod" ? "Ship COD" : "Chuyển khoản trước") + `.`
+            };
+
+            // gửi crm
+            let data = await ApiMapCrm.searchCustomerByPhoneOrEmailApi(contactData.phone, contactData.email);
+            
+            if (data && Array.isArray(data.DT) && data.DT.length > 0) {
+                const customer = data.DT[0];
+                const customerId = Number(customer.id);
+                
+                let res = await ApiMapCrm.createPurchaseHistory(customerId, {
+                    issue: contactData.message
+                });
+            } else {
+                const customerResponse = await ApiMapCrm.createCustomer({
+                    fullName: contactData.name,
+                    phone: contactData.phone,
+                    email: contactData.email,
+                    ecosystem: 'CMIC_STUDIO'
+                });
+                console.log('ssssssss ', customerResponse);
+                const customerResult = customerResponse?.DT || customerResponse;
+                if (customerResult?.id) {
+                    await ApiMapCrm.createPurchaseHistory(customerResult.id, {
+                        issue: contactData.message
+                    });
+                }
+            }
+
+            // gửi thông báo đến lark và tạo đơn hàng
+            await ApiContact.sendContactApi(contactData);
         } catch (err) {
             console.error("Lỗi đặt hàng:", err);
             alert(err.response?.data?.EM || err.response?.data?.message || err.message || "Có lỗi xảy ra khi tạo đơn hàng!");
