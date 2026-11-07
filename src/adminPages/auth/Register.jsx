@@ -21,7 +21,7 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!username || !password || !confirmPassword || !email || !phone) {
+    if (!username || !password || !confirmPassword || !phone) {
       alert("Vui lòng nhập đầy đủ thông tin bắt buộc.");
       return;
     }
@@ -75,19 +75,6 @@ const RegisterForm = () => {
             />
           </div>
 
-          {/* Email */}
-          <div className="mb-4 text-left">
-            <label className="block text-gray-700 text-sm mb-1">Email *</label>
-            <input
-              type="email"
-              placeholder="Nhập email của bạn"
-              className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-
           {/* Phone */}
           <div className="mb-4 text-left">
             <label className="block text-gray-700 text-sm mb-1">Số điện thoại *</label>
@@ -101,12 +88,24 @@ const RegisterForm = () => {
             />
           </div>
 
+          {/* Email */}
+          <div className="mb-4 text-left">
+            <label className="block text-gray-700 text-sm mb-1">Email</label>
+            <input
+              type="email"
+              placeholder="Nhập email của bạn (không bắt buộc)"
+              className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+
           {/* Address */}
           <div className="mb-4 text-left">
-            <label className="block text-gray-700 text-sm mb-1">Địa chỉ *</label>
+            <label className="block text-gray-700 text-sm mb-1">Địa chỉ </label>
             <input
               type="text"
-              placeholder="Nhập địa chỉ của bạn"
+              placeholder="Nhập địa chỉ của bạn (không bắt buộc)"
               className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-gray-500 placeholder-gray-400 text-sm"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
