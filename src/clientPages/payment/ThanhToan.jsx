@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import ApiOrder from "../../apis/ApiOrder";
 import ApiMapCrm from "../../apis/ApiMapCrm";
 import ApiContact from "../../apis/ApiContact";
+
 import { removePurchasedItems } from "../../redux/cartSlice"; // Kiểm tra nếu file cartSlice có action này, hoặc import action clear giỏ hàng của bạn
 import {
     Check,
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
     const location = useLocation();
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const { userInfo } = useSelector((state) => state.auth);
 
     const reduxCartItems = useSelector((state) => state.cart?.items || []);
     const [formData, setFormData] = useState({
@@ -54,6 +56,7 @@ export default function CheckoutPage() {
         setIsSubmitting(true);
 
         const orderPayload = {
+            userId: userInfo?.id || null,
             fullName: formData.fullName,
             phone: formData.phone,
             address: formData.address,
@@ -94,11 +97,11 @@ export default function CheckoutPage() {
 
             // gửi crm
             let data = await ApiMapCrm.searchCustomerByPhoneOrEmailApi(contactData.phone, contactData.email);
-            
+
             if (data && Array.isArray(data.DT) && data.DT.length > 0) {
                 const customer = data.DT[0];
                 const customerId = Number(customer.id);
-                
+
                 let res = await ApiMapCrm.createPurchaseHistory(customerId, {
                     issue: contactData.message
                 });
