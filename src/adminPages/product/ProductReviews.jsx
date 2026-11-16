@@ -1,8 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { RefreshCw, Search, Star } from "lucide-react";
+import { RefreshCw, Search, Star, Trash2 } from "lucide-react";
 import { toast } from "react-toastify";
 import ApiProduct from "../../apis/ApiProduct";
 import ApiReview from "../../apis/ApiReview";
+import ImageLoader from "../../components/FormFields/ImageLoader";
 
 const PAGE_SIZE = 20;
 
@@ -27,6 +28,7 @@ export default function ProductReviews() {
   const [total, setTotal] = useState(0);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [loadingReviews, setLoadingReviews] = useState(true);
+  const [deletingReviewId, setDeletingReviewId] = useState(null);
   const [loadError, setLoadError] = useState("");
 
   const fetchProducts = useCallback(async () => {
@@ -91,6 +93,33 @@ export default function ProductReviews() {
   }, [reviews, searchTerm, ratingFilter]);
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
+
+  const handleDeleteReview = async (review) => {
+    if (!window.confirm("Bạn có chắc chắn muốn xóa đánh giá này không?")) return;
+
+    setDeletingReviewId(review.id);
+    try {
+      const response = await ApiReview.deleteReviewAdminApi(review.id);
+      if (response?.EC !== 0) {
+        throw new Error(response?.EM || "Không thể xóa đánh giá.");
+      }
+
+      toast.success(response.EM || "Xóa đánh giá thành công.");
+      setTotal((currentTotal) => Math.max(0, currentTotal - 1));
+      if (reviews.length === 1 && page > 1) {
+        setPage((currentPage) => currentPage - 1);
+      } else {
+        setReviews((currentReviews) =>
+          currentReviews.filter((currentReview) => currentReview.id !== review.id),
+        );
+      }
+    } catch (error) {
+      console.error("Lỗi xóa đánh giá:", error);
+      toast.error(getErrorMessage(error, "Không thể xóa đánh giá."));
+    } finally {
+      setDeletingReviewId(null);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 sm:p-8">
@@ -180,20 +209,21 @@ export default function ProductReviews() {
                   <th className="px-5 py-3">Đánh giá</th>
                   <th className="px-5 py-3">Nhận xét</th>
                   <th className="px-5 py-3">Thời gian</th>
+                  <th className="px-5 py-3 text-center">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {loadingReviews ? (
-                  <tr><td colSpan="5" className="px-5 py-10 text-center text-gray-500">Đang tải đánh giá...</td></tr>
+                  <tr><td colSpan="6" className="px-5 py-10 text-center text-gray-500">Đang tải đánh giá...</td></tr>
                 ) : loadError ? (
                   <tr>
-                    <td colSpan="5" className="px-5 py-10 text-center text-rose-600">
+                    <td colSpan="6" className="px-5 py-10 text-center text-rose-600">
                       {loadError}
                       <button type="button" onClick={fetchReviews} className="ml-2 font-semibold underline">Thử lại</button>
                     </td>
                   </tr>
                 ) : filteredReviews.length === 0 ? (
-                  <tr><td colSpan="5" className="px-5 py-10 text-center text-gray-500">Không có đánh giá phù hợp.</td></tr>
+                  <tr><td colSpan="6" className="px-5 py-10 text-center text-gray-500">Không có đánh giá phù hợp.</td></tr>
                 ) : filteredReviews.map((review) => (
                   <tr key={review.id} className="align-top hover:bg-gray-50">
                     <td className="px-5 py-4 font-medium text-gray-800">{review.user?.userName || "Người dùng"}</td>
@@ -204,8 +234,34 @@ export default function ProductReviews() {
                         {review.rating}/5
                       </span>
                     </td>
-                    <td className="max-w-xl whitespace-pre-wrap break-words px-5 py-4 text-gray-600">{review.comment}</td>
+                    <td className="max-w-xl whitespace-pre-wrap break-words px-5 py-4 text-gray-600">
+                      <p>{review.comment}</p>
+                      {Array.isArray(review.images) && review.images.length > 0 && (
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          {review.images.map((image, index) => (
+                            <ImageLoader
+                              key={`${review.id}-${image}`}
+                              imagePath={image}
+                              alt={`Ảnh đánh giá ${index + 1}`}
+                              className="h-16 w-16 rounded-lg border border-gray-200 object-cover"
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </td>
                     <td className="whitespace-nowrap px-5 py-4 text-gray-500">{formatDate(review.createdAt)}</td>
+                    <td className="px-5 py-4 text-center">
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteReview(review)}
+                        disabled={deletingReviewId !== null}
+                        title="Xóa đánh giá"
+                        aria-label={`Xóa đánh giá của ${review.user?.userName || "người dùng"}`}
+                        className="rounded-lg p-2 text-rose-600 hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      >
+                        <Trash2 size={17} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

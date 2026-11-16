@@ -4,6 +4,7 @@ const ApiReview = {
   getProductReviewsApi: (productId, params) =>
     ApiManager.get(`/product/${encodeURIComponent(productId)}/reviews`, { params }),
   getReviewsForAdminApi: (params) => ApiManager.get("/reviews/admin", { params }),
+  deleteReviewAdminApi: (reviewId) => ApiManager.delete(`/reviews/admin/${encodeURIComponent(reviewId)}`),
   getReviewEligibilityApi: (productId) =>
     ApiManager.get(`/product/${encodeURIComponent(productId)}/review-eligibility`),
   saveProductReviewApi: (productId, review) =>
