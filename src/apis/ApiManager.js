@@ -37,8 +37,10 @@ axiosRetry(api, {
     return retryCount * 100; // Thời gian delay giữa các lần retry (ms)
   },
   retryCondition: (error) => {
-    // Điều kiện để thực hiện retry -> retry refresh token khi bất đồng bộ
-    return error.response?.status === 403; // Retry nếu lỗi là 400
+    return (
+      error.response?.status === 403 &&
+      error.response?.data?.EM === "need to retry with new token"
+    );
   },
 });
 
@@ -92,6 +94,9 @@ api.interceptors.response.use(
       }
 
       case 403: {
+        if (error.response?.data?.EM !== "need to retry with new token") {
+          return Promise.reject(error);
+        }
         try {
           const res = await api.post("/auth/refreshToken");
           const newAccessToken = res.DT.accessToken;

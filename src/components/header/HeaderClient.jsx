@@ -581,7 +581,7 @@ export default function Header({
               <div className="hidden w-[190px] shrink-0 items-center justify-end gap-2 lg:flex">
                 {/* Đăng nhập */}
                 <button
-                  onClick={() => navigate("/dang-nhap")}
+                  onClick={() => navigate("/login")}
                   className="
                     group
                     flex

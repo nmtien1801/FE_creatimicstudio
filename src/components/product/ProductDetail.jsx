@@ -653,8 +653,8 @@ const ProductDetail = () => {
                         {!reviewEligibilityLoading && !reviewEligibility?.canReview && (
                             <p className="mb-6 rounded-lg bg-gray-50 px-4 py-3 text-sm text-gray-600">
                                 {!userInfo?.id
-                                    ? "Đăng nhập và hoàn tất đơn hàng có sản phẩm này để gửi đánh giá."
-                                    : "Bạn có thể đánh giá sản phẩm sau khi đơn hàng chứa sản phẩm này được hoàn tất."}
+                                    ? "Đăng nhập để gửi đánh giá sản phẩm."
+                                    : reviewEligibility?.error || "Không thể kiểm tra trạng thái đánh giá. Vui lòng thử lại."}
                             </p>
                         )}
 

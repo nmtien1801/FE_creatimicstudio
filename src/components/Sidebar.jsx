@@ -46,6 +46,7 @@ export default function SlideBar({ isSidebarOpen, onToggleSidebar }) {
       items: [
         { label: 'Danh mục chung', path: '/products/categories' },
         { label: 'Danh sách sản phẩm', path: '/products/list' },
+        { label: 'Đánh giá sản phẩm', path: '/products/reviews' },
       ]
     },
 

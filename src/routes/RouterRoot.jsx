@@ -23,6 +23,7 @@ import Register from "../adminPages/auth/Register.jsx";
 import UserCutVideoManager from "../adminPages/userCutVideo/UserCutVideoManager.jsx";
 import OrderManager from "../adminPages/order/OrderManager.jsx";
 import SalesReportPage from "../adminPages/order/SalesReportPage.jsx";
+import ProductReviews from "../adminPages/product/ProductReviews.jsx";
 import LoadingSpinner from "../components/LoadingSpinner.jsx";
 import { GetAccount } from "../redux/authSlice";
 import Cookies from "js-cookie";
@@ -56,6 +57,11 @@ const ProtectedRoute = ({ children }) => {
   }
 
   return children;
+};
+
+const AdminOnlyRoute = ({ children }) => {
+  const { userInfo } = useSelector((state) => state.auth);
+  return userInfo?.role === "admin" ? children : <Navigate to="/trang-chu" replace />;
 };
 
 const PublicRoute = ({ children }) => {
@@ -135,6 +141,7 @@ function RouterRoot() {
           {/* route products */}
           <Route path="products/categories" element={<Category />} />        {/* Danh mục chung */}
           <Route path="products/list" element={<ProductManager />} />      {/* Danh sách sản phẩm */}
+          <Route path="products/reviews" element={<AdminOnlyRoute><ProductReviews /></AdminOnlyRoute>} />
 
           {/* route news */}
           <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}
