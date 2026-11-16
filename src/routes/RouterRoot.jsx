@@ -141,7 +141,7 @@ function RouterRoot() {
           {/* route products */}
           <Route path="products/categories" element={<Category />} />        {/* Danh mục chung */}
           <Route path="products/list" element={<ProductManager />} />      {/* Danh sách sản phẩm */}
-          <Route path="products/reviews" element={<AdminOnlyRoute><ProductReviews /></AdminOnlyRoute>} />
+          <Route path="products/reviews" element={<ProductReviews />} />
 
           {/* route news */}
           <Route path="news/detail" element={<NewsDetail />} />   {/* Đăng tin */}
