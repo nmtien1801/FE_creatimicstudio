@@ -97,6 +97,18 @@ const ProductDetail = () => {
     const [reviewsError, setReviewsError] = useState("");
     const [isLoadingProduct, setIsLoadingProduct] = useState(true);
     const [productError, setProductError] = useState("");
+    const [selectedAccessoryIds, setSelectedAccessoryIds] = useState([]);
+
+    const selectedAccessories = useMemo(
+        () =>
+            (product.accessoryProducts || []).filter((accessory) =>
+                selectedAccessoryIds.includes(String(accessory.id)),
+            ),
+        [product.accessoryProducts, selectedAccessoryIds],
+    );
+    const displayedPrice =
+        (Number(product.price) || 0) +
+        selectedAccessories.reduce((total, accessory) => total + (Number(accessory.price) || 0), 0);
 
     // Tối ưu xử lý HTML nội dung với useMemo
     const parsedDetail = useMemo(() => {
@@ -114,6 +126,7 @@ const ProductDetail = () => {
             setIsLoadingProduct(true);
             setProductError("");
             setProduct({});
+            setSelectedAccessoryIds([]);
             setAllImages([]);
             setSelectedImage(null);
 
@@ -393,16 +406,27 @@ const ProductDetail = () => {
     // Lưu vào BE khi đăng nhập, localStorage khi là khách
     // ==========================================
     const handleAddToCart = async () => {
-        const cartItem = {
-            id: String(product.id || id_product || ""),
-            name: String(product.name || ""),
-            price: Number(product.price) || 0,
-            image: typeof product.image === 'string' ? product.image : (selectedImage || ""),
-            quantity: quantity,
-        };
+        const cartItems = [
+            {
+                id: String(product.id || id_product || ""),
+                name: String(product.name || ""),
+                price: Number(product.price) || 0,
+                image: typeof product.image === 'string' ? product.image : (selectedImage || ""),
+                quantity,
+            },
+            ...selectedAccessories.map((accessory) => ({
+                id: String(accessory.id),
+                name: String(accessory.name || ""),
+                price: Number(accessory.price) || 0,
+                image: accessory.image || "",
+                quantity,
+            })),
+        ];
 
         try {
-            await dispatch(addCartItem({ item: cartItem, userId: userInfo?.id })).unwrap();
+            for (const item of cartItems) {
+                await dispatch(addCartItem({ item, userId: userInfo?.id })).unwrap();
+            }
             toast.success(`Đã thêm ${quantity} sản phẩm vào giỏ hàng`);
         } catch (error) {
             toast.error(error.message || 'Không thể thêm sản phẩm vào giỏ hàng');
@@ -417,13 +441,22 @@ const ProductDetail = () => {
         }
         navigate('/payment', {
             state: {
-                cartItems: [{
-                    id: String(product.id || id_product),
-                    name: String(product.name || ""),
-                    price: Number(product.price) || 0,
-                    image: typeof product.image === 'string' ? product.image : (selectedImage || ""),
-                    quantity,
-                }],
+                cartItems: [
+                    {
+                        id: String(product.id || id_product),
+                        name: String(product.name || ""),
+                        price: Number(product.price) || 0,
+                        image: typeof product.image === 'string' ? product.image : (selectedImage || ""),
+                        quantity,
+                    },
+                    ...selectedAccessories.map((accessory) => ({
+                        id: String(accessory.id),
+                        name: String(accessory.name || ""),
+                        price: Number(accessory.price) || 0,
+                        image: accessory.image || "",
+                        quantity,
+                    })),
+                ],
             },
         });
     };
@@ -535,10 +568,10 @@ const ProductDetail = () => {
 
                                 <div className="my-5 p-4 rounded-lg bg-[#fafafa] flex items-baseline gap-3">
                                     <span className="text-3xl sm:text-4xl font-black text-[#ed792f] tracking-tight">
-                                        {Number(product.price || 0).toLocaleString('vi-VN')}₫
+                                        {displayedPrice.toLocaleString('vi-VN')}₫
                                     </span>
                                     <span className="text-xs font-medium text-gray-400">
-                                        Giá niêm yết chính hãng
+                                        {selectedAccessories.length > 0 ? 'Giá gồm sản phẩm phụ đã chọn' : 'Giá niêm yết chính hãng'}
                                     </span>
                                 </div>
 
@@ -571,6 +604,47 @@ const ProductDetail = () => {
                                             </span>
                                         </div>
                                     </div>
+
+                                    {Array.isArray(product.accessoryProducts) && product.accessoryProducts.length > 0 && (
+                                        <div className="flex items-start gap-6">
+                                            <span className="w-28 shrink-0 pt-1 text-gray-500 font-medium">Sản phẩm phụ</span>
+                                            <div className="flex-1 space-y-2">
+                                                {product.accessoryProducts.map((accessory) => {
+                                                    const accessoryId = String(accessory.id);
+                                                    return (
+                                                        <label
+                                                            key={accessory.id}
+                                                            className="flex cursor-pointer items-center gap-3 rounded-lg border border-gray-200 p-3 transition hover:border-[#ed792f]/60"
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={selectedAccessoryIds.includes(accessoryId)}
+                                                                onChange={(event) => {
+                                                                    setSelectedAccessoryIds((currentIds) =>
+                                                                        event.target.checked
+                                                                            ? [...currentIds, accessoryId]
+                                                                            : currentIds.filter((id) => id !== accessoryId),
+                                                                    );
+                                                                }}
+                                                                className="h-4 w-4 accent-[#ed792f]"
+                                                            />
+                                                            <ImageLoader
+                                                                imagePath={accessory.image}
+                                                                alt={accessory.name}
+                                                                className="h-12 w-12 rounded-md border border-gray-100 bg-white object-contain"
+                                                            />
+                                                            <span className="flex-1 text-sm font-medium text-gray-700">
+                                                                {accessory.name}
+                                                            </span>
+                                                            <span className="text-sm font-semibold text-[#ed792f]">
+                                                                +{(Number(accessory.price) || 0).toLocaleString('vi-VN')}₫
+                                                            </span>
+                                                        </label>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     <div className="flex items-center gap-6 pt-2">
                                         <span className="w-28 shrink-0 text-gray-500 font-medium">Số Lượng</span>
@@ -617,7 +691,7 @@ const ProductDetail = () => {
                                     >
                                         <span className="text-xs sm:text-sm leading-tight font-medium opacity-95">Mua Ngay</span>
                                         <span className="text-sm sm:text-base font-extrabold leading-tight">
-                                            {Number(product.price || 0).toLocaleString('vi-VN')}₫
+                                            {displayedPrice.toLocaleString('vi-VN')}₫
                                         </span>
                                     </button>
 
