@@ -41,11 +41,10 @@ function RevealOnScroll({ children, className = "", delay = 0, duration = 600 })
                 transitionDuration: `${duration}ms`,
                 transitionTimingFunction: 'cubic-bezier(0.2, 0.8, 0.2, 1)'
             }}
-            className={`transition-all transform will-change-transform will-change-opacity ${
-                isVisible 
-                    ? 'opacity-100 translate-y-0 scale-100' 
-                    : 'opacity-0 translate-y-6 scale-[0.985]'
-            } ${className}`}
+            className={`transition-all transform will-change-transform will-change-opacity ${isVisible
+                ? 'opacity-100 translate-y-0 scale-100'
+                : 'opacity-0 translate-y-6 scale-[0.985]'
+                } ${className}`}
         >
             {children}
         </div>
@@ -332,14 +331,14 @@ export default function SanPham() {
     // segments[0] là name/slug, các phần tử từ index 1 trở đi là các ID danh mục
     const { activeIds, targetCategoryId } = useMemo(() => {
         const segments = location.pathname.split('/').filter(Boolean);
-        
+
         // Nếu URL là /tat-ca/all/all hoặc trang chủ /san-pham
         if (segments.length <= 1 || segments[0] === 'tat-ca' || segments[0] === 'san-pham') {
             return { activeIds: [], targetCategoryId: 'all' };
         }
 
         const ids = segments.slice(1); // Lấy các ID sau name: ['9', '7']
-        
+
         // ID thực tế cần lọc sản phẩm là ID cuối cùng khác 'all'
         let targetId = 'all';
         for (let i = ids.length - 1; i >= 0; i--) {
@@ -355,7 +354,7 @@ export default function SanPham() {
     // 2. Tìm tên danh mục hiển thị tiêu đề
     const currentTitle = useMemo(() => {
         if (targetCategoryId === 'all') return '';
-        
+
         const findCatName = (list, id) => {
             for (const item of list) {
                 if (String(item.id) === String(id)) return item.name;
@@ -386,11 +385,12 @@ export default function SanPham() {
                 setTotalPages(1);
                 setCurrentPage(1);
             } else {
-                // Gọi API backend với ID cuối cùng (ví dụ id của 'con' = 7, hoặc 'mic' = 9)
-                // Backend getFilteredProducts đã có hàm đệ quy tự động lấy tiếp các sản phẩm của cấp con/cháu
                 const res = await ApiProduct.filterProductApi(page, 9, targetCategoryId, filters.priceRange);
 
-                setProducts(res.DT?.products || []);
+                const rawProducts = res.DT?.products || [];
+                const filteredProducts = rawProducts.filter((item) => item.status === true); // đổi điều kiện theo thực tế
+
+                setProducts(filteredProducts);
                 setTotalPages(Math.ceil((res.DT?.total || 0) / (res.DT?.limit || 9)));
                 setCurrentPage(res.DT?.page || 1);
             }
